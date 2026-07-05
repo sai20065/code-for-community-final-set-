@@ -16,10 +16,9 @@ import '../features/official/map/constituency_map_screen.dart';
 import '../features/official/themes/themes_overview_screen.dart';
 import '../features/official/tickets/ticket_management_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
+import '../features/onboarding/signup/aadhaar_upload_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
-import '../features/onboarding/signup/otp_verify_screen.dart';
-import '../features/onboarding/signup/phone_entry_screen.dart';
 import '../features/onboarding/splash_screen.dart';
 
 /// One `GoRouter` for both nav shells (citizen vs official) — role is
@@ -36,18 +35,8 @@ final appRouter = GoRouter(
 
     // --- Onboarding / signup ---
     GoRoute(
-      path: '/signup/phone',
-      builder: (context, state) => const PhoneEntryScreen(),
-    ),
-    GoRoute(
-      path: '/signup/otp',
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>? ?? const {};
-        return OtpVerifyScreen(
-          verificationId: extra['verificationId'] as String? ?? '',
-          phone: extra['phone'] as String? ?? '',
-        );
-      },
+      path: '/signup/aadhaar',
+      builder: (context, state) => const AadhaarUploadScreen(),
     ),
     GoRoute(
       path: '/signup/basic-info',

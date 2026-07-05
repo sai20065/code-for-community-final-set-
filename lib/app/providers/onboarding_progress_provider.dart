@@ -5,14 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _kOnboardingStepKey = 'onboarding_step';
 
-/// Which step of the 4-step signup (Phone/OTP → Basic Info → Location →
+/// Which step of the signup flow (Aadhaar identity → Basic Info → Location →
 /// done) the user last reached. Persisted so a killed-and-reopened app
 /// resumes at the right screen instead of restarting from Splash/Language
-/// Select every time (Phase 2, Section 9 definition of done).
-enum OnboardingStep { phone, basicInfo, location, done }
+/// Select every time.
+enum OnboardingStep { identity, basicInfo, location, done }
 
 class OnboardingProgressNotifier extends StateNotifier<OnboardingStep> {
-  OnboardingProgressNotifier() : super(OnboardingStep.phone) {
+  OnboardingProgressNotifier() : super(OnboardingStep.identity) {
     _load();
   }
 
@@ -38,7 +38,7 @@ class OnboardingProgressNotifier extends StateNotifier<OnboardingStep> {
   }
 
   Future<void> reset() async {
-    state = OnboardingStep.phone;
+    state = OnboardingStep.identity;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kOnboardingStepKey);
   }

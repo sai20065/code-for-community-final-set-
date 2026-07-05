@@ -38,7 +38,7 @@ class _LanguageSelectScreenState extends ConsumerState<LanguageSelectScreen> {
     setState(() => _flashCode = code);
     await ref.read(selectedLanguageProvider.notifier).select(code);
     await Future.delayed(const Duration(milliseconds: 300));
-    if (mounted) context.go('/signup/phone');
+    if (mounted) context.go('/signup/aadhaar');
   }
 
   @override

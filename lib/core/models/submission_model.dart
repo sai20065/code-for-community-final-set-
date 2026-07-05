@@ -4,6 +4,11 @@ enum SubmissionType { voice, text, photo, video }
 
 enum SubmissionStatus { newSubmission, reviewed, inProgress, resolved }
 
+/// Whether a ticket reports a problem (pothole, outage, etc.) or is
+/// feedback on an existing/planned development project — the citizen picks
+/// this in the compose flow before describing it.
+enum SubmissionCategory { problem, feedback }
+
 class SubmissionLocation {
   final double? lat;
   final double? lng;
@@ -40,13 +45,14 @@ class SubmissionLocation {
   }
 }
 
-/// A citizen's civic complaint. `tokenId` is generated client-side at
-/// creation time (see [pincode_lookup]-adjacent ticket generator) so the
-/// citizen always has a receipt, even if the downstream AI pipeline fails.
+/// A citizen's suggestion ticket. `tokenId` is generated client-side at
+/// creation time (see `FirestoreService.generateTokenId`) so the citizen
+/// always has a receipt, even if the downstream AI pipeline fails.
 class SubmissionModel {
   final String id;
   final String userId;
   final SubmissionType type;
+  final SubmissionCategory category;
   final String inputMode;
   final String? rawText;
   final String? mediaUrl;
@@ -60,6 +66,8 @@ class SubmissionModel {
   final SubmissionStatus status;
   final String tokenId;
   final DateTime createdAt;
+  final DateTime? updatedAt;
+  final DateTime? resolvedAt;
 
   const SubmissionModel({
     required this.id,
@@ -71,6 +79,7 @@ class SubmissionModel {
     required this.status,
     required this.tokenId,
     required this.createdAt,
+    this.category = SubmissionCategory.problem,
     this.rawText,
     this.mediaUrl,
     this.transcript,
@@ -78,6 +87,8 @@ class SubmissionModel {
     this.theme,
     this.clusterId,
     this.priorityScore,
+    this.updatedAt,
+    this.resolvedAt,
   });
 
   static SubmissionStatus statusFromString(String value) {
@@ -107,6 +118,12 @@ class SubmissionModel {
     }
   }
 
+  static SubmissionCategory categoryFromString(String? value) {
+    return value == 'feedback'
+        ? SubmissionCategory.feedback
+        : SubmissionCategory.problem;
+  }
+
   factory SubmissionModel.fromMap(String id, Map<String, dynamic> map) {
     return SubmissionModel(
       id: id,
@@ -115,6 +132,7 @@ class SubmissionModel {
         (t) => t.name == (map['type'] as String? ?? 'text'),
         orElse: () => SubmissionType.text,
       ),
+      category: categoryFromString(map['submissionCategory'] as String?),
       inputMode: map['inputMode'] as String? ?? 'text',
       rawText: map['rawText'] as String?,
       mediaUrl: map['mediaUrl'] as String?,
@@ -130,6 +148,8 @@ class SubmissionModel {
       status: statusFromString(map['status'] as String? ?? 'new'),
       tokenId: map['tokenId'] as String? ?? '',
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
+      resolvedAt: (map['resolvedAt'] as Timestamp?)?.toDate(),
     );
   }
 
@@ -137,6 +157,9 @@ class SubmissionModel {
     return {
       'userId': userId,
       'type': type.name,
+      'submissionCategory': category == SubmissionCategory.feedback
+          ? 'feedback'
+          : 'problem',
       'inputMode': inputMode,
       'rawText': rawText,
       'mediaUrl': mediaUrl,

@@ -1,7 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-/// Phone-OTP-only auth (Section 2: no Aadhaar/ID document handling of any
-/// kind — identity is verified purely via SMS OTP).
+/// Identity = Firebase Anonymous Auth. There is no phone number and no
+/// Aadhaar number anywhere in this app: sign-in is invisible to the citizen
+/// (no OTP, no password) and only exists to give Firestore security rules a
+/// stable `request.auth.uid` to anchor ownership on. The Aadhaar Upload
+/// screen (see `AadhaarOcrService`) is purely a one-time onboarding
+/// convenience that extracts name/address/pincode from a self-uploaded
+/// image — it is NOT verified UIDAI eKYC and makes no claim the uploader is
+/// who the document says they are.
 class AuthService {
   AuthService({FirebaseAuth? firebaseAuth})
       : _auth = firebaseAuth ?? FirebaseAuth.instance;
@@ -12,36 +18,14 @@ class AuthService {
 
   Stream<User?> authStateChanges() => _auth.authStateChanges();
 
-  Future<void> sendOtp({
-    required String phoneNumber,
-    required void Function(String verificationId) onCodeSent,
-    required void Function(FirebaseAuthException e) onFailed,
-    required void Function(UserCredential credential) onAutoVerified,
-  }) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      timeout: const Duration(seconds: 60),
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        final result = await _auth.signInWithCredential(credential);
-        onAutoVerified(result);
-      },
-      verificationFailed: onFailed,
-      codeSent: (String verificationId, int? resendToken) {
-        onCodeSent(verificationId);
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
-  }
-
-  Future<UserCredential> verifyOtp({
-    required String verificationId,
-    required String smsCode,
-  }) {
-    final credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: smsCode,
-    );
-    return _auth.signInWithCredential(credential);
+  /// Signs in anonymously if no session exists yet. Firebase Auth persists
+  /// the anonymous session across app restarts, so this only actually hits
+  /// the network the very first time a device opens the app.
+  Future<User> ensureSignedIn() async {
+    final existing = _auth.currentUser;
+    if (existing != null) return existing;
+    final credential = await _auth.signInAnonymously();
+    return credential.user!;
   }
 
   Future<void> signOut() => _auth.signOut();

@@ -37,7 +37,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (user != null) {
       switch (ref.read(onboardingProgressProvider)) {
-        case OnboardingStep.phone:
+        case OnboardingStep.identity:
         case OnboardingStep.basicInfo:
           context.go('/signup/basic-info');
           break;
@@ -55,7 +55,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       context.go('/language');
       return;
     }
-    context.go('/signup/phone');
+    context.go('/signup/aadhaar');
   }
 
   @override

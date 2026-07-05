@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../core/services/auth_service.dart';
@@ -10,9 +11,11 @@ import '../../../core/services/location_service.dart';
 import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
-/// Step 3 of 4, built as a 2-page `PageView` sharing one stepper position
-/// (Phase 2, Section 7): sub-step A pincode entry, sub-step B confirm on
-/// map with a draggable pin.
+/// Step 3 of 4, built as a 2-page `PageView` sharing one stepper position:
+/// sub-step A pincode entry (prefilled from Aadhaar OCR if available), sub-
+/// step B confirm on an OpenStreetMap view — tap anywhere to drop the pin
+/// (flutter_map has no built-in drag-marker gesture, so tap-to-move is used
+/// instead of drag).
 class LocationSetupScreen extends ConsumerStatefulWidget {
   const LocationSetupScreen({super.key});
 
@@ -25,7 +28,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   final _pageController = PageController();
   final _pincodeController = TextEditingController();
   final _addressController = TextEditingController();
-  final _locationService = const LocationService();
+  final _locationService = LocationService();
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
 
@@ -33,10 +36,30 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   bool _resolving = false;
   bool _saving = false;
   LatLng? _pin;
-  GoogleMapController? _mapController;
   bool _helperVisible = true;
 
-  bool get _pincodeValid => _locationService.isValidPincode(_pincodeController.text.trim());
+  bool get _pincodeValid =>
+      _locationService.isValidPincode(_pincodeController.text.trim());
+
+  @override
+  void initState() {
+    super.initState();
+    _prefillFromProfile();
+  }
+
+  Future<void> _prefillFromProfile() async {
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+    final existing = await _firestoreService.getUser(uid);
+    if (!mounted || existing == null) return;
+    if (existing.pincodeHome != null) {
+      _pincodeController.text = existing.pincodeHome!;
+      _onPincodeChanged(existing.pincodeHome!);
+    }
+    if (existing.addressHome != null) {
+      _addressController.text = existing.addressHome!;
+    }
+  }
 
   Future<void> _onPincodeChanged(String value) async {
     if (!_locationService.isValidPincode(value)) {
@@ -71,18 +94,20 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     if (uid == null || _pin == null) return;
 
     setState(() => _saving = true);
+    final pincode = _pincodeController.text.trim();
+    final constituencyId = await _locationService.resolveConstituency(pincode);
+
     final existing = await _firestoreService.getUser(uid);
     final updated = (existing ??
-            (throw StateError('User document missing after OTP verify')))
+            (throw StateError('User document missing after sign-in')))
         .copyWith(
-      pincodeHome: _pincodeController.text.trim(),
+      pincodeHome: pincode,
       addressHome: _addressController.text.trim(),
       lat: _pin!.latitude,
       lng: _pin!.longitude,
+      constituencyId: constituencyId,
     );
     await _firestoreService.upsertUser(updated);
-    // TODO: call resolveConstituency Cloud Function once scaffolded — don't
-    // block navigation on it (Phase 2, Section 7).
     await ref
         .read(onboardingProgressProvider.notifier)
         .advanceTo(OnboardingStep.done);
@@ -183,20 +208,29 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     }
     return Stack(
       children: [
-        GoogleMap(
-          initialCameraPosition: CameraPosition(target: _pin!, zoom: 15),
-          onMapCreated: (controller) => _mapController = controller,
-          markers: {
-            Marker(
-              markerId: const MarkerId('home'),
-              position: _pin!,
-              draggable: true,
-              onDragEnd: (newPosition) => setState(() => _pin = newPosition),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueOrange,
-              ),
+        FlutterMap(
+          options: MapOptions(
+            initialCenter: _pin!,
+            initialZoom: 15,
+            onTap: (tapPosition, point) => setState(() => _pin = point),
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.prajadhvani.app',
             ),
-          },
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: _pin!,
+                  width: 40,
+                  height: 40,
+                  child: const Icon(Icons.location_on_rounded,
+                      color: Colors.deepOrange, size: 40),
+                ),
+              ],
+            ),
+          ],
         ),
         if (_helperVisible)
           Positioned(
@@ -213,7 +247,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
-                  'Drag the pin to your exact location',
+                  'Tap anywhere on the map to move the pin to your exact location',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),

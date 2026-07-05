@@ -24,6 +24,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   final _firestoreService = FirestoreService();
   bool _saving = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _prefillName();
+  }
+
+  Future<void> _prefillName() async {
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+    final existing = await _firestoreService.getUser(uid);
+    if (mounted && existing?.name != null) {
+      setState(() => _nameController.text = existing!.name!);
+    }
+  }
+
   bool get _isValid {
     final age = int.tryParse(_ageController.text.trim());
     return _nameController.text.trim().isNotEmpty &&
@@ -40,7 +55,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
     setState(() => _saving = true);
     final existing = await _firestoreService.getUser(uid);
     final updated = (existing ??
-            (throw StateError('User document missing after OTP verify')))
+            (throw StateError('User document missing after sign-in')))
         .copyWith(
       name: _nameController.text.trim(),
       age: int.parse(_ageController.text.trim()),

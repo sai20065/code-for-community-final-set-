@@ -20,7 +20,7 @@ class MyReportsScreen extends StatelessWidget {
     final uid = authService.currentUser?.uid;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Reports')),
+      appBar: AppBar(title: const Text('My Tickets')),
       body: uid == null
           ? const Center(child: Text('Please sign in'))
           : StreamBuilder<List<SubmissionModel>>(
@@ -28,7 +28,7 @@ class MyReportsScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 final submissions = snapshot.data ?? const [];
                 if (submissions.isEmpty) {
-                  return const Center(child: Text('No reports yet'));
+                  return const Center(child: Text('No tickets yet'));
                 }
                 return ListView.separated(
                   padding: const EdgeInsets.all(16),

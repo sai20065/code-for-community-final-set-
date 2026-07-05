@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:record/record.dart';
@@ -6,12 +8,16 @@ import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../core/services/storage_service.dart';
+import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/recording_waveform.dart';
 import 'theme_picker_widget.dart';
 
 /// Section 3.6: big obvious record button, pulsing ring while recording,
-/// live waveform, playback-before-submit with re-record option.
+/// live waveform, playback-before-submit with re-record option. Voice
+/// tickets are transcribed/translated server-side via Bhashini once
+/// uploaded (see `functions/src/submissions/onSubmissionCreated.ts`).
 class VoiceRecordScreen extends StatefulWidget {
   const VoiceRecordScreen({super.key});
 
@@ -23,12 +29,14 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   final _recorder = AudioRecorder();
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
+  final _storageService = StorageService();
 
   bool _isRecording = false;
   bool _hasRecording = false;
   bool _submitting = false;
   String? _filePath;
   String? _theme;
+  SubmissionCategory _category = SubmissionCategory.problem;
   Duration _elapsed = Duration.zero;
 
   Future<void> _toggleRecording() async {
@@ -76,21 +84,39 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
 
   Future<void> _submit() async {
     final uid = _authService.currentUser?.uid;
-    if (uid == null) return;
+    if (uid == null || _filePath == null) return;
     setState(() => _submitting = true);
 
-    // Upload of `_filePath` to Cloud Storage happens via StorageService once
-    // wired to a live Firebase project; the ticket is still generated here
-    // so the citizen never loses their receipt (Section 6).
+    final profile = await _firestoreService.getUser(uid);
+    String? mediaUrl;
+    try {
+      mediaUrl = await _storageService.uploadSubmissionMedia(
+        userId: uid,
+        file: File(_filePath!),
+        extension: 'm4a',
+      );
+    } catch (_) {
+      // Ticket must still be created even if the upload fails — the citizen
+      // never loses their receipt (Section 6). Transcription simply won't
+      // run server-side without a mediaUrl.
+    }
+
     final tokenId = _firestoreService.generateTokenId();
     final draft = SubmissionModel(
       id: '',
       userId: uid,
       type: SubmissionType.voice,
+      category: _category,
       inputMode: 'voice',
-      language: 'en',
+      mediaUrl: mediaUrl,
+      language: profile?.preferredLanguage ?? 'en',
       theme: _theme,
-      location: const SubmissionLocation(pincode: ''),
+      location: SubmissionLocation(
+        pincode: profile?.pincodeHome ?? '',
+        lat: profile?.lat,
+        lng: profile?.lng,
+        constituencyId: profile?.constituencyId,
+      ),
       status: SubmissionStatus.newSubmission,
       tokenId: tokenId,
       createdAt: DateTime.now(),
@@ -108,13 +134,17 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Record Your Report')),
+      appBar: AppBar(title: const Text('Record Your Ticket')),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const SizedBox(height: 24),
+              CategoryToggleWidget(
+                selected: _category,
+                onChanged: (v) => setState(() => _category = v),
+              ),
+              const SizedBox(height: 20),
               RecordingWaveform(isRecording: _isRecording),
               const SizedBox(height: 12),
               Text(
@@ -164,10 +194,10 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
                 selected: _theme,
                 onSelected: (v) => setState(() => _theme = v),
               ),
-              const Spacer(),
+              const SizedBox(height: 24),
               if (_hasRecording)
                 PrimaryButton(
-                  label: 'Submit Report',
+                  label: 'Submit Ticket',
                   icon: Icons.send_rounded,
                   loading: _submitting,
                   onPressed: _submit,

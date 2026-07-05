@@ -53,7 +53,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     }
     final s = _submission;
     if (s == null) {
-      return const Scaffold(body: Center(child: Text('Report not found')));
+      return const Scaffold(body: Center(child: Text('Ticket not found')));
     }
     return Scaffold(
       appBar: AppBar(title: Text(s.tokenId)),
@@ -63,7 +63,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           children: [
             StatusStepper(status: s.status),
             const SizedBox(height: 24),
-            Text('Report', style: Theme.of(context).textTheme.titleMedium),
+            Text('Ticket', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Text(s.rawText ?? s.transcript ?? 'No description'),
             if (s.translatedText != null) ...[

@@ -4,11 +4,15 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/primary_button.dart';
 import 'theme_picker_widget.dart';
 
-/// Section 4, screen 7 (text mode): large text field, optional theme tag,
-/// ends at the shared Submission Confirmation receipt screen.
+/// Text-mode ticket compose: large text field, problem/feedback toggle,
+/// optional theme tag, ends at the shared Ticket Confirmation receipt
+/// screen. Location/language are always the citizen's own (from their
+/// profile) — never freely chosen — since citizens may only report on
+/// their own area.
 class TextComposeScreen extends StatefulWidget {
   const TextComposeScreen({super.key});
 
@@ -21,6 +25,7 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
   String? _theme;
+  SubmissionCategory _category = SubmissionCategory.problem;
   bool _submitting = false;
 
   Future<void> _submit() async {
@@ -30,20 +35,26 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
     if (uid == null) return;
 
     setState(() => _submitting = true);
+    final profile = await _firestoreService.getUser(uid);
     final tokenId = _firestoreService.generateTokenId();
-    final now = DateTime.now();
     final draft = SubmissionModel(
       id: '',
       userId: uid,
       type: SubmissionType.text,
+      category: _category,
       inputMode: 'text',
       rawText: text,
-      language: 'en',
+      language: profile?.preferredLanguage ?? 'en',
       theme: _theme,
-      location: const SubmissionLocation(pincode: ''),
+      location: SubmissionLocation(
+        pincode: profile?.pincodeHome ?? '',
+        lat: profile?.lat,
+        lng: profile?.lng,
+        constituencyId: profile?.constituencyId,
+      ),
       status: SubmissionStatus.newSubmission,
       tokenId: tokenId,
-      createdAt: now,
+      createdAt: DateTime.now(),
     );
     final saved = await _firestoreService.createSubmission(draft);
     if (mounted) {
@@ -60,13 +71,18 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Describe the Problem')),
+      appBar: AppBar(title: const Text('Describe the Ticket')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              CategoryToggleWidget(
+                selected: _category,
+                onChanged: (v) => setState(() => _category = v),
+              ),
+              const SizedBox(height: 20),
               TextField(
                 controller: _controller,
                 maxLines: 6,
@@ -85,7 +101,7 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: 'Submit Report',
+                label: 'Submit Ticket',
                 icon: Icons.send_rounded,
                 loading: _submitting,
                 onPressed: _submit,

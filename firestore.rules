@@ -7,33 +7,51 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isOfficial() {
-      return isSignedIn() &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'official';
+    function userDoc(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
     }
 
-    // Section 2: identity is phone-OTP only — a user may only read/write
-    // their own profile document.
+    // Officials are always scoped to their own constituencyId — see
+    // isOfficialForConstituency below, used wherever a ticket's
+    // constituencyId is known.
+    function isOfficialForConstituency(constituencyId) {
+      return isSignedIn() &&
+        userDoc(request.auth.uid).role == 'official' &&
+        userDoc(request.auth.uid).constituencyId == constituencyId;
+    }
+
+    // Identity is Firebase Anonymous Auth — a user may only read/write
+    // their own profile document. No phone number, no Aadhaar number is
+    // ever stored here; Aadhaar upload only ever contributes name/address/
+    // pincode via a Cloud Function that discards the image immediately.
     match /users/{uid} {
       allow read, create, update: if isSignedIn() && request.auth.uid == uid;
       allow delete: if false;
     }
 
-    // Citizens create their own submissions and may read them back; the
-    // ticket id is generated client-side at creation time (Section 6) so
-    // creation must never be blocked by server-side classification state.
-    // Officials may read/update (status changes) any submission — TODO:
-    // scope official access to their own constituencyId once the
-    // resolveConstituency Cloud Function populates it reliably.
+    // Citizens create tickets only for their OWN area: the pincode on the
+    // new ticket must match their own profile pincode (always present),
+    // and if their profile has a resolved constituencyId, that must match
+    // too (constituencyId can be null if resolution hasn't happened/found
+    // no coverage yet — still allowed, just unscoped until reconciled).
+    // The ticket id is generated client-side at creation time so creation
+    // must never be blocked by server-side classification state.
+    // Officials may only read/update tickets in their OWN constituency.
     match /submissions/{submissionId} {
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow read: if isSignedIn() &&
-        (resource.data.userId == request.auth.uid || isOfficial());
-      allow update: if isOfficial();
+      allow create: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.location.pincode == userDoc(request.auth.uid).pincodeHome &&
+        (userDoc(request.auth.uid).constituencyId == null ||
+         userDoc(request.auth.uid).constituencyId == request.resource.data.location.constituencyId);
+      allow read, update: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid ||
+         isOfficialForConstituency(resource.data.location.constituencyId));
       allow delete: if false;
     }
 
-    // Reference data written by backend/Cloud Functions only.
+    // Reference data (constituency/booth boundaries, AI-generated clusters)
+    // is written by backend Cloud Functions (Admin SDK bypasses rules) or
+    // manual seeding only — never directly by a client.
     match /constituencies/{constituencyId} {
       allow read: if isSignedIn();
       allow write: if false;

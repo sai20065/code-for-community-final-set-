@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                         final submissions = snapshot.data ?? const [];
                         if (submissions.isEmpty) {
                           return const Center(
-                            child: Text('No reports yet — tap the mic below'),
+                            child: Text('No tickets yet — tap the mic below'),
                           );
                         }
                         return ListView.separated(

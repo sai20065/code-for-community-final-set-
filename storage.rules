@@ -1,0 +1,16 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Voice/photo ticket media: only the uploading citizen may write their
+    // own file; the file is readable by its owner or any official (needed
+    // for the Gemini vision/Bhashini pipeline and for officials reviewing
+    // a ticket's attached media).
+    match /submissions/{userId}/{fileName} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null &&
+        (request.auth.uid == userId ||
+         firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'official');
+    }
+  }
+}

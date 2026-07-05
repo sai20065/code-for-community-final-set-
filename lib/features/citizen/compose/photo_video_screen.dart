@@ -7,11 +7,15 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../core/services/storage_service.dart';
+import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/primary_button.dart';
 import 'theme_picker_widget.dart';
 
-/// Section 4, screen 7 (photo/video mode): camera/gallery picker, optional
-/// caption field, ends at the shared Submission Confirmation screen.
+/// Photo-mode ticket compose: camera/gallery picker, optional caption
+/// field, ends at the shared Ticket Confirmation screen. Photos are
+/// identified server-side via Gemini vision once uploaded (see
+/// `functions/src/submissions/onSubmissionCreated.ts`).
 class PhotoVideoScreen extends StatefulWidget {
   const PhotoVideoScreen({super.key});
 
@@ -24,9 +28,11 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
   final _captionController = TextEditingController();
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
+  final _storageService = StorageService();
 
   File? _media;
   String? _theme;
+  SubmissionCategory _category = SubmissionCategory.problem;
   bool _submitting = false;
 
   Future<void> _pick(ImageSource source) async {
@@ -41,21 +47,39 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
     if (uid == null || _media == null) return;
     setState(() => _submitting = true);
 
-    // Media upload to Cloud Storage happens via StorageService once wired
-    // to a live Firebase project; the ticket is generated up front so the
-    // citizen never loses their receipt (Section 6).
+    final profile = await _firestoreService.getUser(uid);
+    String? mediaUrl;
+    try {
+      mediaUrl = await _storageService.uploadSubmissionMedia(
+        userId: uid,
+        file: _media!,
+        extension: 'jpg',
+      );
+    } catch (_) {
+      // Ticket must still be created even if the upload fails — the citizen
+      // never loses their receipt (Section 6). Vision identification simply
+      // won't run server-side without a mediaUrl.
+    }
+
     final tokenId = _firestoreService.generateTokenId();
     final draft = SubmissionModel(
       id: '',
       userId: uid,
       type: SubmissionType.photo,
+      category: _category,
       inputMode: 'photo',
+      mediaUrl: mediaUrl,
       rawText: _captionController.text.trim().isEmpty
           ? null
           : _captionController.text.trim(),
-      language: 'en',
+      language: profile?.preferredLanguage ?? 'en',
       theme: _theme,
-      location: const SubmissionLocation(pincode: ''),
+      location: SubmissionLocation(
+        pincode: profile?.pincodeHome ?? '',
+        lat: profile?.lat,
+        lng: profile?.lng,
+        constituencyId: profile?.constituencyId,
+      ),
       status: SubmissionStatus.newSubmission,
       tokenId: tokenId,
       createdAt: DateTime.now(),
@@ -80,6 +104,11 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              CategoryToggleWidget(
+                selected: _category,
+                onChanged: (v) => setState(() => _category = v),
+              ),
+              const SizedBox(height: 20),
               if (_media != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -133,7 +162,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: 'Submit Report',
+                label: 'Submit Ticket',
                 icon: Icons.send_rounded,
                 loading: _submitting,
                 onPressed: _media == null ? null : _submit,

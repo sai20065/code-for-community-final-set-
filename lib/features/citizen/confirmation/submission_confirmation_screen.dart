@@ -27,7 +27,7 @@ class SubmissionConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: 'Track this report',
+                label: 'Track this ticket',
                 icon: Icons.timeline_rounded,
                 onPressed: () =>
                     context.go('/reports/${submission.id}', extra: submission),

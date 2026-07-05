@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum UserRole { citizen, official }
 
-/// Written incrementally across the onboarding flow (Phase 2): the phone/
-/// role/createdAt/preferredLanguage fields land first at OTP verification,
-/// then name/age, then location — so `users/{uid}` always exists from the
-/// moment a phone number is verified, even if the user quits mid-onboarding.
+/// Identity is Firebase Anonymous Auth (no phone number, no Aadhaar number
+/// ever stored) — `users/{uid}` is created the moment sign-in succeeds and
+/// filled in incrementally: name/address/pincode arrive from one-time
+/// Aadhaar OCR extraction (image discarded immediately server-side, never
+/// persisted), age from Basic Info, constituencyId from pincode resolution
+/// in Location Setup.
 class UserModel {
   final String uid;
   final String? name;
   final int? age;
-  final String phone;
   final String? pincodeHome;
   final String? addressHome;
   final double? lat;
@@ -22,7 +23,6 @@ class UserModel {
 
   const UserModel({
     required this.uid,
-    required this.phone,
     required this.role,
     required this.createdAt,
     this.name,
@@ -40,7 +40,6 @@ class UserModel {
       uid: uid,
       name: map['name'] as String?,
       age: map['age'] as int?,
-      phone: map['phone'] as String? ?? '',
       pincodeHome: map['pincodeHome'] as String?,
       addressHome: map['addressHome'] as String?,
       lat: (map['location']?['lat'] as num?)?.toDouble(),
@@ -58,7 +57,6 @@ class UserModel {
     return {
       if (name != null) 'name': name,
       if (age != null) 'age': age,
-      'phone': phone,
       if (pincodeHome != null) 'pincodeHome': pincodeHome,
       if (addressHome != null) 'addressHome': addressHome,
       if (lat != null && lng != null) 'location': {'lat': lat, 'lng': lng},
@@ -76,11 +74,11 @@ class UserModel {
     String? addressHome,
     double? lat,
     double? lng,
+    String? constituencyId,
     String? preferredLanguage,
   }) {
     return UserModel(
       uid: uid,
-      phone: phone,
       role: role,
       createdAt: createdAt,
       name: name ?? this.name,
@@ -89,7 +87,7 @@ class UserModel {
       addressHome: addressHome ?? this.addressHome,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
-      constituencyId: constituencyId,
+      constituencyId: constituencyId ?? this.constituencyId,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
     );
   }

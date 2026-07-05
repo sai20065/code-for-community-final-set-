@@ -28,9 +28,10 @@ dependencies:
   flutter_riverpod: ^2.5.1
   shared_preferences: ^2.3.2
 
-  # Location
-  google_maps_flutter: ^2.9.0
-  geocoding: ^3.0.0
+  # Location — free/open-source mapping (OpenStreetMap tiles, no API key)
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  http: ^1.2.2
 
   # Media
   record: ^5.1.2
