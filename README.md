@@ -42,21 +42,53 @@ Phase 2 (onboarding/signup) spec:
   booth list (map-marker interaction pattern), booth detail sheet, themes
   charts, ticket management.
 
+## Firebase / Google Cloud project
+
+This app is wired to the real Firebase project **`code-for-community-e2cf2`**
+("code for community"):
+
+- ✅ **Firestore** — Native-mode database created in `asia-south1`, with
+  `firestore.rules` (owner-only `users/{uid}`, owner-create + official-read/
+  update `submissions/{id}`, read-only reference collections) and
+  `firestore.indexes.json` already deployed live via `firebase deploy`.
+- ✅ **Android + iOS apps registered** (package/bundle id
+  `com.prajadhvani.app`), plus the pre-existing web app. `lib/firebase_options.dart`
+  is filled in with their real API keys/app IDs — these are client
+  identifiers, not secrets; access is controlled by the Firestore rules
+  above, not by hiding this file.
+- ⏳ **Phone Auth sign-in provider** — not yet toggled on. Firebase's Phone
+  provider can't be reliably enabled via API/CLI (it needs a one-time console
+  visit to provision). **To finish:** open
+  [Authentication → Sign-in method](https://console.firebase.google.com/project/code-for-community-e2cf2/authentication/providers)
+  and enable **Phone**. Nothing else is needed after that — `AuthService`
+  already calls `verifyPhoneNumber`/`signInWithCredential` correctly.
+- ⏳ **Cloud Storage + Google Maps API** — both require a **billing account**
+  (Blaze plan) attached to the GCP project, which wasn't confirmed to exist.
+  Submissions/voice/photo uploads and the map screens will no-op or error
+  until this is done. **To finish:** attach a billing account at
+  [console.cloud.google.com/billing](https://console.cloud.google.com/billing/linkedaccount?project=code-for-community-e2cf2),
+  then tell Claude to enable `storage.googleapis.com` (Firebase Storage) and
+  a Maps API key (`maps-android-backend.googleapis.com` /
+  `maps-ios-backend.googleapis.com`) via `gcloud`.
+- The native `google-services.json` / `GoogleService-Info.plist` are staged
+  in [`firebase_config/`](firebase_config/) — once `flutter create` generates
+  `android/` and `ios/`, move them to `android/app/google-services.json` and
+  `ios/Runner/GoogleService-Info.plist` respectively.
+
 ## Getting started
 
 This repo was scaffolded without a local Flutter SDK available, so the
-platform folders (`android/`, `ios/`) and `firebase_options.dart` are not yet
-generated for real. To run it:
+platform folders (`android/`, `ios/`) don't exist yet. To run it:
 
 1. Install the [Flutter SDK](https://flutter.dev) (stable channel).
 2. From the repo root, run `flutter create . --platforms=android,ios` to
    generate the native platform scaffolding (this will not overwrite the
-   existing `lib/` code).
-3. Create a Firebase project, then run `flutterfire configure` to replace
-   the placeholder `lib/firebase_options.dart` with real credentials.
-4. Add a Google Maps API key for Android/iOS (needed by
-   `google_maps_flutter` on the official dashboard map and citizen location
-   picker).
+   existing `lib/` code or `firebase_options.dart`).
+3. Move the staged config files from `firebase_config/` into
+   `android/app/google-services.json` and
+   `ios/Runner/GoogleService-Info.plist`.
+4. Enable Phone sign-in and (optionally) attach billing per the section
+   above.
 5. `flutter pub get`, then `flutter run`.
 
 ## Non-negotiable rule

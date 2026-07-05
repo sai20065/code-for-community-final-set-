@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOfficial() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'official';
+    }
+
+    // Section 2: identity is phone-OTP only — a user may only read/write
+    // their own profile document.
+    match /users/{uid} {
+      allow read, create, update: if isSignedIn() && request.auth.uid == uid;
+      allow delete: if false;
+    }
+
+    // Citizens create their own submissions and may read them back; the
+    // ticket id is generated client-side at creation time (Section 6) so
+    // creation must never be blocked by server-side classification state.
+    // Officials may read/update (status changes) any submission — TODO:
+    // scope official access to their own constituencyId once the
+    // resolveConstituency Cloud Function populates it reliably.
+    match /submissions/{submissionId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isOfficial());
+      allow update: if isOfficial();
+      allow delete: if false;
+    }
+
+    // Reference data written by backend/Cloud Functions only.
+    match /constituencies/{constituencyId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    match /booths/{boothId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    match /clusters/{clusterId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+  }
+}

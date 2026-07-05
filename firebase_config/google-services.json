@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "830098066112",
+    "project_id": "code-for-community-e2cf2",
+    "storage_bucket": "code-for-community-e2cf2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830098066112:android:3f605559297211dfcf7b25",
+        "android_client_info": {
+          "package_name": "com.prajadhvani.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_JMVqHbQ1UCqv8FL0huJUBVbTb6KetEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
