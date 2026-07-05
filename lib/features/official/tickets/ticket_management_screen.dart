@@ -18,9 +18,9 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
   final Set<String> _selected = {};
 
   final _sample = [
-    ('PP-2026-004821', 'roads', SubmissionStatus.newSubmission),
-    ('PP-2026-004822', 'water', SubmissionStatus.inProgress),
-    ('PP-2026-004823', 'electricity', SubmissionStatus.resolved),
+    ('PD-2026-004821', 'roads', SubmissionStatus.newSubmission),
+    ('PD-2026-004822', 'water', SubmissionStatus.inProgress),
+    ('PD-2026-004823', 'electricity', SubmissionStatus.resolved),
   ];
 
   @override

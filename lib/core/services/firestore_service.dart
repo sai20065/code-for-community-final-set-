@@ -26,7 +26,28 @@ class FirestoreService {
     return UserModel.fromMap(doc.id, doc.data()!);
   }
 
-  /// Generates the citizen-facing ticket id, e.g. `PP-2026-004821`.
+  /// Creates `users/{uid}` the moment a phone number is verified (Phase 2,
+  /// Section 5) if it doesn't already exist, so the document is never
+  /// missing even if the user quits before finishing Basic Info/Location.
+  Future<UserModel> getOrCreateUser({
+    required String uid,
+    required String phone,
+    required String preferredLanguage,
+  }) async {
+    final existing = await getUser(uid);
+    if (existing != null) return existing;
+    final user = UserModel(
+      uid: uid,
+      phone: phone,
+      role: UserRole.citizen,
+      preferredLanguage: preferredLanguage,
+      createdAt: DateTime.now(),
+    );
+    await upsertUser(user);
+    return user;
+  }
+
+  /// Generates the citizen-facing ticket id, e.g. `PD-2026-004821`.
   /// Must be produced and persisted at document-creation time — before any
   /// AI/Cloud Function processing runs — so a citizen never loses their
   /// receipt even if the downstream pipeline fails (see Section 6).
@@ -34,7 +55,7 @@ class FirestoreService {
     final year = DateTime.now().year;
     final random = Random();
     final suffix = random.nextInt(999999).toString().padLeft(6, '0');
-    return 'PP-$year-$suffix';
+    return 'PD-$year-$suffix';
   }
 
   Future<SubmissionModel> createSubmission(SubmissionModel draft) async {

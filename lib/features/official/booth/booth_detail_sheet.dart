@@ -41,8 +41,8 @@ class BoothDetailSheet extends StatelessWidget {
               tilePadding: EdgeInsets.zero,
               title: const Text('Raw submissions'),
               children: const [
-                ListTile(title: Text('PP-2026-004821 — Roads')),
-                ListTile(title: Text('PP-2026-004830 — Electricity')),
+                ListTile(title: Text('PD-2026-004821 — Roads')),
+                ListTile(title: Text('PD-2026-004830 — Electricity')),
               ],
             ),
           ],

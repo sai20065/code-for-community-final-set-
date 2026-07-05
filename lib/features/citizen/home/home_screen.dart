@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.warmOffWhite,
       appBar: AppBar(
-        title: const Text("People's Priorities"),
+        title: const Text('Praja Dhvani'),
         bottom: const TricolorTrustStrip(),
         actions: [
           IconButton(

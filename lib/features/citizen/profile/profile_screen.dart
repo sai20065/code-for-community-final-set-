@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../core/services/auth_service.dart';
 
 /// Section 4, screen 11: language switch, edit address, logout.
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final authService = AuthService();
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
@@ -28,6 +30,7 @@ class ProfileScreen extends StatelessWidget {
             title: const Text('Logout'),
             onTap: () async {
               await authService.signOut();
+              await ref.read(onboardingProgressProvider.notifier).reset();
               if (context.mounted) context.go('/language');
             },
           ),

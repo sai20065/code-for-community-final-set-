@@ -55,13 +55,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/signup/location',
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>? ?? const {};
-        return LocationSetupScreen(
-          name: extra['name'] as String? ?? '',
-          age: extra['age'] as int? ?? 0,
-        );
-      },
+      builder: (context, state) => const LocationSetupScreen(),
     ),
 
     // --- Citizen shell ---

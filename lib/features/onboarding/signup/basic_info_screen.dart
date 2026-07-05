@@ -1,20 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/providers/onboarding_progress_provider.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/firestore_service.dart';
+import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
-/// Single question per screen (Section 3.2): name, then age — not one long form.
-class BasicInfoScreen extends StatefulWidget {
+/// Step 2 of 4: name + age on one screen, "Next" disabled until both fields
+/// are valid (Phase 2, Section 6).
+class BasicInfoScreen extends ConsumerStatefulWidget {
   const BasicInfoScreen({super.key});
 
   @override
-  State<BasicInfoScreen> createState() => _BasicInfoScreenState();
+  ConsumerState<BasicInfoScreen> createState() => _BasicInfoScreenState();
 }
 
-class _BasicInfoScreenState extends State<BasicInfoScreen> {
-  int _step = 0;
+class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
+  final _authService = AuthService();
+  final _firestoreService = FirestoreService();
+  bool _saving = false;
+
+  bool get _isValid {
+    final age = int.tryParse(_ageController.text.trim());
+    return _nameController.text.trim().isNotEmpty &&
+        age != null &&
+        age > 0 &&
+        age < 120;
+  }
+
+  Future<void> _next() async {
+    if (!_isValid) return;
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+
+    setState(() => _saving = true);
+    final existing = await _firestoreService.getUser(uid);
+    final updated = (existing ??
+            (throw StateError('User document missing after OTP verify')))
+        .copyWith(
+      name: _nameController.text.trim(),
+      age: int.parse(_ageController.text.trim()),
+    );
+    await _firestoreService.upsertUser(updated);
+    await ref
+        .read(onboardingProgressProvider.notifier)
+        .advanceTo(OnboardingStep.location);
+    if (mounted) context.go('/signup/location');
+  }
 
   @override
   void dispose() {
@@ -23,60 +59,40 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     super.dispose();
   }
 
-  void _next() {
-    if (_step == 0) {
-      if (_nameController.text.trim().isEmpty) return;
-      setState(() => _step = 1);
-    } else {
-      if (_ageController.text.trim().isEmpty) return;
-      context.go('/signup/location', extra: {
-        'name': _nameController.text.trim(),
-        'age': int.tryParse(_ageController.text.trim()) ?? 0,
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isName = _step == 0;
     return Scaffold(
-      appBar: AppBar(title: Text(isName ? 'Your Name' : 'Your Age')),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 12),
+              const OnboardingProgressStepper(currentStep: 2),
+              const SizedBox(height: 32),
+              const Icon(Icons.person_rounded, size: 56),
               const SizedBox(height: 24),
-              Icon(isName ? Icons.person_rounded : Icons.cake_rounded,
-                  size: 56),
-              const SizedBox(height: 24),
-              if (isName)
-                TextField(
-                  key: const ValueKey('name'),
-                  controller: _nameController,
-                  style: const TextStyle(fontSize: 20),
-                  decoration: const InputDecoration(hintText: 'Full name'),
-                )
-              else
-                TextField(
-                  key: const ValueKey('age'),
-                  controller: _ageController,
-                  keyboardType: TextInputType.number,
-                  style: const TextStyle(fontSize: 20),
-                  decoration: const InputDecoration(hintText: 'Age'),
-                ),
+              TextField(
+                controller: _nameController,
+                style: const TextStyle(fontSize: 20),
+                decoration: const InputDecoration(hintText: 'Your name'),
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _ageController,
+                keyboardType: TextInputType.number,
+                style: const TextStyle(fontSize: 20),
+                decoration: const InputDecoration(hintText: 'Age'),
+                onChanged: (_) => setState(() {}),
+              ),
               const Spacer(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  width: 160,
-                  child: PrimaryButton(
-                    label: 'Next',
-                    icon: Icons.arrow_forward_rounded,
-                    onPressed: _next,
-                  ),
-                ),
+              PrimaryButton(
+                label: 'Next',
+                icon: Icons.arrow_forward_rounded,
+                loading: _saving,
+                onPressed: _isValid ? _next : null,
               ),
             ],
           ),

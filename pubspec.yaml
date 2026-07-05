@@ -1,8 +1,9 @@
-name: peoples_priorities
+name: praja_dhvani
 description: >
-  People's Priorities — AI-powered civic grievance & constituency insights app.
-  Citizens report local problems by voice, text, or photo; MPs/officials see
-  a color-coded map of constituency problem density.
+  Praja Dhvani (ಪ್ರಜಾ ಧ್ವನಿ / प्रजा ध्वनि — "Voice of the People") —
+  AI-powered civic grievance & constituency insights app. Citizens report
+  local problems by voice, text, or photo; MPs/officials see a color-coded
+  map of constituency problem density.
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -25,6 +26,7 @@ dependencies:
   # Navigation & state
   go_router: ^14.2.7
   flutter_riverpod: ^2.5.1
+  shared_preferences: ^2.3.2
 
   # Location
   google_maps_flutter: ^2.9.0

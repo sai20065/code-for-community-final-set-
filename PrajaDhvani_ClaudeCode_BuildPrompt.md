@@ -1,5 +1,5 @@
 # PROJECT BRIEF FOR CLAUDE CODE (Google Antigravity)
-## App: "People's Priorities" — AI-Powered Civic Grievance & Constituency Insights App
+## App: "Praja Dhvani" (ಪ್ರಜಾ ಧ್ವನಿ / प्रजा ध्वनि — "Voice of the People") — AI-Powered Civic Grievance & Constituency Insights App
 
 You are building a **Flutter Android app** from scratch. Read this entire document before
 writing any code. It contains the product spec, data model, and a full UI/UX design
@@ -141,7 +141,7 @@ Build these as separate Flutter screens/widgets. Use `go_router` for navigation.
    - All three end in the same **Theme Picker** (2x2 icon grid: Roads 🛣️, Water 💧,
      Electricity ⚡, More …) — optional, AI will also auto-classify.
 8. **Submission Confirmation** — receipt-card UI: large checkmark animation, ticket
-   ID in monospace font (e.g. `PP-2026-004821`), "Track this report" button.
+   ID in monospace font (e.g. `PD-2026-004821`), "Track this report" button.
 9. **My Reports (ticket list)** — card per submission: theme icon + color, short
    snippet, status stepper (New/Reviewed/In Progress/Resolved), tap for detail.
 10. **Report Detail** — original submission (audio player / text / photo), transcript +
@@ -245,7 +245,7 @@ Use exactly the collections and fields from the source build plan:
 - `clusters/{clusterId}` — constituencyId, theme, centroidVector, submissionCount,
   sampleSubmissionIds[], summaryText
 
-**Critical rule to preserve in code:** the `tokenId` (e.g. `PP-2026-004821`) must be
+**Critical rule to preserve in code:** the `tokenId` (e.g. `PD-2026-004821`) must be
 generated and written to Firestore **at document creation time**, before any AI/Cloud
 Function processing runs. The citizen must never lose their ticket even if the AI pipeline
 fails downstream.

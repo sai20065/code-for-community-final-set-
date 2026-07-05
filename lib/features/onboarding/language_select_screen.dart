@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/providers/selected_language_provider.dart';
 import '../../app/theme.dart';
-import '../../shared/widgets/language_grid_button.dart';
 
+/// 10 languages, no header text beyond a universal globe icon (Phase 2,
+/// Section 4). Tapping instantly highlights the selection (Marigold Orange
+/// flash) then auto-navigates ~300ms later — no separate "Confirm" button,
+/// since this choice is low-stakes and changeable later in Profile settings.
 const List<(String code, String name, String native)> kSupportedLanguages = [
   ('hi', 'Hindi', 'हिन्दी'),
   ('ta', 'Tamil', 'தமிழ்'),
@@ -11,13 +16,30 @@ const List<(String code, String name, String native)> kSupportedLanguages = [
   ('kn', 'Kannada', 'ಕನ್ನಡ'),
   ('bn', 'Bengali', 'বাংলা'),
   ('mr', 'Marathi', 'मराठी'),
+  ('ml', 'Malayalam', 'മലയാളം'),
+  ('gu', 'Gujarati', 'ગુજરાતી'),
+  ('pa', 'Punjabi', 'ਪੰਜਾਬੀ'),
   ('en', 'English', 'English'),
 ];
 
-/// First-launch screen (Section 3.7): the language choice itself is the
-/// onboarding — no header text beyond a universal globe icon, no back button.
-class LanguageSelectScreen extends StatelessWidget {
+class LanguageSelectScreen extends ConsumerStatefulWidget {
   const LanguageSelectScreen({super.key});
+
+  @override
+  ConsumerState<LanguageSelectScreen> createState() =>
+      _LanguageSelectScreenState();
+}
+
+class _LanguageSelectScreenState extends ConsumerState<LanguageSelectScreen> {
+  String? _flashCode;
+
+  Future<void> _select(String code) async {
+    if (_flashCode != null) return;
+    setState(() => _flashCode = code);
+    await ref.read(selectedLanguageProvider.notifier).select(code);
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (mounted) context.go('/signup/phone');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +50,65 @@ class LanguageSelectScreen extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               const Icon(Icons.language_rounded,
                   size: 56, color: AppColors.trustBlue),
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
               Expanded(
                 child: GridView.builder(
                   itemCount: kSupportedLanguages.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 14,
+                    crossAxisSpacing: 14,
                     childAspectRatio: 1.6,
                   ),
                   itemBuilder: (context, index) {
                     final (code, name, native) = kSupportedLanguages[index];
-                    return LanguageGridButton(
-                      languageName: name,
-                      nativeLabel: native,
-                      onTap: () => context.go('/signup/phone', extra: code),
+                    final selected = _flashCode == code;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? AppColors.marigoldOrange.withValues(alpha: 0.15)
+                            : AppColors.warmOffWhite,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: selected
+                              ? AppColors.marigoldOrange
+                              : AppColors.trustBlue.withValues(alpha: 0.4),
+                          width: selected ? 2 : 1,
+                        ),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(18),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(18),
+                          onTap: () => _select(code),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  native,
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.charcoal,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  name,
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey.shade600),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),
