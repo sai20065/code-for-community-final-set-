@@ -1,0 +1,133 @@
+name: Build Android APK
+
+# Builds a debug-signed, sideloadable release APK on GitHub's own runners
+# (this repo has no local Flutter/Android SDK toolchain) and publishes it
+# as a GitHub Release asset with a stable download link for phone install.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # android/ isn't committed to this repo (generated on demand) — this
+      # scaffolds it fresh without touching the existing lib/ code. Not
+      # passing --org/--project-name here since pubspec.yaml already exists;
+      # the applicationId gets forced to the real package name in the next
+      # step regardless of whatever flutter create defaults to.
+      - name: Generate Android platform folder
+        run: flutter create . --platforms=android
+
+      # Forces applicationId/namespace to com.prajadhvani.app (matching
+      # firebase_options.dart) AND relocates MainActivity.kt to the
+      # matching package path — AGP requires the two to agree, and
+      # whatever org/name `flutter create` inferred from the existing
+      # pubspec.yaml won't match by default.
+      - name: Set the real application ID (com.prajadhvani.app)
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          import re
+
+          target = "com.prajadhvani.app"
+
+          for name in ("build.gradle", "build.gradle.kts"):
+              path = pathlib.Path("android/app") / name
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding="utf-8")
+              text = re.sub(r'applicationId\s*=?\s*"[^"]*"', f'applicationId = "{target}"', text)
+              text = re.sub(r'namespace\s*=?\s*"[^"]*"', f'namespace = "{target}"', text)
+              path.write_text(text, encoding="utf-8")
+
+          for lang, ext in (("kotlin", "kt"), ("java", "java")):
+              base = pathlib.Path("android/app/src/main") / lang
+              if not base.exists():
+                  continue
+              matches = list(base.rglob(f"MainActivity.{ext}"))
+              if not matches:
+                  continue
+              old_file = matches[0]
+              new_dir = base / pathlib.Path(*target.split("."))
+              new_dir.mkdir(parents=True, exist_ok=True)
+              new_file = new_dir / old_file.name
+              text = old_file.read_text(encoding="utf-8")
+              text = re.sub(r"^package .*$", f"package {target}", text, count=1, flags=re.MULTILINE)
+              new_file.write_text(text, encoding="utf-8")
+              if old_file != new_file:
+                  old_file.unlink()
+          PY
+
+      - name: Install the real Firebase Android config
+        run: cp firebase_config/google-services.json android/app/google-services.json
+
+      # image_picker (camera/gallery) and record (microphone) need runtime
+      # permissions declared — flutter create's default manifest doesn't
+      # include them, and this isn't committed anywhere else since android/
+      # itself isn't committed.
+      - name: Add required Android permissions
+        run: |
+          python3 - <<'PY'
+          path = "android/app/src/main/AndroidManifest.xml"
+          with open(path, "r", encoding="utf-8") as f:
+              content = f.read()
+          permissions = "\n".join(
+              f'    <uses-permission android:name="android.permission.{p}" />'
+              for p in [
+                  "INTERNET",
+                  "CAMERA",
+                  "RECORD_AUDIO",
+                  "READ_MEDIA_IMAGES",
+                  "READ_EXTERNAL_STORAGE",
+              ]
+          )
+          marker = "<application"
+          if "android.permission.CAMERA" not in content:
+              content = content.replace(marker, permissions + "\n\n    " + marker, 1)
+          with open(path, "w", encoding="utf-8") as f:
+              f.write(content)
+          PY
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Rename APK with build number
+        run: cp build/app/outputs/flutter-apk/app-release.apk prajadhwani-${{ github.run_number }}.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prajadhwani-apk
+          path: prajadhwani-${{ github.run_number }}.apk
+
+      - name: Publish/refresh the "latest" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-apk
+          name: Prajadhwani (latest build)
+          body: |
+            Auto-built from commit ${{ github.sha }}. Debug-signed for
+            sideloading/review only — not a Play Store release.
+
+            Requires enabling "install from unknown sources" for your
+            browser/file manager on Android to install directly.
+          files: prajadhwani-${{ github.run_number }}.apk
+          make_latest: true
