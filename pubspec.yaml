@@ -35,7 +35,7 @@ dependencies:
   geolocator: ^13.0.1
 
   # Media
-  record: ^5.1.2
+  record: ^7.1.1
   image_picker: ^1.1.2
   audioplayers: ^6.1.0
 
