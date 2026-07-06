@@ -68,6 +68,8 @@ class SubmissionModel {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final DateTime? resolvedAt;
+  final int supporterCount;
+  final List<String> supporterIds;
 
   const SubmissionModel({
     required this.id,
@@ -89,6 +91,8 @@ class SubmissionModel {
     this.priorityScore,
     this.updatedAt,
     this.resolvedAt,
+    this.supporterCount = 0,
+    this.supporterIds = const [],
   });
 
   static SubmissionStatus statusFromString(String value) {
@@ -150,6 +154,8 @@ class SubmissionModel {
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
       resolvedAt: (map['resolvedAt'] as Timestamp?)?.toDate(),
+      supporterCount: map['supporterCount'] as int? ?? 0,
+      supporterIds: (map['supporterIds'] as List?)?.cast<String>() ?? const [],
     );
   }
 
@@ -173,6 +179,8 @@ class SubmissionModel {
       'status': statusToString(status),
       'tokenId': tokenId,
       'createdAt': Timestamp.fromDate(createdAt),
+      'supporterCount': supporterCount,
+      'supporterIds': supporterIds,
     };
   }
 }

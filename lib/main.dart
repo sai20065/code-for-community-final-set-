@@ -19,7 +19,7 @@ class PrajaDhvaniApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Praja Dhvani',
+      title: 'Prajadhwani',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.citizen,
       routerConfig: appRouter,

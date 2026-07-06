@@ -12,6 +12,7 @@ import '../../../core/services/storage_service.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/recording_waveform.dart';
+import 'input_mode_switcher.dart';
 import 'theme_picker_widget.dart';
 
 /// Section 3.6: big obvious record button, pulsing ring while recording,
@@ -19,7 +20,9 @@ import 'theme_picker_widget.dart';
 /// tickets are transcribed/translated server-side via Bhashini once
 /// uploaded (see `functions/src/submissions/onSubmissionCreated.ts`).
 class VoiceRecordScreen extends StatefulWidget {
-  const VoiceRecordScreen({super.key});
+  const VoiceRecordScreen({super.key, this.initialCategory});
+
+  final SubmissionCategory? initialCategory;
 
   @override
   State<VoiceRecordScreen> createState() => _VoiceRecordScreenState();
@@ -36,7 +39,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   bool _submitting = false;
   String? _filePath;
   String? _theme;
-  SubmissionCategory _category = SubmissionCategory.problem;
+  late SubmissionCategory _category = widget.initialCategory ?? SubmissionCategory.problem;
   Duration _elapsed = Duration.zero;
 
   Future<void> _toggleRecording() async {
@@ -133,13 +136,16 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isReport = _category == SubmissionCategory.problem;
     return Scaffold(
-      appBar: AppBar(title: const Text('Record Your Ticket')),
+      appBar: AppBar(title: Text(isReport ? 'Report by Voice' : 'Suggest by Voice')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              InputModeSwitcher(current: 'voice', category: _category),
+              const SizedBox(height: 16),
               CategoryToggleWidget(
                 selected: _category,
                 onChanged: (v) => setState(() => _category = v),
@@ -197,7 +203,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
               const SizedBox(height: 24),
               if (_hasRecording)
                 PrimaryButton(
-                  label: 'Submit Ticket',
+                  label: isReport ? 'Submit Report' : 'Submit Suggestion',
                   icon: Icons.send_rounded,
                   loading: _submitting,
                   onPressed: _submit,

@@ -15,11 +15,14 @@ import '../features/official/dashboard/dashboard_home_screen.dart';
 import '../features/official/map/constituency_map_screen.dart';
 import '../features/official/themes/themes_overview_screen.dart';
 import '../features/official/tickets/ticket_management_screen.dart';
+import '../features/official/works/compare_proposals_screen.dart';
+import '../features/official/works/ranked_works_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
 import '../features/onboarding/signup/aadhaar_upload_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
 import '../features/onboarding/splash_screen.dart';
+import '../features/onboarding/welcome_screen.dart';
 
 /// One `GoRouter` for both nav shells (citizen vs official) — role is
 /// resolved from Firestore `users/{uid}.role` at login and only changes
@@ -28,6 +31,10 @@ final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    GoRoute(
+      path: '/welcome',
+      builder: (context, state) => const WelcomeScreen(),
+    ),
     GoRoute(
       path: '/language',
       builder: (context, state) => const LanguageSelectScreen(),
@@ -51,15 +58,21 @@ final appRouter = GoRouter(
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     GoRoute(
       path: '/compose/voice',
-      builder: (context, state) => const VoiceRecordScreen(),
+      builder: (context, state) => VoiceRecordScreen(
+        initialCategory: state.extra as SubmissionCategory?,
+      ),
     ),
     GoRoute(
       path: '/compose/text',
-      builder: (context, state) => const TextComposeScreen(),
+      builder: (context, state) => TextComposeScreen(
+        initialCategory: state.extra as SubmissionCategory?,
+      ),
     ),
     GoRoute(
       path: '/compose/photo',
-      builder: (context, state) => const PhotoVideoScreen(),
+      builder: (context, state) => PhotoVideoScreen(
+        initialCategory: state.extra as SubmissionCategory?,
+      ),
     ),
     GoRoute(
       path: '/confirmation',
@@ -105,6 +118,14 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/official/tickets',
       builder: (context, state) => const TicketManagementScreen(),
+    ),
+    GoRoute(
+      path: '/official/works',
+      builder: (context, state) => const RankedWorksScreen(),
+    ),
+    GoRoute(
+      path: '/official/compare',
+      builder: (context, state) => const CompareProposalsScreen(),
     ),
   ],
 );

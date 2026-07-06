@@ -12,7 +12,8 @@
     "serve": "npm run build && firebase emulators:start --only functions,firestore",
     "shell": "npm run build && firebase functions:shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "seed:mock": "ts-node src/scripts/seedMockData.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -20,6 +21,7 @@
     "firebase-functions": "^6.0.1"
   },
   "devDependencies": {
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }

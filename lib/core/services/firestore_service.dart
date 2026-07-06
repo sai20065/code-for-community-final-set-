@@ -196,4 +196,48 @@ class FirestoreService {
             .map((d) => ClusterModel.fromMap(d.id, d.data()))
             .toList());
   }
+
+  /// "Trending near you" feed: development-suggestion tickets in the
+  /// citizen's own constituency, ranked by supporter count. Citizens only
+  /// ever see their own area's suggestions (Section: own-area enforcement).
+  Stream<List<SubmissionModel>> watchTrendingSuggestions(
+    String constituencyId, {
+    int limit = 20,
+  }) {
+    return _submissions
+        .where('location.constituencyId', isEqualTo: constituencyId)
+        .where('submissionCategory', isEqualTo: 'feedback')
+        .orderBy('supporterCount', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => SubmissionModel.fromMap(d.id, d.data()))
+            .toList());
+  }
+
+  /// Toggles whether [uid] supports [submissionId] ("I support this"),
+  /// keeping `supporterCount` consistent with `supporterIds` via a
+  /// transaction so a citizen can't inflate the count by tapping repeatedly.
+  /// Returns true if the citizen now supports it, false if support was
+  /// just withdrawn.
+  Future<bool> toggleSupport(String submissionId, String uid) {
+    final ref = _submissions.doc(submissionId);
+    return _db.runTransaction<bool>((tx) async {
+      final snapshot = await tx.get(ref);
+      final ids =
+          (snapshot.data()?['supporterIds'] as List?)?.cast<String>() ?? [];
+      if (ids.contains(uid)) {
+        tx.update(ref, {
+          'supporterIds': FieldValue.arrayRemove([uid]),
+          'supporterCount': FieldValue.increment(-1),
+        });
+        return false;
+      }
+      tx.update(ref, {
+        'supporterIds': FieldValue.arrayUnion([uid]),
+        'supporterCount': FieldValue.increment(1),
+      });
+      return true;
+    });
+  }
 }

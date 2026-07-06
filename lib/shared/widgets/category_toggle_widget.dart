@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../core/models/submission_model.dart';
 
-/// "Report a problem" vs "Feedback on a project" — a citizen picks this
-/// before describing their ticket. Defaults to problem so existing behavior
+/// "Report a problem" vs "Suggest a development work" — a citizen picks
+/// this before describing their ticket (usually already preset by which
+/// Home FAB launched the flow). Defaults to problem so existing behavior
 /// is preserved for anyone who doesn't interact with it.
 class CategoryToggleWidget extends StatelessWidget {
   const CategoryToggleWidget({
@@ -31,8 +32,8 @@ class CategoryToggleWidget extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _Segment(
-            label: 'Feedback on a project',
-            icon: Icons.forum_rounded,
+            label: 'Suggest a development work',
+            icon: Icons.lightbulb_rounded,
             isSelected: selected == SubmissionCategory.feedback,
             onTap: () => onChanged(SubmissionCategory.feedback),
           ),

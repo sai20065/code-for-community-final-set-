@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../core/models/submission_model.dart';
 
-/// Horizontal New → Reviewed → In Progress → Resolved stepper (Section 3.5).
-/// Visible progress reduces the "complaint disappeared into a bureaucracy"
-/// feeling that erodes trust in civic apps.
+/// Horizontal Filed → Acknowledged → In Progress → Resolved stepper for
+/// problem reports. Visible progress reduces the "complaint disappeared
+/// into a bureaucracy" feeling that erodes trust in civic apps. (Internal
+/// `SubmissionStatus` values are unchanged — only the citizen-facing
+/// labels were relabeled for the new brand voice.)
 class StatusStepper extends StatelessWidget {
   const StatusStepper({super.key, required this.status, this.compact = false});
 
@@ -13,8 +15,8 @@ class StatusStepper extends StatelessWidget {
   final bool compact;
 
   static const _steps = [
-    ('new', 'New'),
-    ('reviewed', 'Reviewed'),
+    ('new', 'Filed'),
+    ('reviewed', 'Acknowledged'),
     ('inProgress', 'In Progress'),
     ('resolved', 'Resolved'),
   ];

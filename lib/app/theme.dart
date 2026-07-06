@@ -1,31 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-/// Section 3.1 color palette — every hue below carries specific psychological
-/// intent (trust, urgency, calm). Do not introduce ad-hoc colors elsewhere;
-/// extend this file instead so the palette stays centrally auditable.
+/// Prajadhwani brand system — bold indigo/saffron/teal/vermilion, replacing
+/// the earlier Trust-Blue palette. Every existing call site keeps working
+/// unchanged: the original token names (`trustBlue`, `marigoldOrange`, etc.)
+/// are kept as aliases onto the new hues below, so the whole app picks up
+/// the rebrand without a file-by-file rename.
 class AppColors {
   AppColors._();
 
-  static const trustBlue = Color(0xFF1957D6);
-  static const marigoldOrange = Color(0xFFFF9933);
-  static const leafGreen = Color(0xFF2E9E5B);
-  static const amberWarning = Color(0xFFF5A623);
-  static const coralRed = Color(0xFFE4572E);
-  static const warmOffWhite = Color(0xFFFAF8F5);
-  static const charcoal = Color(0xFF2B2B2B);
+  // ---- New brand tokens ----
+  static const indigo = Color(0xFF2E1F8F);
+  static const indigoDeep = Color(0xFF1C1259);
+  static const indigoMist = Color(0xFFE9E6F8);
 
-  // Per-category accents (Section 3.1) — lets low-literacy users recognize
-  // a theme by color/icon alone.
-  static const categoryRoads = Color(0xFF8D7B68); // grey-brown
-  static const categoryWater = Color(0xFF16A085); // teal
-  static const categoryElectricity = Color(0xFFF1C40F); // yellow
-  static const categoryHealth = Color(0xFFE84393); // pink-red
-  static const categorySanitation = Color(0xFF27AE60); // green
-  static const categoryEducation = Color(0xFF4B4E9E); // indigo
+  static const saffron = Color(0xFFFFA630);
+  static const saffronDeep = Color(0xFFC97914);
+  static const saffronMist = Color(0xFFFFF1DA);
 
-  // Tricolor-inspired trust strip shown under the AppBar (Section 3.4) —
-  // a subtle nod, not a reproduction of the national flag.
-  static const tricolorStrip = [trustBlue, Colors.white, leafGreen];
+  static const teal = Color(0xFF0B8A6C);
+  static const tealDeep = Color(0xFF075F4C);
+  static const tealMist = Color(0xFFDBF2EA);
+
+  static const vermilion = Color(0xFFE0384A);
+  static const vermilionDeep = Color(0xFFA5202F);
+  static const vermilionMist = Color(0xFFFBE1E4);
+
+  static const ink = Color(0xFF14131F);
+  static const inkSoft = Color(0xFF57547A);
+  static const inkFaint = Color(0xFF8C89AB);
+  static const paper = Color(0xFFF3F2EE);
+  static const paperRaised = Color(0xFFFFFFFF);
+
+  // ---- Backward-compatible aliases (do not remove — used throughout) ----
+  static const trustBlue = indigo;
+  static const marigoldOrange = saffron;
+  static const leafGreen = teal;
+  static const amberWarning = saffron;
+  static const coralRed = vermilion;
+  static const warmOffWhite = paper;
+  static const charcoal = ink;
+
+  // Per-category accents. `roads`/`water`/`education` now map onto the four
+  // core brand hues (matching the MP dashboard demand-map legend); the
+  // categories the new brief doesn't touch (electricity/health/sanitation)
+  // keep their original distinct hues; `skilling` is new.
+  static const categoryRoads = vermilion;
+  static const categoryWater = teal;
+  static const categoryElectricity = Color(0xFFF1C40F);
+  static const categoryHealth = Color(0xFFE84393);
+  static const categorySanitation = Color(0xFF27AE60);
+  static const categoryEducation = indigo;
+  static const categorySkilling = saffronDeep;
+
+  // Tricolor-inspired trust strip shown under the AppBar — kept, retinted.
+  static const tricolorStrip = [indigo, Colors.white, teal];
 }
 
 /// Maps a submission theme/category id to its accent color, so any widget
@@ -44,27 +73,53 @@ Color categoryColor(String themeId) {
       return AppColors.categorySanitation;
     case 'education':
       return AppColors.categoryEducation;
+    case 'skilling':
+      return AppColors.categorySkilling;
     default:
-      return AppColors.charcoal;
+      return AppColors.ink;
   }
 }
 
 /// Status colors for the New → Reviewed → In Progress → Resolved stepper
-/// (Section 3.5). Kept separate from category colors since status and
-/// category are independent dimensions of a submission.
+/// (problem reports) — reuses the four core brand hues so status and brand
+/// never introduce a fifth ad-hoc color.
 Color statusColor(String status) {
   switch (status) {
     case 'resolved':
-      return AppColors.leafGreen;
+      return AppColors.teal;
     case 'inProgress':
-      return AppColors.amberWarning;
+      return AppColors.saffron;
     case 'new':
-      return AppColors.coralRed;
+      return AppColors.vermilion;
     case 'reviewed':
     default:
-      return AppColors.trustBlue;
+      return AppColors.indigo;
   }
 }
+
+/// Shared corner-radius scale (14–22px per the brand spec) so cards don't
+/// drift to ad-hoc values across screens.
+class AppRadii {
+  AppRadii._();
+  static const sm = 14.0;
+  static const md = 18.0;
+  static const lg = 22.0;
+}
+
+/// Soft layered shadow used on raised cards — two stacked, low-opacity
+/// shadows read as "soft" rather than a single hard drop shadow.
+List<BoxShadow> get appCardShadow => [
+      BoxShadow(
+        color: AppColors.ink.withValues(alpha: 0.04),
+        blurRadius: 4,
+        offset: const Offset(0, 1),
+      ),
+      BoxShadow(
+        color: AppColors.ink.withValues(alpha: 0.06),
+        blurRadius: 20,
+        offset: const Offset(0, 8),
+      ),
+    ];
 
 class AppTheme {
   AppTheme._();
@@ -74,43 +129,58 @@ class AppTheme {
 
   static ThemeData _build() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.trustBlue,
-      primary: AppColors.trustBlue,
-      secondary: AppColors.marigoldOrange,
-      surface: AppColors.warmOffWhite,
-      error: AppColors.coralRed,
+      seedColor: AppColors.indigo,
+      primary: AppColors.indigo,
+      secondary: AppColors.saffron,
+      surface: AppColors.paper,
+      error: AppColors.vermilion,
       brightness: Brightness.light,
     );
 
-    final textTheme = Typography.material2021()
-        .black
-        .apply(bodyColor: AppColors.charcoal, displayColor: AppColors.charcoal);
+    final baseText = GoogleFonts.interTextTheme()
+        .apply(bodyColor: AppColors.ink, displayColor: AppColors.ink);
+    final textTheme = baseText.copyWith(
+      displayLarge: GoogleFonts.spaceGrotesk(textStyle: baseText.displayLarge, fontWeight: FontWeight.w700),
+      displayMedium: GoogleFonts.spaceGrotesk(textStyle: baseText.displayMedium, fontWeight: FontWeight.w700),
+      displaySmall: GoogleFonts.spaceGrotesk(textStyle: baseText.displaySmall, fontWeight: FontWeight.w700),
+      headlineLarge: GoogleFonts.spaceGrotesk(textStyle: baseText.headlineLarge, fontWeight: FontWeight.w700),
+      headlineMedium: GoogleFonts.spaceGrotesk(textStyle: baseText.headlineMedium, fontWeight: FontWeight.w600),
+      headlineSmall: GoogleFonts.spaceGrotesk(textStyle: baseText.headlineSmall, fontWeight: FontWeight.w600),
+      titleLarge: GoogleFonts.spaceGrotesk(textStyle: baseText.titleLarge, fontWeight: FontWeight.w600),
+      titleMedium: GoogleFonts.spaceGrotesk(textStyle: baseText.titleMedium, fontWeight: FontWeight.w600),
+      titleSmall: GoogleFonts.spaceGrotesk(textStyle: baseText.titleSmall, fontWeight: FontWeight.w600),
+    );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: AppColors.warmOffWhite,
+      scaffoldBackgroundColor: AppColors.paper,
       textTheme: textTheme,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.trustBlue,
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.indigo,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        titleTextStyle: GoogleFonts.spaceGrotesk(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.marigoldOrange,
+        backgroundColor: AppColors.saffron,
         foregroundColor: Colors.white,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.marigoldOrange,
+          backgroundColor: AppColors.saffron,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(56),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadii.md),
           ),
-          textStyle: const TextStyle(
-            fontSize: 18,
+          textStyle: GoogleFonts.spaceGrotesk(
+            fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -121,7 +191,7 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadii.md),
           borderSide: BorderSide.none,
         ),
       ),
@@ -137,7 +207,7 @@ class AppTheme {
   }
 }
 
-/// Section 3.4 trust strip: a 3px tricolor-inspired gradient under the AppBar.
+/// Tricolor-inspired trust strip: a 3px gradient under the AppBar.
 class TricolorTrustStrip extends StatelessWidget implements PreferredSizeWidget {
   const TricolorTrustStrip({super.key});
 

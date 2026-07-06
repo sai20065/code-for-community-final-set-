@@ -158,6 +158,11 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
           runSpacing: 12,
           children: [
             OutlinedButton.icon(
+              onPressed: () => context.go('/official/works'),
+              icon: const Icon(Icons.leaderboard_rounded),
+              label: const Text('Ranked Works'),
+            ),
+            OutlinedButton.icon(
               onPressed: () => context.go('/official/themes'),
               icon: const Icon(Icons.bar_chart_rounded),
               label: const Text('Themes Overview'),
@@ -165,7 +170,7 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
             OutlinedButton.icon(
               onPressed: () => context.go('/official/tickets'),
               icon: const Icon(Icons.list_alt_rounded),
-              label: const Text('Ticket Management'),
+              label: const Text('Problem Reports'),
             ),
           ],
         ),

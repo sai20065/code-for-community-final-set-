@@ -6,6 +6,9 @@ class BoothModel {
   final double lng;
   final List<String> pincodesCovered;
   final int openIssueCount;
+  final int submissionVolume;
+  final String? dominantTheme;
+  final String? localContext;
 
   const BoothModel({
     required this.id,
@@ -15,6 +18,9 @@ class BoothModel {
     required this.lng,
     this.pincodesCovered = const [],
     this.openIssueCount = 0,
+    this.submissionVolume = 0,
+    this.dominantTheme,
+    this.localContext,
   });
 
   factory BoothModel.fromMap(String id, Map<String, dynamic> map) {
@@ -27,6 +33,9 @@ class BoothModel {
       pincodesCovered:
           (map['pincodesCovered'] as List?)?.cast<String>() ?? const [],
       openIssueCount: map['openIssueCount'] as int? ?? 0,
+      submissionVolume: map['submissionVolume'] as int? ?? 0,
+      dominantTheme: map['dominantTheme'] as String?,
+      localContext: map['localContext'] as String?,
     );
   }
 
@@ -38,10 +47,13 @@ class BoothModel {
       'lng': lng,
       'pincodesCovered': pincodesCovered,
       'openIssueCount': openIssueCount,
+      'submissionVolume': submissionVolume,
+      'dominantTheme': dominantTheme,
+      'localContext': localContext,
     };
   }
 
-  /// green/amber/red density marker color driver (Section 5.2).
+  /// green/amber/red density marker color driver.
   String get densityLevel {
     if (openIssueCount >= 15) return 'red';
     if (openIssueCount >= 5) return 'amber';

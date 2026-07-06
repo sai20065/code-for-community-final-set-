@@ -9,6 +9,7 @@ const Map<String, IconData> kThemeIcons = {
   'health': Icons.local_hospital_rounded,
   'sanitation': Icons.cleaning_services_rounded,
   'education': Icons.school_rounded,
+  'skilling': Icons.workspace_premium_rounded,
   'more': Icons.more_horiz_rounded,
 };
 
@@ -19,6 +20,7 @@ const Map<String, String> kThemeLabels = {
   'health': 'Health',
   'sanitation': 'Sanitation',
   'education': 'Education',
+  'skilling': 'Skilling',
   'more': 'More',
 };
 

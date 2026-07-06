@@ -1,3 +1,11 @@
+/// A recurring theme auto-grouped from citizen tickets — doubles as the
+/// "development work" / ranked proposal entity shown on the MP dashboard's
+/// ranked-works panel and compare tool. `priorityScore` is the composite
+/// (0-100) shown as the segmented rank bar, broken down into
+/// `demandScore` (citizen volume/support), `demographicScore` (population/
+/// beneficiary weight), and `infraGapScore` (existing capacity shortfall) —
+/// these three roughly sum to `priorityScore` and are what the compare
+/// tool's AI recommendation line cites directly.
 class ClusterModel {
   final String id;
   final String constituencyId;
@@ -8,6 +16,12 @@ class ClusterModel {
   final List<String> sampleSubmissionIds;
   final String summaryText;
   final double? priorityScore;
+  final String? title;
+  final double? demandScore;
+  final double? demographicScore;
+  final double? infraGapScore;
+  final String? localContext;
+  final String? affectedBoothRange;
 
   const ClusterModel({
     required this.id,
@@ -19,6 +33,12 @@ class ClusterModel {
     this.centroidVector = const [],
     this.sampleSubmissionIds = const [],
     this.priorityScore,
+    this.title,
+    this.demandScore,
+    this.demographicScore,
+    this.infraGapScore,
+    this.localContext,
+    this.affectedBoothRange,
   });
 
   factory ClusterModel.fromMap(String id, Map<String, dynamic> map) {
@@ -34,6 +54,12 @@ class ClusterModel {
           (map['sampleSubmissionIds'] as List?)?.cast<String>() ?? const [],
       summaryText: map['summaryText'] as String? ?? '',
       priorityScore: (map['priorityScore'] as num?)?.toDouble(),
+      title: map['title'] as String?,
+      demandScore: (map['demandScore'] as num?)?.toDouble(),
+      demographicScore: (map['demographicScore'] as num?)?.toDouble(),
+      infraGapScore: (map['infraGapScore'] as num?)?.toDouble(),
+      localContext: map['localContext'] as String?,
+      affectedBoothRange: map['affectedBoothRange'] as String?,
     );
   }
 
@@ -47,6 +73,12 @@ class ClusterModel {
       'sampleSubmissionIds': sampleSubmissionIds,
       'summaryText': summaryText,
       'priorityScore': priorityScore,
+      'title': title,
+      'demandScore': demandScore,
+      'demographicScore': demographicScore,
+      'infraGapScore': infraGapScore,
+      'localContext': localContext,
+      'affectedBoothRange': affectedBoothRange,
     };
   }
 }

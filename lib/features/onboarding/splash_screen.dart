@@ -3,15 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/providers/auth_state_provider.dart';
+import '../../app/providers/current_user_profile_provider.dart';
 import '../../app/providers/onboarding_progress_provider.dart';
 import '../../app/providers/selected_language_provider.dart';
 import '../../app/theme.dart';
+import '../../core/models/user_model.dart';
 
-/// Routes to Language Select (no language chosen yet), the correct resume
-/// point in signup (language chosen, mid-onboarding), or Home (onboarding
-/// already completed) — decided from `shared_preferences` + auth state so a
-/// killed-and-reopened app never restarts from Splash/Language Select
-/// (Phase 2, Sections 3 and 9).
+/// Routes to: Welcome (not signed in), the MP Dashboard (signed in as an
+/// official — checked first, since an official's Firebase session must
+/// never fall through to the citizen onboarding-step machinery below), the
+/// correct resume point in citizen signup, or Home (onboarding already
+/// completed) — decided from `shared_preferences` + auth state + the
+/// signed-in user's own role, so a killed-and-reopened app never restarts
+/// from Welcome/Language Select.
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -36,6 +40,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (!mounted) return;
 
     if (user != null) {
+      final profile = await ref.read(firestoreServiceProvider).getUser(user.uid);
+      if (profile?.role == UserRole.official) {
+        context.go('/official/dashboard');
+        return;
+      }
       switch (ref.read(onboardingProgressProvider)) {
         case OnboardingStep.identity:
         case OnboardingStep.basicInfo:
@@ -51,17 +60,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return;
     }
 
-    if (ref.read(selectedLanguageProvider) == null) {
-      context.go('/language');
-      return;
-    }
-    context.go('/signup/aadhaar');
+    context.go('/welcome');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.trustBlue,
+      backgroundColor: AppColors.indigo,
       body: Column(
         children: [
           const Expanded(
@@ -69,20 +74,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.record_voice_over_rounded,
-                      size: 84, color: Colors.white),
+                  _SplashWaveform(),
                   SizedBox(height: 16),
                   Text(
-                    'Praja Dhvani',
+                    'Prajadhwani',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Voice of the People',
+                    'Voice of the constituency',
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ],
@@ -107,6 +111,37 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               );
             },
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The 4-bar waveform brand mark, used here at splash scale.
+class _SplashWaveform extends StatelessWidget {
+  const _SplashWaveform();
+
+  @override
+  Widget build(BuildContext context) {
+    const heights = [22.0, 40.0, 30.0, 46.0];
+    return SizedBox(
+      height: 56,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          for (final h in heights)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Container(
+                width: 10,
+                height: h,
+                decoration: BoxDecoration(
+                  color: AppColors.saffron,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ),
         ],
       ),
     );

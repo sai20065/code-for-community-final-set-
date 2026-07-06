@@ -5,7 +5,16 @@ import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
-/// Searchable/filterable ticket list, status update dropdown per ticket,
+const _kStatusLabels = {
+  SubmissionStatus.newSubmission: 'Filed',
+  SubmissionStatus.reviewed: 'Acknowledged',
+  SubmissionStatus.inProgress: 'In Progress',
+  SubmissionStatus.resolved: 'Resolved',
+};
+
+/// Problem-reports queue: a standard triage list for citizen-reported civic
+/// problems, separate from the development-suggestion ranking (see
+/// `RankedWorksScreen`) — searchable, status update dropdown per report,
 /// bulk status update. Scoped to the signed-in official's own constituency.
 class TicketManagementScreen extends ConsumerWidget {
   const TicketManagementScreen({super.key});
@@ -14,7 +23,7 @@ class TicketManagementScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Ticket Management')),
+      appBar: AppBar(title: const Text('Problem Reports')),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;
@@ -96,11 +105,12 @@ class _TicketListState extends ConsumerState<_TicketList> {
           child: ticketsAsync.when(
             data: (tickets) {
               final filtered = tickets
+                  .where((t) => t.category == SubmissionCategory.problem)
                   .where((t) =>
                       t.tokenId.toLowerCase().contains(_query.toLowerCase()))
                   .toList();
               if (filtered.isEmpty) {
-                return const Center(child: Text('No tickets yet.'));
+                return const Center(child: Text('No problem reports yet.'));
               }
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -143,7 +153,7 @@ class _TicketListState extends ConsumerState<_TicketList> {
                         items: SubmissionStatus.values
                             .map((s) => DropdownMenuItem(
                                   value: s,
-                                  child: Text(SubmissionModel.statusToString(s)),
+                                  child: Text(_kStatusLabels[s] ?? SubmissionModel.statusToString(s)),
                                 ))
                             .toList(),
                         onChanged: (status) {

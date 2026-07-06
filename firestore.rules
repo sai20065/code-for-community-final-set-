@@ -37,15 +37,29 @@ service cloud.firestore {
     // The ticket id is generated client-side at creation time so creation
     // must never be blocked by server-side classification state.
     // Officials may only read/update tickets in their OWN constituency.
+    // Suggestion (`feedback`) tickets are additionally readable by any
+    // citizen in the same constituency — that's the "Trending near you"
+    // feed — and any citizen in that constituency may toggle their own
+    // support (only the supporterIds/supporterCount fields) on someone
+    // else's suggestion, never on a problem report.
     match /submissions/{submissionId} {
       allow create: if isSignedIn() &&
         request.resource.data.userId == request.auth.uid &&
         request.resource.data.location.pincode == userDoc(request.auth.uid).pincodeHome &&
         (userDoc(request.auth.uid).constituencyId == null ||
          userDoc(request.auth.uid).constituencyId == request.resource.data.location.constituencyId);
-      allow read, update: if isSignedIn() &&
+      allow read: if isSignedIn() &&
         (resource.data.userId == request.auth.uid ||
-         isOfficialForConstituency(resource.data.location.constituencyId));
+         isOfficialForConstituency(resource.data.location.constituencyId) ||
+         (resource.data.submissionCategory == 'feedback' &&
+          userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId));
+      allow update: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid ||
+         isOfficialForConstituency(resource.data.location.constituencyId) ||
+         (resource.data.submissionCategory == 'feedback' &&
+          userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['supporterIds', 'supporterCount'])));
       allow delete: if false;
     }
 

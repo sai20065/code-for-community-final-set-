@@ -1,23 +1,30 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 
+import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/primary_button.dart';
+import 'input_mode_switcher.dart';
 import 'theme_picker_widget.dart';
 
-/// Photo-mode ticket compose: camera/gallery picker, optional caption
-/// field, ends at the shared Ticket Confirmation screen. Photos are
-/// identified server-side via Gemini vision once uploaded (see
-/// `functions/src/submissions/onSubmissionCreated.ts`).
+/// Photo-mode ticket compose. Report (problem) tickets additionally get a
+/// geolocation pin — defaulted to the citizen's home location, manually
+/// adjustable — since a civic problem's exact spot often isn't the
+/// citizen's home address. Photos are identified server-side via Gemini
+/// vision once uploaded (see `functions/src/submissions/onSubmissionCreated.ts`).
 class PhotoVideoScreen extends StatefulWidget {
-  const PhotoVideoScreen({super.key});
+  const PhotoVideoScreen({super.key, this.initialCategory});
+
+  final SubmissionCategory? initialCategory;
 
   @override
   State<PhotoVideoScreen> createState() => _PhotoVideoScreenState();
@@ -32,8 +39,25 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
 
   File? _media;
   String? _theme;
-  SubmissionCategory _category = SubmissionCategory.problem;
+  late SubmissionCategory _category;
   bool _submitting = false;
+  LatLng? _pin;
+
+  @override
+  void initState() {
+    super.initState();
+    _category = widget.initialCategory ?? SubmissionCategory.problem;
+    _loadHomeLocation();
+  }
+
+  Future<void> _loadHomeLocation() async {
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+    final profile = await _firestoreService.getUser(uid);
+    if (mounted && profile?.lat != null && profile?.lng != null) {
+      setState(() => _pin = LatLng(profile!.lat!, profile.lng!));
+    }
+  }
 
   Future<void> _pick(ImageSource source) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 80);
@@ -57,8 +81,8 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
       );
     } catch (_) {
       // Ticket must still be created even if the upload fails — the citizen
-      // never loses their receipt (Section 6). Vision identification simply
-      // won't run server-side without a mediaUrl.
+      // never loses their receipt. Vision identification simply won't run
+      // server-side without a mediaUrl.
     }
 
     final tokenId = _firestoreService.generateTokenId();
@@ -76,8 +100,8 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
       theme: _theme,
       location: SubmissionLocation(
         pincode: profile?.pincodeHome ?? '',
-        lat: profile?.lat,
-        lng: profile?.lng,
+        lat: _pin?.latitude ?? profile?.lat,
+        lng: _pin?.longitude ?? profile?.lng,
         constituencyId: profile?.constituencyId,
       ),
       status: SubmissionStatus.newSubmission,
@@ -96,14 +120,17 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isReport = _category == SubmissionCategory.problem;
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a Photo')),
+      appBar: AppBar(title: Text(isReport ? 'Report a Problem' : 'Add a Photo')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              InputModeSwitcher(current: 'photo', category: _category),
+              const SizedBox(height: 16),
               CategoryToggleWidget(
                 selected: _category,
                 onChanged: (v) => setState(() => _category = v),
@@ -111,7 +138,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
               const SizedBox(height: 20),
               if (_media != null)
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppRadii.md),
                   child: Image.file(_media!, height: 220, fit: BoxFit.cover),
                 )
               else
@@ -119,7 +146,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                   height: 220,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadii.md),
                     border: Border.all(color: Colors.grey.shade300),
                   ),
                   alignment: Alignment.center,
@@ -152,6 +179,46 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                 decoration:
                     const InputDecoration(hintText: 'Add a caption (optional)'),
               ),
+              if (isReport) ...[
+                const SizedBox(height: 20),
+                Text('Exact location (adjust if needed)',
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 160,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadii.md),
+                    child: _pin == null
+                        ? Container(
+                            color: Colors.white,
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(),
+                          )
+                        : FlutterMap(
+                            options: MapOptions(
+                              initialCenter: _pin!,
+                              initialZoom: 15,
+                              onTap: (tapPos, point) => setState(() => _pin = point),
+                            ),
+                            children: [
+                              TileLayer(
+                                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                userAgentPackageName: 'com.prajadhvani.app',
+                              ),
+                              MarkerLayer(markers: [
+                                Marker(
+                                  point: _pin!,
+                                  width: 34,
+                                  height: 34,
+                                  child: const Icon(Icons.location_on_rounded,
+                                      color: AppColors.vermilion, size: 34),
+                                ),
+                              ]),
+                            ],
+                          ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               Text('Pick a category (optional)',
                   style: Theme.of(context).textTheme.titleSmall),
@@ -162,7 +229,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: 'Submit Ticket',
+                label: isReport ? 'Submit Report' : 'Submit Suggestion',
                 icon: Icons.send_rounded,
                 loading: _submitting,
                 onPressed: _media == null ? null : _submit,

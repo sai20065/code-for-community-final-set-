@@ -6,14 +6,16 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
+import '../../../shared/widgets/theme_icon_chip.dart';
 import '../booth/booth_detail_sheet.dart';
 
-/// Every official only ever sees their OWN constituency here — booths are
-/// scoped via the signed-in official's own `constituencyId`
-/// (`currentUserProfileProvider`), never a global list. Markers are
-/// color-coded green/amber/red by `booth.densityLevel` exactly as before;
-/// only the rendering surface changed from Google Maps to a free
-/// OpenStreetMap tile layer.
+const _kLegendThemes = ['education', 'roads', 'water', 'skilling'];
+
+/// Booth-level demand map: dot size = submission volume, dot color =
+/// dominant theme category (the 4 legend colors). Every official only ever
+/// sees their OWN constituency here, scoped via `currentUserProfileProvider`.
+/// Tapping a booth opens a callout panel (submission count, dominant theme,
+/// local context) via the shared `BoothDetailSheet`.
 class ConstituencyMapScreen extends ConsumerWidget {
   const ConstituencyMapScreen({super.key});
 
@@ -22,7 +24,7 @@ class ConstituencyMapScreen extends ConsumerWidget {
     final profileAsync = ref.watch(currentUserProfileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Constituency Map')),
+      appBar: AppBar(title: const Text('Booth-Level Demand Map')),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;
@@ -69,40 +71,97 @@ class _BoothMap extends ConsumerWidget {
           );
         }
         final center = LatLng(booths.first.lat, booths.first.lng);
-        return FlutterMap(
-          options: MapOptions(initialCenter: center, initialZoom: 12),
+        final maxVolume = booths
+            .map((b) => b.submissionVolume)
+            .fold<int>(1, (a, b) => b > a ? b : a);
+        return Stack(
           children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.prajadhvani.app',
+            FlutterMap(
+              options: MapOptions(initialCenter: center, initialZoom: 12),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.prajadhvani.app',
+                ),
+                MarkerLayer(
+                  markers: booths.map((booth) {
+                    final color = categoryColor(booth.dominantTheme ?? 'roads');
+                    final size = 18.0 + (booth.submissionVolume / maxVolume) * 26.0;
+                    return Marker(
+                      point: LatLng(booth.lat, booth.lng),
+                      width: size + 8,
+                      height: size + 8,
+                      child: GestureDetector(
+                        onTap: () => showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (_) => BoothDetailSheet(booth: booth),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.85),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                            boxShadow: appCardShadow,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
-            MarkerLayer(
-              markers: booths.map((booth) {
-                final color = switch (booth.densityLevel) {
-                  'red' => AppColors.coralRed,
-                  'amber' => AppColors.amberWarning,
-                  _ => AppColors.leafGreen,
-                };
-                return Marker(
-                  point: LatLng(booth.lat, booth.lng),
-                  width: 44,
-                  height: 44,
-                  child: GestureDetector(
-                    onTap: () => showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (_) => BoothDetailSheet(booth: booth),
-                    ),
-                    child: Icon(Icons.location_on_rounded, color: color, size: 40),
-                  ),
-                );
-              }).toList(),
+            Positioned(
+              left: 16,
+              bottom: 16,
+              child: _Legend(),
             ),
           ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, __) => const Center(child: Text('Could not load booths.')),
+    );
+  }
+}
+
+class _Legend extends StatelessWidget {
+  const _Legend();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        boxShadow: appCardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Dominant theme',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.inkFaint)),
+          const SizedBox(height: 6),
+          for (final id in _kLegendThemes)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(color: categoryColor(id), shape: BoxShape.circle),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(kThemeLabels[id] ?? id, style: const TextStyle(fontSize: 11)),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

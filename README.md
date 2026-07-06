@@ -1,10 +1,16 @@
-# Praja Dhvani (ಪ್ರಜಾ ಧ್ವನಿ / प्रजा ध्वनि — "Voice of the People")
+# Prajadhwani — AI platform for constituency development planning
 
-AI-powered civic grievance & constituency insights app. Citizens raise
-tickets — problems (potholes, water, electricity, sanitation, etc.) or
-feedback on development projects — by voice, text, or photo; recurring
-themes are AI-clustered and ranked so MPs/officials see a prioritized,
-color-coded picture of their own constituency's demand.
+An AI platform for constituency development planning. Citizens submit
+development **suggestions** (the primary flow) and, secondarily, **report**
+civic problems — by voice, text, or photo, in any language. An MP-facing
+dashboard clusters these into ranked, booth-level priorities weighed against
+demographic and infrastructure data.
+
+Rebranded from the earlier "Praja Dhvani" build: same Flutter/Firebase
+foundation (Aadhaar-OCR onboarding, Firestore schema, Gemini/Bhashini
+pipeline, own-area/constituency-scoped security rules all carried over
+unchanged), with a new bold indigo/saffron/teal/vermilion brand, a
+citizen/MP two-tab login, and a Suggest-vs-Report split across every screen.
 
 Full product spec, design system, and data model:
 [`PrajaDhvani_ClaudeCode_BuildPrompt.md`](PrajaDhvani_ClaudeCode_BuildPrompt.md).
@@ -34,47 +40,102 @@ Aadhaar number stored anywhere in this app. The Aadhaar Upload screen
   being shown the legal-risk tradeoff — see the git history for that
   conversation if you need the reasoning again later.
 
+## Brand system
+
+- **Color** (`lib/app/theme.dart` `AppColors`): indigo `#2E1F8F` (primary),
+  saffron `#FFA630` (accent/CTA), teal `#0B8A6C` (success/resolution),
+  vermilion `#E0384A` (urgent/escalated), ink/paper neutrals. The original
+  Trust-Blue-era token names (`trustBlue`, `marigoldOrange`, `leafGreen`,
+  `coralRed`, `warmOffWhite`, `charcoal`) are kept as aliases onto these new
+  hues, so every existing screen picked up the rebrand without a rename.
+- **Type**: Space Grotesk (headings, via `google_fonts`) + Inter (body) +
+  Space Mono (ticket IDs/stats, via the existing `fontFamily: 'monospace'`
+  usage).
+- **Motif**: a 4-bar "voice waveform" replaces plain dots for step-progress
+  (`lib/shared/widgets/onboarding_progress_stepper.dart`) and the splash/
+  welcome screen logo lockup.
+- Light mode only for v1, per spec.
+
 ## Status
 
-- `lib/app/theme.dart` — full `ColorScheme` and category/status color mapping.
-- `lib/app/router.dart` — `go_router` config for both nav shells (citizen +
-  official).
+- `lib/app/theme.dart` — full brand `ColorScheme`, typography, `AppRadii`
+  (14–22px), `appCardShadow` (soft layered shadow), category/status color
+  mapping (now including `skilling`).
+- `lib/app/router.dart` — `go_router` config for citizen, MP office, and
+  onboarding routes, including `/welcome`, `/official/works`,
+  `/official/compare`.
 - `lib/app/providers/` — Riverpod providers: `authStateProvider`,
-  `selectedLanguageProvider` / `onboardingProgressProvider` (shared_preferences-
-  backed, so a killed/reopened app resumes onboarding at the right step),
-  `currentUserProfileProvider` (live `users/{uid}` doc — used everywhere an
-  official needs their own `constituencyId`, and everywhere a citizen's
-  location/language needs autofilling).
-- `lib/core/` — models + services. `UserModel` no longer has a `phone`
-  field. `FirestoreService.getOrCreateUser` is called right after anonymous
-  sign-in with whatever Aadhaar OCR (or manual entry) produced. New
-  aggregation helpers (`countSubmissionsSince`, `countResolvedSubmissions`,
-  `averageResolutionTime`, `watchBoothsForConstituency`,
-  `watchClustersForConstituency`) power the official dashboard/analytics
-  without needing a separate Cloud Function.
-- `lib/features/onboarding/` — Splash → Language Select → **Aadhaar Upload**
-  (replaces phone/OTP entirely) → Basic Info (name prefilled, age) →
-  Location Setup (pincode prefilled + **OpenStreetMap** tap-to-place pin,
-  replacing Google Maps) → Home.
-- `lib/features/citizen/` — Home, compose (text/voice/photo, each with a
-  **"Report a problem" / "Feedback on a project"** toggle), Ticket
-  Confirmation receipt, My Tickets, Ticket Detail. Compose screens now pull
-  `location`/`language` from the citizen's own profile (never freely
-  chosen) and actually upload voice/photo media via `StorageService`
-  (previously defined but unused).
-- `lib/features/official/` — Dashboard (real aggregated stats), Constituency
-  Map (OpenStreetMap, booths scoped to the signed-in official's own
-  constituency), Booth Detail (real `clusters` data), Themes Overview (real
-  bar/line charts from live data), Ticket Management (real list, working
-  status dropdown + bulk update). **Every official screen is scoped to the
-  signed-in official's own `constituencyId`** — enforced both in the UI
-  (`currentUserProfileProvider`) and in `firestore.rules`
-  (`isOfficialForConstituency`).
+  `selectedLanguageProvider` / `onboardingProgressProvider`
+  (shared_preferences-backed, so a killed/reopened app resumes onboarding at
+  the right step), `currentUserProfileProvider` (live `users/{uid}` doc —
+  used everywhere an official needs their own `constituencyId`, and
+  everywhere a citizen's location/language needs autofilling).
+- `lib/core/` — models + services. `SubmissionModel` gained
+  `supporterCount`/`supporterIds` (the "I support this" mechanic,
+  transaction-safe via `FirestoreService.toggleSupport`). `ClusterModel`
+  gained `title`/`demandScore`/`demographicScore`/`infraGapScore`/
+  `localContext`/`affectedBoothRange` — it now doubles as the "development
+  work" entity behind the ranked-works panel and compare tool.
+  `FirestoreService.watchTrendingSuggestions` powers the Home feed.
+- **Login** (`lib/features/onboarding/welcome_screen.dart`): Citizen / MP
+  office tabs. Citizen tab enters the existing Language → Aadhaar Upload →
+  Basic Info → Location flow unchanged. MP office tab is a real
+  constituency-ID + password login (`AuthService.signInOfficial`, mapped
+  internally to Firebase email/password) — officials are provisioned
+  out-of-band, not self-registered. Splash checks the signed-in user's
+  Firestore `role` first so an official session never falls into the
+  citizen onboarding-step routing.
+- `lib/features/citizen/home/home_screen.dart` — booth/constituency
+  context, category filter chips (Education/Roads/Water/Skilling/Health),
+  a "Trending near you" feed of ranked suggestions with supporter counts
+  and an "I support this" button, and two FABs distinct by priority: saffron
+  "Submit suggestion" (primary) bottom-right, vermilion-outline "Report
+  problem" (secondary) bottom-left.
+- Compose screens (`lib/features/citizen/compose/`) share an
+  `InputModeSwitcher` (Voice/Text/Photo) and `CategoryToggleWidget`
+  (Report/Suggest), default-preset by which Home FAB launched the flow. Text
+  compose shows a "Looks like: X" AI-suggested category chip (on-device
+  keyword heuristic standing in for the real Gemini classification that
+  runs server-side once a ticket is created) — never auto-assigned, always
+  tap-to-confirm — plus a "N others nearby have asked for this too" insight
+  chip once a category is set. Photo compose adds a geolocation pin
+  (defaulted to home, tap-to-adjust) for Report tickets, since a civic
+  problem's exact spot often isn't the citizen's home address.
+- `lib/features/citizen/reports/my_reports_screen.dart` ("Mine") — cards
+  branch by ticket type: suggestions show supporter count + an outcome
+  badge ("In development plan" / "Under review"); reports show the
+  Filed→Acknowledged→In Progress→Resolved stepper (relabeled from
+  New/Reviewed — the underlying `SubmissionStatus` enum is unchanged).
+- `lib/features/official/` —
+  - `dashboard/` — real aggregated stats, links to Ranked Works/Themes/
+    Problem Reports.
+  - `map/constituency_map_screen.dart` — booth markers sized by
+    `submissionVolume`, colored by `dominantTheme`, with an on-map legend
+    and a tap-to-open callout (`BoothDetailSheet`) showing submission
+    count/dominant theme/local context up top, then AI cluster summaries.
+  - `works/ranked_works_screen.dart` (new) — numbered rank badges +
+    segmented score bars (demand/demographic/infra-gap proportions) per
+    `ClusterModel`, so the composite priority number is never a black box.
+  - `works/compare_proposals_screen.dart` (new) — pick any two ranked works,
+    compare their stats side by side, with a recommendation line generated
+    from those same numbers (cites specific figures, not a bare "we
+    recommend X").
+  - `tickets/ticket_management_screen.dart` — renamed "Problem Reports";
+    filters to `category == problem` only (suggestions live in Ranked
+    Works instead), status labels relabeled to match the Mine screen.
+  - Every official screen is scoped to the signed-in official's own
+    `constituencyId`, enforced both in the UI (`currentUserProfileProvider`)
+    and in `firestore.rules` (`isOfficialForConstituency`).
 - `functions/` — Cloud Functions backend (TypeScript), **scaffolded but not
   deployed** (see below): `extractAadhaarDetails` (Aadhaar OCR),
   `onSubmissionCreated` (the main Gemini + Bhashini pipeline: transcription,
   translation, photo captioning, theme classification, clustering, priority
-  scoring), `transcribeAndTranslate` (standalone retry/testing callable).
+  scoring), `transcribeAndTranslate` (standalone retry/testing callable),
+  `scripts/seedMockData.ts` (one-off admin script — realistic Bengaluru-area
+  constituency/booths/clusters/sample-tickets so the new Home feed, demand
+  map, ranked-works panel, and compare tool are demoable without waiting on
+  real citizen data or a deployed AI pipeline: `cd functions && npm install
+  && npm run seed:mock`).
 
 ## Firebase / Google Cloud project
 
@@ -87,12 +148,20 @@ community"), `.firebaserc` included:
 - ✅ **Android + iOS apps registered** (`com.prajadhvani.app`).
   `lib/firebase_options.dart` has real API keys/app IDs — these are client
   identifiers, not secrets, safe to commit.
-- ⏳ **Anonymous sign-in provider** — not yet toggled on (replaces the old
-  "enable Phone" task, which is now moot). Like Phone, Anonymous can't be
-  reliably toggled via API — it needs a one-time console visit. **To
-  finish:** open
+- ⏳ **Anonymous + Email/Password sign-in providers** — neither toggled on
+  yet (replaces the old "enable Phone" task, which is now moot). These
+  provider toggles can't be reliably flipped via API — each needs a
+  one-time console visit. **To finish:** open
   [Authentication → Sign-in method](https://console.firebase.google.com/project/code-for-community-e2cf2/authentication/providers)
-  and enable **Anonymous**.
+  and enable both **Anonymous** (citizens) and **Email/Password** (MP
+  office login — `AuthService.signInOfficial` maps a constituency ID to a
+  synthetic `{id}@mp.prajadhwani.app` address under the hood).
+- ⏳ **MP official accounts must be provisioned manually** — there's no
+  self-registration. For each MP, create a Firebase Auth user with email
+  `{constituencyId}@mp.prajadhwani.app` and a password (Firebase console →
+  Authentication → Add user, or the Admin SDK), then create their
+  `users/{uid}` Firestore doc with `role: "official"` and their
+  `constituencyId` set.
 - ⏳ **Cloud Functions + Gemini + Bhashini** — scaffolded in `functions/` but
   **not deployed**. Blocked on:
   1. **GCP Blaze billing** attached to `code-for-community-e2cf2` — Cloud
