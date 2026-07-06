@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
+import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 

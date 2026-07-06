@@ -131,7 +131,7 @@ class _ProposalPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      initialValue: selectedId,
+      value: selectedId,
       decoration: InputDecoration(labelText: label, isDense: true),
       items: clusters
           .map((c) => DropdownMenuItem(
