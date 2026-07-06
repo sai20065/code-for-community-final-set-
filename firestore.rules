@@ -79,5 +79,20 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow write: if false;
     }
+
+    // Per-constituency-per-day sequence counters backing the structured
+    // token id (see FirestoreService.generateTokenId) — incremented
+    // directly by the citizen's own client via a transaction at ticket
+    // creation time, so it can't wait on a Cloud Function round-trip. Only
+    // a single numeric `count` field is ever allowed; no read access since
+    // nothing reads a raw counter doc back.
+    match /counters/{counterId} {
+      allow read: if false;
+      allow create, update: if isSignedIn() &&
+        request.resource.data.keys().hasOnly(['count']) &&
+        request.resource.data.count is int &&
+        request.resource.data.count > 0;
+      allow delete: if false;
+    }
   }
 }

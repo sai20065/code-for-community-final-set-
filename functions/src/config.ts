@@ -15,6 +15,15 @@ import {defineSecret} from "firebase-functions/params";
  */
 export const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
+/**
+ * NVIDIA_API_KEY: from build.nvidia.com (NIM API catalog) — has a free
+ * tier. Used only for Aadhaar OCR extraction (see `NvidiaClient` /
+ * `extractAadhaarDetails.ts`); every other AI task in this app stays on
+ * Gemini. Set with:
+ *   firebase functions:secrets:set NVIDIA_API_KEY
+ */
+export const nvidiaApiKey = defineSecret("NVIDIA_API_KEY");
+
 export const REGION = "asia-south1";
 
 /** The six citizen-facing category ids used throughout the app's UI. */

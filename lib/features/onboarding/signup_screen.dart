@@ -1,0 +1,623 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../app/providers/onboarding_progress_provider.dart';
+import '../../app/theme.dart';
+import '../../core/models/user_model.dart';
+import '../../core/services/aadhaar_ocr_service.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/firestore_service.dart';
+import '../../shared/widgets/primary_button.dart';
+
+/// Which sign-in method the citizen has expanded on the Sign Up screen.
+/// `null` means the picker itself ("Phone" / "Email" / "Skip") is showing,
+/// with neither sub-form open yet.
+enum _AuthMethod { phone, email }
+
+/// New-citizen entry point — folds one-time Aadhaar-photo OCR (front AND
+/// back; the back side often carries the full address the front truncates,
+/// so capturing it improves extraction accuracy, though it is never
+/// required — manual entry always works) and account creation into a
+/// single screen: upload → (optionally) fix up the extracted
+/// name/pincode/address/ward number → pick how to sign in. Phone and email
+/// are real Firebase accounts (portable across a reinstall); "stay
+/// anonymous" remains available for anyone who'd rather not attach either.
+///
+/// Distinct from `SignInScreen`: this screen only ever creates a brand-new
+/// account and always writes a fresh `users/{uid}.signupCompletedAt` —
+/// existing citizens should use Sign In instead.
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
+
+  @override
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  final _picker = ImagePicker();
+  final _ocrService = AadhaarOcrService();
+  final _authService = AuthService();
+  final _firestoreService = FirestoreService();
+
+  final _nameController = TextEditingController();
+  final _pincodeController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _wardController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _codeController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  File? _frontImage;
+  File? _backImage;
+  bool _extracting = false;
+  bool _manualEntry = false;
+  String? _error;
+  double? _extractionConfidence;
+
+  bool _showAuthOptions = false;
+  _AuthMethod? _authMethod;
+  String? _verificationId;
+  bool _codeSent = false;
+  bool _sendingCode = false;
+  bool _finishing = false;
+  String? _authError;
+
+  bool get _canContinue =>
+      _nameController.text.trim().isNotEmpty &&
+      RegExp(r'^[1-9][0-9]{5}$').hasMatch(_pincodeController.text.trim());
+
+  Future<void> _pick(bool front, ImageSource source) async {
+    final picked = await _picker.pickImage(
+      source: source,
+      imageQuality: 70,
+      maxWidth: 1600,
+    );
+    if (picked != null) {
+      setState(() {
+        if (front) {
+          _frontImage = File(picked.path);
+        } else {
+          _backImage = File(picked.path);
+        }
+        _error = null;
+      });
+    }
+  }
+
+  Future<void> _extract() async {
+    if (_frontImage == null) return;
+    setState(() {
+      _extracting = true;
+      _error = null;
+    });
+    try {
+      final result = await _ocrService.extractDetails(
+        front: _frontImage!,
+        back: _backImage,
+      );
+      if (!mounted) return;
+      setState(() {
+        _extracting = false;
+        _extractionConfidence = result.confidence;
+        if (result.name != null) _nameController.text = result.name!;
+        if (result.pincode != null) _pincodeController.text = result.pincode!;
+        if (result.address != null) _addressController.text = result.address!;
+        if (result.wardNumber != null) _wardController.text = result.wardNumber!;
+        if (!result.looksUsable) {
+          _error = "Couldn't read that clearly — check the details below or enter them manually.";
+          _manualEntry = true;
+        }
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _extracting = false;
+        _manualEntry = true;
+        _error = "Couldn't process that image right now — enter your details manually below.";
+      });
+    }
+  }
+
+  /// Common tail of every Sign Up path: writes the (possibly Aadhaar-OCR'd)
+  /// name/pincode/address/ward onto the just-created `users/{uid}` doc,
+  /// stamps `signupCompletedAt` as the authoritative "profile is real and
+  /// saved" marker, records which method was used, advances onboarding past
+  /// Aadhaar identity, and moves on to language selection.
+  Future<void> _finishSignup(User user, SignInMethod method) async {
+    final existing = await _firestoreService.getOrCreateUser(
+      uid: user.uid,
+      preferredLanguage: 'en',
+      name: _nameController.text.trim(),
+      pincodeHome: _pincodeController.text.trim(),
+      addressHome: _addressController.text.trim(),
+    );
+    await _firestoreService.upsertUser(existing.copyWith(
+      name: _nameController.text.trim(),
+      pincodeHome: _pincodeController.text.trim(),
+      addressHome: _addressController.text.trim(),
+      wardNumber: _wardController.text.trim().isEmpty
+          ? null
+          : _wardController.text.trim(),
+      signInMethod: method,
+      aadhaarExtractionConfidence: _extractionConfidence,
+      signupCompletedAt: DateTime.now(),
+    ));
+    await ref
+        .read(onboardingProgressProvider.notifier)
+        .advanceTo(OnboardingStep.basicInfo);
+    if (mounted) context.go('/language');
+  }
+
+  Future<void> _continueAnonymously() async {
+    setState(() {
+      _finishing = true;
+      _authError = null;
+    });
+    try {
+      final user = await _authService.ensureSignedIn();
+      await _finishSignup(user, SignInMethod.anonymous);
+    } catch (e) {
+      setState(() {
+        _finishing = false;
+        _authError = 'Could not continue — check your connection and try again.';
+      });
+    }
+  }
+
+  Future<void> _sendCode() async {
+    final digits = _phoneController.text.trim();
+    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+      setState(() => _authError = 'Enter a valid 10-digit mobile number.');
+      return;
+    }
+    setState(() {
+      _sendingCode = true;
+      _authError = null;
+    });
+    await _authService.startPhoneVerification(
+      phoneNumber: '+91$digits',
+      onCodeSent: (verificationId) {
+        if (!mounted) return;
+        setState(() {
+          _sendingCode = false;
+          _codeSent = true;
+          _verificationId = verificationId;
+        });
+      },
+      onAutoVerified: (user) async {
+        if (!mounted) return;
+        setState(() => _finishing = true);
+        await _finishSignup(user, SignInMethod.phone);
+      },
+      onError: (message) {
+        if (!mounted) return;
+        setState(() {
+          _sendingCode = false;
+          _authError = message;
+        });
+      },
+    );
+  }
+
+  Future<void> _verifyCode() async {
+    if (_verificationId == null || _codeController.text.trim().length < 6) return;
+    setState(() {
+      _finishing = true;
+      _authError = null;
+    });
+    try {
+      final user = await _authService.confirmSmsCode(
+        verificationId: _verificationId!,
+        smsCode: _codeController.text.trim(),
+      );
+      await _finishSignup(user, SignInMethod.phone);
+    } catch (e) {
+      setState(() {
+        _finishing = false;
+        _authError = "That code didn't match — check it and try again.";
+      });
+    }
+  }
+
+  Future<void> _createWithEmail() async {
+    final email = _emailController.text.trim();
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+      setState(() => _authError = 'Enter a valid email address.');
+      return;
+    }
+    if (_passwordController.text.length < 6) {
+      setState(() => _authError = 'Password must be at least 6 characters.');
+      return;
+    }
+    setState(() {
+      _finishing = true;
+      _authError = null;
+    });
+    try {
+      final user = await _authService.signUpWithEmail(
+        email: email,
+        password: _passwordController.text,
+      );
+      await _finishSignup(user, SignInMethod.email);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _finishing = false;
+        _authError = e.code == 'email-already-in-use'
+            ? 'You already have an account with this email — use Sign In instead.'
+            : 'Could not create your account — check your details and try again.';
+      });
+    } catch (e) {
+      setState(() {
+        _finishing = false;
+        _authError = 'Could not create your account — check your details and try again.';
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _pincodeController.dispose();
+    _addressController.dispose();
+    _wardController.dispose();
+    _phoneController.dispose();
+    _codeController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.paper,
+      appBar: AppBar(
+        backgroundColor: AppColors.paper,
+        elevation: 0,
+        title: const Text('Sign Up'),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Icon(Icons.record_voice_over_rounded, size: 56, color: AppColors.indigoMist),
+              const SizedBox(height: 12),
+              Text(
+                'Share a development suggestion or report a civic problem — in your own language, by voice, text or photo.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.indigo.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  'Upload photos of your Aadhaar (front and back) so we can read '
+                  'your name and address — the back side often has your full '
+                  'address, so capturing it too gives more accurate results. '
+                  'We keep only your name, address, pincode and ward number — '
+                  'the photos and your Aadhaar number are never saved. This is '
+                  'not ID verification, and both photos are optional — you can '
+                  'always just type your details below.',
+                  style: TextStyle(fontSize: 12, height: 1.4),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: _AadhaarImageSlot(
+                      label: 'Front',
+                      image: _frontImage,
+                      onCamera: () => _pick(true, ImageSource.camera),
+                      onGallery: () => _pick(true, ImageSource.gallery),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _AadhaarImageSlot(
+                      label: 'Back',
+                      image: _backImage,
+                      onCamera: () => _pick(false, ImageSource.camera),
+                      onGallery: () => _pick(false, ImageSource.gallery),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              PrimaryButton(
+                label: 'Extract details',
+                icon: Icons.auto_awesome_rounded,
+                loading: _extracting,
+                onPressed: _frontImage == null ? null : _extract,
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 10),
+                Text(_error!, style: const TextStyle(color: AppColors.vermilion, fontSize: 12.5)),
+              ],
+              const SizedBox(height: 6),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: () => setState(() => _manualEntry = !_manualEntry),
+                  child: Text(_manualEntry ? 'Hide manual entry' : "Skip — I'll enter manually"),
+                ),
+              ),
+              if (_manualEntry || _nameController.text.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(hintText: 'Full name'),
+                  onChanged: (_) => setState(() {}),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _pincodeController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 6,
+                  decoration: const InputDecoration(hintText: 'Pincode'),
+                  onChanged: (_) => setState(() {}),
+                ),
+                TextField(
+                  controller: _addressController,
+                  decoration: const InputDecoration(hintText: 'Address (street, area)'),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _wardController,
+                  decoration: const InputDecoration(hintText: 'Ward number (optional)'),
+                ),
+              ],
+              const SizedBox(height: 8),
+              if (!_showAuthOptions)
+                PrimaryButton(
+                  label: 'Continue',
+                  icon: Icons.arrow_forward_rounded,
+                  onPressed: _canContinue ? () => setState(() => _showAuthOptions = true) : null,
+                )
+              else ...[
+                const SizedBox(height: 4),
+                Text(
+                  'How would you like to sign in?',
+                  style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink, fontSize: 13.5),
+                ),
+                const SizedBox(height: 10),
+                _AuthMethodTile(
+                  icon: Icons.phone_android_rounded,
+                  label: 'Continue with phone number',
+                  selected: _authMethod == _AuthMethod.phone,
+                  onTap: () => setState(() {
+                    _authMethod = _AuthMethod.phone;
+                    _authError = null;
+                  }),
+                ),
+                if (_authMethod == _AuthMethod.phone) ...[
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text('+91'),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          enabled: !_codeSent,
+                          decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (!_codeSent) ...[
+                    const SizedBox(height: 10),
+                    PrimaryButton(
+                      label: 'Send code',
+                      icon: Icons.sms_rounded,
+                      loading: _sendingCode,
+                      onPressed: _sendingCode ? null : _sendCode,
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _codeController,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
+                    ),
+                    const SizedBox(height: 10),
+                    PrimaryButton(
+                      label: 'Verify & continue',
+                      icon: Icons.check_circle_rounded,
+                      loading: _finishing,
+                      onPressed: _finishing ? null : _verifyCode,
+                    ),
+                  ],
+                ],
+                const SizedBox(height: 8),
+                _AuthMethodTile(
+                  icon: Icons.email_rounded,
+                  label: 'Continue with email',
+                  selected: _authMethod == _AuthMethod.email,
+                  onTap: () => setState(() {
+                    _authMethod = _AuthMethod.email;
+                    _authError = null;
+                  }),
+                ),
+                if (_authMethod == _AuthMethod.email) ...[
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(hintText: 'Email address'),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(hintText: 'Password'),
+                  ),
+                  const SizedBox(height: 10),
+                  PrimaryButton(
+                    label: 'Create account',
+                    icon: Icons.arrow_forward_rounded,
+                    loading: _finishing,
+                    onPressed: _finishing ? null : _createWithEmail,
+                  ),
+                ],
+                if (_authError != null) ...[
+                  const SizedBox(height: 10),
+                  Text(_authError!, style: const TextStyle(color: AppColors.vermilion, fontSize: 12.5)),
+                ],
+                const SizedBox(height: 10),
+                Center(
+                  child: TextButton(
+                    onPressed: _finishing ? null : _continueAnonymously,
+                    child: const Text('Skip — stay anonymous'),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
+              Text(
+                "Whichever way you sign in, your MP's office only ever sees "
+                "aggregated demand, never your identity.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.inkFaint, fontSize: 11, height: 1.4),
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: TextButton(
+                  onPressed: () => context.go('/signin'),
+                  child: const Text('Already have an account? Sign In'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AadhaarImageSlot extends StatelessWidget {
+  const _AadhaarImageSlot({
+    required this.label,
+    required this.image,
+    required this.onCamera,
+    required this.onGallery,
+  });
+
+  final String label;
+  final File? image;
+  final VoidCallback onCamera;
+  final VoidCallback onGallery;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.inkSoft)),
+        const SizedBox(height: 6),
+        if (image != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.file(image!, height: 90, fit: BoxFit.cover),
+          )
+        else
+          Container(
+            height: 90,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            alignment: Alignment.center,
+            child: const Icon(Icons.badge_outlined, size: 32, color: Colors.grey),
+          ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              child: IconButton(
+                onPressed: onCamera,
+                icon: const Icon(Icons.camera_alt_rounded, size: 18),
+                tooltip: 'Camera',
+              ),
+            ),
+            Expanded(
+              child: IconButton(
+                onPressed: onGallery,
+                icon: const Icon(Icons.photo_library_rounded, size: 18),
+                tooltip: 'Gallery',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _AuthMethodTile extends StatelessWidget {
+  const _AuthMethodTile({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(AppRadii.sm),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.indigoMist : Colors.white,
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          border: Border.all(
+            color: selected ? AppColors.indigo : Colors.grey.shade300,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: selected ? AppColors.indigo : AppColors.inkSoft),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: selected ? AppColors.indigo : AppColors.ink,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

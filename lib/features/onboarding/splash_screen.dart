@@ -45,6 +45,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         context.go('/official/dashboard');
         return;
       }
+      // `signupCompletedAt` on the Firestore profile is the authoritative
+      // "this citizen has a real, saved profile" signal — it survives a
+      // reinstall/new device, unlike `onboardingProgressProvider`, which is
+      // only local `shared_preferences` and would otherwise wrongly restart
+      // onboarding for a citizen who signs back in on a fresh install.
+      if (profile?.signupCompletedAt != null) {
+        context.go('/home');
+        return;
+      }
       switch (ref.read(onboardingProgressProvider)) {
         case OnboardingStep.identity:
         case OnboardingStep.basicInfo:

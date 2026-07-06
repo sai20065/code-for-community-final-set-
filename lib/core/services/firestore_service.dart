@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/booth_model.dart';
@@ -21,6 +19,8 @@ class FirestoreService {
       _db.collection('booths');
   CollectionReference<Map<String, dynamic>> get _clusters =>
       _db.collection('clusters');
+  CollectionReference<Map<String, dynamic>> get _counters =>
+      _db.collection('counters');
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
@@ -64,19 +64,56 @@ class FirestoreService {
     return user;
   }
 
-  /// Generates the citizen-facing ticket id, e.g. `PD-2026-004821`.
-  /// Must be produced and persisted at document-creation time — before any
-  /// AI/Cloud Function processing runs — so a citizen never loses their
-  /// receipt even if the downstream pipeline fails (see Section 6).
-  String generateTokenId() {
-    final year = DateTime.now().year;
-    final random = Random();
-    final suffix = random.nextInt(999999).toString().padLeft(6, '0');
-    return 'PD-$year-$suffix';
+  /// Derives the token's constituency code from a `constituencyId` like
+  /// `blr-north` → `BLRN`: strip separators, uppercase, take the first 4
+  /// letters (padded if shorter). Falls back to `GENL` when a submission
+  /// hasn't been resolved to a constituency yet.
+  String _constituencyCode(String? constituencyId) {
+    if (constituencyId == null || constituencyId.isEmpty) return 'GENL';
+    final letters = constituencyId.toUpperCase().replaceAll(RegExp(r'[^A-Z]'), '');
+    if (letters.isEmpty) return 'GENL';
+    return letters.length >= 4 ? letters.substring(0, 4) : letters.padRight(4, 'X');
+  }
+
+  /// Generates the citizen-facing ticket id as a structured, decodable
+  /// pattern: `PD-<CONSTITUENCY_CODE>-<CATEGORY_CODE>-<YYMMDD>-<SEQ4>`, e.g.
+  /// `PD-BLRN-PRB-260706-0007` — constituency, problem-or-suggestion, day,
+  /// and a same-day sequence number, all readable at a glance without a
+  /// database lookup. The `SEQ4` is an atomic per-constituency-per-day
+  /// counter (`counters/{constituencyId}_{yyMMdd}`, via
+  /// `FieldValue.increment` in a transaction), replacing the old random
+  /// 6-digit suffix so tokens are unique and sortable instead of merely
+  /// collision-unlikely. Must be produced and persisted at document-creation
+  /// time — before any AI/Cloud Function processing runs — so a citizen
+  /// never loses their receipt even if the downstream pipeline fails.
+  Future<String> generateTokenId({
+    required String? constituencyId,
+    required SubmissionCategory category,
+  }) async {
+    final now = DateTime.now();
+    final yyMMdd =
+        '${(now.year % 100).toString().padLeft(2, '0')}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+    final counterId = '${constituencyId ?? 'unresolved'}_$yyMMdd';
+    final counterRef = _counters.doc(counterId);
+    final seq = await _db.runTransaction<int>((tx) async {
+      final snapshot = await tx.get(counterRef);
+      final next = ((snapshot.data()?['count'] as int?) ?? 0) + 1;
+      tx.set(counterRef, {'count': next}, SetOptions(merge: true));
+      return next;
+    });
+    final categoryCode =
+        category == SubmissionCategory.feedback ? 'SUG' : 'PRB';
+    final seq4 = seq.toString().padLeft(4, '0');
+    return 'PD-${_constituencyCode(constituencyId)}-$categoryCode-$yyMMdd-$seq4';
   }
 
   Future<SubmissionModel> createSubmission(SubmissionModel draft) async {
-    final tokenId = draft.tokenId.isNotEmpty ? draft.tokenId : generateTokenId();
+    final tokenId = draft.tokenId.isNotEmpty
+        ? draft.tokenId
+        : await generateTokenId(
+            constituencyId: draft.location.constituencyId,
+            category: draft.category,
+          );
     final data = draft.toMap()..['tokenId'] = tokenId;
     final docRef = await _submissions.add(data);
     return SubmissionModel.fromMap(docRef.id, data);

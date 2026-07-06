@@ -127,7 +127,6 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
 
     setState(() => _submitting = true);
     final profile = await _firestoreService.getUser(uid);
-    final tokenId = _firestoreService.generateTokenId();
     final draft = SubmissionModel(
       id: '',
       userId: uid,
@@ -144,7 +143,7 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
         constituencyId: profile?.constituencyId,
       ),
       status: SubmissionStatus.newSubmission,
-      tokenId: tokenId,
+      tokenId: '',
       createdAt: DateTime.now(),
     );
     final saved = await _firestoreService.createSubmission(draft);

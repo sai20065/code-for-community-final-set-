@@ -112,7 +112,6 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
       // server-side without a mediaUrl.
     }
 
-    final tokenId = _firestoreService.generateTokenId();
     final draft = SubmissionModel(
       id: '',
       userId: uid,
@@ -132,7 +131,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
         constituencyId: profile?.constituencyId,
       ),
       status: SubmissionStatus.newSubmission,
-      tokenId: tokenId,
+      tokenId: '',
       createdAt: DateTime.now(),
     );
     final saved = await _firestoreService.createSubmission(draft);

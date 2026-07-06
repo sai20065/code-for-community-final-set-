@@ -19,34 +19,54 @@ Phase 2 (onboarding/signup) spec:
 
 ## Identity model — read this before touching onboarding code
 
-Citizens now have **three** ways to get a Firebase account, all chosen on
-the Welcome screen's Citizen tab, all landing on the same `users/{uid}`
-shape: **Anonymous** (no credential at all — the original default, still
-offered as "skip"), **Phone** (real Firebase Phone Auth with SMS OTP), and
-**Email/password**. This is a deliberate reversal of the project's earlier
-"anonymous-only, no phone number ever" rule — phone/email give a citizen a
-portable identity that survives a reinstall (an anonymous session doesn't).
-No matter which method is chosen, the Aadhaar number itself is still never
-stored anywhere in this app.
+Sign Up and Sign In are **deliberately separate flows**
+(`lib/features/onboarding/signup_screen.dart` and `signin_screen.dart`), not
+one combined "continue" action. Sign Up always creates a brand-new
+credential and stamps `users/{uid}.signupCompletedAt` — the authoritative
+"this citizen has a real, saved profile" marker, which `SplashScreen` and
+`SignInScreen` both trust over any local per-device onboarding-progress
+state (fixing a real bug: a citizen who signed up on one device and signed
+back in on a fresh install used to get pushed through onboarding again,
+since progress was only ever stored in local `shared_preferences`). Sign In
+never creates an account — a phone/email with no matching `signupCompletedAt`
+profile is treated as "no account found, please Sign Up" and signed back
+out.
 
-Aadhaar capture is folded into the same Welcome-screen flow (no separate
-route anymore — it used to be
-`lib/features/onboarding/signup/aadhaar_upload_screen.dart`, now merged into
-`lib/features/onboarding/welcome_screen.dart`'s `_CitizenEntry`). It's still
-a one-time **convenience OCR extraction**, not verified UIDAI eKYC:
+Citizens have **three** ways to get a Firebase account, all landing on the
+same `users/{uid}` shape: **Anonymous** (no credential at all — the original
+default, still offered as "skip"), **Phone** (real Firebase Phone Auth with
+SMS OTP), and **Email/password**. Phone/email give a citizen a portable
+identity that survives a reinstall (an anonymous session doesn't); the
+`signInMethod` field on `users/{uid}` records which one was used. No matter
+which method is chosen, the Aadhaar number itself is still never stored
+anywhere in this app.
 
-- The citizen uploads a photo of their Aadhaar; a Cloud Function
-  (`functions/src/aadhaar/extractAadhaarDetails.ts`) reads it with Gemini
-  vision **once, in memory**, extracts `{name, address, pincode}`, and
-  discards the image immediately. The image is never written to Cloud
-  Storage, Firestore, or disk at any point.
+Aadhaar capture (front **and** back — the back side often carries the full
+address the front truncates, so capturing both improves accuracy, though
+neither is ever required) lives on `SignUpScreen`. It's a one-time
+**convenience OCR extraction**, not verified UIDAI eKYC:
+
+- The citizen uploads photo(s) of their Aadhaar; a Cloud Function
+  (`functions/src/aadhaar/extractAadhaarDetails.ts`) reads them with an
+  NVIDIA NIM document-understanding vision model (see
+  `functions/src/lib/nvidiaClient.ts` — `nvidia/llama-3.1-nemotron-nano-vl-8b-v1`)
+  **once, in memory**, extracts `{name, address, pincode, wardNumber}`, and
+  discards the images immediately. They are never written to Cloud Storage,
+  Firestore, or disk at any point. Every other AI task in this app
+  (transcription, translation, photo captioning, theme classification,
+  cluster summarization) stays on Gemini — NVIDIA is scoped to Aadhaar OCR
+  only. Note this is a carefully engineered extraction prompt against a
+  hosted model, not real fine-tuning — true fine-tuning would need NVIDIA
+  NeMo Customizer, a labeled dataset, and a GPU training job, a separate and
+  much larger effort than this app's scope.
 - The Aadhaar number itself is never returned to the client and is
   regex-scrubbed server-side as defense-in-depth even if the model includes
   one by mistake.
 - **This proves nothing about who uploaded the document.** There is no
   cryptographic/UIDAI verification step, regardless of whether the citizen
-  then signs in anonymously, by phone, or by email. Manual entry is always
-  available and never blocks onboarding if OCR fails or looks wrong.
+  then signs in anonymously, by phone, or by email. Manual entry (including
+  an optional ward number field) is always available and never blocks
+  onboarding if OCR fails or looks wrong.
 
 **Phone Auth caveat:** Firebase Phone Auth's Android path leans on Play
 Integrity, which is keyed to the app's signing certificate SHA-1/256
@@ -96,10 +116,11 @@ real Play Store release build's keystore should be registered properly.
   work" entity behind the ranked-works panel and compare tool.
   `FirestoreService.watchTrendingSuggestions` powers the Home feed.
 - **Login** (`lib/features/onboarding/welcome_screen.dart`): Citizen / MP
-  office tabs. The Citizen tab now captures Aadhaar-photo OCR *and* the
-  sign-in method choice on one screen (Phone OTP / Email+password /
-  anonymous "skip"), then continues into Language → Basic Info → Location
-  as before — see "Identity model" above. MP office tab is unchanged: a real
+  office tabs. The Citizen tab is a chooser between `SignUpScreen` (Aadhaar
+  front/back OCR + sign-in method choice: Phone OTP / Email+password /
+  anonymous "skip", then Language → Basic Info → Location as before) and
+  `SignInScreen` (strict sign-in only for returning citizens) — see
+  "Identity model" above. MP office tab is unchanged: a real
   constituency-ID + password login (`AuthService.signInOfficial`, mapped
   internally to Firebase email/password) — officials are provisioned
   out-of-band, not self-registered. Splash checks the signed-in user's
