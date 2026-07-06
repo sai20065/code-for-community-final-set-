@@ -20,10 +20,11 @@ service cloud.firestore {
         userDoc(request.auth.uid).constituencyId == constituencyId;
     }
 
-    // Identity is Firebase Anonymous Auth — a user may only read/write
-    // their own profile document. No phone number, no Aadhaar number is
-    // ever stored here; Aadhaar upload only ever contributes name/address/
-    // pincode via a Cloud Function that discards the image immediately.
+    // Identity is Firebase Auth — Anonymous, Phone, or Email/password — a
+    // user may only read/write their own profile document, regardless of
+    // which sign-in method they used. No Aadhaar number is ever stored
+    // here; Aadhaar upload only ever contributes name/address/pincode via a
+    // Cloud Function that discards the image immediately.
     match /users/{uid} {
       allow read, create, update: if isSignedIn() && request.auth.uid == uid;
       allow delete: if false;

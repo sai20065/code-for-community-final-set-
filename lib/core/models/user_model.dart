@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum UserRole { citizen, official }
 
-/// Identity is Firebase Anonymous Auth (no phone number, no Aadhaar number
-/// ever stored) — `users/{uid}` is created the moment sign-in succeeds and
-/// filled in incrementally: name/address/pincode arrive from one-time
-/// Aadhaar OCR extraction (image discarded immediately server-side, never
-/// persisted), age from Basic Info, constituencyId from pincode resolution
-/// in Location Setup.
+/// Identity is Firebase Auth — Anonymous, Phone (OTP), or Email/password,
+/// citizen's choice (no Aadhaar number ever stored regardless of which) —
+/// `users/{uid}` is created the moment sign-in succeeds and filled in
+/// incrementally: name/address/pincode arrive from one-time Aadhaar OCR
+/// extraction (image discarded immediately server-side, never persisted),
+/// age from Basic Info, constituencyId from pincode resolution in Location
+/// Setup.
 class UserModel {
   final String uid;
   final String? name;

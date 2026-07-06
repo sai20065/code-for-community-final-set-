@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/providers/selected_language_provider.dart';
 import '../../app/theme.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/firestore_service.dart';
 
 /// 10 languages, no header text beyond a universal globe icon (Phase 2,
 /// Section 4). Tapping instantly highlights the selection (Marigold Orange
@@ -31,14 +33,28 @@ class LanguageSelectScreen extends ConsumerStatefulWidget {
 }
 
 class _LanguageSelectScreenState extends ConsumerState<LanguageSelectScreen> {
+  final _authService = AuthService();
+  final _firestoreService = FirestoreService();
   String? _flashCode;
 
   Future<void> _select(String code) async {
     if (_flashCode != null) return;
     setState(() => _flashCode = code);
     await ref.read(selectedLanguageProvider.notifier).select(code);
+    // Identity/sign-in now happens earlier, on the Welcome screen — by the
+    // time a citizen reaches this screen they already have a `users/{uid}`
+    // doc (created with a default 'en'), so sync the real choice onto it.
+    final uid = _authService.currentUser?.uid;
+    if (uid != null) {
+      final existing = await _firestoreService.getUser(uid);
+      if (existing != null) {
+        await _firestoreService.upsertUser(
+          existing.copyWith(preferredLanguage: code),
+        );
+      }
+    }
     await Future.delayed(const Duration(milliseconds: 300));
-    if (mounted) context.go('/signup/aadhaar');
+    if (mounted) context.go('/signup/basic-info');
   }
 
   @override

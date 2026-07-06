@@ -19,7 +19,6 @@ import '../features/official/tickets/ticket_management_screen.dart';
 import '../features/official/works/compare_proposals_screen.dart';
 import '../features/official/works/ranked_works_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
-import '../features/onboarding/signup/aadhaar_upload_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
 import '../features/onboarding/signup/onboarding_done_screen.dart';
@@ -43,10 +42,8 @@ final appRouter = GoRouter(
     ),
 
     // --- Onboarding / signup ---
-    GoRoute(
-      path: '/signup/aadhaar',
-      builder: (context, state) => const AadhaarUploadScreen(),
-    ),
+    // Aadhaar-photo capture + phone/email/anonymous sign-in now live on
+    // WelcomeScreen itself (citizen tab) — there is no separate route for it.
     GoRoute(
       path: '/signup/basic-info',
       builder: (context, state) => const BasicInfoScreen(),

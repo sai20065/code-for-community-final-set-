@@ -19,10 +19,21 @@ Phase 2 (onboarding/signup) spec:
 
 ## Identity model — read this before touching onboarding code
 
-Identity is **Firebase Anonymous Auth** — there is no phone number and no
-Aadhaar number stored anywhere in this app. The Aadhaar Upload screen
-(`lib/features/onboarding/signup/aadhaar_upload_screen.dart`) is a one-time
-**convenience OCR extraction**, not verified UIDAI eKYC:
+Citizens now have **three** ways to get a Firebase account, all chosen on
+the Welcome screen's Citizen tab, all landing on the same `users/{uid}`
+shape: **Anonymous** (no credential at all — the original default, still
+offered as "skip"), **Phone** (real Firebase Phone Auth with SMS OTP), and
+**Email/password**. This is a deliberate reversal of the project's earlier
+"anonymous-only, no phone number ever" rule — phone/email give a citizen a
+portable identity that survives a reinstall (an anonymous session doesn't).
+No matter which method is chosen, the Aadhaar number itself is still never
+stored anywhere in this app.
+
+Aadhaar capture is folded into the same Welcome-screen flow (no separate
+route anymore — it used to be
+`lib/features/onboarding/signup/aadhaar_upload_screen.dart`, now merged into
+`lib/features/onboarding/welcome_screen.dart`'s `_CitizenEntry`). It's still
+a one-time **convenience OCR extraction**, not verified UIDAI eKYC:
 
 - The citizen uploads a photo of their Aadhaar; a Cloud Function
   (`functions/src/aadhaar/extractAadhaarDetails.ts`) reads it with Gemini
@@ -33,12 +44,19 @@ Aadhaar number stored anywhere in this app. The Aadhaar Upload screen
   regex-scrubbed server-side as defense-in-depth even if the model includes
   one by mistake.
 - **This proves nothing about who uploaded the document.** There is no
-  cryptographic/UIDAI verification step. Manual entry is always available
-  and never blocks onboarding if OCR fails or looks wrong.
-- This is a deliberate reversal of this project's earlier "no Aadhaar
-  scanning" rule, made at the requesting user's explicit direction after
-  being shown the legal-risk tradeoff — see the git history for that
-  conversation if you need the reasoning again later.
+  cryptographic/UIDAI verification step, regardless of whether the citizen
+  then signs in anonymously, by phone, or by email. Manual entry is always
+  available and never blocks onboarding if OCR fails or looks wrong.
+
+**Phone Auth caveat:** Firebase Phone Auth's Android path leans on Play
+Integrity, which is keyed to the app's signing certificate SHA-1/256
+registered in the Firebase console. Since this repo doesn't commit an
+`android/` folder (CI generates one fresh with `flutter create` and a
+throwaway debug keystore — see `.github/workflows/build-apk.yml`), Play
+Integrity will likely fail silently on that CI-built APK and Firebase will
+fall back to a reCAPTCHA-style web challenge instead of silent verification.
+That's expected, not a bug — it'll still work, just with an extra step. A
+real Play Store release build's keystore should be registered properly.
 
 ## Brand system
 
@@ -78,8 +96,10 @@ Aadhaar number stored anywhere in this app. The Aadhaar Upload screen
   work" entity behind the ranked-works panel and compare tool.
   `FirestoreService.watchTrendingSuggestions` powers the Home feed.
 - **Login** (`lib/features/onboarding/welcome_screen.dart`): Citizen / MP
-  office tabs. Citizen tab enters the existing Language → Aadhaar Upload →
-  Basic Info → Location flow unchanged. MP office tab is a real
+  office tabs. The Citizen tab now captures Aadhaar-photo OCR *and* the
+  sign-in method choice on one screen (Phone OTP / Email+password /
+  anonymous "skip"), then continues into Language → Basic Info → Location
+  as before — see "Identity model" above. MP office tab is unchanged: a real
   constituency-ID + password login (`AuthService.signInOfficial`, mapped
   internally to Firebase email/password) — officials are provisioned
   out-of-band, not self-registered. Splash checks the signed-in user's
@@ -148,56 +168,45 @@ community"), `.firebaserc` included:
 - ✅ **Android + iOS apps registered** (`com.prajadhvani.app`).
   `lib/firebase_options.dart` has real API keys/app IDs — these are client
   identifiers, not secrets, safe to commit.
-- ⏳ **Anonymous + Email/Password sign-in providers** — neither toggled on
-  yet (replaces the old "enable Phone" task, which is now moot). These
-  provider toggles can't be reliably flipped via API — each needs a
-  one-time console visit. **To finish:** open
-  [Authentication → Sign-in method](https://console.firebase.google.com/project/code-for-community-e2cf2/authentication/providers)
-  and enable both **Anonymous** (citizens) and **Email/Password** (MP
-  office login — `AuthService.signInOfficial` maps a constituency ID to a
-  synthetic `{id}@mp.prajadhwani.app` address under the hood).
+- ❌ **Authentication itself has never been initialized** for this project
+  — verified directly against the Identity Toolkit REST API (not just the
+  console), which returns `CONFIGURATION_NOT_FOUND` for every call. This is
+  a bigger gap than "a provider isn't toggled": it means the Authentication
+  product has never been switched on at all, so *no* sign-in method —
+  Anonymous, Phone, or Email/Password — currently works, regardless of what
+  may have been clicked in the console. **To finish:** open
+  [Authentication](https://console.firebase.google.com/project/code-for-community-e2cf2/authentication)
+  and click "Get started" if it hasn't been, then enable **Anonymous**,
+  **Phone**, and **Email/Password** under Sign-in method (citizens can now
+  choose any of the three on the Welcome screen; MP office login also maps
+  onto Email/Password — `AuthService.signInOfficial` maps a constituency ID
+  to a synthetic `{id}@mp.prajadhwani.app` address under the hood). Phone
+  additionally needs its own quota/reCAPTCHA setup on first enable — see the
+  Phone Auth caveat under "Identity model" above.
 - ⏳ **MP official accounts must be provisioned manually** — there's no
   self-registration. For each MP, create a Firebase Auth user with email
   `{constituencyId}@mp.prajadhwani.app` and a password (Firebase console →
   Authentication → Add user, or the Admin SDK), then create their
   `users/{uid}` Firestore doc with `role: "official"` and their
   `constituencyId` set.
-- ⏳ **Cloud Functions + Gemini + Bhashini** — scaffolded in `functions/` but
-  **not deployed**. Blocked on:
-  1. **GCP Blaze billing** attached to `code-for-community-e2cf2` — Cloud
-     Functions 2nd gen requires this regardless of which Gemini access path
-     is used. Attach at
-     [console.cloud.google.com/billing](https://console.cloud.google.com/billing/linkedaccount?project=code-for-community-e2cf2).
-  2. **`GEMINI_API_KEY`** — generate a free-tier key at
-     [aistudio.google.com](https://aistudio.google.com) (Gemini Developer
-     API — not Vertex AI Model Garden; no self-hosted Gemma endpoint is used
-     here, it's too costly/complex for this project's scale).
-  3. **`BHASHINI_API_KEY`, `BHASHINI_ASR_PIPELINE_ID`,
-     `BHASHINI_TRANSLATION_PIPELINE_ID`** — register at
-     [bhashini.gov.in](https://bhashini.gov.in) (ULCA) and take the
-     API key + pipeline ids issued for your registration. **Verify the
-     exact request/response shape in `functions/src/lib/bhashiniClient.ts`
-     against what your registration's pipeline config actually returns**
-     before deploying — Bhashini's contract can vary per registered
-     pipeline.
-
-  Once all three are ready:
-  ```
-  firebase functions:secrets:set GEMINI_API_KEY
-  firebase functions:secrets:set BHASHINI_API_KEY
-  firebase functions:secrets:set BHASHINI_ASR_PIPELINE_ID
-  firebase functions:secrets:set BHASHINI_TRANSLATION_PIPELINE_ID
-  cd functions && npm install && cd ..
-  firebase deploy --only functions
-  ```
-- ⏳ **`booths`/`constituencies` reference data** — not seeded (you said
-  you'd provide the real dataset). `resolveConstituency` in
-  `location_service.dart` looks up `booths` where `pincodesCovered`
-  array-contains the citizen's pincode; nothing will map to a constituency
-  until real booth documents exist with that field populated. Schema:
-  `booths/{id}`: `constituencyId, name, lat, lng, pincodesCovered: string[],
-  openIssueCount`; `constituencies/{id}`: `name, state, mpUserId,
-  boundaryGeoJson?`.
+- ✅ **Cloud Functions + Gemini + Cloud Translate** — deployed and live
+  (verified directly against the project: all three functions —
+  `extractAadhaarDetails`, `onSubmissionCreated`, `transcribeAndTranslate` —
+  are running in `asia-south1` on Node 20). Blaze billing is attached and
+  `GEMINI_API_KEY` is already configured as a secret. The Bhashini
+  integration mentioned in older versions of this doc has been fully
+  replaced by Gemini audio transcription + Cloud Translate — there is no
+  `bhashiniClient.ts` anymore and no separate Bhashini credentials needed.
+- ⏳ **`booths`/`constituencies` reference data** — was unseeded; a starter
+  demo dataset (one constituency, five booths, six ranked-work clusters, a
+  few sample tickets — Bengaluru-area, from `functions/src/scripts/
+  seedMockData.ts`) has since been loaded directly into Firestore so the
+  map/rankings/trending feed have something to show. Swap in the real
+  dataset when it's ready — `resolveConstituency` in `location_service.dart`
+  looks up `booths` where `pincodesCovered` array-contains the citizen's
+  pincode. Schema: `booths/{id}`: `constituencyId, name, lat, lng,
+  pincodesCovered: string[], openIssueCount`; `constituencies/{id}`: `name,
+  state, mpUserId, boundaryGeoJson?`.
 - The native `google-services.json` / `GoogleService-Info.plist` are staged
   in [`firebase_config/`](firebase_config/) — move them to
   `android/app/google-services.json` / `ios/Runner/GoogleService-Info.plist`
@@ -216,13 +225,14 @@ community"), `.firebaserc` included:
 3. Move the staged config files from `firebase_config/` into
    `android/app/google-services.json` and
    `ios/Runner/GoogleService-Info.plist`.
-4. Enable **Anonymous** sign-in in the Firebase console (see above).
+4. In the Firebase console, initialize Authentication if it hasn't been
+   already, then enable **Anonymous**, **Phone**, and **Email/Password**
+   sign-in (see above) — the app can't sign anyone in, citizen or MP,
+   until this is done.
 5. `flutter pub get`, then `flutter run`.
-6. To bring the AI pipeline online: attach Blaze billing, get a Gemini API
-   key and Bhashini credentials, set the secrets, then
-   `firebase deploy --only functions` (see above). Everything else in the
-   app works without this — tickets just won't get auto-classified/
-   clustered/transcribed until the functions are deployed.
+
+The Cloud Functions AI pipeline (Gemini + Cloud Translate) is already
+deployed and billed — no further setup needed there.
 
 ## Non-negotiable rules that still apply
 
