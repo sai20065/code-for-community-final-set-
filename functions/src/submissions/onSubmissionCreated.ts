@@ -1,24 +1,18 @@
 import * as admin from "firebase-admin";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
-import {
-  REGION,
-  bhashiniApiKey,
-  bhashiniAsrPipelineId,
-  bhashiniTranslationPipelineId,
-  geminiApiKey,
-} from "../config";
-import {BhashiniClient} from "../lib/bhashiniClient";
+import {REGION, geminiApiKey} from "../config";
 import {GeminiClient} from "../lib/geminiClient";
+import {TranslateClient} from "../lib/translateClient";
 
 /**
  * Main AI pipeline, triggered whenever a citizen creates a ticket
  * (`submissions/{id}`). Every step is individually try/caught so a
- * Bhashini/Gemini outage never blocks or retroactively invalidates the
+ * Gemini/Translate outage never blocks or retroactively invalidates the
  * citizen's already-issued `tokenId` receipt — partial enrichment is
  * always better than none.
  *
- * Steps: (1) voice → Bhashini ASR → transcript; text tickets use rawText
- * directly. (2) Bhashini translate → translatedText (English), so
+ * Steps: (1) voice → Gemini audio transcription → transcript; text tickets
+ * use rawText directly. (2) Cloud Translate → translatedText (English), so
  * cross-language tickets can be classified/clustered consistently.
  * (3) photo → Gemini vision caption. (4) Gemini classifies theme (only if
  * the citizen didn't already pick one manually) + a priority hint.
@@ -30,12 +24,7 @@ export const onSubmissionCreated = onDocumentCreated(
   {
     document: "submissions/{submissionId}",
     region: REGION,
-    secrets: [
-      geminiApiKey,
-      bhashiniApiKey,
-      bhashiniAsrPipelineId,
-      bhashiniTranslationPipelineId,
-    ],
+    secrets: [geminiApiKey],
   },
   async (event) => {
     const snapshot = event.data;
@@ -45,38 +34,33 @@ export const onSubmissionCreated = onDocumentCreated(
     const db = admin.firestore();
 
     const gemini = new GeminiClient(geminiApiKey.value());
-    const bhashini = new BhashiniClient(
-      bhashiniApiKey.value(),
-      bhashiniAsrPipelineId.value(),
-      bhashiniTranslationPipelineId.value(),
-    );
+    const translate = new TranslateClient();
 
     // --- 1 & 2: transcript + translation ---------------------------------
     let transcript: string | undefined = submission.rawText;
     if (submission.type === "voice" && submission.mediaUrl) {
       try {
-        const audioBase64 = await fetchAsBase64(submission.mediaUrl);
-        transcript = await bhashini.speechToText({
-          audioBase64,
-          sourceLanguage: submission.language ?? "hi",
-        });
+        transcript = await gemini.transcribeAudioUrl(
+          submission.mediaUrl,
+          submission.language ?? "hi",
+        );
         await submissionRef.update({transcript});
       } catch (err) {
-        console.error("Bhashini ASR failed", err);
+        console.error("Gemini audio transcription failed", err);
       }
     }
 
     let translatedText: string | undefined;
     if (transcript) {
       try {
-        translatedText = await bhashini.translate({
+        translatedText = await translate.translate({
           text: transcript,
           sourceLanguage: submission.language ?? "hi",
           targetLanguage: "en",
         });
         await submissionRef.update({translatedText});
       } catch (err) {
-        console.error("Bhashini translation failed", err);
+        console.error("Cloud Translate failed", err);
       }
     }
 
@@ -170,9 +154,3 @@ export const onSubmissionCreated = onDocumentCreated(
     });
   },
 );
-
-async function fetchAsBase64(url: string): Promise<string> {
-  const response = await fetch(url);
-  const buffer = Buffer.from(await response.arrayBuffer());
-  return buffer.toString("base64");
-}

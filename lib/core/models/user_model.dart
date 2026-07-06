@@ -18,6 +18,8 @@ class UserModel {
   final double? lng;
   final UserRole role;
   final String? constituencyId;
+  final String? homeBoothId;
+  final String? homeBoothName;
   final String preferredLanguage;
   final DateTime createdAt;
 
@@ -32,6 +34,8 @@ class UserModel {
     this.lat,
     this.lng,
     this.constituencyId,
+    this.homeBoothId,
+    this.homeBoothName,
     this.preferredLanguage = 'en',
   });
 
@@ -48,6 +52,8 @@ class UserModel {
           ? UserRole.official
           : UserRole.citizen,
       constituencyId: map['constituencyId'] as String?,
+      homeBoothId: map['homeBoothId'] as String?,
+      homeBoothName: map['homeBoothName'] as String?,
       preferredLanguage: map['preferredLanguage'] as String? ?? 'en',
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
@@ -62,6 +68,8 @@ class UserModel {
       if (lat != null && lng != null) 'location': {'lat': lat, 'lng': lng},
       'role': role.name,
       if (constituencyId != null) 'constituencyId': constituencyId,
+      if (homeBoothId != null) 'homeBoothId': homeBoothId,
+      if (homeBoothName != null) 'homeBoothName': homeBoothName,
       'preferredLanguage': preferredLanguage,
       'createdAt': Timestamp.fromDate(createdAt),
     };
@@ -75,6 +83,8 @@ class UserModel {
     double? lat,
     double? lng,
     String? constituencyId,
+    String? homeBoothId,
+    String? homeBoothName,
     String? preferredLanguage,
   }) {
     return UserModel(
@@ -88,6 +98,8 @@ class UserModel {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       constituencyId: constituencyId ?? this.constituencyId,
+      homeBoothId: homeBoothId ?? this.homeBoothId,
+      homeBoothName: homeBoothName ?? this.homeBoothName,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
     );
   }

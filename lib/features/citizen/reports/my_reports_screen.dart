@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/theme.dart';
@@ -7,6 +8,15 @@ import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
+
+Future<void> _copyReceipt(BuildContext context, String tokenId) async {
+  await Clipboard.setData(ClipboardData(text: tokenId));
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Receipt number copied')),
+    );
+  }
+}
 
 /// "Mine": every ticket the citizen has filed. Suggestions show their rank
 /// within category + supporter count + an outcome badge once resolved;
@@ -83,11 +93,26 @@ class _TicketCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(
-                      submission.tokenId,
-                      style: const TextStyle(
-                        fontFamily: 'monospace',
-                        fontWeight: FontWeight.w700,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(6),
+                      onTap: () => _copyReceipt(context, submission.tokenId),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Receipt: ${submission.tokenId}',
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: 'monospace',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12.5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(Icons.copy_rounded, size: 13, color: AppColors.inkFaint),
+                        ],
                       ),
                     ),
                   ),

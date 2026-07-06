@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:record/record.dart';
 
 import '../../../app/theme.dart';
@@ -9,7 +10,9 @@ import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../shared/widgets/ai_suggestion_chips.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
+import '../../../shared/widgets/location_picker.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/recording_waveform.dart';
 import 'input_mode_switcher.dart';
@@ -39,8 +42,50 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   bool _submitting = false;
   String? _filePath;
   String? _theme;
+  int? _similarCount;
   late SubmissionCategory _category = widget.initialCategory ?? SubmissionCategory.problem;
   Duration _elapsed = Duration.zero;
+  LatLng? _pin;
+  double? _homeLat;
+  double? _homeLng;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHomeLocation();
+  }
+
+  Future<void> _loadHomeLocation() async {
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+    final profile = await _firestoreService.getUser(uid);
+    if (mounted) {
+      setState(() {
+        _homeLat = profile?.lat;
+        _homeLng = profile?.lng;
+      });
+    }
+  }
+
+  Future<void> _selectTheme(String? themeId) async {
+    setState(() {
+      _theme = themeId;
+      _similarCount = null;
+    });
+    if (themeId == null) return;
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+    final profile = await _firestoreService.getUser(uid);
+    final constituencyId = profile?.constituencyId;
+    if (constituencyId == null) return;
+    final clusters = await _firestoreService
+        .watchClustersForConstituency(constituencyId)
+        .first;
+    final count = clusters
+        .where((c) => c.theme == themeId)
+        .fold<int>(0, (sum, c) => sum + c.submissionCount);
+    if (mounted) setState(() => _similarCount = count);
+  }
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
@@ -116,8 +161,8 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       theme: _theme,
       location: SubmissionLocation(
         pincode: profile?.pincodeHome ?? '',
-        lat: profile?.lat,
-        lng: profile?.lng,
+        lat: _pin?.latitude ?? profile?.lat,
+        lng: _pin?.longitude ?? profile?.lng,
         constituencyId: profile?.constituencyId,
       ),
       status: SubmissionStatus.newSubmission,
@@ -193,12 +238,22 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
                 ),
               ],
               const SizedBox(height: 24),
+              LocationPicker(
+                homeLat: _homeLat,
+                homeLng: _homeLng,
+                onChanged: (point) => _pin = point,
+              ),
+              if (_similarCount != null && _similarCount! > 0) ...[
+                const SizedBox(height: 12),
+                SimilarCountChip(count: _similarCount!, category: _category),
+              ],
+              const SizedBox(height: 24),
               Text('Pick a category (optional)',
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 12),
               ThemePickerWidget(
                 selected: _theme,
-                onSelected: (v) => setState(() => _theme = v),
+                onSelected: _selectTheme,
               ),
               const SizedBox(height: 24),
               if (_hasRecording)

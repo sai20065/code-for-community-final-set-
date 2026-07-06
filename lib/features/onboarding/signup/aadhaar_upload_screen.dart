@@ -211,7 +211,7 @@ class _AadhaarUploadScreenState extends ConsumerState<AadhaarUploadScreen> {
                 alignment: Alignment.centerLeft,
                 child: TextButton(
                   onPressed: () => setState(() => _manualEntry = !_manualEntry),
-                  child: Text(_manualEntry ? 'Hide manual entry' : 'Enter details manually instead'),
+                  child: Text(_manualEntry ? 'Hide manual entry' : "Skip — I'll enter manually"),
                 ),
               ),
               if (_manualEntry || _nameController.text.isNotEmpty) ...[

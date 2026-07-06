@@ -2,40 +2,157 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/onboarding_progress_provider.dart';
+import '../../../app/theme.dart';
 import '../../../core/services/auth_service.dart';
+import '../../onboarding/language_select_screen.dart';
 
-/// Section 4, screen 11: language switch, edit address, logout.
+/// Profile: home constituency/booth/pincode/language at a glance, a privacy
+/// reminder (what's stored and why), and sign-out. Nothing here lets the
+/// citizen see or edit an Aadhaar number — there isn't one stored.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authService = AuthService();
+    final profileAsync = ref.watch(currentUserProfileProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
-      body: ListView(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.language_rounded),
-            title: const Text('Language'),
-            onTap: () => context.go('/language'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.location_on_rounded),
-            title: Text('Edit address'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout_rounded),
-            title: const Text('Logout'),
-            onTap: () async {
-              await authService.signOut();
-              await ref.read(onboardingProgressProvider.notifier).reset();
-              if (context.mounted) context.go('/language');
-            },
-          ),
-        ],
+      body: profileAsync.when(
+        data: (profile) {
+          final languageEntry = kSupportedLanguages.firstWhere(
+            (l) => l.$1 == (profile?.preferredLanguage ?? 'en'),
+            orElse: () => ('en', 'English', 'English'),
+          );
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppRadii.md),
+                  boxShadow: appCardShadow,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(profile?.name ?? 'Citizen',
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                    const SizedBox(height: 14),
+                    _InfoRow(
+                      icon: Icons.flag_rounded,
+                      label: 'Home constituency',
+                      value: profile?.constituencyId ?? 'Not yet matched',
+                    ),
+                    const Divider(height: 22),
+                    _InfoRow(
+                      icon: Icons.place_rounded,
+                      label: 'Home booth',
+                      value: profile?.homeBoothName ?? 'Not yet matched',
+                    ),
+                    const Divider(height: 22),
+                    _InfoRow(
+                      icon: Icons.pin_drop_rounded,
+                      label: 'Pincode',
+                      value: profile?.pincodeHome ?? '—',
+                    ),
+                    const Divider(height: 22),
+                    InkWell(
+                      onTap: () => context.go('/language'),
+                      borderRadius: BorderRadius.circular(10),
+                      child: _InfoRow(
+                        icon: Icons.language_rounded,
+                        label: 'Preferred language',
+                        value: '${languageEntry.$3} (${languageEntry.$2})',
+                        trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.inkFaint),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.indigoMist,
+                  borderRadius: BorderRadius.circular(AppRadii.md),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.shield_rounded, size: 18, color: AppColors.indigoDeep),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'We store your address to route your submissions to the '
+                        'right MP. Your 12-digit Aadhaar number is never stored.',
+                        style: const TextStyle(fontSize: 12, color: AppColors.indigoDeep, height: 1.4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  await authService.signOut();
+                  await ref.read(onboardingProgressProvider.notifier).reset();
+                  if (context.mounted) context.go('/language');
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.vermilion,
+                  side: const BorderSide(color: AppColors.vermilion),
+                  minimumSize: const Size.fromHeight(52),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.md)),
+                ),
+                icon: const Icon(Icons.logout_rounded),
+                label: const Text('Sign out (clears this device)'),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => const Center(child: Text('Could not load your profile.')),
       ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.trailing,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: AppColors.inkFaint),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
+              const SizedBox(height: 2),
+              Text(value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5)),
+            ],
+          ),
+        ),
+        if (trailing != null) trailing!,
+      ],
     );
   }
 }

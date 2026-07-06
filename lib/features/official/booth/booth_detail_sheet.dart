@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
@@ -7,11 +8,14 @@ import '../../../core/models/booth_model.dart';
 import '../../../core/models/cluster_model.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
-/// Callout panel for a tapped booth: submission count, dominant theme, and
-/// local context up top; cluster summaries (AI-written one-liners, from the
-/// Gemini pipeline in `functions/src/submissions/onSubmissionCreated.ts`)
-/// listed first and sorted by priority score; raw sample ticket ids
-/// expandable underneath.
+/// Detail panel for a tapped booth, led by an AI Hotspot Card built from the
+/// booth's top-priority cluster (if any) — real fields only: the "Why it
+/// recurs" side cites the cluster's own ticket count/summary (from the
+/// Gemini pipeline in `functions/src/submissions/onSubmissionCreated.ts`),
+/// and "Why it's happening here" cites `booth.localContext`, an actual
+/// seeded/derived field — never a fabricated citation the backend doesn't
+/// actually have. Other clusters at this booth are listed below, with raw
+/// sample ticket ids expandable underneath.
 class BoothDetailSheet extends ConsumerWidget {
   const BoothDetailSheet({super.key, required this.booth});
 
@@ -21,9 +25,9 @@ class BoothDetailSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final clustersAsync = ref.watch(_boothClustersProvider(booth.id));
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
+      initialChildSize: 0.65,
       minChildSize: 0.3,
-      maxChildSize: 0.9,
+      maxChildSize: 0.92,
       expand: false,
       builder: (context, scrollController) {
         return ListView(
@@ -31,61 +35,40 @@ class BoothDetailSheet extends ConsumerWidget {
           padding: const EdgeInsets.all(20),
           children: [
             Text(booth.name, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                _StatPill(
-                  icon: Icons.forum_rounded,
-                  label: '${booth.submissionVolume} submissions',
-                ),
-                const SizedBox(width: 8),
-                if (booth.dominantTheme != null)
-                  _StatPill(
-                    icon: kThemeIcons[booth.dominantTheme] ?? Icons.help_outline_rounded,
-                    label: kThemeLabels[booth.dominantTheme] ?? booth.dominantTheme!,
-                    color: categoryColor(booth.dominantTheme!),
-                  ),
-              ],
-            ),
-            if (booth.localContext != null) ...[
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppColors.indigoMist,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.indigoDeep),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(booth.localContext!,
-                          style: const TextStyle(fontSize: 12, color: AppColors.indigoDeep)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            Text('Cluster summaries', style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
+            Text('Ward · ${booth.constituencyId}',
+                style: TextStyle(color: AppColors.inkFaint, fontSize: 12)),
+            const SizedBox(height: 12),
             clustersAsync.when(
               data: (clusters) {
                 if (clusters.isEmpty) {
+                  return _StatRowOnly(booth: booth);
+                }
+                final top = clusters.first;
+                return _HotspotCard(booth: booth, topCluster: top);
+              },
+              loading: () => const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (_, __) => _StatRowOnly(booth: booth),
+            ),
+            const SizedBox(height: 20),
+            Text('Other recurring themes here', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            clustersAsync.when(
+              data: (clusters) {
+                final rest = clusters.length > 1 ? clusters.sublist(1) : const <ClusterModel>[];
+                if (rest.isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                      'No recurring themes clustered here yet.',
+                      'No other recurring themes clustered here yet.',
                       style: TextStyle(color: Colors.grey),
                     ),
                   );
                 }
-                return Column(
-                  children: clusters
-                      .map((c) => _ClusterTile(cluster: c))
-                      .toList(),
-                );
+                return Column(children: rest.map((c) => _ClusterTile(cluster: c)).toList());
               },
               loading: () => const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
@@ -109,6 +92,174 @@ class BoothDetailSheet extends ConsumerWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Fallback header (submission count + dominant theme + local context) shown
+/// when this booth has no clusters yet to build a full hotspot card from.
+class _StatRowOnly extends StatelessWidget {
+  const _StatRowOnly({required this.booth});
+
+  final BoothModel booth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _StatPill(icon: Icons.forum_rounded, label: '${booth.submissionVolume} submissions'),
+            const SizedBox(width: 8),
+            if (booth.dominantTheme != null)
+              _StatPill(
+                icon: kThemeIcons[booth.dominantTheme] ?? Icons.help_outline_rounded,
+                label: kThemeLabels[booth.dominantTheme] ?? booth.dominantTheme!,
+                color: categoryColor(booth.dominantTheme!),
+              ),
+          ],
+        ),
+        if (booth.localContext != null) ...[
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.indigoMist,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.indigoDeep),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(booth.localContext!,
+                      style: const TextStyle(fontSize: 12, color: AppColors.indigoDeep)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// The AI Hotspot Card: header (booth + hotspot score pill + open count),
+/// "Why it recurs" (citizen-side pattern, from the cluster) / "Why it's
+/// happening here" (local context, from the booth) sections, and a footer
+/// linking to the ranked-works list — clusters already double as ranked-work
+/// candidates there (see `RankedWorksScreen`), so "promoting" one just means
+/// jumping to where it's already ranked, not a separate fabricated action.
+class _HotspotCard extends StatelessWidget {
+  const _HotspotCard({required this.booth, required this.topCluster});
+
+  final BoothModel booth;
+  final ClusterModel topCluster;
+
+  @override
+  Widget build(BuildContext context) {
+    final hotspotScore = ((topCluster.priorityScore ?? 50) / 100).clamp(0.0, 1.0);
+    final color = categoryColor(topCluster.theme);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.vermilionMist,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: AppColors.vermilion, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${booth.name} · ${kThemeLabels[topCluster.theme] ?? topCluster.theme}',
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14.5),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.vermilion,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  hotspotScore.toStringAsFixed(2),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'monospace',
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11.5,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              _StatPill(icon: Icons.forum_rounded, label: '${booth.openIssueCount} open'),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text('WHY IT RECURS',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.saffronDeep, letterSpacing: 0.4)),
+          const SizedBox(height: 4),
+          Text(
+            '${topCluster.submissionCount} citizens have reported this in ${booth.name}. '
+            '"${topCluster.summaryText.isEmpty ? "${kThemeLabels[topCluster.theme] ?? topCluster.theme} issues reported here" : topCluster.summaryText}"',
+            style: const TextStyle(fontSize: 12.5, height: 1.4, fontStyle: FontStyle.italic),
+          ),
+          const SizedBox(height: 12),
+          Text('WHY IT\'S HAPPENING HERE',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.tealDeep, letterSpacing: 0.4)),
+          const SizedBox(height: 4),
+          Text(
+            booth.localContext ?? 'No additional local context recorded for this booth yet.',
+            style: const TextStyle(fontSize: 12.5, height: 1.4),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(kThemeIcons[topCluster.theme], size: 13, color: color),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Suggested work: ${topCluster.title ?? kThemeLabels[topCluster.theme] ?? topCluster.theme}',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color),
+                    ),
+                  ],
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.go('/official/works');
+                },
+                icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                label: const Text('See in ranked works'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'AI-generated summary · via Gemini',
+              style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: AppColors.inkFaint),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

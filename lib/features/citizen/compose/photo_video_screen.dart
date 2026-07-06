@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
@@ -11,7 +10,9 @@ import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../shared/widgets/ai_suggestion_chips.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
+import '../../../shared/widgets/location_picker.dart';
 import '../../../shared/widgets/primary_button.dart';
 import 'input_mode_switcher.dart';
 import 'theme_picker_widget.dart';
@@ -39,9 +40,12 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
 
   File? _media;
   String? _theme;
+  int? _similarCount;
   late SubmissionCategory _category;
   bool _submitting = false;
   LatLng? _pin;
+  double? _homeLat;
+  double? _homeLng;
 
   @override
   void initState() {
@@ -54,9 +58,32 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
     final uid = _authService.currentUser?.uid;
     if (uid == null) return;
     final profile = await _firestoreService.getUser(uid);
-    if (mounted && profile?.lat != null && profile?.lng != null) {
-      setState(() => _pin = LatLng(profile!.lat!, profile.lng!));
+    if (mounted) {
+      setState(() {
+        _homeLat = profile?.lat;
+        _homeLng = profile?.lng;
+      });
     }
+  }
+
+  Future<void> _selectTheme(String? themeId) async {
+    setState(() {
+      _theme = themeId;
+      _similarCount = null;
+    });
+    if (themeId == null) return;
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+    final profile = await _firestoreService.getUser(uid);
+    final constituencyId = profile?.constituencyId;
+    if (constituencyId == null) return;
+    final clusters = await _firestoreService
+        .watchClustersForConstituency(constituencyId)
+        .first;
+    final count = clusters
+        .where((c) => c.theme == themeId)
+        .fold<int>(0, (sum, c) => sum + c.submissionCount);
+    if (mounted) setState(() => _similarCount = count);
   }
 
   Future<void> _pick(ImageSource source) async {
@@ -179,45 +206,15 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                 decoration:
                     const InputDecoration(hintText: 'Add a caption (optional)'),
               ),
-              if (isReport) ...[
-                const SizedBox(height: 20),
-                Text('Exact location (adjust if needed)',
-                    style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 160,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadii.md),
-                    child: _pin == null
-                        ? Container(
-                            color: Colors.white,
-                            alignment: Alignment.center,
-                            child: const CircularProgressIndicator(),
-                          )
-                        : FlutterMap(
-                            options: MapOptions(
-                              initialCenter: _pin!,
-                              initialZoom: 15,
-                              onTap: (tapPos, point) => setState(() => _pin = point),
-                            ),
-                            children: [
-                              TileLayer(
-                                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                userAgentPackageName: 'com.prajadhvani.app',
-                              ),
-                              MarkerLayer(markers: [
-                                Marker(
-                                  point: _pin!,
-                                  width: 34,
-                                  height: 34,
-                                  child: const Icon(Icons.location_on_rounded,
-                                      color: AppColors.vermilion, size: 34),
-                                ),
-                              ]),
-                            ],
-                          ),
-                  ),
-                ),
+              const SizedBox(height: 20),
+              LocationPicker(
+                homeLat: _homeLat,
+                homeLng: _homeLng,
+                onChanged: (point) => _pin = point,
+              ),
+              if (_similarCount != null && _similarCount! > 0) ...[
+                const SizedBox(height: 12),
+                SimilarCountChip(count: _similarCount!, category: _category),
               ],
               const SizedBox(height: 24),
               Text('Pick a category (optional)',
@@ -225,7 +222,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
               const SizedBox(height: 12),
               ThemePickerWidget(
                 selected: _theme,
-                onSelected: (v) => setState(() => _theme = v),
+                onSelected: _selectTheme,
               ),
               const SizedBox(height: 32),
               PrimaryButton(

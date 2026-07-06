@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../app/providers/onboarding_progress_provider.dart';
+import '../../../app/theme.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/location_service.dart';
@@ -37,6 +38,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   bool _saving = false;
   LatLng? _pin;
   bool _helperVisible = true;
+  HomeBoothMatch? _boothMatch;
 
   bool get _pincodeValid =>
       _locationService.isValidPincode(_pincodeController.text.trim());
@@ -77,13 +79,28 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
 
   Future<void> _goToMap() async {
     if (!_pincodeValid) return;
-    final centroid = await _locationService.resolveCentroid(
-      _pincodeController.text.trim(),
-    );
+    final pincode = _pincodeController.text.trim();
+    final results = await Future.wait([
+      _locationService.resolveCentroid(pincode),
+      _locationService.resolveHomeBooth(pincode),
+    ]);
     if (!mounted) return;
-    setState(() => _pin = LatLng(centroid.$1, centroid.$2));
+    final centroid = results[0] as (double, double);
+    final boothMatch = results[1] as HomeBoothMatch?;
+    setState(() {
+      _pin = LatLng(centroid.$1, centroid.$2);
+      _boothMatch = boothMatch;
+    });
     _pageController.animateToPage(
       1,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _thisIsntMe() {
+    _pageController.animateToPage(
+      0,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -95,7 +112,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
 
     setState(() => _saving = true);
     final pincode = _pincodeController.text.trim();
-    final constituencyId = await _locationService.resolveConstituency(pincode);
+    final match = _boothMatch ?? await _locationService.resolveHomeBooth(pincode);
 
     final existing = await _firestoreService.getUser(uid);
     final updated = (existing ??
@@ -105,13 +122,15 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       addressHome: _addressController.text.trim(),
       lat: _pin!.latitude,
       lng: _pin!.longitude,
-      constituencyId: constituencyId,
+      constituencyId: match?.constituencyId,
+      homeBoothId: match?.boothId,
+      homeBoothName: match?.boothName,
     );
     await _firestoreService.upsertUser(updated);
     await ref
         .read(onboardingProgressProvider.notifier)
         .advanceTo(OnboardingStep.done);
-    if (mounted) context.go('/home');
+    if (mounted) context.go('/signup/done');
   }
 
   @override
@@ -258,11 +277,39 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
           left: 24,
           right: 24,
           bottom: 24,
-          child: PrimaryButton(
-            label: 'Confirm Location',
-            icon: Icons.check_circle_rounded,
-            loading: _saving,
-            onPressed: _confirmLocation,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppRadii.md),
+                  boxShadow: appCardShadow,
+                ),
+                child: Text(
+                  _boothMatch == null
+                      ? 'Home constituency and booth will be confirmed once matched to your area.'
+                      : 'Home constituency: ${_boothMatch!.constituencyId ?? "—"} · '
+                          'Home booth: ${_boothMatch!.boothName ?? _boothMatch!.boothId}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                ),
+              ),
+              const SizedBox(height: 10),
+              PrimaryButton(
+                label: 'Looks right',
+                icon: Icons.check_circle_rounded,
+                loading: _saving,
+                onPressed: _confirmLocation,
+              ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: _saving ? null : _thisIsntMe,
+                child: const Text("This isn't me"),
+              ),
+            ],
           ),
         ),
       ],

@@ -1,9 +1,22 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 import 'pincode_lookup.dart';
+
+/// Result of matching a pincode against seeded `booths` reference data —
+/// carries the booth's own id/name alongside its constituencyId so callers
+/// can show "Home constituency · Home booth" together (Location Setup,
+/// Profile) instead of just the constituency.
+class HomeBoothMatch {
+  const HomeBoothMatch({this.constituencyId, required this.boothId, this.boothName});
+
+  final String? constituencyId;
+  final String boothId;
+  final String? boothName;
+}
 
 /// Location = pincode entry + optional map pin drop only. Uses OpenStreetMap's
 /// free Nominatim geocoding service (no API key) instead of a platform
@@ -53,6 +66,33 @@ class LocationService {
     return RegExp(r'^[1-9][0-9]{5}$').hasMatch(pincode);
   }
 
+  /// Live device GPS for the "At my current location" submit-flow pill —
+  /// returns null on any denial/failure (permission refused, location
+  /// services off, timeout) so callers can fall back to the citizen's home
+  /// coordinates rather than blocking submission on a location fix.
+  Future<(double lat, double lng)?> getCurrentLatLng() async {
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) return null;
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return null;
+      }
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 8),
+        ),
+      );
+      return (position.latitude, position.longitude);
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Approximate lat/lng centroid for a pincode, used to center the "Confirm
   /// on map" pin-drop view. Falls back to New Delhi's centroid if geocoding
   /// is unavailable.
@@ -84,6 +124,15 @@ class LocationService {
   /// out-of-coverage pincode) — callers must treat that as "unmapped for
   /// now," not an error.
   Future<String?> resolveConstituency(String pincode) async {
+    final booth = await resolveHomeBooth(pincode);
+    return booth?.constituencyId;
+  }
+
+  /// Same lookup as [resolveConstituency], but also returns the matched
+  /// booth's own id/name — used to show "Home constituency · Home booth"
+  /// together on the Location Setup and Profile screens instead of just
+  /// the constituency.
+  Future<HomeBoothMatch?> resolveHomeBooth(String pincode) async {
     try {
       final snapshot = await _db
           .collection('booths')
@@ -91,7 +140,13 @@ class LocationService {
           .limit(1)
           .get();
       if (snapshot.docs.isEmpty) return null;
-      return snapshot.docs.first.data()['constituencyId'] as String?;
+      final doc = snapshot.docs.first;
+      final data = doc.data();
+      return HomeBoothMatch(
+        constituencyId: data['constituencyId'] as String?,
+        boothId: doc.id,
+        boothName: data['name'] as String?,
+      );
     } catch (_) {
       return null;
     }

@@ -151,6 +151,13 @@ class _CitizenEntry extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
         ),
+        const SizedBox(height: 16),
+        Text(
+          "You stay anonymous to other citizens. Your Aadhaar number is never "
+          "stored. Your MP's office sees aggregated demand, not your identity.",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppColors.inkFaint, fontSize: 11.5, height: 1.4),
+        ),
         const Spacer(),
         PrimaryButton(
           label: 'Get started',

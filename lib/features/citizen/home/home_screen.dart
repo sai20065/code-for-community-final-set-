@@ -6,15 +6,18 @@ import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 const _kFilterCategories = ['education', 'roads', 'water', 'skilling', 'health'];
 
 /// Home: booth/constituency context up top, category filter chips, a
-/// "Trending near you" ranked-suggestion feed, and two FABs distinct by
-/// priority — primary "Submit suggestion" (saffron, bottom-right) is the
-/// main product surface; secondary "Report problem" (vermilion outline,
-/// bottom-left) is the simpler civic-issue flow.
+/// "Trending near you" ranked-suggestion feed (public — feedback-category
+/// only, per the Firestore security rules' own-area/feedback-only sharing
+/// model), a private "Your recent reports" strip for the citizen's own
+/// problem tickets, and a single FAB that opens the category picker (the
+/// first step of the submit flow) rather than jumping straight into a
+/// preset mode.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -49,7 +52,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
                     profile?.constituencyId != null
-                        ? 'Constituency ${profile!.constituencyId} · Pincode ${profile.pincodeHome ?? "—"}'
+                        ? 'Home: ${profile!.constituencyId}'
+                            '${profile.homeBoothName != null ? " · Booth ${profile.homeBoothName}" : ""}'
                         : 'Pincode ${profile?.pincodeHome ?? "—"}',
                     style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
@@ -99,6 +103,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     },
                   ),
                 ),
+                if (uid != null) ...[
+                  const SizedBox(height: 14),
+                  _MyRecentReports(uid: uid),
+                ],
                 const SizedBox(height: 14),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -138,28 +146,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             right: 20,
             bottom: 20,
             child: FloatingActionButton.extended(
-              heroTag: 'suggest-fab',
+              heroTag: 'new-submission-fab',
               backgroundColor: AppColors.saffron,
-              onPressed: () => context.go('/compose/text', extra: SubmissionCategory.feedback),
+              onPressed: () => context.go('/compose'),
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Submit suggestion'),
-            ),
-          ),
-          Positioned(
-            left: 20,
-            bottom: 20,
-            child: FloatingActionButton.extended(
-              heroTag: 'report-fab',
-              backgroundColor: Colors.white,
-              foregroundColor: AppColors.vermilion,
-              elevation: 1,
-              onPressed: () => context.go('/compose/photo', extra: SubmissionCategory.problem),
-              icon: const Icon(Icons.warning_amber_rounded),
-              label: const Text('Report problem'),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(28),
-                side: const BorderSide(color: AppColors.vermilion, width: 1.4),
-              ),
+              label: const Text('New submission'),
             ),
           ),
         ],
@@ -225,6 +216,109 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 12),
             Text(message, textAlign: TextAlign.center, style: TextStyle(color: AppColors.inkFaint)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Private strip of the citizen's own most-recent problem reports — kept
+/// separate from the public "Trending near you" feed below, since Firestore
+/// security rules only let a citizen read their OWN problem tickets (only
+/// `feedback`-category tickets are shared across a constituency).
+class _MyRecentReports extends ConsumerWidget {
+  const _MyRecentReports({required this.uid});
+
+  final String uid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final submissionsAsync = ref.watch(_userSubmissionsProvider(uid));
+    return submissionsAsync.when(
+      data: (submissions) {
+        final reports = submissions
+            .where((s) => s.category == SubmissionCategory.problem)
+            .take(3)
+            .toList();
+        if (reports.isEmpty) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('Your recent reports',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 92,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: reports.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                itemBuilder: (context, index) {
+                  final s = reports[index];
+                  return _MyReportCard(
+                    submission: s,
+                    onTap: () => context.go('/reports/${s.id}', extra: s),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+final _userSubmissionsProvider =
+    StreamProvider.family<List<SubmissionModel>, String>((ref, uid) {
+  return ref.watch(firestoreServiceProvider).watchUserSubmissions(uid);
+});
+
+class _MyReportCard extends StatelessWidget {
+  const _MyReportCard({required this.submission, required this.onTap});
+
+  final SubmissionModel submission;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeId = submission.theme ?? 'more';
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        onTap: onTap,
+        child: Container(
+          width: 200,
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(kThemeIcons[themeId], size: 14, color: categoryColor(themeId)),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      submission.rawText ?? submission.transcript ?? submission.tokenId,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              StatusStepper(status: submission.status, compact: true),
+            ],
+          ),
         ),
       ),
     );
@@ -308,58 +402,80 @@ class _TrendingCard extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              SizedBox(
-                width: 28,
-                child: Text(
-                  '#$rank',
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.indigo,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 28,
+                    child: Text(
+                      '#$rank',
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.indigo,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: categoryColor(themeId),
-                child: Icon(kThemeIcons[themeId], color: Colors.white, size: 16),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      submission.rawText ?? submission.transcript ?? '',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                  CircleAvatar(
+                    radius: 16,
+                    backgroundColor: categoryColor(themeId),
+                    child: Icon(kThemeIcons[themeId], color: Colors.white, size: 16),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16, right: 70),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            submission.rawText ?? submission.transcript ?? '',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            '${submission.supporterCount} supporters',
+                            style: TextStyle(color: AppColors.inkFaint, fontSize: 11.5),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      '${submission.supporterCount} supporters',
-                      style: TextStyle(color: AppColors.inkFaint, fontSize: 11.5),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton(
+                    onPressed: onSupport,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      minimumSize: const Size(44, 36),
+                      foregroundColor: isSupportedByMe ? Colors.white : AppColors.saffronDeep,
+                      backgroundColor: isSupportedByMe ? AppColors.saffron : Colors.white,
+                      side: const BorderSide(color: AppColors.saffron),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
-                  ],
-                ),
+                    child: Text(
+                      isSupportedByMe ? 'Supported' : 'I support this',
+                      style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              OutlinedButton(
-                onPressed: onSupport,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  minimumSize: const Size(44, 36),
-                  foregroundColor: isSupportedByMe ? Colors.white : AppColors.saffronDeep,
-                  backgroundColor: isSupportedByMe ? AppColors.saffron : Colors.white,
-                  side: const BorderSide(color: AppColors.saffron),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                child: Text(
-                  isSupportedByMe ? 'Supported' : 'I support this',
-                  style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.saffronMist,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'SUGGESTION',
+                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: AppColors.saffronDeep),
+                  ),
                 ),
               ),
             ],

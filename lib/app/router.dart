@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/models/booth_model.dart';
 import '../core/models/submission_model.dart';
+import '../features/citizen/compose/category_picker_screen.dart';
 import '../features/citizen/compose/photo_video_screen.dart';
 import '../features/citizen/compose/text_compose_screen.dart';
 import '../features/citizen/compose/voice_record_screen.dart';
@@ -21,6 +22,7 @@ import '../features/onboarding/language_select_screen.dart';
 import '../features/onboarding/signup/aadhaar_upload_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
+import '../features/onboarding/signup/onboarding_done_screen.dart';
 import '../features/onboarding/splash_screen.dart';
 import '../features/onboarding/welcome_screen.dart';
 
@@ -53,9 +55,17 @@ final appRouter = GoRouter(
       path: '/signup/location',
       builder: (context, state) => const LocationSetupScreen(),
     ),
+    GoRoute(
+      path: '/signup/done',
+      builder: (context, state) => const OnboardingDoneScreen(),
+    ),
 
     // --- Citizen shell ---
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+    GoRoute(
+      path: '/compose',
+      builder: (context, state) => const CategoryPickerScreen(),
+    ),
     GoRoute(
       path: '/compose/voice',
       builder: (context, state) => VoiceRecordScreen(

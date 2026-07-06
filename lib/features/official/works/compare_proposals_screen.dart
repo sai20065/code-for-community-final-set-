@@ -90,7 +90,7 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
                               ],
                             ),
                             const SizedBox(height: 20),
-                            _RecommendationCard(left: left, right: right),
+                            _TradeOffBrief(left: left, right: right),
                           ],
                         ),
                       ),
@@ -226,22 +226,28 @@ class _StatRow extends StatelessWidget {
   }
 }
 
-/// AI-recommendation line, generated from the two clusters' own numbers —
-/// this is the core "why one is favored" capability the brief calls out as
-/// the prominent centerpiece of the compare tool.
-class _RecommendationCard extends StatelessWidget {
-  const _RecommendationCard({required this.left, required this.right});
+/// Structured AI trade-off brief, generated from the two clusters' own
+/// numbers — three cited lines (who benefits / what the data says / what
+/// each defers) plus a final recommendation, rather than one flat sentence.
+/// Every number here comes straight from the cluster fields shown in the
+/// cards above — no separate black-box call.
+class _TradeOffBrief extends StatelessWidget {
+  const _TradeOffBrief({required this.left, required this.right});
 
   final ClusterModel left;
   final ClusterModel right;
 
-  String _recommend() {
-    final leftTotal = (left.priorityScore ?? ((left.demandScore ?? 0) + (left.demographicScore ?? 0) + (left.infraGapScore ?? 0)));
-    final rightTotal = (right.priorityScore ?? ((right.demandScore ?? 0) + (right.demographicScore ?? 0) + (right.infraGapScore ?? 0)));
-    final winner = leftTotal >= rightTotal ? left : right;
-    final loser = leftTotal >= rightTotal ? right : left;
-    final winnerName = winner.title ?? kThemeLabels[winner.theme] ?? winner.theme;
-    final loserName = loser.title ?? kThemeLabels[loser.theme] ?? loser.theme;
+  double _total(ClusterModel c) =>
+      c.priorityScore ?? ((c.demandScore ?? 0) + (c.demographicScore ?? 0) + (c.infraGapScore ?? 0));
+
+  String _name(ClusterModel c) => c.title ?? kThemeLabels[c.theme] ?? c.theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final winner = _total(left) >= _total(right) ? left : right;
+    final loser = _total(left) >= _total(right) ? right : left;
+    final winnerName = _name(winner);
+    final loserName = _name(loser);
 
     final reasons = <String>[];
     if ((winner.demandScore ?? 0) > (loser.demandScore ?? 0)) {
@@ -253,15 +259,18 @@ class _RecommendationCard extends StatelessWidget {
     if ((winner.infraGapScore ?? 0) > (loser.infraGapScore ?? 0)) {
       reasons.add('a larger existing infrastructure gap (${winner.infraGapScore?.toStringAsFixed(0) ?? "—"} vs. ${loser.infraGapScore?.toStringAsFixed(0) ?? "—"})');
     }
-    final reasonText = reasons.isEmpty
-        ? 'a higher overall composite score'
-        : reasons.join(' and ');
+    final dataLine = reasons.isEmpty
+        ? '$winnerName has a higher overall composite score than $loserName.'
+        : '$winnerName leads $loserName on ${reasons.join(' and ')}.';
 
-    return '$winnerName is favored over $loserName based on $reasonText.';
-  }
+    final benefitsLine = winner.affectedBoothRange != null
+        ? '$winnerName reaches ${winner.affectedBoothRange} (${winner.submissionCount} tickets recorded).'
+        : '$winnerName has ${winner.submissionCount} citizen tickets behind it constituency-wide.';
 
-  @override
-  Widget build(BuildContext context) {
+    final defersLine = '${loser.submissionCount} tickets for $loserName'
+        '${loser.affectedBoothRange != null ? " (${loser.affectedBoothRange})" : ""} '
+        'wait for a later cycle if $winnerName is prioritised now.';
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -269,19 +278,68 @@ class _RecommendationCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadii.md),
         border: Border.all(color: AppColors.indigo.withValues(alpha: 0.2)),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.auto_awesome_rounded, color: AppColors.indigoDeep, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              _recommend(),
-              style: const TextStyle(color: AppColors.indigoDeep, fontWeight: FontWeight.w600, fontSize: 13, height: 1.4),
-            ),
+          Row(
+            children: [
+              const Icon(Icons.auto_awesome_rounded, color: AppColors.indigoDeep, size: 18),
+              const SizedBox(width: 8),
+              const Text('AI trade-off brief',
+                  style: TextStyle(color: AppColors.indigoDeep, fontWeight: FontWeight.w800, fontSize: 13.5)),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text('grounded in evidence',
+                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: AppColors.indigoDeep)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _BriefBullet(label: 'Who benefits', text: benefitsLine),
+          const SizedBox(height: 8),
+          _BriefBullet(label: 'What the data says', text: dataLine),
+          const SizedBox(height: 8),
+          _BriefBullet(label: 'What each defers', text: defersLine),
+          const SizedBox(height: 12),
+          Text(
+            'Recommendation: prioritise $winnerName this cycle.',
+            style: const TextStyle(color: AppColors.saffronDeep, fontWeight: FontWeight.w800, fontSize: 13),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BriefBullet extends StatelessWidget {
+  const _BriefBullet({required this.label, required this.text});
+
+  final String label;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('•  ', style: TextStyle(color: AppColors.indigoDeep, fontWeight: FontWeight.w800)),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(color: AppColors.indigoDeep, fontSize: 12.5, height: 1.4),
+              children: [
+                TextSpan(text: '$label: ', style: const TextStyle(fontWeight: FontWeight.w800)),
+                TextSpan(text: text),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

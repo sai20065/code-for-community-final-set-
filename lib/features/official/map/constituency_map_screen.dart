@@ -6,16 +6,26 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
-import '../../../shared/widgets/theme_icon_chip.dart';
 import '../booth/booth_detail_sheet.dart';
 
-const _kLegendThemes = ['education', 'roads', 'water', 'skilling'];
-
-/// Booth-level demand map: dot size = submission volume, dot color =
-/// dominant theme category (the 4 legend colors). Every official only ever
-/// sees their OWN constituency here, scoped via `currentUserProfileProvider`.
-/// Tapping a booth opens a callout panel (submission count, dominant theme,
-/// local context) via the shared `BoothDetailSheet`.
+/// Booth-level demand map: dot size = submission volume, dot color = density
+/// band (red = hotspot / amber = moderate / green = mostly resolved, from
+/// `BoothModel.densityLevel`, i.e. `openIssueCount`) rather than theme, so
+/// the map answers "where does this MP need to look first" at a glance.
+/// Every official only ever sees their OWN constituency here, scoped via
+/// `currentUserProfileProvider`. Tapping a booth highlights it and opens a
+/// callout panel (submission count, dominant theme, local context) via the
+/// shared `BoothDetailSheet`.
+Color _densityColor(String level) {
+  switch (level) {
+    case 'red':
+      return AppColors.vermilion;
+    case 'amber':
+      return AppColors.saffron;
+    default:
+      return AppColors.teal;
+  }
+}
 class ConstituencyMapScreen extends ConsumerWidget {
   const ConstituencyMapScreen({super.key});
 
@@ -48,14 +58,21 @@ class ConstituencyMapScreen extends ConsumerWidget {
   }
 }
 
-class _BoothMap extends ConsumerWidget {
+class _BoothMap extends ConsumerStatefulWidget {
   const _BoothMap({required this.constituencyId});
 
   final String constituencyId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final boothsAsync = ref.watch(_boothsProvider(constituencyId));
+  ConsumerState<_BoothMap> createState() => _BoothMapState();
+}
+
+class _BoothMapState extends ConsumerState<_BoothMap> {
+  String? _selectedBoothId;
+
+  @override
+  Widget build(BuildContext context) {
+    final boothsAsync = ref.watch(_boothsProvider(widget.constituencyId));
 
     return boothsAsync.when(
       data: (booths) {
@@ -85,25 +102,43 @@ class _BoothMap extends ConsumerWidget {
                 ),
                 MarkerLayer(
                   markers: booths.map((booth) {
-                    final color = categoryColor(booth.dominantTheme ?? 'roads');
+                    final color = _densityColor(booth.densityLevel);
+                    final selected = booth.id == _selectedBoothId;
                     final size = 18.0 + (booth.submissionVolume / maxVolume) * 26.0;
                     return Marker(
                       point: LatLng(booth.lat, booth.lng),
                       width: size + 8,
                       height: size + 8,
                       child: GestureDetector(
-                        onTap: () => showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (_) => BoothDetailSheet(booth: booth),
-                        ),
+                        onTap: () {
+                          setState(() => _selectedBoothId = booth.id);
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => BoothDetailSheet(booth: booth),
+                          );
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             color: color.withValues(alpha: 0.85),
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
+                            border: Border.all(
+                              color: selected ? AppColors.indigo : Colors.white,
+                              width: selected ? 3 : 2,
+                            ),
                             boxShadow: appCardShadow,
                           ),
+                          alignment: Alignment.center,
+                          child: selected
+                              ? Text(
+                                  '${booth.openIssueCount}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                )
+                              : null,
                         ),
                       ),
                     );
@@ -111,7 +146,7 @@ class _BoothMap extends ConsumerWidget {
                 ),
               ],
             ),
-            Positioned(
+            const Positioned(
               left: 16,
               bottom: 16,
               child: _Legend(),
@@ -132,6 +167,7 @@ class _Legend extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
+      constraints: const BoxConstraints(maxWidth: 220),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadii.sm),
@@ -141,25 +177,43 @@ class _Legend extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Dominant theme',
+          Text('Open-issue density',
               style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.inkFaint)),
           const SizedBox(height: 6),
-          for (final id in _kLegendThemes)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(color: categoryColor(id), shape: BoxShape.circle),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(kThemeLabels[id] ?? id, style: const TextStyle(fontSize: 11)),
-                ],
-              ),
-            ),
+          const _LegendRow(color: AppColors.vermilion, label: 'High — needs attention'),
+          const _LegendRow(color: AppColors.saffron, label: 'Moderate'),
+          const _LegendRow(color: AppColors.teal, label: 'Low / mostly resolved'),
+          const SizedBox(height: 6),
+          Text(
+            'Dot size = submission volume',
+            style: TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegendRow extends StatelessWidget {
+  const _LegendRow({required this.color, required this.label});
+
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(label, style: const TextStyle(fontSize: 11)),
         ],
       ),
     );

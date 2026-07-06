@@ -97,6 +97,8 @@ jobs:
                   "RECORD_AUDIO",
                   "READ_MEDIA_IMAGES",
                   "READ_EXTERNAL_STORAGE",
+                  "ACCESS_FINE_LOCATION",
+                  "ACCESS_COARSE_LOCATION",
               ]
           )
           marker = "<application"

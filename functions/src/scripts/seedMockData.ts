@@ -4,8 +4,8 @@
  * ranked development-work clusters, and a handful of sample suggestion/
  * report tickets) so the citizen Home trending feed, the booth demand map,
  * the ranked-works panel, and the compare tool are all demoable without
- * waiting for real citizen submissions or the Gemini/Bhashini pipeline to
- * be deployed.
+ * waiting for real citizen submissions or the Gemini/Cloud Translate
+ * pipeline to be deployed.
  *
  * This does NOT touch `users/{uid}` — it only seeds the shared reference/
  * analytics collections (`constituencies`, `booths`, `clusters`) plus a
