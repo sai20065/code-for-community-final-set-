@@ -27,12 +27,14 @@ jobs:
           channel: 'stable'
 
       # android/ isn't committed to this repo (generated on demand) — this
-      # scaffolds it fresh without touching the existing lib/ code. Not
-      # passing --org/--project-name here since pubspec.yaml already exists;
-      # the applicationId gets forced to the real package name in the next
-      # step regardless of whatever flutter create defaults to.
+      # scaffolds it fresh without touching the existing lib/ code.
+      # --project-name is required here: without it, `flutter create .`
+      # infers the project name from the checkout directory's basename,
+      # which on GitHub Actions is the repo name
+      # "code-for-community-final-set-" — invalid as a Dart identifier
+      # (hyphens, trailing hyphen) and fails the whole step immediately.
       - name: Generate Android platform folder
-        run: flutter create . --platforms=android
+        run: flutter create . --platforms=android --project-name praja_dhvani
 
       # Forces applicationId/namespace to com.prajadhvani.app (matching
       # firebase_options.dart) AND relocates MainActivity.kt to the
