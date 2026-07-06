@@ -93,6 +93,26 @@ class LocationService {
     }
   }
 
+  /// Best-effort reverse geocode of a captured pin into a human-readable
+  /// address string, so a citizen who taps "Use my location" still gets a
+  /// readable `addressHome` stored in the database alongside the raw
+  /// lat/lng. Uses the same free Nominatim service (no API key); returns
+  /// null on any failure so it never blocks signup.
+  Future<String?> reverseGeocode(double lat, double lng) async {
+    try {
+      final uri = Uri.parse(
+        '$_nominatimBase/reverse?lat=$lat&lon=$lng&format=json&addressdetails=1',
+      );
+      final response = await http.get(uri, headers: {'User-Agent': _userAgent});
+      if (response.statusCode != 200) return null;
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final display = data['display_name'] as String?;
+      return (display != null && display.isNotEmpty) ? display : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Approximate lat/lng centroid for a pincode, used to center the "Confirm
   /// on map" pin-drop view. Falls back to New Delhi's centroid if geocoding
   /// is unavailable.

@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../app/providers/onboarding_progress_provider.dart';
 import '../../app/theme.dart';
@@ -12,21 +14,18 @@ import '../../core/models/user_model.dart';
 import '../../core/services/aadhaar_ocr_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
+import '../../core/services/location_service.dart';
 import '../../shared/widgets/primary_button.dart';
-
-/// Which sign-in method the citizen has expanded on the Sign Up screen.
-/// `null` means the picker itself ("Phone" / "Email" / "Skip") is showing,
-/// with neither sub-form open yet.
-enum _AuthMethod { phone, email }
 
 /// New-citizen entry point — folds one-time Aadhaar-photo OCR (front AND
 /// back; the back side often carries the full address the front truncates,
 /// so capturing it improves extraction accuracy, though it is never
 /// required — manual entry always works) and account creation into a
 /// single screen: upload → (optionally) fix up the extracted
-/// name/pincode/address/ward number → pick how to sign in. Phone and email
-/// are real Firebase accounts (portable across a reinstall); "stay
-/// anonymous" remains available for anyone who'd rather not attach either.
+/// name/pincode/ward number → capture your location → sign in with a phone
+/// number, or stay anonymous. Phone is a real Firebase account (portable
+/// across a reinstall); "stay anonymous" remains available for anyone who'd
+/// rather not attach a number.
 ///
 /// Distinct from `SignInScreen`: this screen only ever creates a brand-new
 /// account and always writes a fresh `users/{uid}.signupCompletedAt` —
@@ -43,15 +42,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _ocrService = AadhaarOcrService();
   final _authService = AuthService();
   final _firestoreService = FirestoreService();
+  final _locationService = LocationService();
 
   final _nameController = TextEditingController();
   final _pincodeController = TextEditingController();
-  final _addressController = TextEditingController();
   final _wardController = TextEditingController();
   final _phoneController = TextEditingController();
   final _codeController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   File? _frontImage;
   File? _backImage;
@@ -60,8 +57,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   String? _error;
   double? _extractionConfidence;
 
+  // Captured home location (from the "Use my location" button / map pin).
+  // `_addressLabel` is a best-effort reverse-geocoded string stored as the
+  // human-readable addressHome; the raw lat/lng is the source of truth.
+  LatLng? _homePin;
+  bool _locating = false;
+  String? _addressLabel;
+
   bool _showAuthOptions = false;
-  _AuthMethod? _authMethod;
   String? _verificationId;
   bool _codeSent = false;
   bool _sendingCode = false;
@@ -97,6 +100,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       _error = null;
     });
     try {
+      // The Aadhaar OCR Cloud Function is `onCall` and requires an
+      // authenticated caller — but on this screen the citizen hasn't picked
+      // a sign-in method yet. Establish an (anonymous) Firebase session
+      // first so the callable has a valid auth token; it persists and either
+      // becomes their account ("stay anonymous") or is superseded when they
+      // verify a phone number.
+      await _authService.ensureSignedIn();
       final result = await _ocrService.extractDetails(
         front: _frontImage!,
         back: _backImage,
@@ -107,7 +117,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         _extractionConfidence = result.confidence;
         if (result.name != null) _nameController.text = result.name!;
         if (result.pincode != null) _pincodeController.text = result.pincode!;
-        if (result.address != null) _addressController.text = result.address!;
+        if (result.address != null) _addressLabel = result.address!;
         if (result.wardNumber != null) _wardController.text = result.wardNumber!;
         if (!result.looksUsable) {
           _error = "Couldn't read that clearly — check the details below or enter them manually.";
@@ -124,6 +134,43 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
+  /// "Use my location" — capture the citizen's home coordinates via GPS and
+  /// best-effort reverse-geocode them into a readable address label. Reuses
+  /// `LocationService.getCurrentLatLng()` (same GPS path the compose flow's
+  /// location picker uses). On failure, leaves the pin unset so they can drop
+  /// one manually on the map preview.
+  Future<void> _useMyLocation() async {
+    setState(() {
+      _locating = true;
+      _authError = null;
+    });
+    final fix = await _locationService.getCurrentLatLng();
+    if (!mounted) return;
+    if (fix == null) {
+      setState(() {
+        _locating = false;
+        _homePin ??= const LatLng(28.6139, 77.2090);
+        _addressLabel = null;
+      });
+      return;
+    }
+    final point = LatLng(fix.$1, fix.$2);
+    final label = await _locationService.reverseGeocode(point.latitude, point.longitude);
+    if (!mounted) return;
+    setState(() {
+      _locating = false;
+      _homePin = point;
+      if (label != null) _addressLabel = label;
+    });
+  }
+
+  Future<void> _movePin(LatLng point) async {
+    setState(() => _homePin = point);
+    final label = await _locationService.reverseGeocode(point.latitude, point.longitude);
+    if (!mounted) return;
+    if (label != null) setState(() => _addressLabel = label);
+  }
+
   /// Common tail of every Sign Up path: writes the (possibly Aadhaar-OCR'd)
   /// name/pincode/address/ward onto the just-created `users/{uid}` doc,
   /// stamps `signupCompletedAt` as the authoritative "profile is real and
@@ -135,15 +182,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       preferredLanguage: 'en',
       name: _nameController.text.trim(),
       pincodeHome: _pincodeController.text.trim(),
-      addressHome: _addressController.text.trim(),
+      addressHome: _addressLabel,
     );
     await _firestoreService.upsertUser(existing.copyWith(
       name: _nameController.text.trim(),
       pincodeHome: _pincodeController.text.trim(),
-      addressHome: _addressController.text.trim(),
+      addressHome: _addressLabel,
       wardNumber: _wardController.text.trim().isEmpty
           ? null
           : _wardController.text.trim(),
+      lat: _homePin?.latitude,
+      lng: _homePin?.longitude,
       signInMethod: method,
       aadhaarExtractionConfidence: _extractionConfidence,
       signupCompletedAt: DateTime.now(),
@@ -225,51 +274,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
-  Future<void> _createWithEmail() async {
-    final email = _emailController.text.trim();
-    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
-      setState(() => _authError = 'Enter a valid email address.');
-      return;
-    }
-    if (_passwordController.text.length < 6) {
-      setState(() => _authError = 'Password must be at least 6 characters.');
-      return;
-    }
-    setState(() {
-      _finishing = true;
-      _authError = null;
-    });
-    try {
-      final user = await _authService.signUpWithEmail(
-        email: email,
-        password: _passwordController.text,
-      );
-      await _finishSignup(user, SignInMethod.email);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _finishing = false;
-        _authError = e.code == 'email-already-in-use'
-            ? 'You already have an account with this email — use Sign In instead.'
-            : 'Could not create your account — check your details and try again.';
-      });
-    } catch (e) {
-      setState(() {
-        _finishing = false;
-        _authError = 'Could not create your account — check your details and try again.';
-      });
-    }
-  }
-
   @override
   void dispose() {
     _nameController.dispose();
     _pincodeController.dispose();
-    _addressController.dispose();
     _wardController.dispose();
     _phoneController.dispose();
     _codeController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -369,10 +380,58 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   decoration: const InputDecoration(hintText: 'Pincode'),
                   onChanged: (_) => setState(() {}),
                 ),
-                TextField(
-                  controller: _addressController,
-                  decoration: const InputDecoration(hintText: 'Address (street, area)'),
+                const SizedBox(height: 4),
+                // Location capture replaces a free-text address field: one
+                // tap grabs GPS coordinates (reverse-geocoded to a readable
+                // label for the DB), and the citizen can fine-tune by tapping
+                // the map. Both the raw lat/lng and the label are saved.
+                OutlinedButton.icon(
+                  onPressed: _locating ? null : _useMyLocation,
+                  icon: _locating
+                      ? const SizedBox(
+                          width: 16, height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.my_location_rounded),
+                  label: Text(_homePin == null ? 'Use my location' : 'Update my location'),
                 ),
+                if (_addressLabel != null) ...[
+                  const SizedBox(height: 6),
+                  Text(_addressLabel!,
+                      style: TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+                ],
+                if (_homePin != null) ...[
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 150,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(AppRadii.md),
+                      child: FlutterMap(
+                        options: MapOptions(
+                          initialCenter: _homePin!,
+                          initialZoom: 15,
+                          onTap: (_, point) => _movePin(point),
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.prajadhvani.app',
+                          ),
+                          MarkerLayer(markers: [
+                            Marker(
+                              point: _homePin!,
+                              width: 34,
+                              height: 34,
+                              child: const Icon(Icons.location_on_rounded,
+                                  color: AppColors.vermilion, size: 34),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Text('Tap the map to adjust your exact location.',
+                      style: TextStyle(fontSize: 11, color: AppColors.inkFaint)),
+                ],
                 const SizedBox(height: 10),
                 TextField(
                   controller: _wardController,
@@ -389,97 +448,54 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               else ...[
                 const SizedBox(height: 4),
                 Text(
-                  'How would you like to sign in?',
+                  'Verify with your phone number',
                   style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink, fontSize: 13.5),
                 ),
                 const SizedBox(height: 10),
-                _AuthMethodTile(
-                  icon: Icons.phone_android_rounded,
-                  label: 'Continue with phone number',
-                  selected: _authMethod == _AuthMethod.phone,
-                  onTap: () => setState(() {
-                    _authMethod = _AuthMethod.phone;
-                    _authError = null;
-                  }),
-                ),
-                if (_authMethod == _AuthMethod.phone) ...[
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text('+91'),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          maxLength: 10,
-                          enabled: !_codeSent,
-                          decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
-                        ),
+                      child: const Text('+91'),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                        enabled: !_codeSent,
+                        decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
                       ),
-                    ],
-                  ),
-                  if (!_codeSent) ...[
-                    const SizedBox(height: 10),
-                    PrimaryButton(
-                      label: 'Send code',
-                      icon: Icons.sms_rounded,
-                      loading: _sendingCode,
-                      onPressed: _sendingCode ? null : _sendCode,
-                    ),
-                  ] else ...[
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: _codeController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
-                      decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
-                    ),
-                    const SizedBox(height: 10),
-                    PrimaryButton(
-                      label: 'Verify & continue',
-                      icon: Icons.check_circle_rounded,
-                      loading: _finishing,
-                      onPressed: _finishing ? null : _verifyCode,
                     ),
                   ],
-                ],
-                const SizedBox(height: 8),
-                _AuthMethodTile(
-                  icon: Icons.email_rounded,
-                  label: 'Continue with email',
-                  selected: _authMethod == _AuthMethod.email,
-                  onTap: () => setState(() {
-                    _authMethod = _AuthMethod.email;
-                    _authError = null;
-                  }),
                 ),
-                if (_authMethod == _AuthMethod.email) ...[
+                if (!_codeSent) ...[
                   const SizedBox(height: 10),
-                  TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(hintText: 'Email address'),
+                  PrimaryButton(
+                    label: 'Send code',
+                    icon: Icons.sms_rounded,
+                    loading: _sendingCode,
+                    onPressed: _sendingCode ? null : _sendCode,
                   ),
+                ] else ...[
                   const SizedBox(height: 10),
                   TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(hintText: 'Password'),
+                    controller: _codeController,
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                    decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
                   ),
                   const SizedBox(height: 10),
                   PrimaryButton(
-                    label: 'Create account',
-                    icon: Icons.arrow_forward_rounded,
+                    label: 'Verify & continue',
+                    icon: Icons.check_circle_rounded,
                     loading: _finishing,
-                    onPressed: _finishing ? null : _createWithEmail,
+                    onPressed: _finishing ? null : _verifyCode,
                   ),
                 ],
                 if (_authError != null) ...[
@@ -572,52 +588,6 @@ class _AadhaarImageSlot extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _AuthMethodTile extends StatelessWidget {
-  const _AuthMethodTile({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppRadii.sm),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.indigoMist : Colors.white,
-          borderRadius: BorderRadius.circular(AppRadii.sm),
-          border: Border.all(
-            color: selected ? AppColors.indigo : Colors.grey.shade300,
-            width: selected ? 1.5 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: selected ? AppColors.indigo : AppColors.inkSoft),
-            const SizedBox(width: 10),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: selected ? AppColors.indigo : AppColors.ink,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -10,13 +10,14 @@ import '../../core/models/user_model.dart';
 import '../../core/services/auth_service.dart';
 import '../../shared/widgets/primary_button.dart';
 
-enum _AuthMethod { phone, email }
-
-/// Returning-citizen entry point — strict sign-in only, no account
-/// creation. Distinct from `SignUpScreen`: a phone/email that doesn't
-/// already have a `users/{uid}` profile with `signupCompletedAt` set is
-/// treated as an error here ("no account found"), not silently turned into
-/// a new signup, so the two flows never blur together.
+/// Returning-citizen entry point — phone-OTP sign-in only, no account
+/// creation. Distinct from `SignUpScreen`: a phone number with no matching
+/// `users/{uid}` profile (`signupCompletedAt` set) is treated as an error
+/// here ("no account found"), not silently turned into a new signup, so the
+/// two flows never blur together. (Citizen email/password was dropped —
+/// Firebase has no native email-OTP and magic-links are unreliable on a
+/// sideloaded APK; officials still sign in with a constituency ID +
+/// password on the Welcome screen's MP tab.)
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -28,19 +29,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _authService = AuthService();
   final _phoneController = TextEditingController();
   final _codeController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
-  _AuthMethod _method = _AuthMethod.phone;
   String? _verificationId;
   bool _codeSent = false;
   bool _sendingCode = false;
   bool _loading = false;
   String? _error;
 
-  /// After any successful auth, a real account must already have a
-  /// completed profile — otherwise this credential never went through Sign
-  /// Up, so we sign back out and point the citizen there instead.
+  /// After successful phone auth, a real account must already have a
+  /// completed profile — otherwise this number never went through Sign Up,
+  /// so we sign back out and point the citizen there instead.
   Future<void> _onAuthenticated(User user) async {
     final profile = await ref.read(firestoreServiceProvider).getUser(user.uid);
     if (profile == null || profile.signupCompletedAt == null) {
@@ -48,7 +46,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'No account found for this — please Sign Up first.';
+        _error = 'No account found for this number — please Sign Up first.';
       });
       return;
     }
@@ -116,43 +114,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  Future<void> _signInWithEmail() async {
-    final email = _emailController.text.trim();
-    if (email.isEmpty || _passwordController.text.isEmpty) {
-      setState(() => _error = 'Enter your email and password.');
-      return;
-    }
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-    try {
-      final user = await _authService.signInWithEmail(
-        email: email,
-        password: _passwordController.text,
-      );
-      await _onAuthenticated(user);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _loading = false;
-        _error = e.code == 'user-not-found'
-            ? 'No account found for this email — please Sign Up first.'
-            : 'Could not sign in — check your email and password.';
-      });
-    } catch (e) {
-      setState(() {
-        _loading = false;
-        _error = 'Could not sign in — check your email and password.';
-      });
-    }
-  }
-
   @override
   void dispose() {
     _phoneController.dispose();
     _codeController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -174,109 +139,55 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               Icon(Icons.login_rounded, size: 56, color: AppColors.indigoMist),
               const SizedBox(height: 16),
               Text(
-                'Welcome back — sign in the same way you signed up.',
+                'Welcome back — sign in with the phone number you signed up with.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
               ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppRadii.md),
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _MethodTab(
-                        label: 'Phone',
-                        selected: _method == _AuthMethod.phone,
-                        onTap: () => setState(() {
-                          _method = _AuthMethod.phone;
-                          _error = null;
-                        }),
-                      ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Expanded(
-                      child: _MethodTab(
-                        label: 'Email',
-                        selected: _method == _AuthMethod.email,
-                        onTap: () => setState(() {
-                          _method = _AuthMethod.email;
-                          _error = null;
-                        }),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              if (_method == _AuthMethod.phone) ...[
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text('+91'),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        maxLength: 10,
-                        enabled: !_codeSent,
-                        decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
-                      ),
-                    ),
-                  ],
-                ),
-                if (!_codeSent) ...[
-                  const SizedBox(height: 10),
-                  PrimaryButton(
-                    label: 'Send code',
-                    icon: Icons.sms_rounded,
-                    loading: _sendingCode,
-                    onPressed: _sendingCode ? null : _sendCode,
+                    child: const Text('+91'),
                   ),
-                ] else ...[
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: _codeController,
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
-                    decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
-                  ),
-                  const SizedBox(height: 10),
-                  PrimaryButton(
-                    label: 'Verify & sign in',
-                    icon: Icons.check_circle_rounded,
-                    loading: _loading,
-                    onPressed: _loading ? null : _verifyCode,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      maxLength: 10,
+                      enabled: !_codeSent,
+                      decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
+                    ),
                   ),
                 ],
-              ] else ...[
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(hintText: 'Email address'),
+              ),
+              if (!_codeSent) ...[
+                const SizedBox(height: 10),
+                PrimaryButton(
+                  label: 'Send code',
+                  icon: Icons.sms_rounded,
+                  loading: _sendingCode,
+                  onPressed: _sendingCode ? null : _sendCode,
                 ),
+              ] else ...[
                 const SizedBox(height: 10),
                 TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(hintText: 'Password'),
+                  controller: _codeController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 6,
+                  decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
                 ),
                 const SizedBox(height: 10),
                 PrimaryButton(
-                  label: 'Sign in',
-                  icon: Icons.login_rounded,
+                  label: 'Verify & sign in',
+                  icon: Icons.check_circle_rounded,
                   loading: _loading,
-                  onPressed: _loading ? null : _signInWithEmail,
+                  onPressed: _loading ? null : _verifyCode,
                 ),
               ],
               if (_error != null) ...[
@@ -291,37 +202,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MethodTab extends StatelessWidget {
-  const _MethodTab({required this.label, required this.selected, required this.onTap});
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppRadii.sm),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.indigo : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadii.sm),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            color: selected ? Colors.white : AppColors.inkSoft,
           ),
         ),
       ),

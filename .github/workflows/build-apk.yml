@@ -111,6 +111,20 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Flutter's generated build.gradle signs the release APK with the
+      # `debug` signingConfig, which reads ~/.android/debug.keystore. CI would
+      # otherwise generate a fresh random debug keystore every run, changing
+      # the app's SHA fingerprint each build — which breaks Firebase Phone
+      # Auth (the SHA can never be registered). Overriding it with our stable,
+      # committed keystore (standard debug alias/passwords) gives every build
+      # one fixed fingerprint, whose SHA-1/SHA-256 are registered in the
+      # Firebase project so phone OTP works. This is a debug/sideload signing
+      # key only — NOT a Play Store upload key.
+      - name: Install stable signing keystore (for a constant SHA)
+        run: |
+          mkdir -p ~/.android
+          cp ci-keystore/prajadhvani-debug.keystore ~/.android/debug.keystore
+
       - name: Build release APK
         run: flutter build apk --release
 

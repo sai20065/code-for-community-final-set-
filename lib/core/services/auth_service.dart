@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-/// Citizen identity has three entry points, all landing on the same
-/// `users/{uid}` document shape: **Anonymous** (invisible, no credential —
-/// the original default, still available as "skip" for anyone who doesn't
-/// want to attach a phone/email), **Phone** (real Firebase Phone Auth with
-/// SMS OTP), and **Email/password**. Whichever is chosen, the Aadhaar Upload
-/// step (see `AadhaarOcrService`) remains a one-time onboarding convenience
-/// that extracts name/address/pincode/wardNumber from self-uploaded
-/// front/back images — it is NOT verified UIDAI eKYC and makes no claim the
-/// uploader is who the document says they are, regardless of which sign-in
-/// method they used.
+/// Citizen identity has two entry points, both landing on the same
+/// `users/{uid}` document shape: **Phone** (real Firebase Phone Auth with
+/// SMS OTP) and **Anonymous** (invisible, no credential — still available as
+/// "skip" for anyone who doesn't want to attach a number). Citizen
+/// email/password was removed: Firebase has no native email-OTP and
+/// magic-links are unreliable on a sideloaded APK, so phone OTP is the one
+/// "verify yourself" path. Whichever is chosen, the Aadhaar Upload step (see
+/// `AadhaarOcrService`) remains a one-time onboarding convenience that
+/// extracts name/address/pincode/wardNumber from self-uploaded front/back
+/// images — it is NOT verified UIDAI eKYC and makes no claim the uploader is
+/// who the document says they are.
 ///
 /// Sign Up and Sign In are deliberately separate flows (`SignUpScreen` /
 /// `SignInScreen`), not one combined "continue" action: Sign Up always
@@ -81,37 +82,6 @@ class AuthService {
     );
     final result = await _auth.signInWithCredential(credential);
     return result.user!;
-  }
-
-  /// Creates a brand-new citizen email account. Used only from the Sign Up
-  /// screen — throws `email-already-in-use` (surfaced by the caller as
-  /// "you already have an account, use Sign In instead") rather than
-  /// silently signing the citizen into their existing account, since Sign
-  /// Up and Sign In are now deliberately distinct flows.
-  Future<User> signUpWithEmail({
-    required String email,
-    required String password,
-  }) async {
-    final credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return credential.user!;
-  }
-
-  /// Signs an existing citizen back in by email. Used only from the Sign In
-  /// screen — throws `user-not-found`/`wrong-password` (surfaced by the
-  /// caller as "no account found, please Sign Up first") rather than
-  /// creating a new account, unlike the old combined `continueWithEmail`.
-  Future<User> signInWithEmail({
-    required String email,
-    required String password,
-  }) async {
-    final credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return credential.user!;
   }
 
   /// MP office login — the constituency ID is mapped to a synthetic email

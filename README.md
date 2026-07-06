@@ -28,18 +28,27 @@ credential and stamps `users/{uid}.signupCompletedAt` — the authoritative
 state (fixing a real bug: a citizen who signed up on one device and signed
 back in on a fresh install used to get pushed through onboarding again,
 since progress was only ever stored in local `shared_preferences`). Sign In
-never creates an account — a phone/email with no matching `signupCompletedAt`
+never creates an account — a phone number with no matching `signupCompletedAt`
 profile is treated as "no account found, please Sign Up" and signed back
 out.
 
-Citizens have **three** ways to get a Firebase account, all landing on the
-same `users/{uid}` shape: **Anonymous** (no credential at all — the original
-default, still offered as "skip"), **Phone** (real Firebase Phone Auth with
-SMS OTP), and **Email/password**. Phone/email give a citizen a portable
-identity that survives a reinstall (an anonymous session doesn't); the
-`signInMethod` field on `users/{uid}` records which one was used. No matter
-which method is chosen, the Aadhaar number itself is still never stored
-anywhere in this app.
+Citizens have **two** ways to get a Firebase account, both landing on the
+same `users/{uid}` shape: **Phone** (real Firebase Phone Auth with SMS OTP —
+a portable identity that survives a reinstall) and **Anonymous** (no
+credential at all, still offered as "skip"). Citizen **email/password was
+removed** — Firebase has no native email-OTP and email magic-links are
+unreliable on a sideloaded APK, so phone OTP is the single "verify yourself"
+path. (Officials still sign in with a constituency ID + password on the MP
+tab — that's separate, internal email/password auth.) The `signInMethod`
+field on `users/{uid}` records which method was used. The Aadhaar number
+itself is never stored anywhere in this app.
+
+Home location is captured on `SignUpScreen` via a **"Use my location"
+button** (GPS, reused from `LocationService.getCurrentLatLng`) plus a
+tappable OpenStreetMap pin, instead of a free-text address field. The raw
+`location.lat`/`lng` is stored, along with a best-effort reverse-geocoded
+`addressHome` label (`LocationService.reverseGeocode`, Nominatim, no API
+key).
 
 Aadhaar capture (front **and** back — the back side often carries the full
 address the front truncates, so capturing both improves accuracy, though
@@ -59,24 +68,31 @@ neither is ever required) lives on `SignUpScreen`. It's a one-time
   hosted model, not real fine-tuning — true fine-tuning would need NVIDIA
   NeMo Customizer, a labeled dataset, and a GPU training job, a separate and
   much larger effort than this app's scope.
+- The extraction callable requires an authenticated caller, so the app
+  establishes an anonymous Firebase session the moment Sign Up opens (before
+  the citizen picks phone/anonymous) — otherwise the call is rejected with
+  `unauthenticated` and OCR silently fails.
 - The Aadhaar number itself is never returned to the client and is
   regex-scrubbed server-side as defense-in-depth even if the model includes
   one by mistake.
 - **This proves nothing about who uploaded the document.** There is no
-  cryptographic/UIDAI verification step, regardless of whether the citizen
-  then signs in anonymously, by phone, or by email. Manual entry (including
-  an optional ward number field) is always available and never blocks
-  onboarding if OCR fails or looks wrong.
+  cryptographic/UIDAI verification step. Manual entry (including an optional
+  ward number field) is always available and never blocks onboarding if OCR
+  fails or looks wrong.
 
-**Phone Auth caveat:** Firebase Phone Auth's Android path leans on Play
-Integrity, which is keyed to the app's signing certificate SHA-1/256
-registered in the Firebase console. Since this repo doesn't commit an
-`android/` folder (CI generates one fresh with `flutter create` and a
-throwaway debug keystore — see `.github/workflows/build-apk.yml`), Play
-Integrity will likely fail silently on that CI-built APK and Firebase will
-fall back to a reCAPTCHA-style web challenge instead of silent verification.
-That's expected, not a bug — it'll still work, just with an extra step. A
-real Play Store release build's keystore should be registered properly.
+**Phone Auth signing requirement:** Firebase Phone Auth on Android requires
+the app's signing SHA-1/SHA-256 to be registered in the Firebase project.
+Because CI used to generate a fresh throwaway debug keystore every build, the
+fingerprint changed each run and could never be registered — so phone auth
+failed outright. This is now fixed: a **stable keystore is committed at
+`ci-keystore/prajadhvani-debug.keystore`** (standard Android debug identity),
+the workflow copies it to `~/.android/debug.keystore` before building so
+every APK shares one fingerprint, and that fingerprint's SHA-1 + SHA-256 are
+registered in Firebase. Because the APK is sideloaded (not from Play Store),
+Play Integrity app-recognition won't pass, so Firebase falls back to a brief
+reCAPTCHA web challenge before the SMS — expected, and it now works. This
+keystore is a debug/sideload signing key only; a real Play Store release must
+use its own upload key (whose SHA must also be registered).
 
 ## Brand system
 
