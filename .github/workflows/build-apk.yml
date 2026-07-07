@@ -1,15 +1,16 @@
 name: Build Android APK
 
 # Builds a debug-signed, sideloadable release APK on GitHub's own runners
-# (this repo has no local Flutter/Android SDK toolchain) and publishes it
-# as a GitHub Release asset with a stable download link for phone install.
+# (this repo has no local Flutter/Android SDK toolchain) and distributes it
+# via Firebase App Distribution — testers get an email + install page
+# straight from Firebase, no GitHub Release/download link needed.
 on:
   push:
     branches: [main]
   workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -136,16 +137,18 @@ jobs:
           name: prajadhwani-apk
           path: prajadhwani-${{ github.run_number }}.apk
 
-      - name: Publish/refresh the "latest" release
-        uses: softprops/action-gh-release@v2
+      # Uploads straight to Firebase App Distribution — testers get an
+      # email with an install link (Firebase hosts the APK; no GitHub
+      # download/unknown-sources dance beyond the one-time Firebase
+      # tester invite). Auth is a dedicated service account
+      # (github-appdistribution@code-for-community-e2cf2.iam.gserviceaccount.com,
+      # role: Firebase App Distribution Admin only) whose JSON key is
+      # stored as the FIREBASE_APPDISTRO_SA_KEY repo secret.
+      - name: Distribute via Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          tag_name: latest-apk
-          name: Prajadhwani (latest build)
-          body: |
-            Auto-built from commit ${{ github.sha }}. Debug-signed for
-            sideloading/review only — not a Play Store release.
-
-            Requires enabling "install from unknown sources" for your
-            browser/file manager on Android to install directly.
-          files: prajadhwani-${{ github.run_number }}.apk
-          make_latest: true
+          appId: '1:830098066112:android:3f605559297211dfcf7b25'
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_APPDISTRO_SA_KEY }}
+          testers: saikavitha1975@gmail.com
+          file: prajadhwani-${{ github.run_number }}.apk
+          releaseNotes: "Auto-built from commit ${{ github.sha }}"
