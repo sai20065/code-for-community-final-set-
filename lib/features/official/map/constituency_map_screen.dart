@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,8 +9,55 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
+import '../../../core/models/ward_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../booth/booth_detail_sheet.dart';
+
+/// Extracts every polygon's outer ring (holes ignored — this is an outline
+/// overlay for orientation, not an exact area render) as a list of
+/// lat/lng rings, from a JSON-encoded GeoJSON geometry that may be a
+/// `Polygon`, `MultiPolygon`, or `GeometryCollection` of either (a handful
+/// of Bengaluru wards have disjoint parts and serialize as the latter).
+List<List<LatLng>> _extractRings(String? geoJsonString) {
+  if (geoJsonString == null) return [];
+  final geometry = jsonDecode(geoJsonString) as Map<String, dynamic>;
+  return _ringsFromGeometry(geometry);
+}
+
+List<List<LatLng>> _ringsFromGeometry(Map<String, dynamic> geometry) {
+  final type = geometry['type'] as String?;
+  switch (type) {
+    case 'Polygon':
+      final coords = geometry['coordinates'] as List;
+      final outerRing = coords.first as List;
+      return [_ringToLatLng(outerRing)];
+    case 'MultiPolygon':
+      final coords = geometry['coordinates'] as List;
+      return coords.map((polygon) {
+        final outerRing = (polygon as List).first as List;
+        return _ringToLatLng(outerRing);
+      }).toList();
+    case 'GeometryCollection':
+      final geometries = geometry['geometries'] as List;
+      return geometries
+          .expand((g) => _ringsFromGeometry(g as Map<String, dynamic>))
+          .toList();
+    default:
+      return [];
+  }
+}
+
+List<LatLng> _ringToLatLng(List ring) {
+  return ring
+      .map((point) => LatLng((point as List)[1] as double, point[0] as double))
+      .toList();
+}
+
+LatLngBounds? _boundsFromRings(List<List<LatLng>> rings) {
+  final points = rings.expand((r) => r).toList();
+  if (points.isEmpty) return null;
+  return LatLngBounds.fromPoints(points);
+}
 
 /// Booth-level demand map: dot size = submission volume, dot color = density
 /// band (red = hotspot / amber = moderate / green = mostly resolved, from
@@ -76,39 +125,87 @@ class _BoothMap extends ConsumerStatefulWidget {
   ConsumerState<_BoothMap> createState() => _BoothMapState();
 }
 
+/// Bounds the initial camera to Karnataka's rough extent when no
+/// constituency/ward/booth geometry is available yet at all (rather than
+/// falling back to flutter_map's default world view) — a last-resort
+/// fallback, not the normal path.
+final _karnatakaFallbackBounds = LatLngBounds(
+  const LatLng(11.5, 74.0),
+  const LatLng(18.5, 78.6),
+);
+
 class _BoothMapState extends ConsumerState<_BoothMap> {
   String? _selectedBoothId;
+  final _mapController = MapController();
+  bool _hasFitBounds = false;
+
+  void _fitBoundsOnce(LatLngBounds bounds) {
+    if (_hasFitBounds) return;
+    _hasFitBounds = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mapController.fitCamera(
+        CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(32)),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final constituencyAsync = ref.watch(constituencyProvider(widget.constituencyId));
+    final wardsAsync = ref.watch(_wardsProvider(widget.constituencyId));
     final boothsAsync = ref.watch(_boothsProvider(widget.constituencyId));
 
-    return boothsAsync.when(
-      data: (booths) {
-        if (booths.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(
-                AppLocalizations.of(context).noBoothData,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        }
-        final center = LatLng(booths.first.lat, booths.first.lng);
+    return constituencyAsync.when(
+      data: (constituency) {
+        final wards = wardsAsync.valueOrNull ?? const [];
+        final booths = boothsAsync.valueOrNull ?? const [];
+
+        final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
+        final wardRings =
+            wards.expand((w) => _extractRings(w.boundaryGeoJson)).toList();
+        final boothPoints = booths.map((b) => LatLng(b.lat, b.lng)).toList();
+
+        final bounds = _boundsFromRings(constituencyRings) ??
+            _boundsFromRings(wardRings) ??
+            (boothPoints.isNotEmpty ? LatLngBounds.fromPoints(boothPoints) : null) ??
+            _karnatakaFallbackBounds;
+        _fitBoundsOnce(bounds);
+
         final maxVolume = booths
             .map((b) => b.submissionVolume)
             .fold<int>(1, (a, b) => b > a ? b : a);
         return Stack(
           children: [
             FlutterMap(
-              options: MapOptions(initialCenter: center, initialZoom: 12),
+              mapController: _mapController,
+              options: MapOptions(initialCenter: bounds.center, initialZoom: 12),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.prajadhvani.app',
                 ),
+                if (wardRings.isNotEmpty)
+                  PolygonLayer(
+                    polygons: wardRings
+                        .map((ring) => Polygon(
+                              points: ring,
+                              color: AppColors.indigoMist.withValues(alpha: 0.08),
+                              borderColor: AppColors.indigoMist.withValues(alpha: 0.6),
+                              borderStrokeWidth: 1,
+                            ))
+                        .toList(),
+                  ),
+                if (constituencyRings.isNotEmpty)
+                  PolygonLayer(
+                    polygons: constituencyRings
+                        .map((ring) => Polygon(
+                              points: ring,
+                              color: Colors.transparent,
+                              borderColor: AppColors.indigo,
+                              borderStrokeWidth: 3,
+                            ))
+                        .toList(),
+                  ),
                 MarkerLayer(
                   markers: booths.map((booth) {
                     final color = _densityColor(booth.densityLevel);
@@ -235,4 +332,11 @@ final _boothsProvider =
   return ref
       .watch(firestoreServiceProvider)
       .watchBoothsForConstituency(constituencyId);
+});
+
+final _wardsProvider =
+    StreamProvider.family<List<WardModel>, String>((ref, constituencyId) {
+  return ref
+      .watch(firestoreServiceProvider)
+      .watchWardsForConstituency(constituencyId);
 });

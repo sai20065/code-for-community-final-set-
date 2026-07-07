@@ -286,5 +286,7 @@
   "yourConstituency": "{name} constituency",
   "@yourConstituency": { "placeholders": { "name": { "type": "String" } } },
   "noMpAssignedYet": "MP details aren't available for your area yet",
-  "couldNotSubmitTryAgain": "Couldn't submit — please check your connection and try again"
+  "couldNotSubmitTryAgain": "Couldn't submit — please check your connection and try again",
+  "generateReport": "Generate constituency report",
+  "couldNotGenerateReport": "Couldn't generate the report — please try again"
 }

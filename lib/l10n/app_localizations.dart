@@ -1457,6 +1457,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recommendation: prioritise {winner} this cycle.'**
   String recommendationLine(String winner);
+
+  /// No description provided for @yourMp.
+  ///
+  /// In en, this message translates to:
+  /// **'Your MP'**
+  String get yourMp;
+
+  /// No description provided for @yourConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} constituency'**
+  String yourConstituency(String name);
+
+  /// No description provided for @noMpAssignedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'MP details aren\'t available for your area yet'**
+  String get noMpAssignedYet;
+
+  /// No description provided for @couldNotSubmitTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t submit — please check your connection and try again'**
+  String get couldNotSubmitTryAgain;
 }
 
 class _AppLocalizationsDelegate

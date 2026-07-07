@@ -10,6 +10,7 @@ class ClusterModel {
   final String id;
   final String constituencyId;
   final String? boothId;
+  final String? wardId;
   final String theme;
   final List<double> centroidVector;
   final int submissionCount;
@@ -30,6 +31,7 @@ class ClusterModel {
     required this.submissionCount,
     required this.summaryText,
     this.boothId,
+    this.wardId,
     this.centroidVector = const [],
     this.sampleSubmissionIds = const [],
     this.priorityScore,
@@ -46,6 +48,7 @@ class ClusterModel {
       id: id,
       constituencyId: map['constituencyId'] as String? ?? '',
       boothId: map['boothId'] as String?,
+      wardId: map['wardId'] as String?,
       theme: map['theme'] as String? ?? '',
       centroidVector:
           (map['centroidVector'] as List?)?.cast<double>() ?? const [],
@@ -67,6 +70,7 @@ class ClusterModel {
     return {
       'constituencyId': constituencyId,
       'boothId': boothId,
+      'wardId': wardId,
       'theme': theme,
       'centroidVector': centroidVector,
       'submissionCount': submissionCount,

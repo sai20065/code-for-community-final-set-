@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:printing/printing.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
+import '../../../core/services/constituency_report_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/primary_button.dart';
 
 /// Section 3.8 / 5.2: lead with a single glanceable number per stat before
 /// any chart — "can a busy person understand value in 5 minutes" test.
@@ -62,6 +66,9 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
   int? _totalCount;
   Duration? _avgResponseTime;
   bool _loading = true;
+  bool _generatingReport = false;
+  String? _reportError;
+  final _reportService = ConstituencyReportService();
 
   @override
   void initState() {
@@ -86,6 +93,28 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
       _avgResponseTime = results[3] as Duration?;
       _loading = false;
     });
+  }
+
+  /// Generates the AI constituency report (see `generateConstituencyReport`
+  /// Cloud Function), downloads the resulting PDF, and hands it to the OS
+  /// print/save dialog via `Printing.layoutPdf` — "so he can directly print
+  /// the report" rather than just getting a link.
+  Future<void> _generateReport() async {
+    setState(() {
+      _generatingReport = true;
+      _reportError = null;
+    });
+    try {
+      final result = await _reportService.generateReport();
+      final response = await http.get(Uri.parse(result.downloadUrl));
+      if (!mounted) return;
+      await Printing.layoutPdf(onLayout: (_) async => response.bodyBytes);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _reportError = AppLocalizations.of(context).couldNotGenerateReport);
+    } finally {
+      if (mounted) setState(() => _generatingReport = false);
+    }
   }
 
   @override
@@ -178,6 +207,18 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
             ),
           ],
         ),
+        const SizedBox(height: 20),
+        PrimaryButton(
+          label: l10n.generateReport,
+          icon: Icons.picture_as_pdf_rounded,
+          loading: _generatingReport,
+          onPressed: _generatingReport ? null : _generateReport,
+        ),
+        if (_reportError != null) ...[
+          const SizedBox(height: 8),
+          Text(_reportError!,
+              style: const TextStyle(color: AppColors.coralRed, fontSize: 12.5)),
+        ],
       ],
     );
   }

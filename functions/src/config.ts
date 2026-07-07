@@ -1,28 +1,26 @@
-import {defineSecret} from "firebase-functions/params";
+/**
+ * Every Gemini call (Aadhaar OCR, transcription, photo captioning,
+ * classification, cluster summarization) runs via Vertex AI, authenticated
+ * through the function's own runtime service account (Application Default
+ * Credentials — no API key/secret to manage) rather than the Gemini
+ * Developer API's separate AI-Studio prepay balance. This was migrated
+ * from the AI-Studio key after that balance silently ran out and broke
+ * the whole AI pipeline with no visible error anywhere in the app —
+ * Vertex AI bills against the project's regular (already-active, Blaze
+ * plan) Cloud Billing account instead, so there's no separate balance to
+ * run dry. Requires the runtime service account
+ * (`{project-number}-compute@developer.gserviceaccount.com`) to hold
+ * `roles/aiplatform.user`, and `aiplatform.googleapis.com` enabled on the
+ * project — both already done as of this migration.
+ */
+export const VERTEX_AI_PROJECT = "code-for-community-e2cf2";
+export const VERTEX_AI_LOCATION = "us-central1";
 
 /**
- * Secrets, backed by Secret Manager (requires the Blaze plan). Set with:
- *   firebase functions:secrets:set GEMINI_API_KEY
- *
- * GEMINI_API_KEY: from the Gemini Developer API (aistudio.google.com) — has
- * a free tier and does not itself require GCP billing, though Secret
- * Manager + Cloud Functions v2 deployment still needs Blaze regardless.
- *
  * Translation runs via the Cloud Translation API (see `TranslateClient`),
- * authenticated through the function's own runtime service account rather
- * than a secret — only `translate.googleapis.com` needs to be enabled on
- * the project.
+ * authenticated through the function's own runtime service account —
+ * only `translate.googleapis.com` needs to be enabled on the project.
  */
-export const geminiApiKey = defineSecret("GEMINI_API_KEY");
-
-/**
- * NVIDIA_API_KEY: from build.nvidia.com (NIM API catalog) — has a free
- * tier. Used only for Aadhaar OCR extraction (see `NvidiaClient` /
- * `extractAadhaarDetails.ts`); every other AI task in this app stays on
- * Gemini. Set with:
- *   firebase functions:secrets:set NVIDIA_API_KEY
- */
-export const nvidiaApiKey = defineSecret("NVIDIA_API_KEY");
 
 export const REGION = "asia-south1";
 

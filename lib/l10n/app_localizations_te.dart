@@ -792,4 +792,20 @@ class AppLocalizationsTe extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'సిఫార్సు: ప్రాధాన్యత ఇవ్వండి$winner ఈ చక్రం.';
   }
+
+  @override
+  String get yourMp => 'మీ ఎంపీ';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name నియోజకవర్గం';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'మీ ప్రాంతానికి ఎంపీ వివరాలు ఇంకా అందుబాటులో లేవు';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'సమర్పించడం సాధ్యం కాలేదు — దయచేసి మీ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి';
 }

@@ -807,4 +807,20 @@ class AppLocalizationsTa extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'பரிந்துரை: முன்னுரிமை அளிக்கவும்$winner இந்தச் சுழற்சி.';
   }
+
+  @override
+  String get yourMp => 'உங்கள் நாடாளுமன்ற உறுப்பினர்';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name தொகுதி';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'உங்கள் பகுதிக்கான எம்.பி விவரங்கள் இன்னும் கிடைக்கவில்லை';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'சமர்ப்பிக்க முடியவில்லை — உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்';
 }

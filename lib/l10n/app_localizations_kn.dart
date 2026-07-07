@@ -797,4 +797,20 @@ class AppLocalizationsKn extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'ಶಿಫಾರಸು: ಆದ್ಯತೆ ನೀಡಿ$winner ಈ ಚಕ್ರ.';
   }
+
+  @override
+  String get yourMp => 'ನಿಮ್ಮ ಸಂಸದರು';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name ಕ್ಷೇತ್ರ';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'ನಿಮ್ಮ ಪ್ರದೇಶಕ್ಕೆ ಸಂಸದರ ವಿವರಗಳು ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ';
 }

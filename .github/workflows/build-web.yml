@@ -1,0 +1,37 @@
+name: Build and Deploy Web
+
+# Builds the Flutter web app and deploys it to Firebase Hosting. Uses a
+# dedicated service account (github-hosting-deploy@code-for-community-e2cf2,
+# role: Firebase Hosting Admin only) so this workflow can't touch anything
+# else in the project.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build web release
+        run: flutter build web --release
+
+      - name: Write service account key
+        run: echo '${{ secrets.FIREBASE_HOSTING_SA_KEY }}' > /tmp/hosting-sa-key.json
+
+      - name: Deploy to Firebase Hosting
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/hosting-sa-key.json
+        run: npx firebase-tools deploy --only hosting --project code-for-community-e2cf2 --non-interactive

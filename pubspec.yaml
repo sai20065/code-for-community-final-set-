@@ -46,6 +46,9 @@ dependencies:
   fl_chart: ^0.69.0
   google_fonts: ^6.2.1
 
+  # Reports
+  printing: ^5.13.4
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

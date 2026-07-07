@@ -3,13 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers/current_user_profile_provider.dart';
 import '../../app/theme.dart';
-import '../../core/models/constituency_model.dart';
 import '../../l10n/app_localizations.dart';
-
-final constituencyProvider =
-    StreamProvider.family<ConstituencyModel?, String>((ref, constituencyId) {
-  return ref.watch(firestoreServiceProvider).watchConstituency(constituencyId);
-});
 
 /// Shows the citizen which constituency their location has been matched to,
 /// plus that constituency's MP name/photo — so they can see who represents
@@ -104,9 +98,9 @@ class MpConstituencyCard extends ConsumerWidget {
           ),
         );
       },
-      loading: () => _Shell(
+      loading: () => const _Shell(
         child: Row(
-          children: const [
+          children: [
             SizedBox(
               width: 22, height: 22,
               child: CircularProgressIndicator(strokeWidth: 2),

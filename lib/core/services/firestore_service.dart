@@ -5,6 +5,7 @@ import '../models/cluster_model.dart';
 import '../models/constituency_model.dart';
 import '../models/submission_model.dart';
 import '../models/user_model.dart';
+import '../models/ward_model.dart';
 
 class FirestoreService {
   FirestoreService({FirebaseFirestore? firestore})
@@ -24,6 +25,8 @@ class FirestoreService {
       _db.collection('counters');
   CollectionReference<Map<String, dynamic>> get _constituencies =>
       _db.collection('constituencies');
+  CollectionReference<Map<String, dynamic>> get _wards =>
+      _db.collection('wards');
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
@@ -225,6 +228,20 @@ class FirestoreService {
         .snapshots()
         .map((snap) =>
             snap.docs.map((d) => BoothModel.fromMap(d.id, d.data())).toList());
+  }
+
+  Stream<List<WardModel>> watchWardsForConstituency(String constituencyId) {
+    return _wards
+        .where('constituencyId', isEqualTo: constituencyId)
+        .snapshots()
+        .map((snap) =>
+            snap.docs.map((d) => WardModel.fromMap(d.id, d.data())).toList());
+  }
+
+  Future<WardModel?> getWard(String wardId) async {
+    final doc = await _wards.doc(wardId).get();
+    if (!doc.exists) return null;
+    return WardModel.fromMap(doc.id, doc.data()!);
   }
 
   Stream<List<ClusterModel>> watchClustersForConstituency(

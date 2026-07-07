@@ -12,5 +12,15 @@ service firebase.storage {
         (request.auth.uid == userId ||
          firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'official');
     }
+
+    // AI-generated constituency PDF reports (see generateConstituencyReport
+    // Cloud Function) — written only by the function's Admin SDK identity;
+    // readable only by the official who represents that exact constituency.
+    match /reports/{constituencyId}/{fileName} {
+      allow write: if false;
+      allow read: if request.auth != null &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'official' &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.constituencyId == constituencyId;
+    }
   }
 }

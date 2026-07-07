@@ -799,4 +799,20 @@ class AppLocalizationsMl extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'ശുപാർശ: മുൻഗണന നൽകുക$winner ഈ ചക്രം.';
   }
+
+  @override
+  String get yourMp => 'നിങ്ങളുടെ എംപി';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name മണ്ഡലം';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'നിങ്ങളുടെ പ്രദേശത്തിന് എംപി വിവരങ്ങൾ ഇതുവരെ ലഭ്യമല്ല';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'സമർപ്പിക്കാൻ കഴിഞ്ഞില്ല — നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക';
 }

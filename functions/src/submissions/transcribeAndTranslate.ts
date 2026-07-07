@@ -1,5 +1,5 @@
 import {HttpsError, onCall} from "firebase-functions/v2/https";
-import {REGION, geminiApiKey} from "../config";
+import {REGION} from "../config";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
 
@@ -17,10 +17,7 @@ interface Request {
  * needing to write a fake Firestore document first.
  */
 export const transcribeAndTranslate = onCall(
-  {
-    region: REGION,
-    secrets: [geminiApiKey],
-  },
+  {region: REGION},
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "Sign in required.");
@@ -30,7 +27,7 @@ export const transcribeAndTranslate = onCall(
       throw new HttpsError("invalid-argument", "audioBase64 is required.");
     }
 
-    const gemini = new GeminiClient(geminiApiKey.value());
+    const gemini = new GeminiClient();
     const translate = new TranslateClient();
 
     const transcript = await gemini.transcribeAudioBase64(

@@ -66,17 +66,43 @@ service cloud.firestore {
 
     // Reference data (constituency/booth boundaries, AI-generated clusters)
     // is written by backend Cloud Functions (Admin SDK bypasses rules) or
-    // manual seeding only — never directly by a client.
+    // manual seeding only — never directly by a client. `constituencies` is
+    // public MP-roster info (name/photo/party), fine for any signed-in user
+    // to read regardless of their own constituency. `booths` and `clusters`
+    // carry per-constituency submission analytics, so — same as
+    // `submissions` above — reads are scoped to the official who represents
+    // that constituency, or a citizen whose own home constituency matches.
     match /constituencies/{constituencyId} {
       allow read: if isSignedIn();
       allow write: if false;
     }
     match /booths/{boothId} {
-      allow read: if isSignedIn();
+      // `constituencyId == null` covers LocationService.resolveHomeBooth's
+      // pincode scan during signup, which runs BEFORE the citizen's own
+      // constituencyId is resolved — that discovery read must stay open,
+      // same reasoning as the null-constituencyId escape hatch on
+      // `submissions.create` above.
+      allow read: if isSignedIn() &&
+        (isOfficialForConstituency(resource.data.constituencyId) ||
+         userDoc(request.auth.uid).constituencyId == null ||
+         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
       allow write: if false;
     }
     match /clusters/{clusterId} {
-      allow read: if isSignedIn();
+      allow read: if isSignedIn() &&
+        (isOfficialForConstituency(resource.data.constituencyId) ||
+         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
+      allow write: if false;
+    }
+    // Bengaluru's 369 GBA municipal wards — each tagged with its parent
+    // Lok Sabha constituencyId (see seedWards.ts). Same scoped-read pattern
+    // as booths/clusters; a handful of wards have a null constituencyId
+    // (centroid fell outside all 543 boundaries) and are effectively
+    // unreadable by constituency-scoped rules until backfilled manually.
+    match /wards/{wardId} {
+      allow read: if isSignedIn() &&
+        (isOfficialForConstituency(resource.data.constituencyId) ||
+         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
       allow write: if false;
     }
 

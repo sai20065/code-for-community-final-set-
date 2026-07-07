@@ -794,4 +794,20 @@ class AppLocalizationsBn extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'সুপারিশ: অগ্রাধিকার দিন$winner এই চক্র।';
   }
+
+  @override
+  String get yourMp => 'আপনার সাংসদ';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name নির্বাচনী এলাকা';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'আপনার এলাকার জন্য সাংসদের বিবরণ এখনও পাওয়া যায়নি';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'জমা দেওয়া যায়নি — অনুগ্রহ করে আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন';
 }

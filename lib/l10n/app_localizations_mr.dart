@@ -792,4 +792,20 @@ class AppLocalizationsMr extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'शिफारस: प्राधान्य द्या$winner हे चक्र.';
   }
+
+  @override
+  String get yourMp => 'तुमचे खासदार';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name मतदारसंघ';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'तुमच्या भागासाठी खासदारांची माहिती अद्याप उपलब्ध नाही';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'सबमिट करता आले नाही — कृपया तुमचे कनेक्शन तपासा आणि पुन्हा प्रयत्न करा';
 }

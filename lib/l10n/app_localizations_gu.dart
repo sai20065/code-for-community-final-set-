@@ -791,4 +791,20 @@ class AppLocalizationsGu extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'ભલામણ: પ્રાથમિકતા આપો$winner આ ચક્ર.';
   }
+
+  @override
+  String get yourMp => 'તમારા સાંસદ';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name મતવિસ્તાર';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'તમારા વિસ્તાર માટે સાંસદની વિગતો હજુ ઉપલબ્ધ નથી';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'સબમિટ કરી શકાયું નથી — કૃપા કરી તમારું જોડાણ તપાસો અને ફરી પ્રયાસ કરો';
 }

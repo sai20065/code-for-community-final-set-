@@ -786,4 +786,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String recommendationLine(String winner) {
     return 'Recommendation: prioritise $winner this cycle.';
   }
+
+  @override
+  String get yourMp => 'Your MP';
+
+  @override
+  String yourConstituency(String name) {
+    return '$name constituency';
+  }
+
+  @override
+  String get noMpAssignedYet =>
+      'MP details aren\'t available for your area yet';
+
+  @override
+  String get couldNotSubmitTryAgain =>
+      'Couldn\'t submit — please check your connection and try again';
 }

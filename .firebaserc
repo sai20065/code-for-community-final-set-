@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "code-for-community-e2cf2"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -15,6 +15,7 @@ class SubmissionLocation {
   final String pincode;
   final String? boothId;
   final String? constituencyId;
+  final String? wardId;
 
   const SubmissionLocation({
     required this.pincode,
@@ -22,6 +23,7 @@ class SubmissionLocation {
     this.lng,
     this.boothId,
     this.constituencyId,
+    this.wardId,
   });
 
   factory SubmissionLocation.fromMap(Map<String, dynamic> map) {
@@ -31,6 +33,7 @@ class SubmissionLocation {
       lng: (map['lng'] as num?)?.toDouble(),
       boothId: map['boothId'] as String?,
       constituencyId: map['constituencyId'] as String?,
+      wardId: map['wardId'] as String?,
     );
   }
 
@@ -41,6 +44,7 @@ class SubmissionLocation {
       'lng': lng,
       'boothId': boothId,
       'constituencyId': constituencyId,
+      'wardId': wardId,
     };
   }
 }

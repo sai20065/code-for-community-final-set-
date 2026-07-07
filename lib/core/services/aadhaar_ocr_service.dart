@@ -25,8 +25,8 @@ class AadhaarExtractionResult {
 }
 
 /// Calls the `extractAadhaarDetails` Cloud Function (see `functions/src/
-/// aadhaar/extractAadhaarDetails.ts`), backed by an NVIDIA NIM vision model
-/// (see `functions/src/lib/nvidiaClient.ts`). Images are sent as base64 in
+/// aadhaar/extractAadhaarDetails.ts`), backed by Vertex-AI Gemini vision
+/// (see `functions/src/lib/geminiClient.ts`). Images are sent as base64 in
 /// the request payload and are never written to Cloud Storage or disk
 /// anywhere in this pipeline — the Cloud Function reads them once, in
 /// memory, to run OCR, and discards them the moment the call returns. This
@@ -39,10 +39,32 @@ class AadhaarOcrService {
 
   final FirebaseFunctions _functions;
 
+  /// Derives the real mime type from the picked file's extension — image_picker
+  /// doesn't always normalize to JPEG (e.g. a PNG picked from the gallery
+  /// stays PNG), and sending the wrong mime type to the vision model can
+  /// degrade or break extraction.
+  String _mimeTypeFor(File file) {
+    final ext = file.path.split('.').last.toLowerCase();
+    switch (ext) {
+      case 'png':
+        return 'image/png';
+      case 'webp':
+        return 'image/webp';
+      case 'heic':
+        return 'image/heic';
+      default:
+        return 'image/jpeg';
+    }
+  }
+
   /// [front] is required; [back] is optional — the back side of an Aadhaar
   /// card often carries the full address the front truncates, so sending it
   /// too (when captured) improves extraction accuracy, but citizens can
   /// always skip straight to manual entry instead.
+  ///
+  /// Throws on failure (network issue, OCR outage, etc.) — callers must
+  /// catch this and show a visible error/retry option rather than letting
+  /// it propagate silently, same as every other submit-flow in this app.
   Future<AadhaarExtractionResult> extractDetails({
     required File front,
     File? back,
@@ -53,7 +75,7 @@ class AadhaarOcrService {
       'imageBase64Front': base64Encode(frontBytes),
       if (back != null)
         'imageBase64Back': base64Encode(await back.readAsBytes()),
-      'mimeType': 'image/jpeg',
+      'mimeType': _mimeTypeFor(front),
     });
     final data = response.data;
     return AadhaarExtractionResult(

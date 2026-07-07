@@ -1,9 +1,10 @@
 import * as admin from "firebase-admin";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
-import {REGION, geminiApiKey} from "../config";
+import {REGION} from "../config";
 import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
+import {resolveWardForPoint} from "../lib/wardGeo";
 
 /**
  * Main AI pipeline, triggered whenever a citizen creates a ticket
@@ -25,7 +26,6 @@ export const onSubmissionCreated = onDocumentCreated(
   {
     document: "submissions/{submissionId}",
     region: REGION,
-    secrets: [geminiApiKey],
   },
   async (event) => {
     const snapshot = event.data;
@@ -34,7 +34,7 @@ export const onSubmissionCreated = onDocumentCreated(
     const submissionRef = snapshot.ref;
     const db = admin.firestore();
 
-    const gemini = new GeminiClient(geminiApiKey.value());
+    const gemini = new GeminiClient();
     const translate = new TranslateClient();
 
     // --- 1 & 2: transcript + translation ---------------------------------
@@ -90,6 +90,9 @@ export const onSubmissionCreated = onDocumentCreated(
     // --- 4: theme classification (never overwrites a citizen's own pick) --
     let theme: string | undefined = submission.theme;
     let priorityHint = 3;
+    let demandScore = 50;
+    let demographicScore = 50;
+    let infraGapScore = 50;
     try {
       const classification = await gemini.classifyTicket({
         text: classificationInput,
@@ -97,6 +100,9 @@ export const onSubmissionCreated = onDocumentCreated(
       });
       if (!theme) theme = classification.theme;
       priorityHint = classification.priorityHint;
+      demandScore = classification.demandScore;
+      demographicScore = classification.demographicScore;
+      infraGapScore = classification.infraGapScore;
       if (!submission.theme) await submissionRef.update({theme});
     } catch (err) {
       console.error("Gemini classification failed", err);
@@ -114,6 +120,7 @@ export const onSubmissionCreated = onDocumentCreated(
     let constituencyId: string | undefined = submission.location?.constituencyId;
     const lat: number | undefined = submission.location?.lat;
     const lng: number | undefined = submission.location?.lng;
+    let wardId: string | undefined = submission.location?.wardId;
     if (typeof lat === "number" && typeof lng === "number") {
       const resolved = resolveConstituencyForPoint(lat, lng);
       if (resolved && resolved.constituencyId !== constituencyId) {
@@ -122,6 +129,11 @@ export const onSubmissionCreated = onDocumentCreated(
           "location.constituencyId": resolved.constituencyId,
           "location.constituencyName": resolved.constituencyName,
         });
+      }
+      const resolvedWard = resolveWardForPoint(lat, lng);
+      if (resolvedWard && resolvedWard.wardId !== wardId) {
+        wardId = resolvedWard.wardId;
+        await submissionRef.update({"location.wardId": resolvedWard.wardId});
       }
     }
     const boothId: string | undefined = submission.location?.boothId;
@@ -139,11 +151,15 @@ export const onSubmissionCreated = onDocumentCreated(
       await db.collection("clusters").add({
         constituencyId,
         boothId: boothId ?? null,
+        wardId: wardId ?? null,
         theme,
         submissionCount: 1,
         sampleSubmissionIds: [event.params.submissionId],
         summaryText: `${classificationInput}`.slice(0, 140),
         priorityScore: priorityHint * 10,
+        demandScore,
+        demographicScore,
+        infraGapScore,
         centroidVector: [],
       });
       return;
@@ -156,7 +172,10 @@ export const onSubmissionCreated = onDocumentCreated(
     sampleIds.push(event.params.submissionId);
 
     // Refresh the AI summary/priority every 5th new ticket in a cluster —
-    // not on every single one, to control Gemini call cost.
+    // not on every single one, to control Gemini call cost. The demand/
+    // demographic/infraGap scores are cheap (already computed above for
+    // this ticket, no extra Gemini call) so they're kept fresh on every
+    // single new ticket, not gated behind the 5th-ticket refresh.
     if (newCount % 5 === 0) {
       try {
         const refreshed = await gemini.summarizeCluster({
@@ -169,6 +188,10 @@ export const onSubmissionCreated = onDocumentCreated(
           sampleSubmissionIds: sampleIds,
           summaryText: refreshed.summaryText,
           priorityScore: refreshed.priorityScore,
+          wardId: wardId ?? cluster.wardId ?? null,
+          demandScore,
+          demographicScore,
+          infraGapScore,
         });
         return;
       } catch (err) {
@@ -178,6 +201,10 @@ export const onSubmissionCreated = onDocumentCreated(
     await clusterDoc.ref.update({
       submissionCount: newCount,
       sampleSubmissionIds: sampleIds,
+      wardId: wardId ?? cluster.wardId ?? null,
+      demandScore,
+      demographicScore,
+      infraGapScore,
     });
   },
 );
