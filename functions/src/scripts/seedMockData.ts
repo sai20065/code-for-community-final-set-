@@ -30,6 +30,8 @@ async function main() {
     name: "Bengaluru North",
     state: "Karnataka",
     mpUserId: "",
+    mpName: "Demo MP Name",
+    mpPhotoUrl: null,
     boundaryGeoJson: null,
   });
 

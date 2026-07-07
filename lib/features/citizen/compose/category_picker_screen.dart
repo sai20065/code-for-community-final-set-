@@ -19,7 +19,13 @@ class CategoryPickerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.newSubmission)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+        ),
+        title: Text(l10n.newSubmission),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),

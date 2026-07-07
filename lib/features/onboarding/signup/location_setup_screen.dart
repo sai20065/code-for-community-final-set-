@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../core/services/constituency_resolution_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/location_service.dart';
 import '../../../l10n/app_localizations.dart';
@@ -31,6 +32,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   final _pincodeController = TextEditingController();
   final _addressController = TextEditingController();
   final _locationService = LocationService();
+  final _constituencyResolutionService = ConstituencyResolutionService();
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
 
@@ -115,6 +117,21 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     final pincode = _pincodeController.text.trim();
     final match = _boothMatch ?? await _locationService.resolveHomeBooth(pincode);
 
+    // Authoritative point-in-polygon lookup against real constituency
+    // boundaries — falls back to the booth/pincode heuristic's guess (if
+    // any) only if the network call itself fails, rather than leaving the
+    // citizen permanently unmapped just because this one lookup hiccuped.
+    String? constituencyId = match?.constituencyId;
+    try {
+      final resolved = await _constituencyResolutionService.resolve(
+        lat: _pin!.latitude,
+        lng: _pin!.longitude,
+      );
+      if (resolved != null) constituencyId = resolved.constituencyId;
+    } catch (_) {
+      // keep the booth/pincode fallback above
+    }
+
     final existing = await _firestoreService.getUser(uid);
     final updated = (existing ??
             (throw StateError('User document missing after sign-in')))
@@ -123,7 +140,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       addressHome: _addressController.text.trim(),
       lat: _pin!.latitude,
       lng: _pin!.longitude,
-      constituencyId: match?.constituencyId,
+      constituencyId: constituencyId,
       homeBoothId: match?.boothId,
       homeBoothName: match?.boothName,
     );
@@ -145,10 +162,18 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/signup/basic-info'),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 12),
             const OnboardingProgressStepper(currentStep: 3),
             const SizedBox(height: 12),
             Expanded(

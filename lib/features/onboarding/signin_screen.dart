@@ -130,6 +130,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.paper,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/welcome'),
+        ),
         title: Text(l10n.signIn),
       ),
       body: SafeArea(

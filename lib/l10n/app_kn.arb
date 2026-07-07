@@ -223,5 +223,8 @@
   "reasonDemographic": "ಹೆಚ್ಚಿನ ಜನಸಂಖ್ಯಾ-ವ್ಯಾಪ್ತಿಯ ತೂಕ ({winner} ವಿರುದ್ಧ{loser} )",
   "reasonInfra": "ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ದೊಡ್ಡ ಮೂಲಸೌಕರ್ಯ ಅಂತರ ({winner} ವಿರುದ್ಧ{loser} )",
   "defersLine": "{count}ಟಿಕೆಟ್‌ಗಳು{loser}{rangeSuffix} ನಂತರದ ಚಕ್ರಕ್ಕಾಗಿ ಕಾಯಿರಿ{winner} ಈಗ ಆದ್ಯತೆ ನೀಡಲಾಗಿದೆ.",
-  "recommendationLine": "ಶಿಫಾರಸು: ಆದ್ಯತೆ ನೀಡಿ{winner} ಈ ಚಕ್ರ."
+  "recommendationLine": "ಶಿಫಾರಸು: ಆದ್ಯತೆ ನೀಡಿ{winner} ಈ ಚಕ್ರ.",
+  "yourMp": "ನಿಮ್ಮ ಸಂಸದರು",
+  "yourConstituency": "{name} ಕ್ಷೇತ್ರ",
+  "noMpAssignedYet": "ನಿಮ್ಮ ಪ್ರದೇಶಕ್ಕೆ ಸಂಸದರ ವಿವರಗಳು ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ"
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
 import '../../../app/theme.dart';
@@ -49,6 +50,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   bool _transcribing = false;
   String? _transcriptError;
   String? _translatedText;
+  String? _recordError;
   String? _filePath;
   String? _theme;
   int? _similarCount;
@@ -100,18 +102,31 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
-      final path = await _recorder.stop();
-      setState(() {
-        _isRecording = false;
-        _hasRecording = path != null;
-        _filePath = path;
-      });
-      if (path != null) _transcribe();
+      try {
+        final path = await _recorder.stop();
+        setState(() {
+          _isRecording = false;
+          _hasRecording = path != null;
+          _filePath = path;
+        });
+        if (path != null) _transcribe();
+      } catch (_) {
+        if (!mounted) return;
+        setState(() {
+          _isRecording = false;
+          _recordError = AppLocalizations.of(context).couldNotConvertVoice;
+        });
+      }
       return;
     }
-    if (await _recorder.hasPermission()) {
-      final dir = await _tempPath();
-      await _recorder.start(const RecordConfig(), path: dir);
+    try {
+      if (!await _recorder.hasPermission()) {
+        if (!mounted) return;
+        setState(() => _recordError = AppLocalizations.of(context).couldNotConvertVoice);
+        return;
+      }
+      final path = await _tempPath();
+      await _recorder.start(const RecordConfig(), path: path);
       setState(() {
         _isRecording = true;
         _hasRecording = false;
@@ -119,8 +134,15 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
         _transcriptController.clear();
         _translatedText = null;
         _transcriptError = null;
+        _recordError = null;
       });
       _tickTimer();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isRecording = false;
+        _recordError = AppLocalizations.of(context).couldNotConvertVoice;
+      });
     }
   }
 
@@ -156,7 +178,8 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   }
 
   Future<String> _tempPath() async {
-    return '${DateTime.now().millisecondsSinceEpoch}.m4a';
+    final dir = await getTemporaryDirectory();
+    return '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
   }
 
   void _tickTimer() async {
@@ -240,7 +263,13 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
     final l10n = AppLocalizations.of(context);
     final isReport = _category == SubmissionCategory.problem;
     return Scaffold(
-      appBar: AppBar(title: Text(isReport ? l10n.reportByVoice : l10n.suggestByVoice)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/compose'),
+        ),
+        title: Text(isReport ? l10n.reportByVoice : l10n.suggestByVoice),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -275,6 +304,12 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
                   ),
                 ),
               ),
+              if (_recordError != null) ...[
+                const SizedBox(height: 12),
+                Text(_recordError!,
+                    style: const TextStyle(
+                        color: AppColors.coralRed, fontSize: 12.5)),
+              ],
               if (_hasRecording) ...[
                 const SizedBox(height: 16),
                 Center(

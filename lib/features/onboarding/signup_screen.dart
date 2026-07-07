@@ -293,6 +293,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.paper,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/welcome'),
+        ),
         title: Text(l10n.signUp),
       ),
       body: SafeArea(

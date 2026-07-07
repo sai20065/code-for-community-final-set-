@@ -223,5 +223,8 @@
   "reasonDemographic": "ഉയർന്ന ജനസംഖ്യാപരമായ എത്തിച്ചേരൽ ഭാരം ({winner} വേഴ്സസ്{loser} )",
   "reasonInfra": "നിലവിലുള്ള ഒരു വലിയ അടിസ്ഥാന സൗകര്യ വിടവ് ({winner} വേഴ്സസ്{loser} )",
   "defersLine": "{count}ടിക്കറ്റുകൾ{loser}{rangeSuffix} എങ്കിൽ പിന്നീടുള്ള സൈക്കിളിനായി കാത്തിരിക്കുക{winner} ഇപ്പോൾ മുൻഗണന നൽകിയിരിക്കുന്നു.",
-  "recommendationLine": "ശുപാർശ: മുൻഗണന നൽകുക{winner} ഈ ചക്രം."
+  "recommendationLine": "ശുപാർശ: മുൻഗണന നൽകുക{winner} ഈ ചക്രം.",
+  "yourMp": "നിങ്ങളുടെ എംപി",
+  "yourConstituency": "{name} മണ്ഡലം",
+  "noMpAssignedYet": "നിങ്ങളുടെ പ്രദേശത്തിന് എംപി വിവരങ്ങൾ ഇതുവരെ ലഭ്യമല്ല"
 }

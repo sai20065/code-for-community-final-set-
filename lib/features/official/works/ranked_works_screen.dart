@@ -22,7 +22,13 @@ class RankedWorksScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.rankedDevelopmentWorks)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+        ),
+        title: Text(l10n.rankedDevelopmentWorks),
+      ),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;

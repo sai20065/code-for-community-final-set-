@@ -223,5 +223,8 @@
   "reasonDemographic": "उच्च जनसांख्यिकीय पहुंच भार ({winner} बनाम{loser} )",
   "reasonInfra": "मौजूदा बुनियादी ढांचे में एक बड़ा अंतर ({winner} बनाम{loser} )",
   "defersLine": "{count}टिकटों के लिए{loser}{rangeSuffix} यदि बाद के चक्र की प्रतीक्षा करें{winner} अब इसे प्राथमिकता दी जा रही है।",
-  "recommendationLine": "सिफ़ारिश: प्राथमिकता दें{winner} इस चक्र में।"
+  "recommendationLine": "सिफ़ारिश: प्राथमिकता दें{winner} इस चक्र में।",
+  "yourMp": "आपके सांसद",
+  "yourConstituency": "{name} निर्वाचन क्षेत्र",
+  "noMpAssignedYet": "आपके क्षेत्र के लिए सांसद का विवरण अभी उपलब्ध नहीं है"
 }

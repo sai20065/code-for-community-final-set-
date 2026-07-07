@@ -35,7 +35,13 @@ class MyReportsScreen extends StatelessWidget {
     final uid = authService.currentUser?.uid;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.myTicketsTitle)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+        ),
+        title: Text(l10n.myTicketsTitle),
+      ),
       body: uid == null
           ? Center(child: Text(l10n.pleaseSignIn))
           : StreamBuilder<List<SubmissionModel>>(

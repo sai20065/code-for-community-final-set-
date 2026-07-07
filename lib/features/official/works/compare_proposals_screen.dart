@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
@@ -29,7 +30,13 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
     final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.compareProposals)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/official/works'),
+        ),
+        title: Text(l10n.compareProposals),
+      ),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;

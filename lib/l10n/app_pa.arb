@@ -223,5 +223,8 @@
   "reasonDemographic": "ਇੱਕ ਉੱਚ ਜਨਸੰਖਿਆ-ਪਹੁੰਚ ਭਾਰ ({winner} ਬਨਾਮ{loser} )",
   "reasonInfra": "ਇੱਕ ਵੱਡਾ ਮੌਜੂਦਾ ਬੁਨਿਆਦੀ ਢਾਂਚਾ ਪਾੜਾ ({winner} ਬਨਾਮ{loser} )",
   "defersLine": "{count}ਲਈ ਟਿਕਟਾਂ{loser}{rangeSuffix} ਬਾਅਦ ਦੇ ਚੱਕਰ ਦੀ ਉਡੀਕ ਕਰੋ ਜੇਕਰ{winner} ਹੁਣ ਤਰਜੀਹ ਦਿੱਤੀ ਜਾਂਦੀ ਹੈ।",
-  "recommendationLine": "ਸਿਫਾਰਸ਼: ਤਰਜੀਹ ਦਿਓ{winner} ਇਹ ਚੱਕਰ।"
+  "recommendationLine": "ਸਿਫਾਰਸ਼: ਤਰਜੀਹ ਦਿਓ{winner} ਇਹ ਚੱਕਰ।",
+  "yourMp": "ਤੁਹਾਡੇ ਸੰਸਦ ਮੈਂਬਰ",
+  "yourConstituency": "{name} ਹਲਕਾ",
+  "noMpAssignedYet": "ਤੁਹਾਡੇ ਖੇਤਰ ਲਈ ਸੰਸਦ ਮੈਂਬਰ ਦੇ ਵੇਰਵੇ ਅਜੇ ਉਪਲਬਧ ਨਹੀਂ ਹਨ"
 }

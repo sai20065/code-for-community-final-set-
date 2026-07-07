@@ -163,6 +163,10 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
     final isSuggestion = _category == SubmissionCategory.feedback;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/compose'),
+        ),
         title: Text(isSuggestion ? l10n.shareYourSuggestion : l10n.describeTheProblem),
       ),
       body: SafeArea(

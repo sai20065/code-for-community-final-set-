@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/booth_model.dart';
 import '../models/cluster_model.dart';
+import '../models/constituency_model.dart';
 import '../models/submission_model.dart';
 import '../models/user_model.dart';
 
@@ -21,6 +22,8 @@ class FirestoreService {
       _db.collection('clusters');
   CollectionReference<Map<String, dynamic>> get _counters =>
       _db.collection('counters');
+  CollectionReference<Map<String, dynamic>> get _constituencies =>
+      _db.collection('constituencies');
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
@@ -203,6 +206,17 @@ class FirestoreService {
         _submissions.where('location.constituencyId', isEqualTo: constituencyId);
     final snapshot = await query.count().get();
     return snapshot.count ?? 0;
+  }
+
+  Future<ConstituencyModel?> getConstituency(String constituencyId) async {
+    final doc = await _constituencies.doc(constituencyId).get();
+    if (!doc.exists) return null;
+    return ConstituencyModel.fromMap(doc.id, doc.data()!);
+  }
+
+  Stream<ConstituencyModel?> watchConstituency(String constituencyId) {
+    return _constituencies.doc(constituencyId).snapshots().map(
+        (doc) => doc.exists ? ConstituencyModel.fromMap(doc.id, doc.data()!) : null);
   }
 
   Stream<List<BoothModel>> watchBoothsForConstituency(String constituencyId) {

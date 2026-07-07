@@ -223,5 +223,8 @@
   "reasonDemographic": "વસ્તી વિષયક પહોંચનું ઊંચું વજન ({winner} વિ.{loser} )",
   "reasonInfra": "હાલના માળખાગત સુવિધાઓમાં મોટો તફાવત ({winner} વિ.{loser} )",
   "defersLine": "{count}માટે ટિકિટો{loser}{rangeSuffix} પછીના ચક્ર માટે રાહ જુઓ જો{winner} હવે પ્રાથમિકતા આપવામાં આવી છે.",
-  "recommendationLine": "ભલામણ: પ્રાથમિકતા આપો{winner} આ ચક્ર."
+  "recommendationLine": "ભલામણ: પ્રાથમિકતા આપો{winner} આ ચક્ર.",
+  "yourMp": "તમારા સાંસદ",
+  "yourConstituency": "{name} મતવિસ્તાર",
+  "noMpAssignedYet": "તમારા વિસ્તાર માટે સાંસદની વિગતો હજુ ઉપલબ્ધ નથી"
 }

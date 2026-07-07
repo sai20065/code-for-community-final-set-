@@ -223,5 +223,8 @@
   "reasonDemographic": "उच्च लोकसंख्याशास्त्रीय पोहोच भार{winner} विरुद्ध{loser} )",
   "reasonInfra": "विद्यमान पायाभूत सुविधांमधील मोठी तफावत ({winner} विरुद्ध{loser} )",
   "defersLine": "{count}तिकिटांसाठी{loser}{rangeSuffix} पुढील सायकलची वाट पहा जर{winner} आता याला प्राधान्य दिले आहे.",
-  "recommendationLine": "शिफारस: प्राधान्य द्या{winner} हे चक्र."
+  "recommendationLine": "शिफारस: प्राधान्य द्या{winner} हे चक्र.",
+  "yourMp": "तुमचे खासदार",
+  "yourConstituency": "{name} मतदारसंघ",
+  "noMpAssignedYet": "तुमच्या भागासाठी खासदारांची माहिती अद्याप उपलब्ध नाही"
 }

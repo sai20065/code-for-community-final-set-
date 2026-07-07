@@ -281,5 +281,9 @@
   "defersLine": "{count} tickets for {loser}{rangeSuffix} wait for a later cycle if {winner} is prioritised now.",
   "@defersLine": { "placeholders": { "count": { "type": "int" }, "loser": { "type": "String" }, "rangeSuffix": { "type": "String" }, "winner": { "type": "String" } } },
   "recommendationLine": "Recommendation: prioritise {winner} this cycle.",
-  "@recommendationLine": { "placeholders": { "winner": { "type": "String" } } }
+  "@recommendationLine": { "placeholders": { "winner": { "type": "String" } } },
+  "yourMp": "Your MP",
+  "yourConstituency": "{name} constituency",
+  "@yourConstituency": { "placeholders": { "name": { "type": "String" } } },
+  "noMpAssignedYet": "MP details aren't available for your area yet"
 }

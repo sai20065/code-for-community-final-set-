@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {REGION, geminiApiKey} from "../config";
+import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
 
@@ -102,9 +103,27 @@ export const onSubmissionCreated = onDocumentCreated(
     }
     if (!theme) return;
 
-    // --- 5: cluster assignment ---------------------------------------------
-    const constituencyId: string | undefined =
-      submission.location?.constituencyId;
+    // --- 5: authoritative constituency resolution + cluster assignment ----
+    // The client resolves constituencyId client-side (booth/pincode match,
+    // often unmapped) purely so the citizen sees an immediate "routed to..."
+    // hint. Here we re-resolve from the actual GPS point against real
+    // constituency boundaries and correct the ticket if it disagrees (or was
+    // never resolved at all) — this is what actually determines which
+    // official's dashboard the ticket appears on, so it must not silently
+    // stay wrong just because the client-side heuristic had no coverage.
+    let constituencyId: string | undefined = submission.location?.constituencyId;
+    const lat: number | undefined = submission.location?.lat;
+    const lng: number | undefined = submission.location?.lng;
+    if (typeof lat === "number" && typeof lng === "number") {
+      const resolved = resolveConstituencyForPoint(lat, lng);
+      if (resolved && resolved.constituencyId !== constituencyId) {
+        constituencyId = resolved.constituencyId;
+        await submissionRef.update({
+          "location.constituencyId": resolved.constituencyId,
+          "location.constituencyName": resolved.constituencyName,
+        });
+      }
+    }
     const boothId: string | undefined = submission.location?.boothId;
     if (!constituencyId) return; // unscoped ticket — no cluster to join yet
 

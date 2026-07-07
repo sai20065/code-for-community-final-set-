@@ -35,6 +35,13 @@ class SubmissionConfirmationScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final isSuggestion = submission.category == SubmissionCategory.feedback;
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+        ),
+        title: Text(isSuggestion ? l10n.badgeSuggestion : l10n.badgeReport),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

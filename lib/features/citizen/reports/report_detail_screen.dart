@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/firestore_service.dart';
@@ -51,14 +52,36 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     if (_loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded),
+            onPressed: () => context.canPop() ? context.pop() : context.go('/reports'),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
     final s = _submission;
     if (s == null) {
-      return Scaffold(body: Center(child: Text(l10n.ticketNotFound)));
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded),
+            onPressed: () => context.canPop() ? context.pop() : context.go('/reports'),
+          ),
+        ),
+        body: Center(child: Text(l10n.ticketNotFound)),
+      );
     }
     return Scaffold(
-      appBar: AppBar(title: Text(s.tokenId)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/reports'),
+        ),
+        title: Text(s.tokenId),
+      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),

@@ -223,5 +223,8 @@
   "reasonDemographic": "అధిక జనాభా-చేరు బరువు ({winner} వర్సెస్{loser} )",
   "reasonInfra": "ఇప్పటికే ఉన్న మౌలిక సదుపాయాల అంతరం మరింత పెద్దది ({winner} వర్సెస్{loser} )",
   "defersLine": "{count}టిక్కెట్లు{loser}{rangeSuffix} తరువాతి చక్రం వరకు వేచి ఉండండి{winner} ఇప్పుడు ప్రాధాన్యత ఇవ్వబడుతోంది.",
-  "recommendationLine": "సిఫార్సు: ప్రాధాన్యత ఇవ్వండి{winner} ఈ చక్రం."
+  "recommendationLine": "సిఫార్సు: ప్రాధాన్యత ఇవ్వండి{winner} ఈ చక్రం.",
+  "yourMp": "మీ ఎంపీ",
+  "yourConstituency": "{name} నియోజకవర్గం",
+  "noMpAssignedYet": "మీ ప్రాంతానికి ఎంపీ వివరాలు ఇంకా అందుబాటులో లేవు"
 }

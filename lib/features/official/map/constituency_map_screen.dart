@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
@@ -36,7 +37,13 @@ class ConstituencyMapScreen extends ConsumerWidget {
 
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.boothDemandMap)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+        ),
+        title: Text(l10n.boothDemandMap),
+      ),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;

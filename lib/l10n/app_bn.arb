@@ -223,5 +223,8 @@
   "reasonDemographic": "একটি উচ্চতর জনসংখ্যাতাত্ত্বিক-প্রসার ওজন ({winner} বনাম{loser} )",
   "reasonInfra": "একটি বৃহত্তর বিদ্যমান অবকাঠামোগত ব্যবধান ({winner} বনাম{loser} )",
   "defersLine": "{count}টিকিটের জন্য{loser}{rangeSuffix} পরবর্তী চক্রের জন্য অপেক্ষা করুন যদি{winner} এখন অগ্রাধিকার দেওয়া হচ্ছে।",
-  "recommendationLine": "সুপারিশ: অগ্রাধিকার দিন{winner} এই চক্র।"
+  "recommendationLine": "সুপারিশ: অগ্রাধিকার দিন{winner} এই চক্র।",
+  "yourMp": "আপনার সাংসদ",
+  "yourConstituency": "{name} নির্বাচনী এলাকা",
+  "noMpAssignedYet": "আপনার এলাকার জন্য সাংসদের বিবরণ এখনও পাওয়া যায়নি"
 }

@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
@@ -21,7 +22,13 @@ class ThemesOverviewScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.themesOverview)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+        ),
+        title: Text(l10n.themesOverview),
+      ),
       body: SafeArea(
         child: profileAsync.when(
           data: (profile) {

@@ -25,7 +25,13 @@ const List<(String code, String name, String native)> kSupportedLanguages = [
 ];
 
 class LanguageSelectScreen extends ConsumerStatefulWidget {
-  const LanguageSelectScreen({super.key});
+  const LanguageSelectScreen({super.key, this.fromSettings = false});
+
+  /// True when opened from Profile's "change language" link — an
+  /// already-onboarded citizen just changing a preference, who should land
+  /// back on Profile afterward (and via the back button) rather than being
+  /// dropped into the middle of the onboarding/signup flow.
+  final bool fromSettings;
 
   @override
   ConsumerState<LanguageSelectScreen> createState() =>
@@ -54,13 +60,25 @@ class _LanguageSelectScreenState extends ConsumerState<LanguageSelectScreen> {
       }
     }
     await Future.delayed(const Duration(milliseconds: 300));
-    if (mounted) context.go('/signup/basic-info');
+    if (mounted) {
+      context.go(widget.fromSettings ? '/profile' : '/signup/basic-info');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.warmOffWhite,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(widget.fromSettings ? '/profile' : '/signup'),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

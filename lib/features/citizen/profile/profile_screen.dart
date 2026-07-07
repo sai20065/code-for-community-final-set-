@@ -7,6 +7,7 @@ import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/mp_constituency_card.dart';
 import '../../onboarding/language_select_screen.dart';
 
 /// Profile: home constituency/booth/pincode/language at a glance, a privacy
@@ -22,7 +23,13 @@ class ProfileScreen extends ConsumerWidget {
     final profileAsync = ref.watch(currentUserProfileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.profileTitle)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+        ),
+        title: Text(l10n.profileTitle),
+      ),
       body: profileAsync.when(
         data: (profile) {
           final languageEntry = kSupportedLanguages.firstWhere(
@@ -64,7 +71,7 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                     const Divider(height: 22),
                     InkWell(
-                      onTap: () => context.go('/language'),
+                      onTap: () => context.go('/language', extra: true),
                       borderRadius: BorderRadius.circular(10),
                       child: _InfoRow(
                         icon: Icons.language_rounded,
@@ -76,6 +83,8 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+              MpConstituencyCard(constituencyId: profile?.constituencyId),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(14),

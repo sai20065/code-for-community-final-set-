@@ -7,6 +7,7 @@ import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/mp_constituency_card.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
@@ -104,6 +105,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       );
                     },
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: profileAsync.when(
+                    data: (profile) =>
+                        MpConstituencyCard(constituencyId: profile?.constituencyId),
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
                   ),
                 ),
                 if (uid != null) ...[

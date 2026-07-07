@@ -150,7 +150,13 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
     final l10n = AppLocalizations.of(context);
     final isReport = _category == SubmissionCategory.problem;
     return Scaffold(
-      appBar: AppBar(title: Text(isReport ? l10n.reportAProblem : l10n.addAPhoto)),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/compose'),
+        ),
+        title: Text(isReport ? l10n.reportAProblem : l10n.addAPhoto),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

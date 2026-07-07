@@ -40,7 +40,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/language',
-      builder: (context, state) => const LanguageSelectScreen(),
+      builder: (context, state) =>
+          LanguageSelectScreen(fromSettings: state.extra == true),
     ),
 
     // --- Onboarding / signup ---
