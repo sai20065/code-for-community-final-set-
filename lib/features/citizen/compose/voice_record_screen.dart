@@ -51,6 +51,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   String? _transcriptError;
   String? _translatedText;
   String? _recordError;
+  String? _submitError;
   String? _filePath;
   String? _theme;
   int? _similarCount;
@@ -205,7 +206,10 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   Future<void> _submit() async {
     final uid = _authService.currentUser?.uid;
     if (uid == null || _filePath == null) return;
-    setState(() => _submitting = true);
+    setState(() {
+      _submitting = true;
+      _submitError = null;
+    });
 
     final profile = await _firestoreService.getUser(uid);
     String? mediaUrl;
@@ -247,8 +251,16 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       tokenId: '',
       createdAt: DateTime.now(),
     );
-    final saved = await _firestoreService.createSubmission(draft);
-    if (mounted) context.go('/confirmation', extra: saved);
+    try {
+      final saved = await _firestoreService.createSubmission(draft);
+      if (mounted) context.go('/confirmation', extra: saved);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _submitting = false;
+        _submitError = AppLocalizations.of(context).couldNotSubmitTryAgain;
+      });
+    }
   }
 
   @override
@@ -386,6 +398,11 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
                 selected: _theme,
                 onSelected: _selectTheme,
               ),
+              if (_submitError != null) ...[
+                const SizedBox(height: 12),
+                Text(_submitError!,
+                    style: const TextStyle(color: AppColors.coralRed, fontSize: 12.5)),
+              ],
               const SizedBox(height: 24),
               if (_hasRecording && _hasTranscript)
                 PrimaryButton(

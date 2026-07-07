@@ -285,5 +285,6 @@
   "yourMp": "Your MP",
   "yourConstituency": "{name} constituency",
   "@yourConstituency": { "placeholders": { "name": { "type": "String" } } },
-  "noMpAssignedYet": "MP details aren't available for your area yet"
+  "noMpAssignedYet": "MP details aren't available for your area yet",
+  "couldNotSubmitTryAgain": "Couldn't submit — please check your connection and try again"
 }

@@ -84,10 +84,13 @@ service cloud.firestore {
     // token id (see FirestoreService.generateTokenId) — incremented
     // directly by the citizen's own client via a transaction at ticket
     // creation time, so it can't wait on a Cloud Function round-trip. Only
-    // a single numeric `count` field is ever allowed; no read access since
-    // nothing reads a raw counter doc back.
+    // a single numeric `count` field is ever allowed. Read access is
+    // required here — the increment transaction itself does a tx.get() on
+    // this doc before writing, and a denied read fails the whole
+    // transaction (this used to be `allow read: if false`, which silently
+    // broke every single ticket submission's token generation).
     match /counters/{counterId} {
-      allow read: if false;
+      allow read: if isSignedIn();
       allow create, update: if isSignedIn() &&
         request.resource.data.keys().hasOnly(['count']) &&
         request.resource.data.count is int &&

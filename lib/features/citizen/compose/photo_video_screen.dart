@@ -44,6 +44,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
   int? _similarCount;
   late SubmissionCategory _category;
   bool _submitting = false;
+  String? _submitError;
   LatLng? _pin;
   double? _homeLat;
   double? _homeLng;
@@ -97,7 +98,10 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
   Future<void> _submit() async {
     final uid = _authService.currentUser?.uid;
     if (uid == null || _media == null) return;
-    setState(() => _submitting = true);
+    setState(() {
+      _submitting = true;
+      _submitError = null;
+    });
 
     final profile = await _firestoreService.getUser(uid);
     String? mediaUrl;
@@ -135,8 +139,16 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
       tokenId: '',
       createdAt: DateTime.now(),
     );
-    final saved = await _firestoreService.createSubmission(draft);
-    if (mounted) context.go('/confirmation', extra: saved);
+    try {
+      final saved = await _firestoreService.createSubmission(draft);
+      if (mounted) context.go('/confirmation', extra: saved);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _submitting = false;
+        _submitError = AppLocalizations.of(context).couldNotSubmitTryAgain;
+      });
+    }
   }
 
   @override
@@ -230,6 +242,11 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                 selected: _theme,
                 onSelected: _selectTheme,
               ),
+              if (_submitError != null) ...[
+                const SizedBox(height: 12),
+                Text(_submitError!,
+                    style: const TextStyle(color: Colors.red, fontSize: 12.5)),
+              ],
               const SizedBox(height: 32),
               PrimaryButton(
                 label: isReport ? l10n.submitReport : l10n.submitSuggestion,
