@@ -55,6 +55,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
   uses-material-design: true
@@ -62,3 +63,22 @@ flutter:
   assets:
     - assets/lottie/
     - assets/images/
+    - assets/icon/
+
+# Run with: dart run flutter_launcher_icons
+# android/ isn't committed (regenerated fresh in CI — see
+# .github/workflows/build-apk.yml), so this must run there, after the
+# Android platform folder exists and before `flutter build apk`. web/ IS
+# committed, so build-web.yml re-runs this too to keep web/icons and
+# manifest.json in sync with the same source image.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/logo.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icon/logo.png"
+    background_color: "#F3F2EE"
+    theme_color: "#2E1F8F"
