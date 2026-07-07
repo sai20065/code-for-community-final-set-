@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
+import '../../../core/models/cluster_model.dart';
 import '../../../core/models/ward_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../booth/booth_detail_sheet.dart';
@@ -20,8 +21,15 @@ import '../booth/booth_detail_sheet.dart';
 /// of Bengaluru wards have disjoint parts and serialize as the latter).
 List<List<LatLng>> _extractRings(String? geoJsonString) {
   if (geoJsonString == null) return [];
-  final geometry = jsonDecode(geoJsonString) as Map<String, dynamic>;
-  return _ringsFromGeometry(geometry);
+  // Defensive: one malformed/unexpected geometry (bad data, a shape this
+  // parser doesn't handle yet) must never crash the whole map — skip just
+  // that ring instead.
+  try {
+    final geometry = jsonDecode(geoJsonString) as Map<String, dynamic>;
+    return _ringsFromGeometry(geometry);
+  } catch (_) {
+    return [];
+  }
 }
 
 List<List<LatLng>> _ringsFromGeometry(Map<String, dynamic> geometry) {
@@ -48,9 +56,13 @@ List<List<LatLng>> _ringsFromGeometry(Map<String, dynamic> geometry) {
 }
 
 List<LatLng> _ringToLatLng(List ring) {
-  return ring
-      .map((point) => LatLng((point as List)[1] as double, point[0] as double))
-      .toList();
+  return ring.map((point) {
+    final p = point as List;
+    // Coordinates that happen to be whole numbers (e.g. 13.0) serialize as
+    // a JSON integer, not a float — jsonDecode then hands back a Dart
+    // `int`, and a plain `as double` throws. `num.toDouble()` handles both.
+    return LatLng((p[1] as num).toDouble(), (p[0] as num).toDouble());
+  }).toList();
 }
 
 LatLngBounds? _boundsFromRings(List<List<LatLng>> rings) {
@@ -76,6 +88,17 @@ Color _densityColor(String level) {
     default:
       return AppColors.teal;
   }
+}
+
+/// Same red/amber/green hotspot language as booth markers, applied to
+/// wards from their highest cluster `priorityScore` — so a ward with no
+/// tracked issues yet reads as neutral, not alarmingly red or misleadingly
+/// green. `null` (no cluster data for this ward) gets a plain neutral tint.
+Color _wardColorForPriority(double? priority) {
+  if (priority == null) return AppColors.inkFaint;
+  if (priority >= 70) return AppColors.vermilion;
+  if (priority >= 40) return AppColors.saffron;
+  return AppColors.teal;
 }
 class ConstituencyMapScreen extends ConsumerWidget {
   const ConstituencyMapScreen({super.key});
@@ -154,15 +177,36 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
     final constituencyAsync = ref.watch(constituencyProvider(widget.constituencyId));
     final wardsAsync = ref.watch(_wardsProvider(widget.constituencyId));
     final boothsAsync = ref.watch(_boothsProvider(widget.constituencyId));
+    final clustersAsync = ref.watch(_clustersProvider(widget.constituencyId));
 
     return constituencyAsync.when(
       data: (constituency) {
         final wards = wardsAsync.valueOrNull ?? const [];
         final booths = boothsAsync.valueOrNull ?? const [];
+        final clusters = clustersAsync.valueOrNull ?? const [];
+
+        // Highest priorityScore among a ward's clusters — drives the ward
+        // fill color below, same red/amber/green language as booth markers.
+        final wardPriority = <String, double>{};
+        for (final cluster in clusters) {
+          final wardId = cluster.wardId;
+          final score = cluster.priorityScore;
+          if (wardId == null || score == null) continue;
+          final existing = wardPriority[wardId];
+          if (existing == null || score > existing) wardPriority[wardId] = score;
+        }
 
         final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
-        final wardRings =
-            wards.expand((w) => _extractRings(w.boundaryGeoJson)).toList();
+        final wardPolygons = wards.expand((ward) {
+          final color = _wardColorForPriority(wardPriority[ward.id]);
+          return _extractRings(ward.boundaryGeoJson).map((ring) => Polygon(
+                points: ring,
+                color: color.withValues(alpha: 0.28),
+                borderColor: color,
+                borderStrokeWidth: 1.5,
+              ));
+        }).toList();
+        final wardRings = wards.expand((w) => _extractRings(w.boundaryGeoJson)).toList();
         final boothPoints = booths.map((b) => LatLng(b.lat, b.lng)).toList();
 
         final bounds = _boundsFromRings(constituencyRings) ??
@@ -184,17 +228,8 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.prajadhvani.app',
                 ),
-                if (wardRings.isNotEmpty)
-                  PolygonLayer(
-                    polygons: wardRings
-                        .map((ring) => Polygon(
-                              points: ring,
-                              color: AppColors.indigoMist.withValues(alpha: 0.08),
-                              borderColor: AppColors.indigoMist.withValues(alpha: 0.6),
-                              borderStrokeWidth: 1,
-                            ))
-                        .toList(),
-                  ),
+                if (wardPolygons.isNotEmpty)
+                  PolygonLayer(polygons: wardPolygons),
                 if (constituencyRings.isNotEmpty)
                   PolygonLayer(
                     polygons: constituencyRings
@@ -339,4 +374,11 @@ final _wardsProvider =
   return ref
       .watch(firestoreServiceProvider)
       .watchWardsForConstituency(constituencyId);
+});
+
+final _clustersProvider =
+    StreamProvider.family<List<ClusterModel>, String>((ref, constituencyId) {
+  return ref
+      .watch(firestoreServiceProvider)
+      .watchClustersForConstituency(constituencyId);
 });
