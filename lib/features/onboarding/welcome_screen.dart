@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../l10n/app_localizations.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// First screen after Splash for anyone not yet signed in: "Citizen" vs
@@ -24,6 +25,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.paper,
       body: SafeArea(
@@ -45,9 +47,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                'Voice of the constituency',
+                l10n.appTagline,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.inkFaint, fontSize: 13),
+                style: const TextStyle(color: AppColors.inkFaint, fontSize: 13),
               ),
               const SizedBox(height: 28),
               Container(
@@ -59,8 +61,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Expanded(child: _TabButton(label: 'Citizen', selected: !_mpTab, onTap: () => setState(() => _mpTab = false))),
-                    Expanded(child: _TabButton(label: 'MP office', selected: _mpTab, onTap: () => setState(() => _mpTab = true))),
+                    Expanded(child: _TabButton(label: l10n.tabCitizen, selected: !_mpTab, onTap: () => setState(() => _mpTab = false))),
+                    Expanded(child: _TabButton(label: l10n.tabMpOffice, selected: _mpTab, onTap: () => setState(() => _mpTab = true))),
                   ],
                 ),
               ),
@@ -146,34 +148,34 @@ class _CitizenEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         const Spacer(),
-        Icon(Icons.record_voice_over_rounded, size: 72, color: AppColors.indigoMist),
+        const Icon(Icons.record_voice_over_rounded, size: 72, color: AppColors.indigoMist),
         const SizedBox(height: 16),
         Text(
-          'Share a development suggestion or report a civic problem — in your own language, by voice, text or photo.',
+          l10n.citizenIntro,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
+          style: const TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
         ),
         const SizedBox(height: 16),
         Text(
-          "You stay anonymous to other citizens. Your Aadhaar number is never "
-          "stored. Your MP's office sees aggregated demand, not your identity.",
+          l10n.welcomeAnonymityNote,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.inkFaint, fontSize: 11.5, height: 1.4),
+          style: const TextStyle(color: AppColors.inkFaint, fontSize: 11.5, height: 1.4),
         ),
         const Spacer(),
         PrimaryButton(
-          label: 'New here? Sign Up',
+          label: l10n.newHereSignUp,
           icon: Icons.arrow_forward_rounded,
           onPressed: () => context.go('/signup'),
         ),
         const SizedBox(height: 12),
         OutlinedButton(
           onPressed: () => context.go('/signin'),
-          child: const Text('I already have an account — Sign In'),
+          child: Text(l10n.alreadyHaveAccountSignIn),
         ),
         const SizedBox(height: 8),
       ],
@@ -212,7 +214,7 @@ class _MpLoginFormState extends State<_MpLoginForm> {
     } catch (e) {
       setState(() {
         _loading = false;
-        _error = 'Could not sign in. Check your constituency ID and password.';
+        _error = AppLocalizations.of(context).couldNotSignInOfficial;
       });
     }
   }
@@ -226,18 +228,19 @@ class _MpLoginFormState extends State<_MpLoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
           controller: _constituencyController,
-          decoration: const InputDecoration(hintText: 'Constituency ID'),
+          decoration: InputDecoration(hintText: l10n.constituencyId),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _passwordController,
           obscureText: true,
-          decoration: const InputDecoration(hintText: 'Password'),
+          decoration: InputDecoration(hintText: l10n.password),
         ),
         if (_error != null) ...[
           const SizedBox(height: 12),
@@ -245,7 +248,7 @@ class _MpLoginFormState extends State<_MpLoginForm> {
         ],
         const Spacer(),
         PrimaryButton(
-          label: 'Sign in',
+          label: l10n.signIn,
           icon: Icons.login_rounded,
           loading: _loading,
           onPressed: _login,

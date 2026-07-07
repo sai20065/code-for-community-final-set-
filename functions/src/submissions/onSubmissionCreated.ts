@@ -37,8 +37,16 @@ export const onSubmissionCreated = onDocumentCreated(
     const translate = new TranslateClient();
 
     // --- 1 & 2: transcript + translation ---------------------------------
+    // Voice tickets are now transcribed on the client *before* submit (the
+    // citizen sees/edits the text), arriving here as `rawText`. Only fall
+    // back to server-side transcription when that didn't happen — avoids
+    // paying for Gemini transcription twice.
     let transcript: string | undefined = submission.rawText;
-    if (submission.type === "voice" && submission.mediaUrl) {
+    if (
+      submission.type === "voice" &&
+      submission.mediaUrl &&
+      !submission.rawText
+    ) {
       try {
         transcript = await gemini.transcribeAudioUrl(
           submission.mediaUrl,
@@ -50,8 +58,8 @@ export const onSubmissionCreated = onDocumentCreated(
       }
     }
 
-    let translatedText: string | undefined;
-    if (transcript) {
+    let translatedText: string | undefined = submission.translatedText;
+    if (transcript && !translatedText) {
       try {
         translatedText = await translate.translate({
           text: transcript,

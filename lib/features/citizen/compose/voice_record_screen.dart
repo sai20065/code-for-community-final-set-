@@ -10,6 +10,8 @@ import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/transcription_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/ai_suggestion_chips.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/location_picker.dart';
@@ -19,9 +21,11 @@ import 'input_mode_switcher.dart';
 import 'theme_picker_widget.dart';
 
 /// Section 3.6: big obvious record button, pulsing ring while recording,
-/// live waveform, playback-before-submit with re-record option. Voice
-/// tickets are transcribed/translated server-side via Bhashini once
-/// uploaded (see `functions/src/submissions/onSubmissionCreated.ts`).
+/// live waveform, and — once recording stops — speech is converted to
+/// **editable text the citizen sees and can correct before submitting**
+/// (via the `transcribeAndTranslate` Cloud Function). The final text is
+/// stored as the ticket's `rawText`; server-side translation/classification
+/// then runs on it (see `functions/src/submissions/onSubmissionCreated.ts`).
 class VoiceRecordScreen extends StatefulWidget {
   const VoiceRecordScreen({super.key, this.initialCategory});
 
@@ -36,10 +40,15 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   final _firestoreService = FirestoreService();
   final _authService = AuthService();
   final _storageService = StorageService();
+  final _transcriptionService = TranscriptionService();
+  final _transcriptController = TextEditingController();
 
   bool _isRecording = false;
   bool _hasRecording = false;
   bool _submitting = false;
+  bool _transcribing = false;
+  String? _transcriptError;
+  String? _translatedText;
   String? _filePath;
   String? _theme;
   int? _similarCount;
@@ -48,6 +57,8 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   LatLng? _pin;
   double? _homeLat;
   double? _homeLng;
+
+  bool get _hasTranscript => _transcriptController.text.trim().isNotEmpty;
 
   @override
   void initState() {
@@ -95,6 +106,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
         _hasRecording = path != null;
         _filePath = path;
       });
+      if (path != null) _transcribe();
       return;
     }
     if (await _recorder.hasPermission()) {
@@ -104,8 +116,42 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
         _isRecording = true;
         _hasRecording = false;
         _elapsed = Duration.zero;
+        _transcriptController.clear();
+        _translatedText = null;
+        _transcriptError = null;
       });
       _tickTimer();
+    }
+  }
+
+  /// Converts the just-finished recording to editable text so the citizen can
+  /// read and correct it before submitting. Failure is non-fatal — they can
+  /// still type the text in manually, or re-record.
+  Future<void> _transcribe() async {
+    if (_filePath == null) return;
+    setState(() {
+      _transcribing = true;
+      _transcriptError = null;
+    });
+    try {
+      final profile =
+          await _firestoreService.getUser(_authService.currentUser?.uid ?? '');
+      final result = await _transcriptionService.transcribe(
+        audio: File(_filePath!),
+        sourceLanguage: profile?.preferredLanguage ?? 'en',
+      );
+      if (!mounted) return;
+      setState(() {
+        _transcribing = false;
+        _transcriptController.text = result.transcript;
+        _translatedText = result.translatedText;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _transcribing = false;
+        _transcriptError = AppLocalizations.of(context).couldNotConvertVoice;
+      });
     }
   }
 
@@ -127,6 +173,9 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       _hasRecording = false;
       _filePath = null;
       _elapsed = Duration.zero;
+      _transcriptController.clear();
+      _translatedText = null;
+      _transcriptError = null;
     });
   }
 
@@ -155,6 +204,13 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       type: SubmissionType.voice,
       category: _category,
       inputMode: 'voice',
+      // The citizen has already seen and (optionally) corrected the transcript
+      // on-screen — persist it as rawText so it's MP-visible and the server
+      // skips re-transcribing. translatedText is stored too when available.
+      rawText: _transcriptController.text.trim().isEmpty
+          ? null
+          : _transcriptController.text.trim(),
+      translatedText: _translatedText,
       mediaUrl: mediaUrl,
       language: profile?.preferredLanguage ?? 'en',
       theme: _theme,
@@ -175,14 +231,16 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   @override
   void dispose() {
     _recorder.dispose();
+    _transcriptController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isReport = _category == SubmissionCategory.problem;
     return Scaffold(
-      appBar: AppBar(title: Text(isReport ? 'Report by Voice' : 'Suggest by Voice')),
+      appBar: AppBar(title: Text(isReport ? l10n.reportByVoice : l10n.suggestByVoice)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -219,22 +277,61 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
               ),
               if (_hasRecording) ...[
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton.icon(
-                      onPressed: _reRecord,
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: const Text('Re-record'),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: _reRecord,
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text(l10n.reRecord),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                if (_transcribing)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 16, height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(l10n.convertingVoiceToText),
+                    ],
+                  )
+                else ...[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l10n.yourWordsEditIfNeeded,
+                        style: Theme.of(context).textTheme.titleSmall),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _transcriptController,
+                    maxLines: null,
+                    minLines: 3,
+                    onChanged: (_) => setState(() {}),
+                    decoration: InputDecoration(
+                      hintText: l10n.spokenReportAppearsHere,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    TextButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.play_arrow_rounded),
-                      label: const Text('Play'),
+                  ),
+                  if (_transcriptError != null) ...[
+                    const SizedBox(height: 8),
+                    Text(_transcriptError!,
+                        style: const TextStyle(
+                            color: AppColors.coralRed, fontSize: 12.5)),
+                    Center(
+                      child: TextButton.icon(
+                        onPressed: _transcribe,
+                        icon: const Icon(Icons.refresh_rounded, size: 18),
+                        label: Text(l10n.tryConvertingAgain),
+                      ),
                     ),
                   ],
-                ),
+                ],
               ],
               const SizedBox(height: 24),
               LocationPicker(
@@ -247,7 +344,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
                 SimilarCountChip(count: _similarCount!, category: _category),
               ],
               const SizedBox(height: 24),
-              Text('Pick a category (optional)',
+              Text(l10n.pickCategoryOptional,
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 12),
               ThemePickerWidget(
@@ -255,12 +352,12 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
                 onSelected: _selectTheme,
               ),
               const SizedBox(height: 24),
-              if (_hasRecording)
+              if (_hasRecording && _hasTranscript)
                 PrimaryButton(
-                  label: isReport ? 'Submit Report' : 'Submit Suggestion',
+                  label: isReport ? l10n.submitReport : l10n.submitSuggestion,
                   icon: Icons.send_rounded,
                   loading: _submitting,
-                  onPressed: _submit,
+                  onPressed: _submitting ? null : _submit,
                 ),
             ],
           ),

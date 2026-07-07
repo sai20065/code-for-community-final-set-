@@ -15,6 +15,7 @@ import '../../core/services/aadhaar_ocr_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/services/location_service.dart';
+import '../../l10n/app_localizations.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// New-citizen entry point — folds one-time Aadhaar-photo OCR (front AND
@@ -120,7 +121,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         if (result.address != null) _addressLabel = result.address!;
         if (result.wardNumber != null) _wardController.text = result.wardNumber!;
         if (!result.looksUsable) {
-          _error = "Couldn't read that clearly — check the details below or enter them manually.";
+          _error = AppLocalizations.of(context).couldNotReadClearly;
           _manualEntry = true;
         }
       });
@@ -129,7 +130,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       setState(() {
         _extracting = false;
         _manualEntry = true;
-        _error = "Couldn't process that image right now — enter your details manually below.";
+        _error = AppLocalizations.of(context).couldNotProcessImage;
       });
     }
   }
@@ -214,7 +215,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     } catch (e) {
       setState(() {
         _finishing = false;
-        _authError = 'Could not continue — check your connection and try again.';
+        _authError = AppLocalizations.of(context).couldNotContinue;
       });
     }
   }
@@ -222,7 +223,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Future<void> _sendCode() async {
     final digits = _phoneController.text.trim();
     if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
-      setState(() => _authError = 'Enter a valid 10-digit mobile number.');
+      setState(() => _authError = AppLocalizations.of(context).enterValidMobile);
       return;
     }
     setState(() {
@@ -269,7 +270,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     } catch (e) {
       setState(() {
         _finishing = false;
-        _authError = "That code didn't match — check it and try again.";
+        _authError = AppLocalizations.of(context).codeDidntMatch;
       });
     }
   }
@@ -286,12 +287,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.paper,
       appBar: AppBar(
         backgroundColor: AppColors.paper,
         elevation: 0,
-        title: const Text('Sign Up'),
+        title: Text(l10n.signUp),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -299,12 +301,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(Icons.record_voice_over_rounded, size: 56, color: AppColors.indigoMist),
+              const Icon(Icons.record_voice_over_rounded, size: 56, color: AppColors.indigoMist),
               const SizedBox(height: 12),
               Text(
-                'Share a development suggestion or report a civic problem — in your own language, by voice, text or photo.',
+                l10n.citizenIntro,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
+                style: const TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
               ),
               const SizedBox(height: 16),
               Container(
@@ -313,15 +315,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   color: AppColors.indigo.withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  'Upload photos of your Aadhaar (front and back) so we can read '
-                  'your name and address — the back side often has your full '
-                  'address, so capturing it too gives more accurate results. '
-                  'We keep only your name, address, pincode and ward number — '
-                  'the photos and your Aadhaar number are never saved. This is '
-                  'not ID verification, and both photos are optional — you can '
-                  'always just type your details below.',
-                  style: TextStyle(fontSize: 12, height: 1.4),
+                child: Text(
+                  l10n.aadhaarUploadNote,
+                  style: const TextStyle(fontSize: 12, height: 1.4),
                 ),
               ),
               const SizedBox(height: 14),
@@ -329,7 +325,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 children: [
                   Expanded(
                     child: _AadhaarImageSlot(
-                      label: 'Front',
+                      label: l10n.slotFront,
                       image: _frontImage,
                       onCamera: () => _pick(true, ImageSource.camera),
                       onGallery: () => _pick(true, ImageSource.gallery),
@@ -348,7 +344,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
               const SizedBox(height: 12),
               PrimaryButton(
-                label: 'Extract details',
+                label: l10n.extractDetails,
                 icon: Icons.auto_awesome_rounded,
                 loading: _extracting,
                 onPressed: _frontImage == null ? null : _extract,
@@ -362,14 +358,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 alignment: Alignment.centerLeft,
                 child: TextButton(
                   onPressed: () => setState(() => _manualEntry = !_manualEntry),
-                  child: Text(_manualEntry ? 'Hide manual entry' : "Skip — I'll enter manually"),
+                  child: Text(_manualEntry ? l10n.hideManualEntry : l10n.skipEnterManually),
                 ),
               ),
               if (_manualEntry || _nameController.text.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(hintText: 'Full name'),
+                  decoration: InputDecoration(hintText: l10n.fullName),
                   onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: 10),
@@ -377,7 +373,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   controller: _pincodeController,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
-                  decoration: const InputDecoration(hintText: 'Pincode'),
+                  decoration: InputDecoration(hintText: l10n.pincode),
                   onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: 4),
@@ -392,12 +388,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           width: 16, height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2))
                       : const Icon(Icons.my_location_rounded),
-                  label: Text(_homePin == null ? 'Use my location' : 'Update my location'),
+                  label: Text(_homePin == null ? l10n.useMyLocation : l10n.updateMyLocation),
                 ),
                 if (_addressLabel != null) ...[
                   const SizedBox(height: 6),
                   Text(_addressLabel!,
-                      style: TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+                      style: const TextStyle(fontSize: 12, color: AppColors.inkSoft)),
                 ],
                 if (_homePin != null) ...[
                   const SizedBox(height: 10),
@@ -429,27 +425,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ),
                     ),
                   ),
-                  Text('Tap the map to adjust your exact location.',
-                      style: TextStyle(fontSize: 11, color: AppColors.inkFaint)),
+                  Text(l10n.tapMapToAdjust,
+                      style: const TextStyle(fontSize: 11, color: AppColors.inkFaint)),
                 ],
                 const SizedBox(height: 10),
                 TextField(
                   controller: _wardController,
-                  decoration: const InputDecoration(hintText: 'Ward number (optional)'),
+                  decoration: InputDecoration(hintText: l10n.wardNumberOptional),
                 ),
               ],
               const SizedBox(height: 8),
               if (!_showAuthOptions)
                 PrimaryButton(
-                  label: 'Continue',
+                  label: l10n.continueLabel,
                   icon: Icons.arrow_forward_rounded,
                   onPressed: _canContinue ? () => setState(() => _showAuthOptions = true) : null,
                 )
               else ...[
                 const SizedBox(height: 4),
                 Text(
-                  'Verify with your phone number',
-                  style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink, fontSize: 13.5),
+                  l10n.verifyWithPhone,
+                  style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink, fontSize: 13.5),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -469,7 +465,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         keyboardType: TextInputType.phone,
                         maxLength: 10,
                         enabled: !_codeSent,
-                        decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
+                        decoration: InputDecoration(hintText: l10n.mobileNumberHint, counterText: ''),
                       ),
                     ),
                   ],
@@ -477,7 +473,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 if (!_codeSent) ...[
                   const SizedBox(height: 10),
                   PrimaryButton(
-                    label: 'Send code',
+                    label: l10n.sendCode,
                     icon: Icons.sms_rounded,
                     loading: _sendingCode,
                     onPressed: _sendingCode ? null : _sendCode,
@@ -488,11 +484,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     controller: _codeController,
                     keyboardType: TextInputType.number,
                     maxLength: 6,
-                    decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
+                    decoration: InputDecoration(hintText: l10n.sixDigitCode, counterText: ''),
                   ),
                   const SizedBox(height: 10),
                   PrimaryButton(
-                    label: 'Verify & continue',
+                    label: l10n.verifyAndContinue,
                     icon: Icons.check_circle_rounded,
                     loading: _finishing,
                     onPressed: _finishing ? null : _verifyCode,
@@ -506,22 +502,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 Center(
                   child: TextButton(
                     onPressed: _finishing ? null : _continueAnonymously,
-                    child: const Text('Skip — stay anonymous'),
+                    child: Text(l10n.skipStayAnonymous),
                   ),
                 ),
               ],
               const SizedBox(height: 12),
               Text(
-                "Whichever way you sign in, your MP's office only ever sees "
-                "aggregated demand, never your identity.",
+                l10n.aggregatedDemandNote,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.inkFaint, fontSize: 11, height: 1.4),
+                style: const TextStyle(color: AppColors.inkFaint, fontSize: 11, height: 1.4),
               ),
               const SizedBox(height: 8),
               Center(
                 child: TextButton(
                   onPressed: () => context.go('/signin'),
-                  child: const Text('Already have an account? Sign In'),
+                  child: Text(l10n.alreadyHaveAccountSignInShort),
                 ),
               ),
             ],
@@ -547,10 +542,11 @@ class _AadhaarImageSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.inkSoft)),
+        Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.inkSoft)),
         const SizedBox(height: 6),
         if (image != null)
           ClipRRect(
@@ -575,14 +571,14 @@ class _AadhaarImageSlot extends StatelessWidget {
               child: IconButton(
                 onPressed: onCamera,
                 icon: const Icon(Icons.camera_alt_rounded, size: 18),
-                tooltip: 'Camera',
+                tooltip: l10n.camera,
               ),
             ),
             Expanded(
               child: IconButton(
                 onPressed: onGallery,
                 icon: const Icon(Icons.photo_library_rounded, size: 18),
-                tooltip: 'Gallery',
+                tooltip: l10n.gallery,
               ),
             ),
           ],

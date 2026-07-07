@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
@@ -76,6 +77,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -91,7 +93,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
               TextField(
                 controller: _nameController,
                 style: const TextStyle(fontSize: 20),
-                decoration: const InputDecoration(hintText: 'Your name'),
+                decoration: InputDecoration(hintText: l10n.yourName),
                 onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: 16),
@@ -99,12 +101,12 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                 controller: _ageController,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 20),
-                decoration: const InputDecoration(hintText: 'Age'),
+                decoration: InputDecoration(hintText: l10n.age),
                 onChanged: (_) => setState(() {}),
               ),
               const Spacer(),
               PrimaryButton(
-                label: 'Next',
+                label: l10n.next,
                 icon: Icons.arrow_forward_rounded,
                 loading: _saving,
                 onPressed: _isValid ? _next : null,

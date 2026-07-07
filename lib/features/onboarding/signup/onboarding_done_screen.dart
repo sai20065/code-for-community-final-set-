@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/theme.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/primary_button.dart';
 
 /// Step 6 (final): a clear, calm "you're set up" moment before the citizen
@@ -13,6 +14,7 @@ class OnboardingDoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -36,25 +38,24 @@ class OnboardingDoneScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 18),
                     Text(
-                      "You're set up",
+                      l10n.youAreSetUp,
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge
                           ?.copyWith(fontWeight: FontWeight.w700, color: AppColors.tealDeep),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'You can now submit development suggestions and report '
-                      'problems in your area.',
+                    Text(
+                      l10n.setUpBody,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.tealDeep, fontSize: 13.5, height: 1.5),
+                      style: const TextStyle(color: AppColors.tealDeep, fontSize: 13.5, height: 1.5),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: 'Enter app',
+                label: l10n.enterApp,
                 icon: Icons.arrow_forward_rounded,
                 onPressed: () => context.go('/home'),
               ),

@@ -8,6 +8,7 @@ import '../../app/providers/onboarding_progress_provider.dart';
 import '../../app/theme.dart';
 import '../../core/models/user_model.dart';
 import '../../core/services/auth_service.dart';
+import '../../l10n/app_localizations.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// Returning-citizen entry point — phone-OTP sign-in only, no account
@@ -46,7 +47,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'No account found for this number — please Sign Up first.';
+        _error = AppLocalizations.of(context).noAccountFound;
       });
       return;
     }
@@ -62,7 +63,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   Future<void> _sendCode() async {
     final digits = _phoneController.text.trim();
     if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
-      setState(() => _error = 'Enter a valid 10-digit mobile number.');
+      setState(() => _error = AppLocalizations.of(context).enterValidMobile);
       return;
     }
     setState(() {
@@ -109,7 +110,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     } catch (e) {
       setState(() {
         _loading = false;
-        _error = "That code didn't match — check it and try again.";
+        _error = AppLocalizations.of(context).codeDidntMatch;
       });
     }
   }
@@ -123,12 +124,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.paper,
       appBar: AppBar(
         backgroundColor: AppColors.paper,
         elevation: 0,
-        title: const Text('Sign In'),
+        title: Text(l10n.signIn),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -136,12 +138,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(Icons.login_rounded, size: 56, color: AppColors.indigoMist),
+              const Icon(Icons.login_rounded, size: 56, color: AppColors.indigoMist),
               const SizedBox(height: 16),
               Text(
-                'Welcome back — sign in with the phone number you signed up with.',
+                l10n.welcomeBack,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
+                style: const TextStyle(color: AppColors.inkSoft, fontSize: 13.5, height: 1.5),
               ),
               const SizedBox(height: 24),
               Row(
@@ -161,7 +163,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       keyboardType: TextInputType.phone,
                       maxLength: 10,
                       enabled: !_codeSent,
-                      decoration: const InputDecoration(hintText: '10-digit mobile number', counterText: ''),
+                      decoration: InputDecoration(hintText: l10n.mobileNumberHint, counterText: ''),
                     ),
                   ),
                 ],
@@ -169,7 +171,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               if (!_codeSent) ...[
                 const SizedBox(height: 10),
                 PrimaryButton(
-                  label: 'Send code',
+                  label: l10n.sendCode,
                   icon: Icons.sms_rounded,
                   loading: _sendingCode,
                   onPressed: _sendingCode ? null : _sendCode,
@@ -180,11 +182,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   controller: _codeController,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
-                  decoration: const InputDecoration(hintText: '6-digit code', counterText: ''),
+                  decoration: InputDecoration(hintText: l10n.sixDigitCode, counterText: ''),
                 ),
                 const SizedBox(height: 10),
                 PrimaryButton(
-                  label: 'Verify & sign in',
+                  label: l10n.verifyAndSignIn,
                   icon: Icons.check_circle_rounded,
                   loading: _loading,
                   onPressed: _loading ? null : _verifyCode,
@@ -198,7 +200,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               Center(
                 child: TextButton(
                   onPressed: () => context.go('/signup'),
-                  child: const Text("Don't have an account? Sign Up"),
+                  child: Text(l10n.dontHaveAccountSignUp),
                 ),
               ),
             ],
