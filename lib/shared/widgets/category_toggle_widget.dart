@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/models/submission_model.dart';
+import '../../l10n/app_localizations.dart';
 
 /// "Report a problem" vs "Suggest a development work" — a citizen picks
 /// this before describing their ticket (usually already preset by which
@@ -19,11 +20,12 @@ class CategoryToggleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
           child: _Segment(
-            label: 'Report a problem',
+            label: l10n.reportAProblem,
             icon: Icons.report_problem_rounded,
             isSelected: selected == SubmissionCategory.problem,
             onTap: () => onChanged(SubmissionCategory.problem),
@@ -32,7 +34,7 @@ class CategoryToggleWidget extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _Segment(
-            label: 'Suggest a development work',
+            label: l10n.suggestDevelopmentWork,
             icon: Icons.lightbulb_rounded,
             isSelected: selected == SubmissionCategory.feedback,
             onTap: () => onChanged(SubmissionCategory.feedback),

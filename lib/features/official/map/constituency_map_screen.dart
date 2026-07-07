@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../booth/booth_detail_sheet.dart';
 
 /// Booth-level demand map: dot size = submission volume, dot color = density
@@ -33,17 +34,18 @@ class ConstituencyMapScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(currentUserProfileProvider);
 
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Booth-Level Demand Map')),
+      appBar: AppBar(title: Text(l10n.boothDemandMap)),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;
           if (constituencyId == null) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Your account isn\'t linked to a constituency yet.',
+                  l10n.notLinkedConstituency,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -52,7 +54,7 @@ class ConstituencyMapScreen extends ConsumerWidget {
           return _BoothMap(constituencyId: constituencyId);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Could not load your profile.')),
+        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
       ),
     );
   }
@@ -77,11 +79,11 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
     return boothsAsync.when(
       data: (booths) {
         if (booths.isEmpty) {
-          return const Center(
+          return Center(
             child: Padding(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               child: Text(
-                'No booth reference data for this constituency yet.',
+                AppLocalizations.of(context).noBoothData,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -155,7 +157,7 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const Center(child: Text('Could not load booths.')),
+      error: (_, __) => Center(child: Text(AppLocalizations.of(context).couldNotLoadBooths)),
     );
   }
 }
@@ -165,6 +167,7 @@ class _Legend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       constraints: const BoxConstraints(maxWidth: 220),
@@ -177,16 +180,16 @@ class _Legend extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Open-issue density',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.inkFaint)),
+          Text(l10n.openIssueDensity,
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.inkFaint)),
           const SizedBox(height: 6),
-          const _LegendRow(color: AppColors.vermilion, label: 'High — needs attention'),
-          const _LegendRow(color: AppColors.saffron, label: 'Moderate'),
-          const _LegendRow(color: AppColors.teal, label: 'Low / mostly resolved'),
+          _LegendRow(color: AppColors.vermilion, label: l10n.densityHigh),
+          _LegendRow(color: AppColors.saffron, label: l10n.densityModerate),
+          _LegendRow(color: AppColors.teal, label: l10n.densityLow),
           const SizedBox(height: 6),
           Text(
-            'Dot size = submission volume',
-            style: TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
+            l10n.dotSizeVolume,
+            style: const TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
           ),
         ],
       ),

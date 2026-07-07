@@ -10,6 +10,7 @@ import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/ai_suggestion_chips.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/location_picker.dart';
@@ -146,9 +147,10 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isReport = _category == SubmissionCategory.problem;
     return Scaffold(
-      appBar: AppBar(title: Text(isReport ? 'Report a Problem' : 'Add a Photo')),
+      appBar: AppBar(title: Text(isReport ? l10n.reportAProblem : l10n.addAPhoto)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -186,7 +188,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                     child: OutlinedButton.icon(
                       onPressed: () => _pick(ImageSource.camera),
                       icon: const Icon(Icons.camera_alt_rounded),
-                      label: const Text('Camera'),
+                      label: Text(l10n.camera),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -194,7 +196,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                     child: OutlinedButton.icon(
                       onPressed: () => _pick(ImageSource.gallery),
                       icon: const Icon(Icons.photo_library_rounded),
-                      label: const Text('Gallery'),
+                      label: Text(l10n.gallery),
                     ),
                   ),
                 ],
@@ -202,8 +204,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
               const SizedBox(height: 20),
               TextField(
                 controller: _captionController,
-                decoration:
-                    const InputDecoration(hintText: 'Add a caption (optional)'),
+                decoration: InputDecoration(hintText: l10n.captionOptional),
               ),
               const SizedBox(height: 20),
               LocationPicker(
@@ -216,7 +217,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
                 SimilarCountChip(count: _similarCount!, category: _category),
               ],
               const SizedBox(height: 24),
-              Text('Pick a category (optional)',
+              Text(l10n.pickCategoryOptional,
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 12),
               ThemePickerWidget(
@@ -225,7 +226,7 @@ class _PhotoVideoScreenState extends State<PhotoVideoScreen> {
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: isReport ? 'Submit Report' : 'Submit Suggestion',
+                label: isReport ? l10n.submitReport : l10n.submitSuggestion,
                 icon: Icons.send_rounded,
                 loading: _submitting,
                 onPressed: _media == null ? null : _submit,

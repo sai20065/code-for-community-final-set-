@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/models/submission_model.dart';
+import '../../l10n/app_localizations.dart';
 import 'theme_icon_chip.dart';
 
 /// "Looks like: X" — the AI-suggested category, always shown as a
@@ -37,7 +38,7 @@ class ThemeConfirmChip extends StatelessWidget {
           children: [
             Icon(kThemeIcons[themeId], size: 16, color: color),
             const SizedBox(width: 6),
-            Text('Looks like: ${kThemeLabels[themeId]}',
+            Text(AppLocalizations.of(context).looksLike(kThemeLabels[themeId] ?? ''),
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: color)),
             const SizedBox(width: 8),
             GestureDetector(
@@ -63,10 +64,11 @@ class SimilarCountChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isProblem = category == SubmissionCategory.problem;
     final label = isProblem
-        ? 'There are $count similar open problems in this booth — your report will be added'
-        : '$count others nearby have asked for this too';
+        ? l10n.similarOpenProblems(count)
+        : l10n.othersAskedToo(count);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: BoxDecoration(

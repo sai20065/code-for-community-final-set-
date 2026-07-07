@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/status_stepper.dart';
 
 /// Section 4, screen 10: status stepper large at top, original submission
@@ -48,12 +49,13 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final s = _submission;
     if (s == null) {
-      return const Scaffold(body: Center(child: Text('Ticket not found')));
+      return Scaffold(body: Center(child: Text(l10n.ticketNotFound)));
     }
     return Scaffold(
       appBar: AppBar(title: Text(s.tokenId)),
@@ -63,14 +65,14 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           children: [
             StatusStepper(status: s.status),
             const SizedBox(height: 24),
-            Text('Ticket', style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.ticketLabel, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            Text(s.rawText ?? s.transcript ?? 'No description'),
+            Text(s.rawText ?? s.transcript ?? l10n.noDescription),
             if (s.translatedText != null) ...[
               const SizedBox(height: 16),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,
-                title: const Text('See details (transcript/translation)'),
+                title: Text(l10n.seeDetails),
                 children: [Text(s.translatedText!)],
               ),
             ],

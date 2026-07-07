@@ -6,6 +6,7 @@ import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
@@ -30,6 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     final uid = AuthService().currentUser?.uid;
 
@@ -38,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         title: profileAsync.when(
           data: (profile) => Text(
-            profile?.name != null ? 'Hi, ${profile!.name}' : 'Prajadhwani',
+            profile?.name != null ? l10n.greetingHi(profile!.name!) : 'Prajadhwani',
           ),
           loading: () => const Text('Prajadhwani'),
           error: (_, __) => const Text('Prajadhwani'),
@@ -52,9 +54,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
                     profile?.constituencyId != null
-                        ? 'Home: ${profile!.constituencyId}'
-                            '${profile.homeBoothName != null ? " · Booth ${profile.homeBoothName}" : ""}'
-                        : 'Pincode ${profile?.pincodeHome ?? "—"}',
+                        ? l10n.homeAreaLabel(
+                            '${profile!.constituencyId}'
+                            '${profile.homeBoothName != null ? " · ${l10n.boothLabel(profile.homeBoothName!)}" : ""}')
+                        : l10n.pincodeLabel(profile?.pincodeHome ?? "—"),
                     style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ),
@@ -68,7 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.receipt_long_rounded),
-            tooltip: 'My tickets',
+            tooltip: l10n.myTickets,
             onPressed: () => context.go('/reports'),
           ),
           IconButton(
@@ -112,7 +115,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Text('Trending near you',
+                      Text(l10n.trendingNearYou,
                           style: Theme.of(context).textTheme.titleMedium),
                     ],
                   ),
@@ -123,10 +126,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     data: (profile) {
                       final constituencyId = profile?.constituencyId;
                       if (uid == null || constituencyId == null) {
-                        return const _EmptyState(
-                          message:
-                              'Suggestions from your constituency will appear here once your area is confirmed.',
-                        );
+                        return _EmptyState(message: l10n.emptyAreaSuggestions);
                       }
                       return _TrendingFeed(
                         constituencyId: constituencyId,
@@ -135,7 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (_, __) => const _EmptyState(message: 'Could not load suggestions.'),
+                    error: (_, __) => _EmptyState(message: l10n.couldNotLoadSuggestions),
                   ),
                 ),
                 const SizedBox(height: 96),
@@ -150,7 +150,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               backgroundColor: AppColors.saffron,
               onPressed: () => context.go('/compose'),
               icon: const Icon(Icons.add_rounded),
-              label: const Text('New submission'),
+              label: Text(l10n.newSubmission),
             ),
           ),
         ],
@@ -212,9 +212,9 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.record_voice_over_rounded, size: 48, color: AppColors.indigoMist),
+            const Icon(Icons.record_voice_over_rounded, size: 48, color: AppColors.indigoMist),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center, style: TextStyle(color: AppColors.inkFaint)),
+            Text(message, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.inkFaint)),
           ],
         ),
       ),
@@ -244,10 +244,10 @@ class _MyRecentReports extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Your recent reports',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(AppLocalizations.of(context).yourRecentReports,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
             ),
             const SizedBox(height: 8),
             SizedBox(
@@ -345,9 +345,7 @@ class _TrendingFeed extends ConsumerWidget {
             ? suggestions
             : suggestions.where((s) => s.theme == categoryFilter).toList();
         if (filtered.isEmpty) {
-          return const _EmptyState(
-            message: 'No suggestions yet — be the first to submit one for your area.',
-          );
+          return _EmptyState(message: AppLocalizations.of(context).noSuggestionsYet);
         }
         return ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -366,7 +364,7 @@ class _TrendingFeed extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const _EmptyState(message: 'Could not load suggestions.'),
+      error: (_, __) => _EmptyState(message: AppLocalizations.of(context).couldNotLoadSuggestions),
     );
   }
 }
@@ -393,6 +391,7 @@ class _TrendingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final themeId = submission.theme ?? 'more';
     return Material(
       color: Colors.white,
@@ -438,8 +437,8 @@ class _TrendingCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            '${submission.supporterCount} supporters',
-                            style: TextStyle(color: AppColors.inkFaint, fontSize: 11.5),
+                            l10n.supportersCount(submission.supporterCount),
+                            style: const TextStyle(color: AppColors.inkFaint, fontSize: 11.5),
                           ),
                         ],
                       ),
@@ -457,7 +456,7 @@ class _TrendingCard extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: Text(
-                      isSupportedByMe ? 'Supported' : 'I support this',
+                      isSupportedByMe ? l10n.supported : l10n.iSupportThis,
                       style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700),
                     ),
                   ),
@@ -472,9 +471,9 @@ class _TrendingCard extends StatelessWidget {
                     color: AppColors.saffronMist,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
-                    'SUGGESTION',
-                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: AppColors.saffronDeep),
+                  child: Text(
+                    l10n.suggestionUpper,
+                    style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: AppColors.saffronDeep),
                   ),
                 ),
               ),

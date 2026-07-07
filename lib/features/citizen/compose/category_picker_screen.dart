@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Step 1 of the submit flow: the citizen picks what kind of ticket this is
 /// before describing it. Two large, unmistakably different tiles rather
@@ -16,8 +17,9 @@ class CategoryPickerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('New submission')),
+      appBar: AppBar(title: Text(l10n.newSubmission)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -26,7 +28,7 @@ class CategoryPickerScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 8),
               Text(
-                'What would you like to do?',
+                l10n.whatWouldYouLikeToDo,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
@@ -42,8 +44,8 @@ class CategoryPickerScreen extends StatelessWidget {
                         icon: Icons.warning_amber_rounded,
                         color: AppColors.vermilion,
                         mist: AppColors.vermilionMist,
-                        title: 'Report a problem',
-                        subtitle: 'Something broken or unsafe near you',
+                        title: l10n.reportAProblem,
+                        subtitle: l10n.reportProblemSubtitle,
                         onTap: () => context.go(
                           '/compose/text',
                           extra: SubmissionCategory.problem,
@@ -56,8 +58,8 @@ class CategoryPickerScreen extends StatelessWidget {
                         icon: Icons.lightbulb_rounded,
                         color: AppColors.saffronDeep,
                         mist: AppColors.saffronMist,
-                        title: 'Suggest a development work',
-                        subtitle: 'Something new your area needs',
+                        title: l10n.suggestDevelopmentWork,
+                        subtitle: l10n.suggestSubtitle,
                         onTap: () => context.go(
                           '/compose/text',
                           extra: SubmissionCategory.feedback,
@@ -120,7 +122,7 @@ class _CategoryTile extends StatelessWidget {
               Text(
                 subtitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.4),
+                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft, height: 1.4),
               ),
             ],
           ),

@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../app/theme.dart';
 import '../../core/services/location_service.dart';
+import '../../l10n/app_localizations.dart';
 
 enum LocationPickMode { current, home, pin }
 
@@ -65,8 +66,8 @@ class _LocationPickerState extends State<LocationPicker> {
         _mode = LocationPickMode.home;
         _locating = false;
         _note = _homeLatLng == null
-            ? "Couldn't get your location — pick a spot on the map instead."
-            : "Couldn't get your location — using your home address instead.";
+            ? AppLocalizations.of(context).locationFailPickMap
+            : AppLocalizations.of(context).locationFailUseHome;
       });
       widget.onChanged(_homeLatLng);
       return;
@@ -98,6 +99,7 @@ class _LocationPickerState extends State<LocationPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -106,7 +108,7 @@ class _LocationPickerState extends State<LocationPicker> {
             Expanded(
               child: _Pill(
                 icon: Icons.my_location_rounded,
-                label: 'Current location',
+                label: l10n.pillCurrentLocation,
                 selected: _mode == LocationPickMode.current,
                 loading: _locating && _mode == LocationPickMode.current,
                 onTap: _useCurrentLocation,
@@ -116,7 +118,7 @@ class _LocationPickerState extends State<LocationPicker> {
             Expanded(
               child: _Pill(
                 icon: Icons.home_rounded,
-                label: 'At my home',
+                label: l10n.pillAtMyHome,
                 selected: _mode == LocationPickMode.home,
                 onTap: _useHome,
               ),
@@ -125,7 +127,7 @@ class _LocationPickerState extends State<LocationPicker> {
             Expanded(
               child: _Pill(
                 icon: Icons.pin_drop_rounded,
-                label: 'Drop a pin',
+                label: l10n.pillDropPin,
                 selected: _mode == LocationPickMode.pin,
                 onTap: _useDropPin,
               ),
@@ -134,8 +136,8 @@ class _LocationPickerState extends State<LocationPicker> {
         ),
         const SizedBox(height: 8),
         Text(
-          _note ?? 'Routed to your home MP · pin only sets where this shows on the map.',
-          style: TextStyle(fontSize: 11, color: AppColors.inkFaint),
+          _note ?? l10n.locationRoutedNote,
+          style: const TextStyle(fontSize: 11, color: AppColors.inkFaint),
         ),
         if (_mode == LocationPickMode.pin) ...[
           const SizedBox(height: 12),

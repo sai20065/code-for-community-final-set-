@@ -218,4 +218,585 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get submitSuggestion => 'നിർദ്ദേശം സമർപ്പിക്കുക';
+
+  @override
+  String get newSubmission => 'പുതിയ സമർപ്പണം';
+
+  @override
+  String get whatWouldYouLikeToDo => 'നിങ്ങൾക്ക് എന്ത് ചെയ്യാനാണ് ഇഷ്ടം?';
+
+  @override
+  String get reportAProblem => 'ഒരു പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക';
+
+  @override
+  String get reportProblemSubtitle =>
+      'നിങ്ങളുടെ അടുത്തുള്ള എന്തെങ്കിലും തകർന്നതോ സുരക്ഷിതമല്ലാത്തതോ ആണ്';
+
+  @override
+  String get suggestDevelopmentWork => 'ഒരു വികസന പ്രവർത്തനം നിർദ്ദേശിക്കുക';
+
+  @override
+  String get suggestSubtitle =>
+      'നിങ്ങളുടെ പ്രദേശത്തിന് ആവശ്യമായ പുതിയ എന്തെങ്കിലും';
+
+  @override
+  String get shareYourSuggestion => 'നിങ്ങളുടെ നിർദ്ദേശം പങ്കിടുക';
+
+  @override
+  String get describeTheProblem => 'പ്രശ്നം വിവരിക്കുക';
+
+  @override
+  String get suggestionHint =>
+      'നിങ്ങളുടെ പ്രദേശത്തിന് എന്ത് വികസന പ്രവർത്തനങ്ങൾ സഹായകരമാകും? (ഉദാ: ബസ് സ്റ്റാൻഡിനടുത്തുള്ള ഒരു സ്കില്ലിംഗ് സെന്റർ)';
+
+  @override
+  String get problemHint =>
+      'എന്താണ് പ്രശ്നം? (ഉദാ: തെരുവുവിളക്ക് പ്രവർത്തിക്കുന്നില്ല)';
+
+  @override
+  String get addAPhoto => 'ഒരു ഫോട്ടോ ചേർക്കുക';
+
+  @override
+  String get captionOptional => 'ഒരു അടിക്കുറിപ്പ് ചേർക്കുക (ഓപ്ഷണൽ)';
+
+  @override
+  String get receiptCopied => 'രസീത് നമ്പർ പകർത്തി';
+
+  @override
+  String get badgeSuggestion => 'നിർദ്ദേശം';
+
+  @override
+  String get badgeReport => 'റിപ്പോർട്ട് ചെയ്യുക';
+
+  @override
+  String get savedInstantlyNote =>
+      'തൽക്ഷണം സേവ് ചെയ്‌തു. പശ്ചാത്തലത്തിൽ AI സമ്പുഷ്ടീകരണം തുടരുന്നു — നിങ്ങൾക്ക് Mine-ൽ അപ്‌ഡേറ്റുകൾ കാണാൻ കഴിയും.';
+
+  @override
+  String get trackThisTicket => 'ഈ ടിക്കറ്റ് ട്രാക്ക് ചെയ്യുക';
+
+  @override
+  String get copyReceipt => 'രസീത് പകർത്തുക';
+
+  @override
+  String get backToHome => 'വീട്ടിലേക്ക് മടങ്ങുക';
+
+  @override
+  String routedTo(String constituency) {
+    return 'വഴിതിരിച്ചുവിട്ടു$constituency';
+  }
+
+  @override
+  String looksLike(String theme) {
+    return 'ഇതുപോലെ കാണപ്പെടുന്നു:$theme';
+  }
+
+  @override
+  String similarOpenProblems(int count) {
+    return 'ഇതുണ്ട്$count ഈ ബൂത്തിൽ സമാനമായ തുറന്ന പ്രശ്നങ്ങൾ — നിങ്ങളുടെ റിപ്പോർട്ട് ചേർക്കും.';
+  }
+
+  @override
+  String othersAskedToo(int count) {
+    return '$countസമീപത്തുള്ള മറ്റുള്ളവരും ഇത് ആവശ്യപ്പെട്ടിട്ടുണ്ട്.';
+  }
+
+  @override
+  String greetingHi(String name) {
+    return 'ഹായ്,$name';
+  }
+
+  @override
+  String homeAreaLabel(String area) {
+    return 'വീട്:$area';
+  }
+
+  @override
+  String boothLabel(String name) {
+    return 'ബൂത്ത്$name';
+  }
+
+  @override
+  String pincodeLabel(String pincode) {
+    return 'പിൻകോഡ്$pincode';
+  }
+
+  @override
+  String get myTickets => 'എന്റെ ടിക്കറ്റുകൾ';
+
+  @override
+  String get trendingNearYou => 'നിങ്ങളുടെ അടുത്തുള്ള ട്രെൻഡിംഗ്';
+
+  @override
+  String get emptyAreaSuggestions =>
+      'നിങ്ങളുടെ പ്രദേശം സ്ഥിരീകരിച്ചുകഴിഞ്ഞാൽ, നിങ്ങളുടെ നിയോജകമണ്ഡലത്തിൽ നിന്നുള്ള നിർദ്ദേശങ്ങൾ ഇവിടെ ദൃശ്യമാകും.';
+
+  @override
+  String get couldNotLoadSuggestions => 'നിർദ്ദേശങ്ങൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get yourRecentReports => 'നിങ്ങളുടെ സമീപകാല റിപ്പോർട്ടുകൾ';
+
+  @override
+  String get noSuggestionsYet =>
+      'ഇതുവരെ നിർദ്ദേശങ്ങളൊന്നുമില്ല — നിങ്ങളുടെ പ്രദേശത്തേക്ക് ആദ്യം നിർദ്ദേശം സമർപ്പിക്കുക.';
+
+  @override
+  String supportersCount(int count) {
+    return '$countപിന്തുണയ്ക്കുന്നവർ';
+  }
+
+  @override
+  String get supported => 'പിന്തുണയ്ക്കുന്നു';
+
+  @override
+  String get iSupportThis => 'ഞാൻ ഇതിനെ പിന്തുണയ്ക്കുന്നു.';
+
+  @override
+  String get suggestionUpper => 'നിർദ്ദേശം';
+
+  @override
+  String get myTicketsTitle => 'എന്റെ ടിക്കറ്റുകൾ';
+
+  @override
+  String get pleaseSignIn => 'ദയവായി സൈൻ ഇൻ ചെയ്യുക';
+
+  @override
+  String get noTicketsYet => 'ഇതുവരെ ടിക്കറ്റുകളൊന്നുമില്ല';
+
+  @override
+  String receiptLabel(String token) {
+    return 'രസീത്:$token';
+  }
+
+  @override
+  String get inDevelopmentPlan => 'വികസന പദ്ധതിയിൽ';
+
+  @override
+  String get underReview => 'അവലോകനത്തിലാണ്';
+
+  @override
+  String get ticketNotFound => 'ടിക്കറ്റ് കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get ticketLabel => 'ടിക്കറ്റ്';
+
+  @override
+  String get noDescription => 'വിവരണമില്ല';
+
+  @override
+  String get seeDetails => 'വിശദാംശങ്ങൾ കാണുക (ട്രാൻസ്ക്രിപ്റ്റ്/വിവർത്തനം)';
+
+  @override
+  String get profileTitle => 'പ്രൊഫൈൽ';
+
+  @override
+  String get citizenDefault => 'പൗരൻ';
+
+  @override
+  String get homeConstituency => 'സ്വന്തം മണ്ഡലം';
+
+  @override
+  String get notYetMatched => 'ഇതുവരെ പൊരുത്തപ്പെട്ടിട്ടില്ല';
+
+  @override
+  String get homeBooth => 'ഹോം ബൂത്ത്';
+
+  @override
+  String get preferredLanguage => 'ഇഷ്ടപ്പെട്ട ഭാഷ';
+
+  @override
+  String get privacyStoreAddress =>
+      'നിങ്ങളുടെ സമർപ്പണങ്ങൾ ശരിയായ എംപിയിലേക്ക് നയിക്കുന്നതിനായി ഞങ്ങൾ നിങ്ങളുടെ വിലാസം സൂക്ഷിക്കുന്നു. നിങ്ങളുടെ 12 അക്ക ആധാർ നമ്പർ ഒരിക്കലും സൂക്ഷിക്കില്ല.';
+
+  @override
+  String get signOutClears => 'സൈൻ ഔട്ട് ചെയ്യുക (ഈ ഉപകരണം മായ്‌ക്കുന്നു)';
+
+  @override
+  String get couldNotLoadProfile =>
+      'നിങ്ങളുടെ പ്രൊഫൈൽ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get statusFiled => 'ഫയൽ ചെയ്തു';
+
+  @override
+  String get statusAcknowledged => 'അംഗീകരിച്ചു';
+
+  @override
+  String get statusInProgress => 'പുരോഗതിയിൽ';
+
+  @override
+  String get statusResolved => 'പരിഹരിച്ചു';
+
+  @override
+  String get receiptWeGotThis => 'ഇത് ഞങ്ങളുടെ കൈവശമുണ്ട്';
+
+  @override
+  String get yourAddressStreet => 'നിങ്ങളുടെ വിലാസം (തെരുവ്, പ്രദേശം)';
+
+  @override
+  String get tapMapToMovePin =>
+      'നിങ്ങളുടെ കൃത്യമായ സ്ഥലത്തേക്ക് പിൻ നീക്കാൻ മാപ്പിൽ എവിടെയെങ്കിലും ടാപ്പ് ചെയ്യുക.';
+
+  @override
+  String get homeAreaWillConfirm =>
+      'നിങ്ങളുടെ പ്രദേശവുമായി പൊരുത്തപ്പെട്ടുകഴിഞ്ഞാൽ ഹോം മണ്ഡലവും ബൂത്തും സ്ഥിരീകരിക്കപ്പെടും.';
+
+  @override
+  String homeConstituencyBooth(String constituency, String booth) {
+    return 'സ്വന്തം മണ്ഡലം:$constituency · ഹോം ബൂത്ത്:$booth';
+  }
+
+  @override
+  String get looksRight => 'ശരിയായി തോന്നുന്നു';
+
+  @override
+  String get thisIsntMe => 'ഇത് ഞാനല്ല.';
+
+  @override
+  String get pillCurrentLocation => 'നിലവിലെ സ്ഥലം';
+
+  @override
+  String get pillAtMyHome => 'എന്റെ വീട്ടിൽ';
+
+  @override
+  String get pillDropPin => 'ഒരു പിൻ ഇടുക';
+
+  @override
+  String get locationRoutedNote =>
+      'നിങ്ങളുടെ വീട്ടിലെ എംപി · പിൻ മാപ്പിൽ കാണിക്കുന്നിടത്ത് മാത്രമേ സജ്ജമാക്കൂ.';
+
+  @override
+  String get locationFailPickMap =>
+      'നിങ്ങളുടെ ലൊക്കേഷൻ കണ്ടെത്താനായില്ല — പകരം മാപ്പിൽ ഒരു സ്ഥലം തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get locationFailUseHome =>
+      'നിങ്ങളുടെ ലൊക്കേഷൻ കണ്ടെത്താനായില്ല — പകരം നിങ്ങളുടെ വീട്ടുവിലാസം ഉപയോഗിച്ചു.';
+
+  @override
+  String get constituencyDashboard => 'നിയോജകമണ്ഡല ഡാഷ്‌ബോർഡ്';
+
+  @override
+  String get notLinkedConstituency =>
+      'നിങ്ങളുടെ അക്കൗണ്ട് ഇതുവരെ ഒരു നിയോജകമണ്ഡലവുമായി ലിങ്ക് ചെയ്തിട്ടില്ല.';
+
+  @override
+  String get newThisWeek => 'ഈ ആഴ്ചയിലെ പുതിയത്';
+
+  @override
+  String get resolvedRate => 'പരിഹരിച്ച നിരക്ക്';
+
+  @override
+  String get avgResponseTime => 'ശരാശരി പ്രതികരണ സമയം';
+
+  @override
+  String daysValue(String value) {
+    return '$valueദിവസങ്ങൾ';
+  }
+
+  @override
+  String get constituencyMap => 'മണ്ഡല ഭൂപടം';
+
+  @override
+  String get openConstituencyMap => 'മണ്ഡല ഭൂപടം തുറക്കുക';
+
+  @override
+  String get rankedWorks => 'റാങ്ക് ചെയ്ത കൃതികൾ';
+
+  @override
+  String get themesOverview => 'തീമുകളുടെ അവലോകനം';
+
+  @override
+  String get problemReports => 'പ്രശ്ന റിപ്പോർട്ടുകൾ';
+
+  @override
+  String get ticketsByTheme => 'തീം പ്രകാരമുള്ള ടിക്കറ്റുകൾ';
+
+  @override
+  String get noClusteredTickets => 'ഇതുവരെ ക്ലസ്റ്റേർഡ് ടിക്കറ്റുകളൊന്നുമില്ല.';
+
+  @override
+  String get couldNotLoadThemes => 'തീമുകൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get weeklyTrend => 'പ്രതിവാര ട്രെൻഡ്';
+
+  @override
+  String get boothDemandMap => 'ബൂത്ത് ലെവൽ ഡിമാൻഡ് മാപ്പ്';
+
+  @override
+  String get noBoothData =>
+      'ഈ നിയോജകമണ്ഡലത്തിലെ ബൂത്ത് റഫറൻസ് ഡാറ്റ ഇതുവരെ ലഭ്യമല്ല.';
+
+  @override
+  String get couldNotLoadBooths => 'ബൂത്തുകൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get openIssueDensity => 'തുറന്ന ഇഷ്യൂ സാന്ദ്രത';
+
+  @override
+  String get densityHigh => 'ഉയർന്നത് — ശ്രദ്ധ ആവശ്യമാണ്';
+
+  @override
+  String get densityModerate => 'മിതമായ';
+
+  @override
+  String get densityLow => 'കുറവ് / മിക്കവാറും പരിഹരിച്ചത്';
+
+  @override
+  String get dotSizeVolume => 'ഡോട്ട് വലുപ്പം = സമർപ്പിക്കൽ അളവ്';
+
+  @override
+  String get searchByTicketId => 'ടിക്കറ്റ് ഐഡി ഉപയോഗിച്ച് തിരയുക';
+
+  @override
+  String selectedCount(int count) {
+    return '$countതിരഞ്ഞെടുത്തു';
+  }
+
+  @override
+  String get markInProgress => 'പുരോഗതിയിലാണെന്ന് അടയാളപ്പെടുത്തുക';
+
+  @override
+  String get markResolved => 'പരിഹരിച്ചതായി അടയാളപ്പെടുത്തുക';
+
+  @override
+  String get noProblemReports => 'ഇതുവരെ ഒരു പ്രശ്ന റിപ്പോർട്ടും ഇല്ല.';
+
+  @override
+  String get couldNotLoadTickets => 'ടിക്കറ്റുകൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String wardConstituency(String constituency) {
+    return 'വാർഡ് ·$constituency';
+  }
+
+  @override
+  String submissionsCount(int count) {
+    return '$countസമർപ്പണങ്ങൾ';
+  }
+
+  @override
+  String get otherRecurringThemes => 'ഇവിടെ ആവർത്തിക്കുന്ന മറ്റ് തീമുകൾ';
+
+  @override
+  String get noOtherThemes =>
+      'ഇവിടെ ഇതുവരെ മറ്റ് ആവർത്തിച്ചുള്ള തീമുകളൊന്നും ക്ലസ്റ്റർ ചെയ്തിട്ടില്ല.';
+
+  @override
+  String get couldNotLoadClusters => 'ക്ലസ്റ്ററുകൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get sampleTickets => 'സാമ്പിൾ ടിക്കറ്റുകൾ';
+
+  @override
+  String openCount(int count) {
+    return '$countതുറക്കുക';
+  }
+
+  @override
+  String get whyItRecurs => 'എന്തുകൊണ്ട് അത് ആവർത്തിക്കുന്നു';
+
+  @override
+  String get whyHappeningHere => 'എന്തുകൊണ്ടാണ് ഇത് ഇവിടെ സംഭവിക്കുന്നത്?';
+
+  @override
+  String whyRecursBody(int count, String booth, String summary) {
+    return '$countപൗരന്മാർ ഇത് റിപ്പോർട്ട് ചെയ്തിട്ടുണ്ട്$booth . \"$summary \"';
+  }
+
+  @override
+  String themeIssuesReportedHere(String theme) {
+    return '$themeഇവിടെ റിപ്പോർട്ട് ചെയ്ത പ്രശ്നങ്ങൾ';
+  }
+
+  @override
+  String get noLocalContext =>
+      'ഈ ബൂത്തിനായി ഇതുവരെ അധിക പ്രാദേശിക സന്ദർഭമൊന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.';
+
+  @override
+  String suggestedWork(String work) {
+    return 'നിർദ്ദേശിക്കുന്ന ജോലി:$work';
+  }
+
+  @override
+  String get seeInRankedWorks => 'റാങ്ക് ചെയ്ത കൃതികളിൽ കാണുക';
+
+  @override
+  String get aiGeneratedSummary => 'AI-ജനറേറ്റുചെയ്ത സംഗ്രഹം · വഴി ജെമിനി';
+
+  @override
+  String priorityValue(String value) {
+    return 'മുൻഗണന$value';
+  }
+
+  @override
+  String ticketsInBooth(String theme) {
+    return '$themeഈ ബൂത്തിലെ ടിക്കറ്റുകൾ';
+  }
+
+  @override
+  String get rankedDevelopmentWorks => 'റാങ്ക് ചെയ്ത വികസന പ്രവർത്തനങ്ങൾ';
+
+  @override
+  String get compare => 'താരതമ്യം ചെയ്യുക';
+
+  @override
+  String get noRankedWorks => 'റാങ്ക് ചെയ്ത കൃതികളൊന്നും ഇതുവരെയില്ല.';
+
+  @override
+  String get couldNotLoadRankedWorks =>
+      'റാങ്ക് ചെയ്ത കൃതികൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get rankingWeightsAdjust =>
+      'റാങ്കിംഗ് വെയ്റ്റുകൾ — പുനഃറാങ്കിംഗിനായി ക്രമീകരിക്കുക';
+
+  @override
+  String get weightDemand => 'ആവശ്യം';
+
+  @override
+  String get weightDemographic => 'ജനസംഖ്യാശാസ്‌ത്രം';
+
+  @override
+  String get weightInfraGap => 'ഇൻഫ്രാ വിടവ്';
+
+  @override
+  String get changesSavedAudit => 'ഓഡിറ്റ് ലോഗിൽ മാറ്റങ്ങൾ സംരക്ഷിച്ചു.';
+
+  @override
+  String get whyExpand => '+ എന്തുകൊണ്ട്?';
+
+  @override
+  String get hideLabel => 'മറയ്ക്കുക';
+
+  @override
+  String ticketsShort(int count) {
+    return '$countടിക്കറ്റുകൾ';
+  }
+
+  @override
+  String recurringDemand(String theme) {
+    return '$theme— ആവർത്തിച്ചുള്ള ആവശ്യം';
+  }
+
+  @override
+  String ticketsRecordedHere(int count) {
+    return '$countഇവിടെ രേഖപ്പെടുത്തിയ ടിക്കറ്റുകൾ';
+  }
+
+  @override
+  String fragDemand(String value) {
+    return 'ആവശ്യം$value';
+  }
+
+  @override
+  String fragDemographic(String value) {
+    return 'ജനസംഖ്യാപരമായ ഭാരം$value';
+  }
+
+  @override
+  String fragInfraGap(String value) {
+    return 'ഇൻഫ്രാ-ഗ്യാപ്പ്$value';
+  }
+
+  @override
+  String fragAffects(String range) {
+    return 'ബാധിക്കുന്നു$range';
+  }
+
+  @override
+  String get compareProposals => 'നിർദ്ദേശങ്ങൾ താരതമ്യം ചെയ്യുക';
+
+  @override
+  String get needTwoToCompare =>
+      'താരതമ്യം ചെയ്യാൻ കുറഞ്ഞത് രണ്ട് റാങ്ക് ചെയ്ത കൃതികളെങ്കിലും ആവശ്യമാണ്.';
+
+  @override
+  String get couldNotLoadProposals => 'നിർദ്ദേശങ്ങൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get proposalA => 'നിർദ്ദേശം എ';
+
+  @override
+  String get proposalB => 'നിർദ്ദേശം ബി';
+
+  @override
+  String recurringDemandShort(String theme) {
+    return '$themeആവർത്തിച്ചുള്ള ആവശ്യം';
+  }
+
+  @override
+  String get statCitizenDemand => 'പൗരന്മാരുടെ ആവശ്യം';
+
+  @override
+  String get statDemographicWeight => 'ജനസംഖ്യാപരമായ ഭാരം';
+
+  @override
+  String get statInfraGapWeight => 'ഇൻഫ്രാ-ഗ്യാപ് വെയ്റ്റ്';
+
+  @override
+  String get statTickets => 'ടിക്കറ്റുകൾ';
+
+  @override
+  String get aiTradeOffBrief => 'AI ട്രേഡ്-ഓഫ് ബ്രീഫ്';
+
+  @override
+  String get groundedInEvidence => 'തെളിവുകളുടെ അടിസ്ഥാനത്തിൽ';
+
+  @override
+  String get briefWhoBenefits => 'ആർക്കാണ് പ്രയോജനം';
+
+  @override
+  String get briefWhatDataSays => 'ഡാറ്റ എന്താണ് പറയുന്നത്';
+
+  @override
+  String get briefWhatDefers => 'ഓരോന്നും എന്താണ് മാറ്റിവയ്ക്കുന്നത്';
+
+  @override
+  String benefitsWithRange(String name, String range, int count) {
+    return '$nameഎത്തുന്നു$range ($count ടിക്കറ്റുകൾ റെക്കോർഡുചെയ്‌തു).';
+  }
+
+  @override
+  String benefitsNoRange(String name, int count) {
+    return '$nameഉണ്ട്$count മണ്ഡലം മുഴുവൻ പിന്നിലാണ് പൗരന്മാരുടെ ടിക്കറ്റുകൾ.';
+  }
+
+  @override
+  String dataHigherComposite(String winner, String loser) {
+    return '$winnerഉയർന്ന മൊത്തത്തിലുള്ള സംയോജിത സ്കോർ ഉള്ള$loser .';
+  }
+
+  @override
+  String dataLeads(String winner, String loser, String reasons) {
+    return '$winnerലീഡുകൾ$loser ഓൺ$reasons .';
+  }
+
+  @override
+  String reasonTickets(int winnerCount, int loserCount) {
+    return '$winnerCountപൗരന്മാരുടെ ടിക്കറ്റുകൾ vs.$loserCount';
+  }
+
+  @override
+  String reasonDemographic(String winner, String loser) {
+    return 'ഉയർന്ന ജനസംഖ്യാപരമായ എത്തിച്ചേരൽ ഭാരം ($winner വേഴ്സസ്$loser )';
+  }
+
+  @override
+  String reasonInfra(String winner, String loser) {
+    return 'നിലവിലുള്ള ഒരു വലിയ അടിസ്ഥാന സൗകര്യ വിടവ് ($winner വേഴ്സസ്$loser )';
+  }
+
+  @override
+  String defersLine(
+      int count, String loser, String rangeSuffix, String winner) {
+    return '$countടിക്കറ്റുകൾ$loser$rangeSuffix എങ്കിൽ പിന്നീടുള്ള സൈക്കിളിനായി കാത്തിരിക്കുക$winner ഇപ്പോൾ മുൻഗണന നൽകിയിരിക്കുന്നു.';
+  }
+
+  @override
+  String recommendationLine(String winner) {
+    return 'ശുപാർശ: മുൻഗണന നൽകുക$winner ഈ ചക്രം.';
+  }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/cluster_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 /// Ranked development-works panel: each recurring theme (`ClusterModel`)
@@ -18,17 +19,18 @@ class RankedWorksScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Ranked Development Works')),
+      appBar: AppBar(title: Text(l10n.rankedDevelopmentWorks)),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;
           if (constituencyId == null) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text('Your account isn\'t linked to a constituency yet.',
+                padding: const EdgeInsets.all(24),
+                child: Text(l10n.notLinkedConstituency,
                     textAlign: TextAlign.center),
               ),
             );
@@ -36,12 +38,12 @@ class RankedWorksScreen extends ConsumerWidget {
           return _RankedList(constituencyId: constituencyId);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Could not load your profile.')),
+        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.go('/official/compare'),
         icon: const Icon(Icons.compare_arrows_rounded),
-        label: const Text('Compare'),
+        label: Text(l10n.compare),
       ),
     );
   }
@@ -74,7 +76,7 @@ class _RankedListState extends ConsumerState<_RankedList> {
     return clustersAsync.when(
       data: (clusters) {
         if (clusters.isEmpty) {
-          return const Center(child: Text('No ranked works yet.'));
+          return Center(child: Text(AppLocalizations.of(context).noRankedWorks));
         }
         final ranked = [...clusters]
           ..sort((a, b) => _weightedScore(b).compareTo(_weightedScore(a)));
@@ -110,7 +112,7 @@ class _RankedListState extends ConsumerState<_RankedList> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const Center(child: Text('Could not load ranked works.')),
+      error: (_, __) => Center(child: Text(AppLocalizations.of(context).couldNotLoadRankedWorks)),
     );
   }
 }
@@ -139,6 +141,7 @@ class _WeightSliderStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -149,28 +152,28 @@ class _WeightSliderStrip extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Ranking weights — adjust to re-rank',
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: AppColors.inkSoft)),
+          Text(l10n.rankingWeightsAdjust,
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: AppColors.inkSoft)),
           _WeightSlider(
-            label: 'Demand',
+            label: l10n.weightDemand,
             color: AppColors.indigo,
             value: wDemand,
             onChanged: (v) => onChanged(v, wDemographic, wInfraGap),
           ),
           _WeightSlider(
-            label: 'Demographic',
+            label: l10n.weightDemographic,
             color: AppColors.saffron,
             value: wDemographic,
             onChanged: (v) => onChanged(wDemand, v, wInfraGap),
           ),
           _WeightSlider(
-            label: 'Infra gap',
+            label: l10n.weightInfraGap,
             color: AppColors.teal,
             value: wInfraGap,
             onChanged: (v) => onChanged(wDemand, wDemographic, v),
           ),
-          Text('Changes saved to audit log',
-              style: TextStyle(fontSize: 10, color: AppColors.inkFaint, fontStyle: FontStyle.italic)),
+          Text(l10n.changesSavedAudit,
+              style: const TextStyle(fontSize: 10, color: AppColors.inkFaint, fontStyle: FontStyle.italic)),
         ],
       ),
     );
@@ -230,13 +233,14 @@ class _ScoreLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
-        _LegendDot(color: AppColors.indigo, label: 'Demand'),
+        _LegendDot(color: AppColors.indigo, label: l10n.weightDemand),
         const SizedBox(width: 14),
-        _LegendDot(color: AppColors.saffron, label: 'Demographic'),
+        _LegendDot(color: AppColors.saffron, label: l10n.weightDemographic),
         const SizedBox(width: 14),
-        _LegendDot(color: AppColors.teal, label: 'Infra gap'),
+        _LegendDot(color: AppColors.teal, label: l10n.weightInfraGap),
       ],
     );
   }
@@ -257,20 +261,21 @@ class _WorkCard extends StatelessWidget {
   final bool expanded;
   final VoidCallback onToggleWhy;
 
-  String _whyText() {
-    final parts = <String>['${cluster.submissionCount} tickets recorded here'];
-    if (cluster.demandScore != null) parts.add('demand ${cluster.demandScore!.toStringAsFixed(0)}');
+  String _whyText(AppLocalizations l10n) {
+    final parts = <String>[l10n.ticketsRecordedHere(cluster.submissionCount)];
+    if (cluster.demandScore != null) parts.add(l10n.fragDemand(cluster.demandScore!.toStringAsFixed(0)));
     if (cluster.demographicScore != null) {
-      parts.add('demographic weight ${cluster.demographicScore!.toStringAsFixed(0)}');
+      parts.add(l10n.fragDemographic(cluster.demographicScore!.toStringAsFixed(0)));
     }
-    if (cluster.infraGapScore != null) parts.add('infra-gap ${cluster.infraGapScore!.toStringAsFixed(0)}');
-    if (cluster.affectedBoothRange != null) parts.add('affects ${cluster.affectedBoothRange}');
+    if (cluster.infraGapScore != null) parts.add(l10n.fragInfraGap(cluster.infraGapScore!.toStringAsFixed(0)));
+    if (cluster.affectedBoothRange != null) parts.add(l10n.fragAffects(cluster.affectedBoothRange!));
     if (cluster.localContext != null) parts.add(cluster.localContext!);
     return '${parts.join(' · ')}.';
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final total = (cluster.demandScore ?? 0) + (cluster.demographicScore ?? 0) + (cluster.infraGapScore ?? 0);
     final color = categoryColor(cluster.theme);
     return Container(
@@ -301,7 +306,7 @@ class _WorkCard extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  cluster.title ?? '${kThemeLabels[cluster.theme] ?? cluster.theme} — recurring demand',
+                  cluster.title ?? l10n.recurringDemand(kThemeLabels[cluster.theme] ?? cluster.theme),
                   style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5),
                 ),
               ),
@@ -310,26 +315,26 @@ class _WorkCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          Text(cluster.summaryText, style: TextStyle(color: AppColors.inkSoft, fontSize: 12.5)),
+          Text(cluster.summaryText, style: const TextStyle(color: AppColors.inkSoft, fontSize: 12.5)),
           const SizedBox(height: 10),
           if (total > 0) _ScoreBar(cluster: cluster, total: total),
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.groups_rounded, size: 14, color: AppColors.inkFaint),
+              const Icon(Icons.groups_rounded, size: 14, color: AppColors.inkFaint),
               const SizedBox(width: 4),
-              Text('${cluster.submissionCount} tickets', style: TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
+              Text(l10n.ticketsShort(cluster.submissionCount), style: const TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
               if (cluster.affectedBoothRange != null) ...[
                 const SizedBox(width: 12),
-                Icon(Icons.place_rounded, size: 14, color: AppColors.inkFaint),
+                const Icon(Icons.place_rounded, size: 14, color: AppColors.inkFaint),
                 const SizedBox(width: 4),
-                Text(cluster.affectedBoothRange!, style: TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
+                Text(cluster.affectedBoothRange!, style: const TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
               ],
               const Spacer(),
               InkWell(
                 onTap: onToggleWhy,
                 child: Text(
-                  expanded ? 'Hide' : '+ Why?',
+                  expanded ? l10n.hideLabel : l10n.whyExpand,
                   style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.indigo),
                 ),
               ),
@@ -345,7 +350,7 @@ class _WorkCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                _whyText(),
+                _whyText(l10n),
                 style: const TextStyle(fontSize: 11.5, color: AppColors.indigoDeep, height: 1.4),
               ),
             ),
@@ -399,7 +404,7 @@ class _LegendDot extends StatelessWidget {
       children: [
         Container(width: 7, height: 7, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
         const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 10, color: AppColors.inkFaint)),
+        Text(label, style: const TextStyle(fontSize: 10, color: AppColors.inkFaint)),
       ],
     );
   }

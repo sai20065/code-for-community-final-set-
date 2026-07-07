@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
-const _kStatusLabels = {
-  SubmissionStatus.newSubmission: 'Filed',
-  SubmissionStatus.reviewed: 'Acknowledged',
-  SubmissionStatus.inProgress: 'In Progress',
-  SubmissionStatus.resolved: 'Resolved',
-};
+Map<SubmissionStatus, String> _statusLabels(AppLocalizations l10n) => {
+      SubmissionStatus.newSubmission: l10n.statusFiled,
+      SubmissionStatus.reviewed: l10n.statusAcknowledged,
+      SubmissionStatus.inProgress: l10n.statusInProgress,
+      SubmissionStatus.resolved: l10n.statusResolved,
+    };
 
 /// Problem-reports queue: a standard triage list for citizen-reported civic
 /// problems, separate from the development-suggestion ranking (see
@@ -22,18 +23,19 @@ class TicketManagementScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Problem Reports')),
+      appBar: AppBar(title: Text(l10n.problemReports)),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;
           if (constituencyId == null) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Your account isn\'t linked to a constituency yet.',
+                  l10n.notLinkedConstituency,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -42,7 +44,7 @@ class TicketManagementScreen extends ConsumerWidget {
           return _TicketList(constituencyId: constituencyId);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Could not load your profile.')),
+        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
       ),
     );
   }
@@ -69,6 +71,8 @@ class _TicketListState extends ConsumerState<_TicketList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final statusLabels = _statusLabels(l10n);
     final ticketsAsync =
         ref.watch(_constituencyTicketsProvider(widget.constituencyId));
 
@@ -78,9 +82,9 @@ class _TicketListState extends ConsumerState<_TicketList> {
           padding: const EdgeInsets.all(16),
           child: TextField(
             onChanged: (v) => setState(() => _query = v),
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.search_rounded),
-              hintText: 'Search by ticket ID',
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search_rounded),
+              hintText: l10n.searchByTicketId,
             ),
           ),
         ),
@@ -89,15 +93,15 @@ class _TicketListState extends ConsumerState<_TicketList> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                Text('${_selected.length} selected'),
+                Text(l10n.selectedCount(_selected.length)),
                 const Spacer(),
                 TextButton(
                   onPressed: () => _bulkUpdate(SubmissionStatus.inProgress),
-                  child: const Text('Mark In Progress'),
+                  child: Text(l10n.markInProgress),
                 ),
                 TextButton(
                   onPressed: () => _bulkUpdate(SubmissionStatus.resolved),
-                  child: const Text('Mark Resolved'),
+                  child: Text(l10n.markResolved),
                 ),
               ],
             ),
@@ -111,7 +115,7 @@ class _TicketListState extends ConsumerState<_TicketList> {
                       t.tokenId.toLowerCase().contains(_query.toLowerCase()))
                   .toList();
               if (filtered.isEmpty) {
-                return const Center(child: Text('No problem reports yet.'));
+                return Center(child: Text(l10n.noProblemReports));
               }
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -154,7 +158,7 @@ class _TicketListState extends ConsumerState<_TicketList> {
                         items: SubmissionStatus.values
                             .map((s) => DropdownMenuItem(
                                   value: s,
-                                  child: Text(_kStatusLabels[s] ?? SubmissionModel.statusToString(s)),
+                                  child: Text(statusLabels[s] ?? SubmissionModel.statusToString(s)),
                                 ))
                             .toList(),
                         onChanged: (status) {
@@ -171,7 +175,7 @@ class _TicketListState extends ConsumerState<_TicketList> {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const Center(child: Text('Could not load tickets.')),
+            error: (_, __) => Center(child: Text(l10n.couldNotLoadTickets)),
           ),
         ),
       ],

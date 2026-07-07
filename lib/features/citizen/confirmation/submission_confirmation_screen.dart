@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 import '../../../shared/widgets/ticket_receipt_card.dart';
@@ -24,13 +25,14 @@ class SubmissionConfirmationScreen extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: submission.tokenId));
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Receipt number copied')),
+        SnackBar(content: Text(AppLocalizations.of(context).receiptCopied)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isSuggestion = submission.category == SubmissionCategory.feedback;
     return Scaffold(
       body: SafeArea(
@@ -56,7 +58,7 @@ class SubmissionConfirmationScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      isSuggestion ? 'Suggestion' : 'Report',
+                      isSuggestion ? l10n.badgeSuggestion : l10n.badgeReport,
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -77,7 +79,7 @@ class SubmissionConfirmationScreen extends StatelessWidget {
                           Icon(kThemeIcons[submission.theme], size: 13, color: categoryColor(submission.theme!)),
                           const SizedBox(width: 5),
                           Text(
-                            'Looks like: ${kThemeLabels[submission.theme] ?? submission.theme}',
+                            l10n.looksLike(kThemeLabels[submission.theme] ?? submission.theme ?? ''),
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
@@ -100,7 +102,7 @@ class SubmissionConfirmationScreen extends StatelessWidget {
                           const Icon(Icons.flag_rounded, size: 13, color: AppColors.inkSoft),
                           const SizedBox(width: 5),
                           Text(
-                            'Routed to ${submission.location.constituencyId}',
+                            l10n.routedTo(submission.location.constituencyId ?? ''),
                             style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.inkSoft),
                           ),
                         ],
@@ -110,14 +112,13 @@ class SubmissionConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Saved instantly. AI enrichment continues in the background — '
-                "you'll see updates in Mine.",
+                l10n.savedInstantlyNote,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.inkFaint, fontSize: 12, height: 1.4),
+                style: const TextStyle(color: AppColors.inkFaint, fontSize: 12, height: 1.4),
               ),
               const SizedBox(height: 24),
               PrimaryButton(
-                label: 'Track this ticket',
+                label: l10n.trackThisTicket,
                 icon: Icons.timeline_rounded,
                 onPressed: () =>
                     context.go('/reports/${submission.id}', extra: submission),
@@ -126,12 +127,12 @@ class SubmissionConfirmationScreen extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: () => _copyReceipt(context),
                 icon: const Icon(Icons.copy_rounded, size: 18),
-                label: const Text('Copy receipt'),
+                label: Text(l10n.copyReceipt),
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => context.go('/home'),
-                child: const Text('Back to Home'),
+                child: Text(l10n.backToHome),
               ),
             ],
           ),

@@ -3,11 +3,10 @@ import 'package:go_router/go_router.dart';
 
 import 'package:latlong2/latlong.dart';
 
-import '../../../app/theme.dart';
-import '../../../core/models/cluster_model.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/ai_suggestion_chips.dart';
 import '../../../shared/widgets/category_toggle_widget.dart';
 import '../../../shared/widgets/location_picker.dart';
@@ -160,10 +159,11 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isSuggestion = _category == SubmissionCategory.feedback;
     return Scaffold(
       appBar: AppBar(
-        title: Text(isSuggestion ? 'Share Your Suggestion' : 'Describe the Problem'),
+        title: Text(isSuggestion ? l10n.shareYourSuggestion : l10n.describeTheProblem),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -184,9 +184,7 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
                 style: const TextStyle(fontSize: 18),
                 onChanged: _onTextChanged,
                 decoration: InputDecoration(
-                  hintText: isSuggestion
-                      ? 'What development work would help your area? (e.g. A skilling centre near the bus stand)'
-                      : "What's the problem? (e.g. Streetlight not working)",
+                  hintText: isSuggestion ? l10n.suggestionHint : l10n.problemHint,
                 ),
               ),
               const SizedBox(height: 16),
@@ -208,7 +206,7 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
                 SimilarCountChip(count: _similarCount!, category: _category),
               ],
               const SizedBox(height: 24),
-              Text('Pick a category (optional)',
+              Text(l10n.pickCategoryOptional,
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 12),
               ThemePickerWidget(
@@ -217,7 +215,7 @@ class _TextComposeScreenState extends State<TextComposeScreen> {
               ),
               const SizedBox(height: 32),
               PrimaryButton(
-                label: isSuggestion ? 'Submit Suggestion' : 'Submit Report',
+                label: isSuggestion ? l10n.submitSuggestion : l10n.submitReport,
                 icon: Icons.send_rounded,
                 loading: _submitting,
                 onPressed: _submit,

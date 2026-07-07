@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Receipt-style confirmation shown right after submission (Section 3.4) —
 /// mirrors the trust citizens already place in RTI/courier tracking numbers.
@@ -40,7 +41,7 @@ class TicketReceiptCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            "We've got this",
+            AppLocalizations.of(context).receiptWeGotThis,
             style: Theme.of(context)
                 .textTheme
                 .titleMedium

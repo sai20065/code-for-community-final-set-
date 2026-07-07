@@ -9,6 +9,7 @@ import '../../../app/theme.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/location_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
@@ -167,6 +168,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   }
 
   Widget _pincodeStep() {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -180,7 +182,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
             keyboardType: TextInputType.number,
             maxLength: 6,
             style: const TextStyle(fontSize: 20, letterSpacing: 1.2),
-            decoration: const InputDecoration(hintText: 'Pincode'),
+            decoration: InputDecoration(hintText: l10n.pincode),
             onChanged: _onPincodeChanged,
           ),
           if (_resolving)
@@ -206,13 +208,11 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
           const SizedBox(height: 16),
           TextField(
             controller: _addressController,
-            decoration: const InputDecoration(
-              hintText: 'Your address (street, area)',
-            ),
+            decoration: InputDecoration(hintText: l10n.yourAddressStreet),
           ),
           const Spacer(),
           PrimaryButton(
-            label: 'Next',
+            label: l10n.next,
             icon: Icons.arrow_forward_rounded,
             onPressed: _pincodeValid ? _goToMap : null,
           ),
@@ -222,6 +222,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   }
 
   Widget _mapStep() {
+    final l10n = AppLocalizations.of(context);
     if (_pin == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -265,9 +266,9 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                   color: Colors.black87,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  'Tap anywhere on the map to move the pin to your exact location',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  l10n.tapMapToMovePin,
+                  style: const TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -290,16 +291,17 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                 ),
                 child: Text(
                   _boothMatch == null
-                      ? 'Home constituency and booth will be confirmed once matched to your area.'
-                      : 'Home constituency: ${_boothMatch!.constituencyId ?? "—"} · '
-                          'Home booth: ${_boothMatch!.boothName ?? _boothMatch!.boothId}',
+                      ? l10n.homeAreaWillConfirm
+                      : l10n.homeConstituencyBooth(
+                          _boothMatch!.constituencyId ?? "—",
+                          _boothMatch!.boothName ?? _boothMatch!.boothId),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
                 ),
               ),
               const SizedBox(height: 10),
               PrimaryButton(
-                label: 'Looks right',
+                label: l10n.looksRight,
                 icon: Icons.check_circle_rounded,
                 loading: _saving,
                 onPressed: _confirmLocation,
@@ -307,7 +309,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
               const SizedBox(height: 4),
               TextButton(
                 onPressed: _saving ? null : _thisIsntMe,
-                child: const Text("This isn't me"),
+                child: Text(l10n.thisIsntMe),
               ),
             ],
           ),

@@ -491,6 +491,972 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit Suggestion'**
   String get submitSuggestion;
+
+  /// No description provided for @newSubmission.
+  ///
+  /// In en, this message translates to:
+  /// **'New submission'**
+  String get newSubmission;
+
+  /// No description provided for @whatWouldYouLikeToDo.
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to do?'**
+  String get whatWouldYouLikeToDo;
+
+  /// No description provided for @reportAProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get reportAProblem;
+
+  /// No description provided for @reportProblemSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something broken or unsafe near you'**
+  String get reportProblemSubtitle;
+
+  /// No description provided for @suggestDevelopmentWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest a development work'**
+  String get suggestDevelopmentWork;
+
+  /// No description provided for @suggestSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something new your area needs'**
+  String get suggestSubtitle;
+
+  /// No description provided for @shareYourSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Your Suggestion'**
+  String get shareYourSuggestion;
+
+  /// No description provided for @describeTheProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the Problem'**
+  String get describeTheProblem;
+
+  /// No description provided for @suggestionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What development work would help your area? (e.g. A skilling centre near the bus stand)'**
+  String get suggestionHint;
+
+  /// No description provided for @problemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the problem? (e.g. Streetlight not working)'**
+  String get problemHint;
+
+  /// No description provided for @addAPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Photo'**
+  String get addAPhoto;
+
+  /// No description provided for @captionOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a caption (optional)'**
+  String get captionOptional;
+
+  /// No description provided for @receiptCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt number copied'**
+  String get receiptCopied;
+
+  /// No description provided for @badgeSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion'**
+  String get badgeSuggestion;
+
+  /// No description provided for @badgeReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get badgeReport;
+
+  /// No description provided for @savedInstantlyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved instantly. AI enrichment continues in the background — you\'ll see updates in Mine.'**
+  String get savedInstantlyNote;
+
+  /// No description provided for @trackThisTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Track this ticket'**
+  String get trackThisTicket;
+
+  /// No description provided for @copyReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy receipt'**
+  String get copyReceipt;
+
+  /// No description provided for @backToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get backToHome;
+
+  /// No description provided for @routedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Routed to {constituency}'**
+  String routedTo(String constituency);
+
+  /// No description provided for @looksLike.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks like: {theme}'**
+  String looksLike(String theme);
+
+  /// No description provided for @similarOpenProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'There are {count} similar open problems in this booth — your report will be added'**
+  String similarOpenProblems(int count);
+
+  /// No description provided for @othersAskedToo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} others nearby have asked for this too'**
+  String othersAskedToo(int count);
+
+  /// No description provided for @greetingHi.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, {name}'**
+  String greetingHi(String name);
+
+  /// No description provided for @homeAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Home: {area}'**
+  String homeAreaLabel(String area);
+
+  /// No description provided for @boothLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Booth {name}'**
+  String boothLabel(String name);
+
+  /// No description provided for @pincodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pincode {pincode}'**
+  String pincodeLabel(String pincode);
+
+  /// No description provided for @myTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'My tickets'**
+  String get myTickets;
+
+  /// No description provided for @trendingNearYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending near you'**
+  String get trendingNearYou;
+
+  /// No description provided for @emptyAreaSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestions from your constituency will appear here once your area is confirmed.'**
+  String get emptyAreaSuggestions;
+
+  /// No description provided for @couldNotLoadSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load suggestions.'**
+  String get couldNotLoadSuggestions;
+
+  /// No description provided for @yourRecentReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent reports'**
+  String get yourRecentReports;
+
+  /// No description provided for @noSuggestionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No suggestions yet — be the first to submit one for your area.'**
+  String get noSuggestionsYet;
+
+  /// No description provided for @supportersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} supporters'**
+  String supportersCount(int count);
+
+  /// No description provided for @supported.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported'**
+  String get supported;
+
+  /// No description provided for @iSupportThis.
+  ///
+  /// In en, this message translates to:
+  /// **'I support this'**
+  String get iSupportThis;
+
+  /// No description provided for @suggestionUpper.
+  ///
+  /// In en, this message translates to:
+  /// **'SUGGESTION'**
+  String get suggestionUpper;
+
+  /// No description provided for @myTicketsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Tickets'**
+  String get myTicketsTitle;
+
+  /// No description provided for @pleaseSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Please sign in'**
+  String get pleaseSignIn;
+
+  /// No description provided for @noTicketsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No tickets yet'**
+  String get noTicketsYet;
+
+  /// No description provided for @receiptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt: {token}'**
+  String receiptLabel(String token);
+
+  /// No description provided for @inDevelopmentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'In development plan'**
+  String get inDevelopmentPlan;
+
+  /// No description provided for @underReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Under review'**
+  String get underReview;
+
+  /// No description provided for @ticketNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket not found'**
+  String get ticketNotFound;
+
+  /// No description provided for @ticketLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket'**
+  String get ticketLabel;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description'**
+  String get noDescription;
+
+  /// No description provided for @seeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'See details (transcript/translation)'**
+  String get seeDetails;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @citizenDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Citizen'**
+  String get citizenDefault;
+
+  /// No description provided for @homeConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Home constituency'**
+  String get homeConstituency;
+
+  /// No description provided for @notYetMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet matched'**
+  String get notYetMatched;
+
+  /// No description provided for @homeBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Home booth'**
+  String get homeBooth;
+
+  /// No description provided for @preferredLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred language'**
+  String get preferredLanguage;
+
+  /// No description provided for @privacyStoreAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'We store your address to route your submissions to the right MP. Your 12-digit Aadhaar number is never stored.'**
+  String get privacyStoreAddress;
+
+  /// No description provided for @signOutClears.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out (clears this device)'**
+  String get signOutClears;
+
+  /// No description provided for @couldNotLoadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your profile.'**
+  String get couldNotLoadProfile;
+
+  /// No description provided for @statusFiled.
+  ///
+  /// In en, this message translates to:
+  /// **'Filed'**
+  String get statusFiled;
+
+  /// No description provided for @statusAcknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledged'**
+  String get statusAcknowledged;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get statusResolved;
+
+  /// No description provided for @receiptWeGotThis.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve got this'**
+  String get receiptWeGotThis;
+
+  /// No description provided for @yourAddressStreet.
+  ///
+  /// In en, this message translates to:
+  /// **'Your address (street, area)'**
+  String get yourAddressStreet;
+
+  /// No description provided for @tapMapToMovePin.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap anywhere on the map to move the pin to your exact location'**
+  String get tapMapToMovePin;
+
+  /// No description provided for @homeAreaWillConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Home constituency and booth will be confirmed once matched to your area.'**
+  String get homeAreaWillConfirm;
+
+  /// No description provided for @homeConstituencyBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Home constituency: {constituency} · Home booth: {booth}'**
+  String homeConstituencyBooth(String constituency, String booth);
+
+  /// No description provided for @looksRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks right'**
+  String get looksRight;
+
+  /// No description provided for @thisIsntMe.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t me'**
+  String get thisIsntMe;
+
+  /// No description provided for @pillCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current location'**
+  String get pillCurrentLocation;
+
+  /// No description provided for @pillAtMyHome.
+  ///
+  /// In en, this message translates to:
+  /// **'At my home'**
+  String get pillAtMyHome;
+
+  /// No description provided for @pillDropPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop a pin'**
+  String get pillDropPin;
+
+  /// No description provided for @locationRoutedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Routed to your home MP · pin only sets where this shows on the map.'**
+  String get locationRoutedNote;
+
+  /// No description provided for @locationFailPickMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t get your location — pick a spot on the map instead.'**
+  String get locationFailPickMap;
+
+  /// No description provided for @locationFailUseHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t get your location — using your home address instead.'**
+  String get locationFailUseHome;
+
+  /// No description provided for @constituencyDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Constituency Dashboard'**
+  String get constituencyDashboard;
+
+  /// No description provided for @notLinkedConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account isn\'t linked to a constituency yet.'**
+  String get notLinkedConstituency;
+
+  /// No description provided for @newThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'New this week'**
+  String get newThisWeek;
+
+  /// No description provided for @resolvedRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved rate'**
+  String get resolvedRate;
+
+  /// No description provided for @avgResponseTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg response time'**
+  String get avgResponseTime;
+
+  /// No description provided for @daysValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} days'**
+  String daysValue(String value);
+
+  /// No description provided for @constituencyMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Constituency Map'**
+  String get constituencyMap;
+
+  /// No description provided for @openConstituencyMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Open constituency map'**
+  String get openConstituencyMap;
+
+  /// No description provided for @rankedWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked Works'**
+  String get rankedWorks;
+
+  /// No description provided for @themesOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes Overview'**
+  String get themesOverview;
+
+  /// No description provided for @problemReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Problem Reports'**
+  String get problemReports;
+
+  /// No description provided for @ticketsByTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets by theme'**
+  String get ticketsByTheme;
+
+  /// No description provided for @noClusteredTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'No clustered tickets yet.'**
+  String get noClusteredTickets;
+
+  /// No description provided for @couldNotLoadThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load themes.'**
+  String get couldNotLoadThemes;
+
+  /// No description provided for @weeklyTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly trend'**
+  String get weeklyTrend;
+
+  /// No description provided for @boothDemandMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Booth-Level Demand Map'**
+  String get boothDemandMap;
+
+  /// No description provided for @noBoothData.
+  ///
+  /// In en, this message translates to:
+  /// **'No booth reference data for this constituency yet.'**
+  String get noBoothData;
+
+  /// No description provided for @couldNotLoadBooths.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load booths.'**
+  String get couldNotLoadBooths;
+
+  /// No description provided for @openIssueDensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-issue density'**
+  String get openIssueDensity;
+
+  /// No description provided for @densityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High — needs attention'**
+  String get densityHigh;
+
+  /// No description provided for @densityModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get densityModerate;
+
+  /// No description provided for @densityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low / mostly resolved'**
+  String get densityLow;
+
+  /// No description provided for @dotSizeVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Dot size = submission volume'**
+  String get dotSizeVolume;
+
+  /// No description provided for @searchByTicketId.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by ticket ID'**
+  String get searchByTicketId;
+
+  /// No description provided for @selectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String selectedCount(int count);
+
+  /// No description provided for @markInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark In Progress'**
+  String get markInProgress;
+
+  /// No description provided for @markResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark Resolved'**
+  String get markResolved;
+
+  /// No description provided for @noProblemReports.
+  ///
+  /// In en, this message translates to:
+  /// **'No problem reports yet.'**
+  String get noProblemReports;
+
+  /// No description provided for @couldNotLoadTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load tickets.'**
+  String get couldNotLoadTickets;
+
+  /// No description provided for @wardConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Ward · {constituency}'**
+  String wardConstituency(String constituency);
+
+  /// No description provided for @submissionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} submissions'**
+  String submissionsCount(int count);
+
+  /// No description provided for @otherRecurringThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Other recurring themes here'**
+  String get otherRecurringThemes;
+
+  /// No description provided for @noOtherThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'No other recurring themes clustered here yet.'**
+  String get noOtherThemes;
+
+  /// No description provided for @couldNotLoadClusters.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load clusters.'**
+  String get couldNotLoadClusters;
+
+  /// No description provided for @sampleTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample tickets'**
+  String get sampleTickets;
+
+  /// No description provided for @openCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} open'**
+  String openCount(int count);
+
+  /// No description provided for @whyItRecurs.
+  ///
+  /// In en, this message translates to:
+  /// **'WHY IT RECURS'**
+  String get whyItRecurs;
+
+  /// No description provided for @whyHappeningHere.
+  ///
+  /// In en, this message translates to:
+  /// **'WHY IT\'S HAPPENING HERE'**
+  String get whyHappeningHere;
+
+  /// No description provided for @whyRecursBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} citizens have reported this in {booth}. \"{summary}\"'**
+  String whyRecursBody(int count, String booth, String summary);
+
+  /// No description provided for @themeIssuesReportedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'{theme} issues reported here'**
+  String themeIssuesReportedHere(String theme);
+
+  /// No description provided for @noLocalContext.
+  ///
+  /// In en, this message translates to:
+  /// **'No additional local context recorded for this booth yet.'**
+  String get noLocalContext;
+
+  /// No description provided for @suggestedWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested work: {work}'**
+  String suggestedWork(String work);
+
+  /// No description provided for @seeInRankedWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'See in ranked works'**
+  String get seeInRankedWorks;
+
+  /// No description provided for @aiGeneratedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-generated summary · via Gemini'**
+  String get aiGeneratedSummary;
+
+  /// No description provided for @priorityValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority {value}'**
+  String priorityValue(String value);
+
+  /// No description provided for @ticketsInBooth.
+  ///
+  /// In en, this message translates to:
+  /// **'{theme} tickets in this booth'**
+  String ticketsInBooth(String theme);
+
+  /// No description provided for @rankedDevelopmentWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked Development Works'**
+  String get rankedDevelopmentWorks;
+
+  /// No description provided for @compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compare;
+
+  /// No description provided for @noRankedWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'No ranked works yet.'**
+  String get noRankedWorks;
+
+  /// No description provided for @couldNotLoadRankedWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load ranked works.'**
+  String get couldNotLoadRankedWorks;
+
+  /// No description provided for @rankingWeightsAdjust.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranking weights — adjust to re-rank'**
+  String get rankingWeightsAdjust;
+
+  /// No description provided for @weightDemand.
+  ///
+  /// In en, this message translates to:
+  /// **'Demand'**
+  String get weightDemand;
+
+  /// No description provided for @weightDemographic.
+  ///
+  /// In en, this message translates to:
+  /// **'Demographic'**
+  String get weightDemographic;
+
+  /// No description provided for @weightInfraGap.
+  ///
+  /// In en, this message translates to:
+  /// **'Infra gap'**
+  String get weightInfraGap;
+
+  /// No description provided for @changesSavedAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes saved to audit log'**
+  String get changesSavedAudit;
+
+  /// No description provided for @whyExpand.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Why?'**
+  String get whyExpand;
+
+  /// No description provided for @hideLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get hideLabel;
+
+  /// No description provided for @ticketsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tickets'**
+  String ticketsShort(int count);
+
+  /// No description provided for @recurringDemand.
+  ///
+  /// In en, this message translates to:
+  /// **'{theme} — recurring demand'**
+  String recurringDemand(String theme);
+
+  /// No description provided for @ticketsRecordedHere.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tickets recorded here'**
+  String ticketsRecordedHere(int count);
+
+  /// No description provided for @fragDemand.
+  ///
+  /// In en, this message translates to:
+  /// **'demand {value}'**
+  String fragDemand(String value);
+
+  /// No description provided for @fragDemographic.
+  ///
+  /// In en, this message translates to:
+  /// **'demographic weight {value}'**
+  String fragDemographic(String value);
+
+  /// No description provided for @fragInfraGap.
+  ///
+  /// In en, this message translates to:
+  /// **'infra-gap {value}'**
+  String fragInfraGap(String value);
+
+  /// No description provided for @fragAffects.
+  ///
+  /// In en, this message translates to:
+  /// **'affects {range}'**
+  String fragAffects(String range);
+
+  /// No description provided for @compareProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Proposals'**
+  String get compareProposals;
+
+  /// No description provided for @needTwoToCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Need at least two ranked works to compare.'**
+  String get needTwoToCompare;
+
+  /// No description provided for @couldNotLoadProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load proposals.'**
+  String get couldNotLoadProposals;
+
+  /// No description provided for @proposalA.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal A'**
+  String get proposalA;
+
+  /// No description provided for @proposalB.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal B'**
+  String get proposalB;
+
+  /// No description provided for @recurringDemandShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{theme} recurring demand'**
+  String recurringDemandShort(String theme);
+
+  /// No description provided for @statCitizenDemand.
+  ///
+  /// In en, this message translates to:
+  /// **'Citizen demand'**
+  String get statCitizenDemand;
+
+  /// No description provided for @statDemographicWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Demographic weight'**
+  String get statDemographicWeight;
+
+  /// No description provided for @statInfraGapWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Infra-gap weight'**
+  String get statInfraGapWeight;
+
+  /// No description provided for @statTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets'**
+  String get statTickets;
+
+  /// No description provided for @aiTradeOffBrief.
+  ///
+  /// In en, this message translates to:
+  /// **'AI trade-off brief'**
+  String get aiTradeOffBrief;
+
+  /// No description provided for @groundedInEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'grounded in evidence'**
+  String get groundedInEvidence;
+
+  /// No description provided for @briefWhoBenefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Who benefits'**
+  String get briefWhoBenefits;
+
+  /// No description provided for @briefWhatDataSays.
+  ///
+  /// In en, this message translates to:
+  /// **'What the data says'**
+  String get briefWhatDataSays;
+
+  /// No description provided for @briefWhatDefers.
+  ///
+  /// In en, this message translates to:
+  /// **'What each defers'**
+  String get briefWhatDefers;
+
+  /// No description provided for @benefitsWithRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} reaches {range} ({count} tickets recorded).'**
+  String benefitsWithRange(String name, String range, int count);
+
+  /// No description provided for @benefitsNoRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has {count} citizen tickets behind it constituency-wide.'**
+  String benefitsNoRange(String name, int count);
+
+  /// No description provided for @dataHigherComposite.
+  ///
+  /// In en, this message translates to:
+  /// **'{winner} has a higher overall composite score than {loser}.'**
+  String dataHigherComposite(String winner, String loser);
+
+  /// No description provided for @dataLeads.
+  ///
+  /// In en, this message translates to:
+  /// **'{winner} leads {loser} on {reasons}.'**
+  String dataLeads(String winner, String loser, String reasons);
+
+  /// No description provided for @reasonTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'{winnerCount} citizen tickets vs. {loserCount}'**
+  String reasonTickets(int winnerCount, int loserCount);
+
+  /// No description provided for @reasonDemographic.
+  ///
+  /// In en, this message translates to:
+  /// **'a higher demographic-reach weight ({winner} vs. {loser})'**
+  String reasonDemographic(String winner, String loser);
+
+  /// No description provided for @reasonInfra.
+  ///
+  /// In en, this message translates to:
+  /// **'a larger existing infrastructure gap ({winner} vs. {loser})'**
+  String reasonInfra(String winner, String loser);
+
+  /// No description provided for @defersLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tickets for {loser}{rangeSuffix} wait for a later cycle if {winner} is prioritised now.'**
+  String defersLine(int count, String loser, String rangeSuffix, String winner);
+
+  /// No description provided for @recommendationLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommendation: prioritise {winner} this cycle.'**
+  String recommendationLine(String winner);
 }
 
 class _AppLocalizationsDelegate

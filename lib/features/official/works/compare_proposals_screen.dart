@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/cluster_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 /// "Weigh competing proposals against real demand" — pick any two ranked
@@ -25,17 +26,18 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Compare Proposals')),
+      appBar: AppBar(title: Text(l10n.compareProposals)),
       body: profileAsync.when(
         data: (profile) {
           final constituencyId = profile?.constituencyId;
           if (constituencyId == null) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text('Your account isn\'t linked to a constituency yet.',
+                padding: const EdgeInsets.all(24),
+                child: Text(l10n.notLinkedConstituency,
                     textAlign: TextAlign.center),
               ),
             );
@@ -44,10 +46,10 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
           return clustersAsync.when(
             data: (clusters) {
               if (clusters.length < 2) {
-                return const Center(
+                return Center(
                   child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Text('Need at least two ranked works to compare.',
+                    padding: const EdgeInsets.all(24),
+                    child: Text(l10n.needTwoToCompare,
                         textAlign: TextAlign.center),
                   ),
                 );
@@ -62,14 +64,14 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
                     Row(
                       children: [
                         Expanded(child: _ProposalPicker(
-                          label: 'Proposal A',
+                          label: l10n.proposalA,
                           clusters: clusters,
                           selectedId: left.id,
                           onChanged: (id) => setState(() => _leftId = id),
                         )),
                         const SizedBox(width: 12),
                         Expanded(child: _ProposalPicker(
-                          label: 'Proposal B',
+                          label: l10n.proposalB,
                           clusters: clusters,
                           selectedId: right.id,
                           onChanged: (id) => setState(() => _rightId = id),
@@ -100,11 +102,11 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const Center(child: Text('Could not load proposals.')),
+            error: (_, __) => Center(child: Text(l10n.couldNotLoadProposals)),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Could not load your profile.')),
+        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
       ),
     );
   }
@@ -130,14 +132,15 @@ class _ProposalPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return DropdownButtonFormField<String>(
-      value: selectedId,
+      initialValue: selectedId,
       decoration: InputDecoration(labelText: label, isDense: true),
       items: clusters
           .map((c) => DropdownMenuItem(
                 value: c.id,
                 child: Text(
-                  c.title ?? '${kThemeLabels[c.theme] ?? c.theme} recurring demand',
+                  c.title ?? l10n.recurringDemandShort(kThemeLabels[c.theme] ?? c.theme),
                   overflow: TextOverflow.ellipsis,
                 ),
               ))
@@ -154,6 +157,7 @@ class _ProposalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final color = categoryColor(cluster.theme);
     return Container(
       padding: const EdgeInsets.all(14),
@@ -178,22 +182,22 @@ class _ProposalCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          _StatRow(label: 'Citizen demand', value: cluster.demandScore),
-          _StatRow(label: 'Demographic weight', value: cluster.demographicScore),
-          _StatRow(label: 'Infra-gap weight', value: cluster.infraGapScore),
+          _StatRow(label: l10n.statCitizenDemand, value: cluster.demandScore),
+          _StatRow(label: l10n.statDemographicWeight, value: cluster.demographicScore),
+          _StatRow(label: l10n.statInfraGapWeight, value: cluster.infraGapScore),
           const Divider(height: 20),
-          _StatRow(label: 'Tickets', value: cluster.submissionCount.toDouble(), isCount: true),
+          _StatRow(label: l10n.statTickets, value: cluster.submissionCount.toDouble(), isCount: true),
           if (cluster.affectedBoothRange != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(cluster.affectedBoothRange!,
-                  style: TextStyle(fontSize: 11, color: AppColors.inkFaint)),
+                  style: const TextStyle(fontSize: 11, color: AppColors.inkFaint)),
             ),
           if (cluster.localContext != null)
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(cluster.localContext!,
-                  style: TextStyle(fontSize: 11, color: AppColors.inkFaint)),
+                  style: const TextStyle(fontSize: 11, color: AppColors.inkFaint)),
             ),
         ],
       ),
@@ -215,7 +219,7 @@ class _StatRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: 11.5, color: AppColors.inkSoft)),
+          Text(label, style: const TextStyle(fontSize: 11.5, color: AppColors.inkSoft)),
           Text(
             value == null ? '—' : (isCount ? value!.toStringAsFixed(0) : value!.toStringAsFixed(0)),
             style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.w700, fontSize: 12),
@@ -244,6 +248,7 @@ class _TradeOffBrief extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final winner = _total(left) >= _total(right) ? left : right;
     final loser = _total(left) >= _total(right) ? right : left;
     final winnerName = _name(winner);
@@ -251,25 +256,31 @@ class _TradeOffBrief extends StatelessWidget {
 
     final reasons = <String>[];
     if ((winner.demandScore ?? 0) > (loser.demandScore ?? 0)) {
-      reasons.add('${winner.submissionCount} citizen tickets vs. ${loser.submissionCount}');
+      reasons.add(l10n.reasonTickets(winner.submissionCount, loser.submissionCount));
     }
     if ((winner.demographicScore ?? 0) > (loser.demographicScore ?? 0)) {
-      reasons.add('a higher demographic-reach weight (${winner.demographicScore?.toStringAsFixed(0) ?? "—"} vs. ${loser.demographicScore?.toStringAsFixed(0) ?? "—"})');
+      reasons.add(l10n.reasonDemographic(
+          winner.demographicScore?.toStringAsFixed(0) ?? "—",
+          loser.demographicScore?.toStringAsFixed(0) ?? "—"));
     }
     if ((winner.infraGapScore ?? 0) > (loser.infraGapScore ?? 0)) {
-      reasons.add('a larger existing infrastructure gap (${winner.infraGapScore?.toStringAsFixed(0) ?? "—"} vs. ${loser.infraGapScore?.toStringAsFixed(0) ?? "—"})');
+      reasons.add(l10n.reasonInfra(
+          winner.infraGapScore?.toStringAsFixed(0) ?? "—",
+          loser.infraGapScore?.toStringAsFixed(0) ?? "—"));
     }
     final dataLine = reasons.isEmpty
-        ? '$winnerName has a higher overall composite score than $loserName.'
-        : '$winnerName leads $loserName on ${reasons.join(' and ')}.';
+        ? l10n.dataHigherComposite(winnerName, loserName)
+        : l10n.dataLeads(winnerName, loserName, reasons.join(' • '));
 
     final benefitsLine = winner.affectedBoothRange != null
-        ? '$winnerName reaches ${winner.affectedBoothRange} (${winner.submissionCount} tickets recorded).'
-        : '$winnerName has ${winner.submissionCount} citizen tickets behind it constituency-wide.';
+        ? l10n.benefitsWithRange(winnerName, winner.affectedBoothRange!, winner.submissionCount)
+        : l10n.benefitsNoRange(winnerName, winner.submissionCount);
 
-    final defersLine = '${loser.submissionCount} tickets for $loserName'
-        '${loser.affectedBoothRange != null ? " (${loser.affectedBoothRange})" : ""} '
-        'wait for a later cycle if $winnerName is prioritised now.';
+    final defersLine = l10n.defersLine(
+        loser.submissionCount,
+        loserName,
+        loser.affectedBoothRange != null ? " (${loser.affectedBoothRange})" : "",
+        winnerName);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -285,8 +296,8 @@ class _TradeOffBrief extends StatelessWidget {
             children: [
               const Icon(Icons.auto_awesome_rounded, color: AppColors.indigoDeep, size: 18),
               const SizedBox(width: 8),
-              const Text('AI trade-off brief',
-                  style: TextStyle(color: AppColors.indigoDeep, fontWeight: FontWeight.w800, fontSize: 13.5)),
+              Text(l10n.aiTradeOffBrief,
+                  style: const TextStyle(color: AppColors.indigoDeep, fontWeight: FontWeight.w800, fontSize: 13.5)),
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -294,20 +305,20 @@ class _TradeOffBrief extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text('grounded in evidence',
-                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: AppColors.indigoDeep)),
+                child: Text(l10n.groundedInEvidence,
+                    style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: AppColors.indigoDeep)),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          _BriefBullet(label: 'Who benefits', text: benefitsLine),
+          _BriefBullet(label: l10n.briefWhoBenefits, text: benefitsLine),
           const SizedBox(height: 8),
-          _BriefBullet(label: 'What the data says', text: dataLine),
+          _BriefBullet(label: l10n.briefWhatDataSays, text: dataLine),
           const SizedBox(height: 8),
-          _BriefBullet(label: 'What each defers', text: defersLine),
+          _BriefBullet(label: l10n.briefWhatDefers, text: defersLine),
           const SizedBox(height: 12),
           Text(
-            'Recommendation: prioritise $winnerName this cycle.',
+            l10n.recommendationLine(winnerName),
             style: const TextStyle(color: AppColors.saffronDeep, fontWeight: FontWeight.w800, fontSize: 13),
           ),
         ],

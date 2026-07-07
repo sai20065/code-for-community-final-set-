@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/cluster_model.dart';
-import '../../../core/services/firestore_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 /// Section 5.4: bar chart (tickets by theme) + line chart (trend over
@@ -18,19 +18,20 @@ class ThemesOverviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Themes Overview')),
+      appBar: AppBar(title: Text(l10n.themesOverview)),
       body: SafeArea(
         child: profileAsync.when(
           data: (profile) {
             final constituencyId = profile?.constituencyId;
             if (constituencyId == null) {
-              return const Center(
+              return Center(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   child: Text(
-                    'Your account isn\'t linked to a constituency yet.',
+                    l10n.notLinkedConstituency,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -39,7 +40,7 @@ class ThemesOverviewScreen extends ConsumerWidget {
             return _ThemesBody(constituencyId: constituencyId);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => const Center(child: Text('Could not load your profile.')),
+          error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
         ),
       ),
     );
@@ -82,12 +83,13 @@ class _ThemesBodyState extends ConsumerState<_ThemesBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final clustersAsync = ref.watch(_clustersProvider(widget.constituencyId));
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Tickets by theme', style: Theme.of(context).textTheme.titleMedium),
+        Text(l10n.ticketsByTheme, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
         clustersAsync.when(
           data: (clusters) {
@@ -97,10 +99,10 @@ class _ThemesBodyState extends ConsumerState<_ThemesBody> {
                   (themeCounts[c.theme] ?? 0) + c.submissionCount;
             }
             if (themeCounts.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: Text('No clustered tickets yet.',
-                    style: TextStyle(color: Colors.grey)),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Text(l10n.noClusteredTickets,
+                    style: const TextStyle(color: Colors.grey)),
               );
             }
             final themeIds = themeCounts.keys.toList();
@@ -149,10 +151,10 @@ class _ThemesBodyState extends ConsumerState<_ThemesBody> {
             height: 220,
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (_, __) => const Text('Could not load themes.'),
+          error: (_, __) => Text(l10n.couldNotLoadThemes),
         ),
         const SizedBox(height: 28),
-        Text('Weekly trend', style: Theme.of(context).textTheme.titleMedium),
+        Text(l10n.weeklyTrend, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
         SizedBox(
           height: 200,

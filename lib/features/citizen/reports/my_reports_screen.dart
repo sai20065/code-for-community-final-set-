@@ -6,6 +6,7 @@ import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
@@ -13,7 +14,7 @@ Future<void> _copyReceipt(BuildContext context, String tokenId) async {
   await Clipboard.setData(ClipboardData(text: tokenId));
   if (context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Receipt number copied')),
+      SnackBar(content: Text(AppLocalizations.of(context).receiptCopied)),
     );
   }
 }
@@ -28,20 +29,21 @@ class MyReportsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final authService = AuthService();
     final firestoreService = FirestoreService();
     final uid = authService.currentUser?.uid;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Tickets')),
+      appBar: AppBar(title: Text(l10n.myTicketsTitle)),
       body: uid == null
-          ? const Center(child: Text('Please sign in'))
+          ? Center(child: Text(l10n.pleaseSignIn))
           : StreamBuilder<List<SubmissionModel>>(
               stream: firestoreService.watchUserSubmissions(uid),
               builder: (context, snapshot) {
                 final submissions = snapshot.data ?? const [];
                 if (submissions.isEmpty) {
-                  return const Center(child: Text('No tickets yet'));
+                  return Center(child: Text(l10n.noTicketsYet));
                 }
                 return ListView.separated(
                   padding: const EdgeInsets.all(16),
@@ -69,6 +71,7 @@ class _TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isSuggestion = submission.category == SubmissionCategory.feedback;
     return Material(
       color: Colors.white,
@@ -101,7 +104,7 @@ class _TicketCard extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              'Receipt: ${submission.tokenId}',
+                              l10n.receiptLabel(submission.tokenId),
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontFamily: 'monospace',
@@ -111,7 +114,7 @@ class _TicketCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 6),
-                          Icon(Icons.copy_rounded, size: 13, color: AppColors.inkFaint),
+                          const Icon(Icons.copy_rounded, size: 13, color: AppColors.inkFaint),
                         ],
                       ),
                     ),
@@ -123,7 +126,7 @@ class _TicketCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      isSuggestion ? 'Suggestion' : 'Report',
+                      isSuggestion ? l10n.badgeSuggestion : l10n.badgeReport,
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -159,14 +162,15 @@ class _SuggestionOutcome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final resolved = submission.status == SubmissionStatus.resolved;
     return Row(
       children: [
-        Icon(Icons.groups_rounded, size: 16, color: AppColors.inkFaint),
+        const Icon(Icons.groups_rounded, size: 16, color: AppColors.inkFaint),
         const SizedBox(width: 6),
         Text(
-          '${submission.supporterCount} supporters',
-          style: TextStyle(color: AppColors.inkFaint, fontSize: 12, fontWeight: FontWeight.w600),
+          l10n.supportersCount(submission.supporterCount),
+          style: const TextStyle(color: AppColors.inkFaint, fontSize: 12, fontWeight: FontWeight.w600),
         ),
         const Spacer(),
         if (resolved)
@@ -176,9 +180,9 @@ class _SuggestionOutcome extends StatelessWidget {
               color: AppColors.tealMist,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'In development plan',
-              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.tealDeep),
+            child: Text(
+              l10n.inDevelopmentPlan,
+              style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.tealDeep),
             ),
           )
         else
@@ -188,9 +192,9 @@ class _SuggestionOutcome extends StatelessWidget {
               color: AppColors.saffronMist,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'Under review',
-              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.saffronDeep),
+            child: Text(
+              l10n.underReview,
+              style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.saffronDeep),
             ),
           ),
       ],

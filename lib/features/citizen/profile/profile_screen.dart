@@ -6,6 +6,7 @@ import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../onboarding/language_select_screen.dart';
 
 /// Profile: home constituency/booth/pincode/language at a glance, a privacy
@@ -16,11 +17,12 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final authService = AuthService();
     final profileAsync = ref.watch(currentUserProfileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: AppBar(title: Text(l10n.profileTitle)),
       body: profileAsync.when(
         data: (profile) {
           final languageEntry = kSupportedLanguages.firstWhere(
@@ -40,24 +42,24 @@ class ProfileScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(profile?.name ?? 'Citizen',
+                    Text(profile?.name ?? l10n.citizenDefault,
                         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
                     const SizedBox(height: 14),
                     _InfoRow(
                       icon: Icons.flag_rounded,
-                      label: 'Home constituency',
-                      value: profile?.constituencyId ?? 'Not yet matched',
+                      label: l10n.homeConstituency,
+                      value: profile?.constituencyId ?? l10n.notYetMatched,
                     ),
                     const Divider(height: 22),
                     _InfoRow(
                       icon: Icons.place_rounded,
-                      label: 'Home booth',
-                      value: profile?.homeBoothName ?? 'Not yet matched',
+                      label: l10n.homeBooth,
+                      value: profile?.homeBoothName ?? l10n.notYetMatched,
                     ),
                     const Divider(height: 22),
                     _InfoRow(
                       icon: Icons.pin_drop_rounded,
-                      label: 'Pincode',
+                      label: l10n.pincode,
                       value: profile?.pincodeHome ?? '—',
                     ),
                     const Divider(height: 22),
@@ -66,7 +68,7 @@ class ProfileScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: _InfoRow(
                         icon: Icons.language_rounded,
-                        label: 'Preferred language',
+                        label: l10n.preferredLanguage,
                         value: '${languageEntry.$3} (${languageEntry.$2})',
                         trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.inkFaint),
                       ),
@@ -88,8 +90,7 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'We store your address to route your submissions to the '
-                        'right MP. Your 12-digit Aadhaar number is never stored.',
+                        l10n.privacyStoreAddress,
                         style: const TextStyle(fontSize: 12, color: AppColors.indigoDeep, height: 1.4),
                       ),
                     ),
@@ -110,13 +111,13 @@ class ProfileScreen extends ConsumerWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.md)),
                 ),
                 icon: const Icon(Icons.logout_rounded),
-                label: const Text('Sign out (clears this device)'),
+                label: Text(l10n.signOutClears),
               ),
             ],
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Could not load your profile.')),
+        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
       ),
     );
   }
@@ -145,7 +146,7 @@ class _InfoRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
+              Text(label, style: const TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
               const SizedBox(height: 2),
               Text(value, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5)),
             ],

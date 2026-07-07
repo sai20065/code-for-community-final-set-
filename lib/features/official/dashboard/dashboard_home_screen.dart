@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Section 3.8 / 5.2: lead with a single glanceable number per stat before
 /// any chart — "can a busy person understand value in 5 minutes" test.
@@ -13,11 +14,12 @@ class DashboardHomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(currentUserProfileProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Constituency Dashboard'),
+        title: Text(l10n.constituencyDashboard),
         bottom: const TricolorTrustStrip(),
       ),
       body: SafeArea(
@@ -25,11 +27,11 @@ class DashboardHomeScreen extends ConsumerWidget {
           data: (profile) {
             final constituencyId = profile?.constituencyId;
             if (constituencyId == null) {
-              return const Center(
+              return Center(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   child: Text(
-                    'Your account isn\'t linked to a constituency yet.',
+                    l10n.notLinkedConstituency,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -38,7 +40,7 @@ class DashboardHomeScreen extends ConsumerWidget {
             return _DashboardBody(constituencyId: constituencyId);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => const Center(child: Text('Could not load your profile.')),
+          error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
         ),
       ),
     );
@@ -88,6 +90,7 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -96,7 +99,8 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
         : '${(((_resolvedCount ?? 0) / _totalCount!) * 100).round()}%';
     final avgResponse = _avgResponseTime == null
         ? '—'
-        : '${_avgResponseTime!.inHours ~/ 24}.${(_avgResponseTime!.inHours % 24 * 10 ~/ 24)} days';
+        : l10n.daysValue(
+            '${_avgResponseTime!.inHours ~/ 24}.${(_avgResponseTime!.inHours % 24 * 10 ~/ 24)}');
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -105,7 +109,7 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
           children: [
             Expanded(
               child: _StatCard(
-                label: 'New this week',
+                label: l10n.newThisWeek,
                 value: '${_newThisWeek ?? 0}',
                 color: AppColors.coralRed,
               ),
@@ -113,7 +117,7 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
             const SizedBox(width: 12),
             Expanded(
               child: _StatCard(
-                label: 'Resolved rate',
+                label: l10n.resolvedRate,
                 value: resolvedRate,
                 color: AppColors.leafGreen,
               ),
@@ -122,13 +126,13 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
         ),
         const SizedBox(height: 12),
         _StatCard(
-          label: 'Avg response time',
+          label: l10n.avgResponseTime,
           value: avgResponse,
           color: AppColors.trustBlue,
           fullWidth: true,
         ),
         const SizedBox(height: 20),
-        Text('Constituency Map', style: Theme.of(context).textTheme.titleMedium),
+        Text(l10n.constituencyMap, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
         SizedBox(
           height: 260,
@@ -140,12 +144,12 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
               child: Container(
                 color: Colors.white,
                 alignment: Alignment.center,
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.map_rounded, size: 48, color: AppColors.trustBlue),
-                    SizedBox(height: 8),
-                    Text('Open constituency map'),
+                    const Icon(Icons.map_rounded, size: 48, color: AppColors.trustBlue),
+                    const SizedBox(height: 8),
+                    Text(l10n.openConstituencyMap),
                   ],
                 ),
               ),
@@ -160,17 +164,17 @@ class _DashboardBodyState extends ConsumerState<_DashboardBody> {
             OutlinedButton.icon(
               onPressed: () => context.go('/official/works'),
               icon: const Icon(Icons.leaderboard_rounded),
-              label: const Text('Ranked Works'),
+              label: Text(l10n.rankedWorks),
             ),
             OutlinedButton.icon(
               onPressed: () => context.go('/official/themes'),
               icon: const Icon(Icons.bar_chart_rounded),
-              label: const Text('Themes Overview'),
+              label: Text(l10n.themesOverview),
             ),
             OutlinedButton.icon(
               onPressed: () => context.go('/official/tickets'),
               icon: const Icon(Icons.list_alt_rounded),
-              label: const Text('Problem Reports'),
+              label: Text(l10n.problemReports),
             ),
           ],
         ),

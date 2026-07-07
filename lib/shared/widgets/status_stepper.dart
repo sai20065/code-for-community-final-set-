@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../../core/models/submission_model.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Horizontal Filed → Acknowledged → In Progress → Resolved stepper for
 /// problem reports. Visible progress reduces the "complaint disappeared
@@ -14,12 +15,7 @@ class StatusStepper extends StatelessWidget {
   final SubmissionStatus status;
   final bool compact;
 
-  static const _steps = [
-    ('new', 'Filed'),
-    ('reviewed', 'Acknowledged'),
-    ('inProgress', 'In Progress'),
-    ('resolved', 'Resolved'),
-  ];
+  static const _stepKeys = ['new', 'reviewed', 'inProgress', 'resolved'];
 
   int get _activeIndex {
     switch (status) {
@@ -36,9 +32,16 @@ class StatusStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final labels = {
+      'new': l10n.statusFiled,
+      'reviewed': l10n.statusAcknowledged,
+      'inProgress': l10n.statusInProgress,
+      'resolved': l10n.statusResolved,
+    };
     final active = _activeIndex;
     return Row(
-      children: List.generate(_steps.length * 2 - 1, (i) {
+      children: List.generate(_stepKeys.length * 2 - 1, (i) {
         if (i.isOdd) {
           final leftDone = (i ~/ 2) <= active - 1;
           return Expanded(
@@ -49,7 +52,8 @@ class StatusStepper extends StatelessWidget {
           );
         }
         final stepIndex = i ~/ 2;
-        final (key, label) = _steps[stepIndex];
+        final key = _stepKeys[stepIndex];
+        final label = labels[key]!;
         final isDone = stepIndex <= active;
         final color = isDone ? statusColor(key) : Colors.grey.shade300;
         return Column(
