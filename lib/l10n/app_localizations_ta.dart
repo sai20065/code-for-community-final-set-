@@ -550,6 +550,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get dotSizeVolume => 'புள்ளி அளவு = சமர்ப்பிப்பு அளவு';
 
   @override
+  String get hotspotFlameNote => '🔥 = அவசர ஹாட்ஸ்பாட்';
+
+  @override
   String get searchByTicketId => 'டிக்கெட் ஐடி மூலம் தேடவும்';
 
   @override

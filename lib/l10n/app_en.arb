@@ -187,6 +187,7 @@
   "densityModerate": "Moderate",
   "densityLow": "Low / mostly resolved",
   "dotSizeVolume": "Dot size = submission volume",
+  "hotspotFlameNote": "🔥 = urgent hotspot",
 
   "searchByTicketId": "Search by ticket ID",
   "selectedCount": "{count} selected",

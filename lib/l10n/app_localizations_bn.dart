@@ -544,6 +544,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get dotSizeVolume => 'ডট সাইজ = জমার পরিমাণ';
 
   @override
+  String get hotspotFlameNote => '🔥 = জরুরি হটস্পট';
+
+  @override
   String get searchByTicketId => 'টিকিট আইডি দ্বারা অনুসন্ধান করুন';
 
   @override

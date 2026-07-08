@@ -542,6 +542,9 @@ class AppLocalizationsTe extends AppLocalizations {
   String get dotSizeVolume => 'డాట్ సైజు = సమర్పణ పరిమాణం';
 
   @override
+  String get hotspotFlameNote => '🔥 = అత్యవసర హాట్‌స్పాట్';
+
+  @override
   String get searchByTicketId => 'టికెట్ ఐడి ద్వారా శోధించండి';
 
   @override

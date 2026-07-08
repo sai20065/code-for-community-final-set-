@@ -541,6 +541,9 @@ class AppLocalizationsGu extends AppLocalizations {
   String get dotSizeVolume => 'બિંદુનું કદ = સબમિશન વોલ્યુમ';
 
   @override
+  String get hotspotFlameNote => '🔥 = તાત્કાલિક હોટસ્પોટ';
+
+  @override
   String get searchByTicketId => 'ટિકિટ ID દ્વારા શોધો';
 
   @override

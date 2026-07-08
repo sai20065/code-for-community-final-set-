@@ -17,9 +17,10 @@ const _kFilterCategories = ['education', 'roads', 'water', 'skilling', 'health']
 /// "Trending near you" ranked-suggestion feed (public — feedback-category
 /// only, per the Firestore security rules' own-area/feedback-only sharing
 /// model), a private "Your recent reports" strip for the citizen's own
-/// problem tickets, and a single FAB that opens the category picker (the
-/// first step of the submit flow) rather than jumping straight into a
-/// preset mode.
+/// problem tickets, and two direct-entry action buttons (Report a problem /
+/// Suggest development work) pinned above the system nav bar — skips the
+/// separate category-picker screen entirely for the common case; that
+/// screen still exists as the compose screens' back-button fallback.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -154,17 +155,92 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           Positioned(
-            right: 20,
-            bottom: 20,
-            child: FloatingActionButton.extended(
-              heroTag: 'new-submission-fab',
-              backgroundColor: AppColors.saffron,
-              onPressed: () => context.go('/compose'),
-              icon: const Icon(Icons.add_rounded),
-              label: Text(l10n.newSubmission),
+            left: 16,
+            right: 16,
+            bottom: 20 + MediaQuery.of(context).padding.bottom,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _HomeActionButton(
+                    icon: Icons.warning_amber_rounded,
+                    label: l10n.reportAProblem,
+                    color: AppColors.vermilion,
+                    onTap: () => context.go(
+                      '/compose/text',
+                      extra: SubmissionCategory.problem,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _HomeActionButton(
+                    icon: Icons.lightbulb_rounded,
+                    label: l10n.suggestDevelopmentWork,
+                    color: AppColors.saffronDeep,
+                    onTap: () => context.go(
+                      '/compose/text',
+                      extra: SubmissionCategory.feedback,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// One of the two direct-entry actions pinned above the system nav bar —
+/// replaces the old single "New submission" FAB that opened a separate
+/// category-picker screen. Choosing Problem vs Suggestion is now a home
+/// screen decision, not an extra tap.
+class _HomeActionButton extends StatelessWidget {
+  const _HomeActionButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(28),
+      elevation: 3,
+      shadowColor: color.withValues(alpha: 0.4),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(28),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

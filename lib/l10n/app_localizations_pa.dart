@@ -544,6 +544,9 @@ class AppLocalizationsPa extends AppLocalizations {
   String get dotSizeVolume => 'ਬਿੰਦੀਆਂ ਦਾ ਆਕਾਰ = ਜਮ੍ਹਾਂ ਕਰਨ ਦੀ ਮਾਤਰਾ';
 
   @override
+  String get hotspotFlameNote => '🔥 = ਜ਼ਰੂਰੀ ਹੌਟਸਪੌਟ';
+
+  @override
   String get searchByTicketId => 'ਟਿਕਟ ਆਈਡੀ ਦੁਆਰਾ ਖੋਜ ਕਰੋ';
 
   @override

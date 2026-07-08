@@ -159,6 +159,7 @@
   "densityModerate": "મધ્યમ",
   "densityLow": "ઓછી / મોટાભાગે ઉકેલાઈ ગઈ",
   "dotSizeVolume": "બિંદુનું કદ = સબમિશન વોલ્યુમ",
+  "hotspotFlameNote": "🔥 = તાત્કાલિક હોટસ્પોટ",
   "searchByTicketId": "ટિકિટ ID દ્વારા શોધો",
   "selectedCount": "{count}પસંદ કરેલ",
   "markInProgress": "પ્રગતિમાં છે તે ચિહ્નિત કરો",

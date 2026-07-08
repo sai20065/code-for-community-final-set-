@@ -159,6 +159,7 @@
   "densityModerate": "मध्यम",
   "densityLow": "कम/लगभग हल हो गया",
   "dotSizeVolume": "डॉट का आकार = सबमिशन वॉल्यूम",
+  "hotspotFlameNote": "🔥 = तत्काल ध्यान देने योग्य हॉटस्पॉट",
   "searchByTicketId": "टिकट आईडी द्वारा खोजें",
   "selectedCount": "{count}चयनित",
   "markInProgress": "प्रगति जारी है",

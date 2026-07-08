@@ -72,6 +72,16 @@ LatLngBounds? _boundsFromRings(List<List<LatLng>> rings) {
   return LatLngBounds.fromPoints(points);
 }
 
+/// Average-of-vertices center of a ring — not a true area centroid, just
+/// good enough to plant a hotspot marker roughly in the middle of a ward/
+/// taluk polygon (same "close enough" tradeoff `seedWards.ts`'s own
+/// centroid helper makes server-side).
+LatLng _ringCenter(List<LatLng> ring) {
+  final lat = ring.map((p) => p.latitude).reduce((a, b) => a + b) / ring.length;
+  final lng = ring.map((p) => p.longitude).reduce((a, b) => a + b) / ring.length;
+  return LatLng(lat, lng);
+}
+
 /// Booth-level demand map: dot size = submission volume, dot color = density
 /// band (red = hotspot / amber = moderate / green = mostly resolved, from
 /// `BoothModel.densityLevel`, i.e. `openIssueCount`) rather than theme, so
@@ -89,6 +99,49 @@ Color _densityColor(String level) {
     default:
       return AppColors.teal;
   }
+}
+
+/// A flame-icon pin marking a ward/taluk whose worst tracked cluster has
+/// crossed the red-tier priority threshold — see `hotspotThreshold` in
+/// `_BoothMapState.build`. Badges the report count so the MP knows the
+/// scale, not just that "somewhere in here" is bad.
+Marker _hotspotMarker(LatLng point, int submissionCount) {
+  return Marker(
+    point: point,
+    width: 40,
+    height: 40,
+    child: Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.vermilion,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: appCardShadow,
+          ),
+          child: const Icon(Icons.local_fire_department_rounded, color: Colors.white, size: 22),
+        ),
+        if (submissionCount > 0)
+          Positioned(
+            right: -4,
+            top: -4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+              decoration: BoxDecoration(
+                color: AppColors.indigoDeep,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              child: Text(
+                submissionCount > 99 ? '99+' : '$submissionCount',
+                style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+      ],
+    ),
+  );
 }
 
 /// Same red/amber/green hotspot language as booth markers, applied to
@@ -193,22 +246,49 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
 
         // Highest priorityScore among a ward's/taluk's clusters — drives the
         // fill color below, same red/amber/green language as booth markers.
+        // Submission counts are summed per unit too, purely to badge the
+        // hotspot flame markers below with "how many reports" at a glance.
         final wardPriority = <String, double>{};
         final talukPriority = <String, double>{};
+        final wardSubmissionCount = <String, int>{};
+        final talukSubmissionCount = <String, int>{};
         for (final cluster in clusters) {
           final score = cluster.priorityScore;
-          if (score == null) continue;
+          final count = cluster.submissionCount;
           final wardId = cluster.wardId;
           if (wardId != null) {
-            final existing = wardPriority[wardId];
-            if (existing == null || score > existing) wardPriority[wardId] = score;
+            wardSubmissionCount[wardId] = (wardSubmissionCount[wardId] ?? 0) + count;
+            if (score != null) {
+              final existing = wardPriority[wardId];
+              if (existing == null || score > existing) wardPriority[wardId] = score;
+            }
           }
           final talukId = cluster.talukId;
           if (talukId != null) {
-            final existing = talukPriority[talukId];
-            if (existing == null || score > existing) talukPriority[talukId] = score;
+            talukSubmissionCount[talukId] = (talukSubmissionCount[talukId] ?? 0) + count;
+            if (score != null) {
+              final existing = talukPriority[talukId];
+              if (existing == null || score > existing) talukPriority[talukId] = score;
+            }
           }
         }
+        // Explicit hotspot markers (flame icon + report count) for any
+        // ward/taluk whose worst cluster crosses the same red-tier
+        // threshold as `_wardColorForPriority` — the polygon tint alone is
+        // easy to miss at a glance, especially before zooming in.
+        const hotspotThreshold = 70.0;
+        final hotspotMarkers = <Marker>[
+          ...wards.where((w) => (wardPriority[w.id] ?? 0) >= hotspotThreshold).expand((w) {
+            final rings = _extractRings(w.boundaryGeoJson);
+            if (rings.isEmpty) return const <Marker>[];
+            return [_hotspotMarker(_ringCenter(rings.first), wardSubmissionCount[w.id] ?? 0)];
+          }),
+          ...taluks.where((t) => (talukPriority[t.id] ?? 0) >= hotspotThreshold).expand((t) {
+            final rings = _extractRings(t.boundaryGeoJson);
+            if (rings.isEmpty) return const <Marker>[];
+            return [_hotspotMarker(_ringCenter(rings.first), talukSubmissionCount[t.id] ?? 0)];
+          }),
+        ];
 
         final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
         final wardPolygons = wards.expand((ward) {
@@ -313,6 +393,8 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
                     );
                   }).toList(),
                 ),
+                if (hotspotMarkers.isNotEmpty)
+                  MarkerLayer(markers: hotspotMarkers),
               ],
             ),
             const Positioned(
@@ -356,6 +438,10 @@ class _Legend extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             l10n.dotSizeVolume,
+            style: const TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
+          ),
+          Text(
+            l10n.hotspotFlameNote,
             style: const TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
           ),
         ],

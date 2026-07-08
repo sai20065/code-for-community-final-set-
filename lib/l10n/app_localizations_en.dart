@@ -539,6 +539,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dotSizeVolume => 'Dot size = submission volume';
 
   @override
+  String get hotspotFlameNote => '🔥 = urgent hotspot';
+
+  @override
   String get searchByTicketId => 'Search by ticket ID';
 
   @override

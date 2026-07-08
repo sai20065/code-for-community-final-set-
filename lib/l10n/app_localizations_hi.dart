@@ -545,6 +545,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dotSizeVolume => 'डॉट का आकार = सबमिशन वॉल्यूम';
 
   @override
+  String get hotspotFlameNote => '🔥 = तत्काल ध्यान देने योग्य हॉटस्पॉट';
+
+  @override
   String get searchByTicketId => 'टिकट आईडी द्वारा खोजें';
 
   @override

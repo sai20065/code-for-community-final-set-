@@ -548,6 +548,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get dotSizeVolume => 'ഡോട്ട് വലുപ്പം = സമർപ്പിക്കൽ അളവ്';
 
   @override
+  String get hotspotFlameNote => '🔥 = അടിയന്തിര ഹോട്ട്‌സ്പോട്ട്';
+
+  @override
   String get searchByTicketId => 'ടിക്കറ്റ് ഐഡി ഉപയോഗിച്ച് തിരയുക';
 
   @override

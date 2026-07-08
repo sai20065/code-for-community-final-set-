@@ -159,6 +159,7 @@
   "densityModerate": "மிதமான",
   "densityLow": "குறைவு / பெரும்பாலும் தீர்க்கப்பட்டது",
   "dotSizeVolume": "புள்ளி அளவு = சமர்ப்பிப்பு அளவு",
+  "hotspotFlameNote": "🔥 = அவசர ஹாட்ஸ்பாட்",
   "searchByTicketId": "டிக்கெட் ஐடி மூலம் தேடவும்",
   "selectedCount": "{count}தேர்ந்தெடுக்கப்பட்ட",
   "markInProgress": "முன்னேற்றத்தில் உள்ள குறி",

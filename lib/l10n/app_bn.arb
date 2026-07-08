@@ -159,6 +159,7 @@
   "densityModerate": "মাঝারি",
   "densityLow": "নিম্ন / বেশিরভাগই সমাধান করা হয়েছে",
   "dotSizeVolume": "ডট সাইজ = জমার পরিমাণ",
+  "hotspotFlameNote": "🔥 = জরুরি হটস্পট",
   "searchByTicketId": "টিকিট আইডি দ্বারা অনুসন্ধান করুন",
   "selectedCount": "{count}নির্বাচিত",
   "markInProgress": "মার্ক ইন প্রগ্রেস",

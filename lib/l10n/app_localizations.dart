@@ -1068,6 +1068,12 @@ abstract class AppLocalizations {
   /// **'Dot size = submission volume'**
   String get dotSizeVolume;
 
+  /// No description provided for @hotspotFlameNote.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 = urgent hotspot'**
+  String get hotspotFlameNote;
+
   /// No description provided for @searchByTicketId.
   ///
   /// In en, this message translates to:

@@ -541,6 +541,9 @@ class AppLocalizationsMr extends AppLocalizations {
   String get dotSizeVolume => 'डॉटचा आकार = सबमिशनची संख्या';
 
   @override
+  String get hotspotFlameNote => '🔥 = तातडीचा हॉटस्पॉट';
+
+  @override
   String get searchByTicketId => 'तिकिट आयडीनुसार शोधा';
 
   @override

@@ -545,6 +545,9 @@ class AppLocalizationsKn extends AppLocalizations {
   String get dotSizeVolume => 'ಡಾಟ್ ಗಾತ್ರ = ಸಲ್ಲಿಕೆ ಪ್ರಮಾಣ';
 
   @override
+  String get hotspotFlameNote => '🔥 = ತುರ್ತು ಹಾಟ್‌ಸ್ಪಾಟ್';
+
+  @override
   String get searchByTicketId => 'ಟಿಕೆಟ್ ಐಡಿ ಮೂಲಕ ಹುಡುಕಿ';
 
   @override

@@ -159,6 +159,7 @@
   "densityModerate": "മിതമായ",
   "densityLow": "കുറവ് / മിക്കവാറും പരിഹരിച്ചത്",
   "dotSizeVolume": "ഡോട്ട് വലുപ്പം = സമർപ്പിക്കൽ അളവ്",
+  "hotspotFlameNote": "🔥 = അടിയന്തിര ഹോട്ട്‌സ്പോട്ട്",
   "searchByTicketId": "ടിക്കറ്റ് ഐഡി ഉപയോഗിച്ച് തിരയുക",
   "selectedCount": "{count}തിരഞ്ഞെടുത്തു",
   "markInProgress": "പുരോഗതിയിലാണെന്ന് അടയാളപ്പെടുത്തുക",

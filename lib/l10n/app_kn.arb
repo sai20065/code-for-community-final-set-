@@ -159,6 +159,7 @@
   "densityModerate": "ಮಧ್ಯಮ",
   "densityLow": "ಕಡಿಮೆ / ಬಹುತೇಕ ಪರಿಹರಿಸಲಾಗಿದೆ",
   "dotSizeVolume": "ಡಾಟ್ ಗಾತ್ರ = ಸಲ್ಲಿಕೆ ಪ್ರಮಾಣ",
+  "hotspotFlameNote": "🔥 = ತುರ್ತು ಹಾಟ್‌ಸ್ಪಾಟ್",
   "searchByTicketId": "ಟಿಕೆಟ್ ಐಡಿ ಮೂಲಕ ಹುಡುಕಿ",
   "selectedCount": "{count}ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ",
   "markInProgress": "ಪ್ರಗತಿಯಲ್ಲಿದೆ ಎಂದು ಗುರುತಿಸಿ",

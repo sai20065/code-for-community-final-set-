@@ -108,6 +108,85 @@ export const generateConstituencyReport = onCall(
   },
 );
 
+// Mirrors the Flutter app's brand palette (lib/app/theme.dart's AppColors)
+// so the printed report reads as the same product, not a generic export.
+const BRAND = {
+  indigo: "#2E1F8F",
+  indigoDeep: "#1C1259",
+  indigoMist: "#E9E6F8",
+  saffron: "#FFA630",
+  saffronDeep: "#C97914",
+  saffronMist: "#FFF1DA",
+  teal: "#0B8A6C",
+  tealMist: "#DBF2EA",
+  vermilion: "#E0384A",
+  vermilionDeep: "#A5202F",
+  vermilionMist: "#FBE1E4",
+  ink: "#14131F",
+  inkSoft: "#57547A",
+  inkFaint: "#8C89AB",
+  paper: "#F3F2EE",
+  white: "#FFFFFF",
+};
+
+const MARGIN = 50;
+
+/** Same red/amber/green hotspot language used on the app's map/booth
+ * markers (see `_wardColorForPriority` in constituency_map_screen.dart) —
+ * keeps the printed report's urgency cues consistent with what the MP
+ * already sees on screen. */
+function priorityColor(score: number | undefined): string {
+  if (score === undefined) return BRAND.inkFaint;
+  if (score >= 70) return BRAND.vermilion;
+  if (score >= 40) return BRAND.saffronDeep;
+  return BRAND.teal;
+}
+
+/**
+ * Every drawing helper below takes and returns an explicit `y` cursor
+ * rather than reading/relying on `doc.y` — PDFKit's own `.text()` mutates
+ * `doc.x`/`doc.y` to wherever the text ended up even when you pass it
+ * explicit coordinates, so chaining several absolutely-positioned draws
+ * back-to-back while trusting `doc.y` in between silently drifts (this is
+ * what caused the stat tiles to overlap and cards to split across pages
+ * in an earlier version of this report). Treating `y` as a plain number
+ * the caller threads through avoids that class of bug entirely.
+ */
+function ensureSpace(doc: PDFKit.PDFDocument, y: number, neededHeight: number): number {
+  const pageBottom = doc.page.height - doc.page.margins.bottom;
+  if (y + neededHeight > pageBottom) {
+    doc.addPage();
+    return doc.page.margins.top;
+  }
+  return y;
+}
+
+function sectionHeader(doc: PDFKit.PDFDocument, y: number, title: string, color: string): number {
+  y = ensureSpace(doc, y, 30);
+  doc.rect(MARGIN, y, 5, 20).fill(color);
+  doc.fillColor(BRAND.ink).font("Helvetica-Bold").fontSize(14)
+    .text(title.toUpperCase(), MARGIN + 12, y + 3, {characterSpacing: 0.5, lineBreak: false});
+  return y + 30;
+}
+
+function statTile(
+  doc: PDFKit.PDFDocument,
+  x: number,
+  y: number,
+  width: number,
+  label: string,
+  value: string,
+  color: string,
+  mist: string,
+): void {
+  const height = 62;
+  doc.roundedRect(x, y, width, height, 8).fillAndStroke(mist, color);
+  doc.fillColor(color).font("Helvetica-Bold").fontSize(24)
+    .text(value, x, y + 10, {width, align: "center", lineBreak: false});
+  doc.fillColor(BRAND.inkSoft).font("Helvetica-Bold").fontSize(9)
+    .text(label.toUpperCase(), x, y + 40, {width, align: "center", characterSpacing: 0.5, lineBreak: false});
+}
+
 function renderPdf(data: {
   constituencyName: string;
   mpName: string;
@@ -116,45 +195,101 @@ function renderPdf(data: {
   aiSummary: {executiveSummary: string; keyRecommendations: string[]};
 }): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({margin: 50});
+    const doc = new PDFDocument({margin: MARGIN, size: "A4", bufferPages: true});
     const chunks: Buffer[] = [];
     doc.on("data", (chunk) => chunks.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
-    doc.fontSize(20).text(`Constituency Report: ${data.constituencyName}`, {align: "center"});
-    doc.fontSize(12).text(`MP: ${data.mpName}`, {align: "center"});
-    doc.fontSize(10).fillColor("gray")
-      .text(`Generated ${new Date().toLocaleDateString("en-IN", {year: "numeric", month: "long", day: "numeric"})}`, {align: "center"});
-    doc.fillColor("black").moveDown(2);
+    const pageWidth = doc.page.width;
+    const contentWidth = pageWidth - MARGIN * 2;
 
-    doc.fontSize(14).text("Summary", {underline: true});
-    doc.fontSize(11)
-      .text(`Total tickets: ${data.stats.total}`)
-      .text(`Resolved: ${data.stats.resolved}`)
-      .text(`Urgent (priority >= ${URGENT_THRESHOLD}): ${data.stats.urgent}`);
-    doc.moveDown();
+    // --- Header band (page 1 only) -----------------------------------------
+    doc.rect(0, 0, pageWidth, 130).fill(BRAND.indigo);
+    const third = pageWidth / 3;
+    doc.rect(0, 130, third, 4).fill(BRAND.saffron);
+    doc.rect(third, 130, third, 4).fill(BRAND.white);
+    doc.rect(third * 2, 130, third, 4).fill(BRAND.teal);
 
-    doc.fontSize(14).text("Executive Summary", {underline: true});
-    doc.fontSize(11).text(data.aiSummary.executiveSummary);
-    doc.moveDown();
+    doc.fillColor(BRAND.white).font("Helvetica-Bold").fontSize(22)
+      .text("PRAJADHWANI", MARGIN, 32, {characterSpacing: 1, lineBreak: false});
+    doc.font("Helvetica").fontSize(10).fillColor(BRAND.indigoMist)
+      .text("Constituency Briefing", MARGIN, 58, {lineBreak: false});
+    doc.font("Helvetica-Bold").fontSize(18).fillColor(BRAND.white)
+      .text(data.constituencyName, MARGIN, 76, {lineBreak: false});
+    doc.font("Helvetica").fontSize(11).fillColor(BRAND.indigoMist)
+      .text(`MP: ${data.mpName}`, MARGIN, 100, {lineBreak: false});
+    doc.fontSize(9).fillColor(BRAND.indigoMist)
+      .text(
+        new Date().toLocaleDateString("en-IN", {year: "numeric", month: "long", day: "numeric"}),
+        MARGIN, 100, {width: contentWidth, align: "right", lineBreak: false},
+      );
 
+    let y = 155;
+
+    // --- Stat tiles ---------------------------------------------------------
+    const gap = 14;
+    const tileWidth = (contentWidth - gap * 2) / 3;
+    statTile(doc, MARGIN, y, tileWidth, "Total Tickets", String(data.stats.total), BRAND.indigo, BRAND.indigoMist);
+    statTile(doc, MARGIN + tileWidth + gap, y, tileWidth, "Resolved", String(data.stats.resolved), BRAND.teal, BRAND.tealMist);
+    statTile(doc, MARGIN + (tileWidth + gap) * 2, y, tileWidth, "Urgent", String(data.stats.urgent), BRAND.vermilion, BRAND.vermilionMist);
+    y += 62 + 24;
+
+    // --- Executive summary, highlighted box ----------------------------------
+    y = sectionHeader(doc, y, "Executive Summary", BRAND.indigo);
+    doc.font("Helvetica").fontSize(11);
+    const summaryHeight = doc.heightOfString(data.aiSummary.executiveSummary, {width: contentWidth - 24}) + 24;
+    y = ensureSpace(doc, y, summaryHeight);
+    doc.roundedRect(MARGIN, y, contentWidth, summaryHeight, 6).fillAndStroke(BRAND.paper, BRAND.indigoMist);
+    doc.fillColor(BRAND.ink).font("Helvetica").fontSize(11)
+      .text(data.aiSummary.executiveSummary, MARGIN + 12, y + 12, {width: contentWidth - 24});
+    y += summaryHeight + 24;
+
+    // --- Recommended actions, numbered badges --------------------------------
     if (data.aiSummary.keyRecommendations.length) {
-      doc.fontSize(14).text("Recommended Actions", {underline: true});
-      data.aiSummary.keyRecommendations.forEach((r, i) => {
-        doc.fontSize(11).text(`${i + 1}. ${r}`);
-      });
-      doc.moveDown();
+      y = sectionHeader(doc, y, "Recommended Actions", BRAND.saffronDeep);
+      for (const r of data.aiSummary.keyRecommendations) {
+        doc.font("Helvetica-Bold").fontSize(11);
+        const textHeight = doc.heightOfString(r, {width: contentWidth - 28});
+        const rowHeight = Math.max(textHeight, 18) + 12;
+        y = ensureSpace(doc, y, rowHeight);
+        doc.circle(MARGIN + 10, y + 9, 9).fill(BRAND.saffron);
+        doc.fillColor(BRAND.white).font("Helvetica-Bold").fontSize(9)
+          .text(String(data.aiSummary.keyRecommendations.indexOf(r) + 1), MARGIN + 1, y + 4.5, {width: 18, align: "center", lineBreak: false});
+        doc.fillColor(BRAND.ink).font("Helvetica-Bold").fontSize(11)
+          .text(r, MARGIN + 28, y, {width: contentWidth - 28});
+        y += rowHeight;
+      }
+      y += 12;
     }
 
-    doc.fontSize(14).text("Top Issues by Priority", {underline: true});
+    // --- Top issues, priority-colored cards -----------------------------------
+    y = sectionHeader(doc, y, "Top Issues by Priority", BRAND.vermilion);
     data.topClusters.forEach((c, i) => {
-      doc.fontSize(11).text(`${i + 1}. [${c.theme}] ${c.summaryText}`);
-      doc.fontSize(9).fillColor("gray").text(
-        `   ${c.submissionCount ?? 0} reports · priority ${c.priorityScore ?? "-"} · ` +
-        `demand ${c.demandScore ?? "-"} · infra gap ${c.infraGapScore ?? "-"}`,
-      );
-      doc.fillColor("black");
+      const color = priorityColor(c.priorityScore);
+      const titleText = `${i + 1}. [${c.theme}]  ${c.summaryText}`;
+      doc.font("Helvetica-Bold").fontSize(11);
+      const titleHeight = doc.heightOfString(titleText, {width: contentWidth - 20});
+      const cardHeight = titleHeight + 34;
+      y = ensureSpace(doc, y, cardHeight + 10);
+
+      doc.roundedRect(MARGIN, y, contentWidth, cardHeight, 4).fill(BRAND.paper);
+      doc.rect(MARGIN, y, 4, cardHeight).fill(color);
+      doc.fillColor(BRAND.ink).font("Helvetica-Bold").fontSize(11)
+        .text(titleText, MARGIN + 14, y + 8, {width: contentWidth - 20});
+
+      const metaY = y + titleHeight + 12;
+      const priorityLabel = `PRIORITY ${c.priorityScore ?? "—"}`;
+      doc.font("Helvetica-Bold").fontSize(8.5).fillColor(color);
+      const priorityLabelWidth = doc.widthOfString(priorityLabel);
+      doc.text(priorityLabel, MARGIN + 14, metaY, {lineBreak: false});
+      doc.font("Helvetica").fontSize(8.5).fillColor(BRAND.inkFaint)
+        .text(
+          `   ·   ${c.submissionCount ?? 0} reports   ·   demand ${c.demandScore ?? "—"}   ·   infra gap ${c.infraGapScore ?? "—"}`,
+          MARGIN + 14 + priorityLabelWidth, metaY,
+          {lineBreak: false},
+        );
+      y += cardHeight + 10;
     });
 
     doc.end();

@@ -22,5 +22,15 @@ service firebase.storage {
         firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'official' &&
         firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.constituencyId == constituencyId;
     }
+
+    // Deliberately public, unauthenticated-read bucket for anything meant
+    // to be shared with a plain URL (e.g. a demo APK for a hackathon) —
+    // never written by any client, only by an operator via the Admin SDK/
+    // console. Everything else in this project stays scoped by default;
+    // only paths explicitly placed under public/ are exposed this way.
+    match /public/{fileName} {
+      allow write: if false;
+      allow read: if true;
+    }
   }
 }
