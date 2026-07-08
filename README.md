@@ -1,4 +1,4 @@
-# Prajadhwani — AI platform for constituency development planning
+ # Prajadhwani — AI platform for constituency development planning
 
 An AI platform for constituency development planning. Citizens submit
 development **suggestions** (the primary flow) and, secondarily, **report**
