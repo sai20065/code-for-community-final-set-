@@ -10,6 +10,7 @@ import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
 import '../../../core/models/cluster_model.dart';
+import '../../../core/models/taluk_model.dart';
 import '../../../core/models/ward_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../booth/booth_detail_sheet.dart';
@@ -176,24 +177,37 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
   Widget build(BuildContext context) {
     final constituencyAsync = ref.watch(constituencyProvider(widget.constituencyId));
     final wardsAsync = ref.watch(_wardsProvider(widget.constituencyId));
+    final taluksAsync = ref.watch(_taluksProvider(widget.constituencyId));
     final boothsAsync = ref.watch(_boothsProvider(widget.constituencyId));
     final clustersAsync = ref.watch(_clustersProvider(widget.constituencyId));
 
     return constituencyAsync.when(
       data: (constituency) {
         final wards = wardsAsync.valueOrNull ?? const [];
+        // Taluks are the ward-equivalent granular layer for every
+        // constituency outside Bengaluru Urban, which has real ward data
+        // instead — never show both on the same map.
+        final taluks = wards.isEmpty ? (taluksAsync.valueOrNull ?? const []) : const <TalukModel>[];
         final booths = boothsAsync.valueOrNull ?? const [];
         final clusters = clustersAsync.valueOrNull ?? const [];
 
-        // Highest priorityScore among a ward's clusters — drives the ward
+        // Highest priorityScore among a ward's/taluk's clusters — drives the
         // fill color below, same red/amber/green language as booth markers.
         final wardPriority = <String, double>{};
+        final talukPriority = <String, double>{};
         for (final cluster in clusters) {
-          final wardId = cluster.wardId;
           final score = cluster.priorityScore;
-          if (wardId == null || score == null) continue;
-          final existing = wardPriority[wardId];
-          if (existing == null || score > existing) wardPriority[wardId] = score;
+          if (score == null) continue;
+          final wardId = cluster.wardId;
+          if (wardId != null) {
+            final existing = wardPriority[wardId];
+            if (existing == null || score > existing) wardPriority[wardId] = score;
+          }
+          final talukId = cluster.talukId;
+          if (talukId != null) {
+            final existing = talukPriority[talukId];
+            if (existing == null || score > existing) talukPriority[talukId] = score;
+          }
         }
 
         final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
@@ -206,11 +220,23 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
                 borderStrokeWidth: 1.5,
               ));
         }).toList();
-        final wardRings = wards.expand((w) => _extractRings(w.boundaryGeoJson)).toList();
+        final talukPolygons = taluks.expand((taluk) {
+          final color = _wardColorForPriority(talukPriority[taluk.id]);
+          return _extractRings(taluk.boundaryGeoJson).map((ring) => Polygon(
+                points: ring,
+                color: color.withValues(alpha: 0.28),
+                borderColor: color,
+                borderStrokeWidth: 1.5,
+              ));
+        }).toList();
+        final subUnitRings = <List<LatLng>>[
+          ...wards.expand((w) => _extractRings(w.boundaryGeoJson)),
+          ...taluks.expand((t) => _extractRings(t.boundaryGeoJson)),
+        ];
         final boothPoints = booths.map((b) => LatLng(b.lat, b.lng)).toList();
 
         final bounds = _boundsFromRings(constituencyRings) ??
-            _boundsFromRings(wardRings) ??
+            _boundsFromRings(subUnitRings) ??
             (boothPoints.isNotEmpty ? LatLngBounds.fromPoints(boothPoints) : null) ??
             _karnatakaFallbackBounds;
         _fitBoundsOnce(bounds);
@@ -230,6 +256,8 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
                 ),
                 if (wardPolygons.isNotEmpty)
                   PolygonLayer(polygons: wardPolygons),
+                if (talukPolygons.isNotEmpty)
+                  PolygonLayer(polygons: talukPolygons),
                 if (constituencyRings.isNotEmpty)
                   PolygonLayer(
                     polygons: constituencyRings
@@ -374,6 +402,13 @@ final _wardsProvider =
   return ref
       .watch(firestoreServiceProvider)
       .watchWardsForConstituency(constituencyId);
+});
+
+final _taluksProvider =
+    StreamProvider.family<List<TalukModel>, String>((ref, constituencyId) {
+  return ref
+      .watch(firestoreServiceProvider)
+      .watchTaluksForConstituency(constituencyId);
 });
 
 final _clustersProvider =

@@ -105,6 +105,23 @@ service cloud.firestore {
          userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
       allow write: if false;
     }
+    // Karnataka's 227 taluks (KGIS/KSRSAC official data) — the
+    // ward-equivalent fine-grained unit for every constituency outside
+    // Bengaluru Urban. Same scoped-read pattern as wards.
+    match /taluks/{talukId} {
+      allow read: if isSignedIn() &&
+        (isOfficialForConstituency(resource.data.constituencyId) ||
+         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
+      allow write: if false;
+    }
+    // District boundaries — a coarser reference/display layer only (a
+    // district can span multiple constituencies, so it's never used for MP
+    // routing). Not officially sensitive, safe for any signed-in user to
+    // read, same as `constituencies`.
+    match /districts/{districtId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
 
     // MP unique-ID + registered-email pairs used by the first-time-setup
     // and forgot-credentials flows (see functions/src/officials/) — never

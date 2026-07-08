@@ -4,6 +4,7 @@ import '../models/booth_model.dart';
 import '../models/cluster_model.dart';
 import '../models/constituency_model.dart';
 import '../models/submission_model.dart';
+import '../models/taluk_model.dart';
 import '../models/user_model.dart';
 import '../models/ward_model.dart';
 
@@ -27,6 +28,8 @@ class FirestoreService {
       _db.collection('constituencies');
   CollectionReference<Map<String, dynamic>> get _wards =>
       _db.collection('wards');
+  CollectionReference<Map<String, dynamic>> get _taluks =>
+      _db.collection('taluks');
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
@@ -242,6 +245,20 @@ class FirestoreService {
     final doc = await _wards.doc(wardId).get();
     if (!doc.exists) return null;
     return WardModel.fromMap(doc.id, doc.data()!);
+  }
+
+  Stream<List<TalukModel>> watchTaluksForConstituency(String constituencyId) {
+    return _taluks
+        .where('constituencyId', isEqualTo: constituencyId)
+        .snapshots()
+        .map((snap) =>
+            snap.docs.map((d) => TalukModel.fromMap(d.id, d.data())).toList());
+  }
+
+  Future<TalukModel?> getTaluk(String talukId) async {
+    final doc = await _taluks.doc(talukId).get();
+    if (!doc.exists) return null;
+    return TalukModel.fromMap(doc.id, doc.data()!);
   }
 
   Stream<List<ClusterModel>> watchClustersForConstituency(

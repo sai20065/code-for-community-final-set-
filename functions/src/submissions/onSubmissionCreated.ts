@@ -4,6 +4,7 @@ import {REGION} from "../config";
 import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
+import {resolveTalukForPoint} from "../lib/talukGeo";
 import {resolveWardForPoint} from "../lib/wardGeo";
 
 /**
@@ -121,6 +122,7 @@ export const onSubmissionCreated = onDocumentCreated(
     const lat: number | undefined = submission.location?.lat;
     const lng: number | undefined = submission.location?.lng;
     let wardId: string | undefined = submission.location?.wardId;
+    let talukId: string | undefined = submission.location?.talukId;
     if (typeof lat === "number" && typeof lng === "number") {
       const resolved = resolveConstituencyForPoint(lat, lng);
       if (resolved && resolved.constituencyId !== constituencyId) {
@@ -134,6 +136,16 @@ export const onSubmissionCreated = onDocumentCreated(
       if (resolvedWard && resolvedWard.wardId !== wardId) {
         wardId = resolvedWard.wardId;
         await submissionRef.update({"location.wardId": resolvedWard.wardId});
+      }
+      // Taluks are the ward-equivalent granular unit outside Bengaluru
+      // Urban — a point can resolve to both (a Bengaluru ward's taluk is
+      // just "Bengaluru North/South/etc" from the same KGIS dataset), so
+      // both are stored whenever available rather than one excluding the
+      // other.
+      const resolvedTaluk = resolveTalukForPoint(lat, lng);
+      if (resolvedTaluk && resolvedTaluk.talukId !== talukId) {
+        talukId = resolvedTaluk.talukId;
+        await submissionRef.update({"location.talukId": resolvedTaluk.talukId});
       }
     }
     const boothId: string | undefined = submission.location?.boothId;
@@ -152,6 +164,7 @@ export const onSubmissionCreated = onDocumentCreated(
         constituencyId,
         boothId: boothId ?? null,
         wardId: wardId ?? null,
+        talukId: talukId ?? null,
         theme,
         submissionCount: 1,
         sampleSubmissionIds: [event.params.submissionId],
@@ -189,6 +202,7 @@ export const onSubmissionCreated = onDocumentCreated(
           summaryText: refreshed.summaryText,
           priorityScore: refreshed.priorityScore,
           wardId: wardId ?? cluster.wardId ?? null,
+          talukId: talukId ?? cluster.talukId ?? null,
           demandScore,
           demographicScore,
           infraGapScore,
@@ -202,6 +216,7 @@ export const onSubmissionCreated = onDocumentCreated(
       submissionCount: newCount,
       sampleSubmissionIds: sampleIds,
       wardId: wardId ?? cluster.wardId ?? null,
+      talukId: talukId ?? cluster.talukId ?? null,
       demandScore,
       demographicScore,
       infraGapScore,

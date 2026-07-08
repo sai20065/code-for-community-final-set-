@@ -48,6 +48,14 @@ export interface ResolvedConstituency {
  * constituency lines — citizens in those states can resolve to a stale or
  * defunct constituency name until a better-sourced boundary set replaces
  * this data for them specifically.
+ *
+ * Karnataka's 28 constituencies are the exception: their `geometry` here has
+ * been swapped for Karnataka's own official KSRSAC/KGIS PC_Boundaries data
+ * (https://github.com/samashti/KGIS), simplified with `@turf/simplify`
+ * (tolerance 0.0003, ~30m) to keep file size and map-render cost reasonable
+ * while still being far more precise than the national DataMeet dataset's
+ * original boundaries for this state. Every other state's 515 constituencies
+ * are untouched DataMeet boundaries.
  */
 export function resolveConstituencyForPoint(
   lat: number,
