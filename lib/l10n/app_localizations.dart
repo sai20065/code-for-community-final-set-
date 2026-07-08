@@ -1481,6 +1481,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t submit — please check your connection and try again'**
   String get couldNotSubmitTryAgain;
+
+  /// No description provided for @generateReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate constituency report'**
+  String get generateReport;
+
+  /// No description provided for @couldNotGenerateReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t generate the report — please try again'**
+  String get couldNotGenerateReport;
 }
 
 class _AppLocalizationsDelegate

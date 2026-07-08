@@ -246,6 +246,20 @@ class _MpLoginFormState extends State<_MpLoginForm> {
           const SizedBox(height: 12),
           Text(_error!, style: const TextStyle(color: AppColors.vermilion, fontSize: 12.5)),
         ],
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () => context.go('/mp/first-time-setup'),
+              child: Text(l10n.mpFirstTimeSetupTitle, style: const TextStyle(fontSize: 12.5)),
+            ),
+            TextButton(
+              onPressed: () => context.go('/mp/forgot-credentials'),
+              child: Text(l10n.mpForgotCredentialsTitle, style: const TextStyle(fontSize: 12.5)),
+            ),
+          ],
+        ),
         const Spacer(),
         PrimaryButton(
           label: l10n.signIn,

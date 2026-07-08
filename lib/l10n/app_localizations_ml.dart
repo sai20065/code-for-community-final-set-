@@ -815,4 +815,11 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'സമർപ്പിക്കാൻ കഴിഞ്ഞില്ല — നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get generateReport => 'മണ്ഡല റിപ്പോർട്ട് സൃഷ്ടിക്കുക';
+
+  @override
+  String get couldNotGenerateReport =>
+      'റിപ്പോർട്ട് സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല — വീണ്ടും ശ്രമിക്കുക';
 }

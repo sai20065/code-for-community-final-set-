@@ -23,11 +23,33 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _logoController;
+  late final Animation<double> _logoScale;
+  late final Animation<double> _logoOpacity;
+
   @override
   void initState() {
     super.initState();
+    _logoController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _logoScale = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(parent: _logoController, curve: Curves.elasticOut),
+    );
+    _logoOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _logoController, curve: const Interval(0.0, 0.6)),
+    );
+    _logoController.forward();
     _route();
+  }
+
+  @override
+  void dispose() {
+    _logoController.dispose();
+    super.dispose();
   }
 
   Future<void> _route() async {
@@ -78,27 +100,39 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       backgroundColor: AppColors.indigo,
       body: Column(
         children: [
-          const Expanded(
+          Expanded(
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _SplashWaveform(),
-                  SizedBox(height: 16),
-                  Text(
-                    'Prajadhwani',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
+              child: AnimatedBuilder(
+                animation: _logoController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _logoOpacity.value,
+                    child: Transform.scale(
+                      scale: _logoScale.value,
+                      child: child,
                     ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Voice of the constituency',
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                ],
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/icon/logo.png', width: 120, height: 120),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Prajadhwani',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Voice of the People',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -120,37 +154,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               );
             },
           ),
-        ],
-      ),
-    );
-  }
-}
-
-/// The 4-bar waveform brand mark, used here at splash scale.
-class _SplashWaveform extends StatelessWidget {
-  const _SplashWaveform();
-
-  @override
-  Widget build(BuildContext context) {
-    const heights = [22.0, 40.0, 30.0, 46.0];
-    return SizedBox(
-      height: 56,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          for (final h in heights)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Container(
-                width: 10,
-                height: h,
-                decoration: BoxDecoration(
-                  color: AppColors.saffron,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-            ),
         ],
       ),
     );

@@ -808,4 +808,11 @@ class AppLocalizationsTe extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'సమర్పించడం సాధ్యం కాలేదు — దయచేసి మీ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి';
+
+  @override
+  String get generateReport => 'నియోజకవర్గ నివేదికను రూపొందించండి';
+
+  @override
+  String get couldNotGenerateReport =>
+      'నివేదికను రూపొందించలేకపోయాము — దయచేసి మళ్లీ ప్రయత్నించండి';
 }

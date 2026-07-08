@@ -807,4 +807,11 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'સબમિટ કરી શકાયું નથી — કૃપા કરી તમારું જોડાણ તપાસો અને ફરી પ્રયાસ કરો';
+
+  @override
+  String get generateReport => 'મતવિસ્તાર અહેવાલ બનાવો';
+
+  @override
+  String get couldNotGenerateReport =>
+      'અહેવાલ બનાવી શકાયો નથી — કૃપા કરી ફરી પ્રયાસ કરો';
 }

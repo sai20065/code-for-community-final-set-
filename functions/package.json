@@ -26,11 +26,13 @@
     "@turf/helpers": "^7.3.5",
     "firebase-admin": "^12.6.0",
     "firebase-functions": "^6.0.1",
+    "nodemailer": "^9.0.3",
     "pdfkit": "^0.19.1"
   },
   "devDependencies": {
     "@tmcw/togeojson": "^7.1.2",
     "@types/geojson": "^7946.0.16",
+    "@types/nodemailer": "^8.0.1",
     "@types/pdfkit": "^0.17.6",
     "@xmldom/xmldom": "^0.9.10",
     "ts-node": "^10.9.2",

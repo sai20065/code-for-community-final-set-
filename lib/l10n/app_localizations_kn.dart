@@ -813,4 +813,11 @@ class AppLocalizationsKn extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ';
+
+  @override
+  String get generateReport => 'ಕ್ಷೇತ್ರ ವರದಿ ರಚಿಸಿ';
+
+  @override
+  String get couldNotGenerateReport =>
+      'ವರದಿ ರಚಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ';
 }

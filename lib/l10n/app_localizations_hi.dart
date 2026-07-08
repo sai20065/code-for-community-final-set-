@@ -814,4 +814,11 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'सबमिट नहीं हो सका — कृपया अपना कनेक्शन जांचें और फिर से प्रयास करें';
+
+  @override
+  String get generateReport => 'निर्वाचन क्षेत्र रिपोर्ट बनाएं';
+
+  @override
+  String get couldNotGenerateReport =>
+      'रिपोर्ट नहीं बन सकी — कृपया फिर से प्रयास करें';
 }

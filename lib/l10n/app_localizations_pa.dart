@@ -810,4 +810,11 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'ਸਬਮਿਟ ਨਹੀਂ ਹੋ ਸਕਿਆ — ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
+
+  @override
+  String get generateReport => 'ਹਲਕਾ ਰਿਪੋਰਟ ਤਿਆਰ ਕਰੋ';
+
+  @override
+  String get couldNotGenerateReport =>
+      'ਰਿਪੋਰਟ ਤਿਆਰ ਨਹੀਂ ਹੋ ਸਕੀ — ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
 }

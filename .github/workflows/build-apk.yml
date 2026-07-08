@@ -115,9 +115,11 @@ jobs:
       # Generates Android launcher icons (mipmap-*/ic_launcher.png) from
       # assets/icon/logo.png — must run after the Android platform folder
       # exists (created above) and after pub get (flutter_launcher_icons is
-      # a dev dependency).
+      # a dev dependency). Uses the android-only config file since this
+      # runner has no ios/ folder (flutter_launcher_icons errors out if
+      # asked to touch a platform folder that doesn't exist).
       - name: Generate app icons
-        run: dart run flutter_launcher_icons
+        run: dart run flutter_launcher_icons -f flutter_launcher_icons-android.yaml
 
       # Flutter's generated build.gradle signs the release APK with the
       # `debug` signingConfig, which reads ~/.android/debug.keystore. CI would

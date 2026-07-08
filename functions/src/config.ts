@@ -1,3 +1,16 @@
+import {defineSecret} from "firebase-functions/params";
+
+/**
+ * Gmail SMTP credentials for sending MP credential-delivery emails (first-
+ * time setup + forgot-credentials, see functions/src/officials/). A
+ * dedicated Gmail account + App Password (not the account's normal login
+ * password) — set with:
+ *   firebase functions:secrets:set EMAIL_USER
+ *   firebase functions:secrets:set EMAIL_APP_PASSWORD
+ */
+export const emailUser = defineSecret("EMAIL_USER");
+export const emailAppPassword = defineSecret("EMAIL_APP_PASSWORD");
+
 /**
  * Every Gemini call (Aadhaar OCR, transcription, photo captioning,
  * classification, cluster summarization) runs via Vertex AI, authenticated

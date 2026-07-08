@@ -823,4 +823,11 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'சமர்ப்பிக்க முடியவில்லை — உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்';
+
+  @override
+  String get generateReport => 'தொகுதி அறிக்கையை உருவாக்கவும்';
+
+  @override
+  String get couldNotGenerateReport =>
+      'அறிக்கையை உருவாக்க முடியவில்லை — மீண்டும் முயற்சிக்கவும்';
 }

@@ -19,6 +19,7 @@ import '../features/official/tickets/ticket_management_screen.dart';
 import '../features/official/works/compare_proposals_screen.dart';
 import '../features/official/works/ranked_works_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
+import '../features/onboarding/mp_credentials_request_screen.dart';
 import '../features/onboarding/signin_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
@@ -52,6 +53,14 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/signin',
       builder: (context, state) => const SignInScreen(),
+    ),
+    GoRoute(
+      path: '/mp/first-time-setup',
+      builder: (context, state) => const MpCredentialsRequestScreen(isFirstTime: true),
+    ),
+    GoRoute(
+      path: '/mp/forgot-credentials',
+      builder: (context, state) => const MpCredentialsRequestScreen(isFirstTime: false),
     ),
     GoRoute(
       path: '/signup/basic-info',

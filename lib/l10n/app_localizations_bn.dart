@@ -810,4 +810,11 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'জমা দেওয়া যায়নি — অনুগ্রহ করে আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন';
+
+  @override
+  String get generateReport => 'নির্বাচনী এলাকার প্রতিবেদন তৈরি করুন';
+
+  @override
+  String get couldNotGenerateReport =>
+      'প্রতিবেদন তৈরি করা যায়নি — অনুগ্রহ করে আবার চেষ্টা করুন';
 }

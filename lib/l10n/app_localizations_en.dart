@@ -802,4 +802,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'Couldn\'t submit — please check your connection and try again';
+
+  @override
+  String get generateReport => 'Generate constituency report';
+
+  @override
+  String get couldNotGenerateReport =>
+      'Couldn\'t generate the report — please try again';
 }

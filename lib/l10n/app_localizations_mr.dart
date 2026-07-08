@@ -808,4 +808,11 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get couldNotSubmitTryAgain =>
       'सबमिट करता आले नाही — कृपया तुमचे कनेक्शन तपासा आणि पुन्हा प्रयत्न करा';
+
+  @override
+  String get generateReport => 'मतदारसंघ अहवाल तयार करा';
+
+  @override
+  String get couldNotGenerateReport =>
+      'अहवाल तयार करता आला नाही — कृपया पुन्हा प्रयत्न करा';
 }

@@ -25,12 +25,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Regenerates web/icons/*, web/favicon.png, and web/manifest.json's
-      # icon entries from assets/icon/logo.png, so the deployed web app
-      # matches the same source icon as Android/iOS.
-      - name: Generate app icons
-        run: dart run flutter_launcher_icons
-
       - name: Build web release
         run: flutter build web --release
 

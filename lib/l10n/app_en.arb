@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
 
-  "appTagline": "Voice of the constituency",
+  "appTagline": "Voice of the People",
 
   "tabCitizen": "Citizen",
   "tabMpOffice": "MP office",
@@ -288,5 +288,17 @@
   "noMpAssignedYet": "MP details aren't available for your area yet",
   "couldNotSubmitTryAgain": "Couldn't submit — please check your connection and try again",
   "generateReport": "Generate constituency report",
-  "couldNotGenerateReport": "Couldn't generate the report — please try again"
+  "couldNotGenerateReport": "Couldn't generate the report — please try again",
+  "somethingWentWrong": "Something went wrong — please try again",
+  "mpFirstTimeSetupTitle": "First-time MP setup",
+  "mpForgotCredentialsTitle": "Forgot credentials",
+  "mpFirstTimeSetupHint": "Enter the unique identification number issued to your constituency and your email address — we'll send your login credentials to that email.",
+  "mpForgotCredentialsHint": "Enter your constituency's unique identification number and the email you registered — we'll send your login credentials to that email.",
+  "mpUniqueId": "Unique identification number",
+  "emailAddress": "Email address",
+  "sendMyCredentials": "Send my credentials",
+  "credentialsSentTo": "Credentials sent to {email}",
+  "@credentialsSentTo": { "placeholders": { "email": { "type": "String" } } },
+  "checkYourInbox": "Check your inbox (and spam folder) for your login ID and password.",
+  "backToSignIn": "Back to sign in"
 }

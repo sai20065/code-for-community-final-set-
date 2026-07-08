@@ -106,6 +106,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // MP unique-ID + registered-email pairs used by the first-time-setup
+    // and forgot-credentials flows (see functions/src/officials/) — never
+    // readable by ANY client, including the MP themselves. The whole point
+    // of `uniqueId` is that it's a shared secret the Cloud Functions verify
+    // server-side (via Admin SDK, which bypasses these rules entirely);
+    // exposing it through a client read would defeat that.
+    match /mpCredentials/{constituencyId} {
+      allow read, write: if false;
+    }
+
     // Per-constituency-per-day sequence counters backing the structured
     // token id (see FirestoreService.generateTokenId) — incremented
     // directly by the citizen's own client via a transaction at ticket
