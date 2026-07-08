@@ -117,7 +117,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTagline.
   ///
   /// In en, this message translates to:
-  /// **'Voice of the constituency'**
+  /// **'Voice of the People'**
   String get appTagline;
 
   /// No description provided for @tabCitizen.
@@ -1493,6 +1493,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t generate the report — please try again'**
   String get couldNotGenerateReport;
+
+  /// No description provided for @somethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong — please try again'**
+  String get somethingWentWrong;
+
+  /// No description provided for @mpFirstTimeSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First-time MP setup'**
+  String get mpFirstTimeSetupTitle;
+
+  /// No description provided for @mpForgotCredentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot credentials'**
+  String get mpForgotCredentialsTitle;
+
+  /// No description provided for @mpFirstTimeSetupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the unique identification number issued to your constituency and your email address — we\'ll send your login credentials to that email.'**
+  String get mpFirstTimeSetupHint;
+
+  /// No description provided for @mpForgotCredentialsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your constituency\'s unique identification number and the email you registered — we\'ll send your login credentials to that email.'**
+  String get mpForgotCredentialsHint;
+
+  /// No description provided for @mpUniqueId.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique identification number'**
+  String get mpUniqueId;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address'**
+  String get emailAddress;
+
+  /// No description provided for @sendMyCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Send my credentials'**
+  String get sendMyCredentials;
+
+  /// No description provided for @credentialsSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Credentials sent to {email}'**
+  String credentialsSentTo(String email);
+
+  /// No description provided for @checkYourInbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your inbox (and spam folder) for your login ID and password.'**
+  String get checkYourInbox;
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get backToSignIn;
 }
 
 class _AppLocalizationsDelegate

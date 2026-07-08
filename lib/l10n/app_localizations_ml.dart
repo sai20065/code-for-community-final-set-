@@ -9,7 +9,7 @@ class AppLocalizationsMl extends AppLocalizations {
   AppLocalizationsMl([String locale = 'ml']) : super(locale);
 
   @override
-  String get appTagline => 'മണ്ഡലത്തിന്റെ ശബ്ദം';
+  String get appTagline => 'ജനങ്ങളുടെ ശബ്ദം';
 
   @override
   String get tabCitizen => 'പൗരൻ';
@@ -822,4 +822,43 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'റിപ്പോർട്ട് സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല — വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get somethingWentWrong =>
+      'എന്തോ കുഴപ്പം സംഭവിച്ചു — ദയവായി വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'ആദ്യമായി എംപി സെറ്റപ്പ്';
+
+  @override
+  String get mpForgotCredentialsTitle => 'ക്രെഡൻഷ്യലുകൾ മറന്നോ';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'നിങ്ങളുടെ മണ്ഡലത്തിന് നൽകിയ അതുല്യ തിരിച്ചറിയൽ നമ്പറും നിങ്ങളുടെ ഇമെയിൽ വിലാസവും നൽകുക — ഞങ്ങൾ നിങ്ങളുടെ ലോഗിൻ ക്രെഡൻഷ്യലുകൾ ആ ഇമെയിലിലേക്ക് അയയ്ക്കും.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'നിങ്ങളുടെ മണ്ഡലത്തിന്റെ അതുല്യ തിരിച്ചറിയൽ നമ്പറും നിങ്ങൾ രജിസ്റ്റർ ചെയ്ത ഇമെയിലും നൽകുക — ഞങ്ങൾ നിങ്ങളുടെ ലോഗിൻ ക്രെഡൻഷ്യലുകൾ ആ ഇമെയിലിലേക്ക് അയയ്ക്കും.';
+
+  @override
+  String get mpUniqueId => 'അതുല്യ തിരിച്ചറിയൽ നമ്പർ';
+
+  @override
+  String get emailAddress => 'ഇമെയിൽ വിലാസം';
+
+  @override
+  String get sendMyCredentials => 'എന്റെ ക്രെഡൻഷ്യലുകൾ അയയ്ക്കുക';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'ക്രെഡൻഷ്യലുകൾ $email ലേക്ക് അയച്ചു';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'നിങ്ങളുടെ ലോഗിൻ ഐഡിക്കും പാസ്‌വേഡിനും വേണ്ടി ഇൻബോക്സ് (സ്പാം ഫോൾഡറും) പരിശോധിക്കുക.';
+
+  @override
+  String get backToSignIn => 'സൈൻ ഇന്നിലേക്ക് മടങ്ങുക';
 }

@@ -9,7 +9,7 @@ class AppLocalizationsMr extends AppLocalizations {
   AppLocalizationsMr([String locale = 'mr']) : super(locale);
 
   @override
-  String get appTagline => 'मतदारसंघाचा आवाज';
+  String get appTagline => 'जनतेचा आवाज';
 
   @override
   String get tabCitizen => 'नागरिक';
@@ -815,4 +815,43 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'अहवाल तयार करता आला नाही — कृपया पुन्हा प्रयत्न करा';
+
+  @override
+  String get somethingWentWrong =>
+      'काहीतरी चूक झाली — कृपया पुन्हा प्रयत्न करा';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'पहिल्यांदा खासदार सेटअप';
+
+  @override
+  String get mpForgotCredentialsTitle => 'क्रेडेन्शियल्स विसरलात';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'तुमच्या मतदारसंघाला दिलेला विशिष्ट ओळख क्रमांक आणि तुमचा ईमेल पत्ता प्रविष्ट करा — आम्ही तुमचे लॉगिन क्रेडेन्शियल्स त्या ईमेलवर पाठवू.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'तुमच्या मतदारसंघाचा विशिष्ट ओळख क्रमांक आणि तुम्ही नोंदणी केलेला ईमेल प्रविष्ट करा — आम्ही तुमचे लॉगिन क्रेडेन्शियल्स त्या ईमेलवर पाठवू.';
+
+  @override
+  String get mpUniqueId => 'विशिष्ट ओळख क्रमांक';
+
+  @override
+  String get emailAddress => 'ईमेल पत्ता';
+
+  @override
+  String get sendMyCredentials => 'माझे क्रेडेन्शियल्स पाठवा';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'क्रेडेन्शियल्स $email वर पाठवले';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'तुमच्या लॉगिन आयडी आणि पासवर्डसाठी तुमचा इनबॉक्स (आणि स्पॅम फोल्डर) तपासा.';
+
+  @override
+  String get backToSignIn => 'साइन इनवर परत जा';
 }

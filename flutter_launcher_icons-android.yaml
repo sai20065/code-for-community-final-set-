@@ -3,3 +3,14 @@ flutter_launcher_icons:
   ios: false
   image_path: "assets/icon/logo.png"
   min_sdk_android: 21
+  # Without these, flutter_launcher_icons only replaces the legacy
+  # mipmap-*/ic_launcher.png files — it leaves flutter create's default
+  # mipmap-anydpi-v26/ic_launcher.xml (adaptive icon) completely untouched.
+  # Android 8.0+ always prefers that adaptive-icon descriptor over the
+  # legacy PNGs when both exist, so without this the launcher kept showing
+  # the default Flutter mascot icon no matter what logo.png was set to.
+  # logo_foreground.png is the same artwork shrunk to ~68% and centered on
+  # a transparent canvas, inside Android's adaptive-icon safe zone (the
+  # system crops/masks the outer ~34% of a raw edge-to-edge foreground).
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/logo_foreground.png"

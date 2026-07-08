@@ -9,7 +9,7 @@ class AppLocalizationsKn extends AppLocalizations {
   AppLocalizationsKn([String locale = 'kn']) : super(locale);
 
   @override
-  String get appTagline => 'ಕ್ಷೇತ್ರದ ಧ್ವನಿ';
+  String get appTagline => 'ಜನರ ಧ್ವನಿ';
 
   @override
   String get tabCitizen => 'ನಾಗರಿಕ';
@@ -820,4 +820,42 @@ class AppLocalizationsKn extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'ವರದಿ ರಚಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ';
+
+  @override
+  String get somethingWentWrong => 'ಏನೋ ತಪ್ಪಾಗಿದೆ — ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'ಮೊದಲ ಬಾರಿಗೆ ಸಂಸದರ ಸೆಟಪ್';
+
+  @override
+  String get mpForgotCredentialsTitle => 'ರುಜುವಾತುಗಳನ್ನು ಮರೆತಿದ್ದೀರಾ';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'ನಿಮ್ಮ ಕ್ಷೇತ್ರಕ್ಕೆ ನೀಡಲಾದ ವಿಶಿಷ್ಟ ಗುರುತಿನ ಸಂಖ್ಯೆ ಮತ್ತು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ — ನಾವು ನಿಮ್ಮ ಲಾಗಿನ್ ರುಜುವಾತುಗಳನ್ನು ಆ ಇಮೇಲ್‌ಗೆ ಕಳುಹಿಸುತ್ತೇವೆ.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'ನಿಮ್ಮ ಕ್ಷೇತ್ರದ ವಿಶಿಷ್ಟ ಗುರುತಿನ ಸಂಖ್ಯೆ ಮತ್ತು ನೀವು ನೋಂದಾಯಿಸಿದ ಇಮೇಲ್ ಅನ್ನು ನಮೂದಿಸಿ — ನಾವು ನಿಮ್ಮ ಲಾಗಿನ್ ರುಜುವಾತುಗಳನ್ನು ಆ ಇಮೇಲ್‌ಗೆ ಕಳುಹಿಸುತ್ತೇವೆ.';
+
+  @override
+  String get mpUniqueId => 'ವಿಶಿಷ್ಟ ಗುರುತಿನ ಸಂಖ್ಯೆ';
+
+  @override
+  String get emailAddress => 'ಇಮೇಲ್ ವಿಳಾಸ';
+
+  @override
+  String get sendMyCredentials => 'ನನ್ನ ರುಜುವಾತುಗಳನ್ನು ಕಳುಹಿಸಿ';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'ರುಜುವಾತುಗಳನ್ನು $email ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'ನಿಮ್ಮ ಲಾಗಿನ್ ಐಡಿ ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್‌ಗಾಗಿ ನಿಮ್ಮ ಇನ್‌ಬಾಕ್ಸ್ (ಮತ್ತು ಸ್ಪ್ಯಾಮ್ ಫೋಲ್ಡರ್) ಪರಿಶೀಲಿಸಿ.';
+
+  @override
+  String get backToSignIn => 'ಸೈನ್ ಇನ್‌ಗೆ ಹಿಂತಿರುಗಿ';
 }

@@ -64,6 +64,7 @@ flutter:
     - assets/lottie/
     - assets/images/
     - assets/icon/
+    - assets/sounds/
 
 # Icon generation uses two separate config files (flutter_launcher_icons-
 # android.yaml, flutter_launcher_icons-web.yaml), NOT this shared section

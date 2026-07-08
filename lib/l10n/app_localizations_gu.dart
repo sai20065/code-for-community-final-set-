@@ -9,7 +9,7 @@ class AppLocalizationsGu extends AppLocalizations {
   AppLocalizationsGu([String locale = 'gu']) : super(locale);
 
   @override
-  String get appTagline => 'મતવિસ્તારનો અવાજ';
+  String get appTagline => 'લોકોનો અવાજ';
 
   @override
   String get tabCitizen => 'નાગરિક';
@@ -814,4 +814,42 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'અહેવાલ બનાવી શકાયો નથી — કૃપા કરી ફરી પ્રયાસ કરો';
+
+  @override
+  String get somethingWentWrong => 'કંઈક ખોટું થયું — કૃપા કરી ફરી પ્રયાસ કરો';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'પ્રથમ વખત સાંસદ સેટઅપ';
+
+  @override
+  String get mpForgotCredentialsTitle => 'ક્રેડેન્શિયલ ભૂલી ગયા';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'તમારા મતવિસ્તારને આપવામાં આવેલ અનન્ય ઓળખ નંબર અને તમારું ઈમેલ સરનામું દાખલ કરો — અમે તમારા લોગિન ક્રેડેન્શિયલ તે ઈમેલ પર મોકલીશું.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'તમારા મતવિસ્તારનો અનન્ય ઓળખ નંબર અને તમે નોંધાવેલ ઈમેલ દાખલ કરો — અમે તમારા લોગિન ક્રેડેન્શિયલ તે ઈમેલ પર મોકલીશું.';
+
+  @override
+  String get mpUniqueId => 'અનન્ય ઓળખ નંબર';
+
+  @override
+  String get emailAddress => 'ઈમેલ સરનામું';
+
+  @override
+  String get sendMyCredentials => 'મારા ક્રેડેન્શિયલ મોકલો';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'ક્રેડેન્શિયલ $email પર મોકલવામાં આવ્યા';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'તમારા લોગિન આઈડી અને પાસવર્ડ માટે તમારું ઇનબોક્સ (અને સ્પામ ફોલ્ડર) તપાસો.';
+
+  @override
+  String get backToSignIn => 'સાઇન ઇન પર પાછા જાઓ';
 }

@@ -9,7 +9,7 @@ class AppLocalizationsPa extends AppLocalizations {
   AppLocalizationsPa([String locale = 'pa']) : super(locale);
 
   @override
-  String get appTagline => 'ਹਲਕੇ ਦੀ ਆਵਾਜ਼';
+  String get appTagline => 'ਲੋਕਾਂ ਦੀ ਆਵਾਜ਼';
 
   @override
   String get tabCitizen => 'ਨਾਗਰਿਕ';
@@ -817,4 +817,43 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'ਰਿਪੋਰਟ ਤਿਆਰ ਨਹੀਂ ਹੋ ਸਕੀ — ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
+
+  @override
+  String get somethingWentWrong =>
+      'ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ — ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'ਪਹਿਲੀ ਵਾਰ ਸੰਸਦ ਮੈਂਬਰ ਸੈੱਟਅੱਪ';
+
+  @override
+  String get mpForgotCredentialsTitle => 'ਕ੍ਰੈਡੈਂਸ਼ੀਅਲ ਭੁੱਲ ਗਏ';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'ਆਪਣੇ ਹਲਕੇ ਨੂੰ ਜਾਰੀ ਕੀਤਾ ਗਿਆ ਵਿਲੱਖਣ ਪਛਾਣ ਨੰਬਰ ਅਤੇ ਆਪਣਾ ਈਮੇਲ ਪਤਾ ਦਰਜ ਕਰੋ — ਅਸੀਂ ਤੁਹਾਡੇ ਲੌਗਇਨ ਕ੍ਰੈਡੈਂਸ਼ੀਅਲ ਉਸ ਈਮੇਲ \'ਤੇ ਭੇਜਾਂਗੇ।';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'ਆਪਣੇ ਹਲਕੇ ਦਾ ਵਿਲੱਖਣ ਪਛਾਣ ਨੰਬਰ ਅਤੇ ਤੁਹਾਡੇ ਦੁਆਰਾ ਰਜਿਸਟਰ ਕੀਤਾ ਈਮੇਲ ਦਰਜ ਕਰੋ — ਅਸੀਂ ਤੁਹਾਡੇ ਲੌਗਇਨ ਕ੍ਰੈਡੈਂਸ਼ੀਅਲ ਉਸ ਈਮੇਲ \'ਤੇ ਭੇਜਾਂਗੇ।';
+
+  @override
+  String get mpUniqueId => 'ਵਿਲੱਖਣ ਪਛਾਣ ਨੰਬਰ';
+
+  @override
+  String get emailAddress => 'ਈਮੇਲ ਪਤਾ';
+
+  @override
+  String get sendMyCredentials => 'ਮੇਰੇ ਕ੍ਰੈਡੈਂਸ਼ੀਅਲ ਭੇਜੋ';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'ਕ੍ਰੈਡੈਂਸ਼ੀਅਲ $email \'ਤੇ ਭੇਜੇ ਗਏ';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'ਆਪਣੇ ਲੌਗਇਨ ਆਈਡੀ ਅਤੇ ਪਾਸਵਰਡ ਲਈ ਆਪਣਾ ਇਨਬਾਕਸ (ਅਤੇ ਸਪੈਮ ਫੋਲਡਰ) ਜਾਂਚੋ।';
+
+  @override
+  String get backToSignIn => 'ਸਾਈਨ ਇਨ \'ਤੇ ਵਾਪਸ ਜਾਓ';
 }

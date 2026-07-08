@@ -9,7 +9,7 @@ class AppLocalizationsTe extends AppLocalizations {
   AppLocalizationsTe([String locale = 'te']) : super(locale);
 
   @override
-  String get appTagline => 'నియోజకవర్గ ప్రజల గళం';
+  String get appTagline => 'ప్రజల గళం';
 
   @override
   String get tabCitizen => 'పౌరుడు';
@@ -815,4 +815,43 @@ class AppLocalizationsTe extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'నివేదికను రూపొందించలేకపోయాము — దయచేసి మళ్లీ ప్రయత్నించండి';
+
+  @override
+  String get somethingWentWrong =>
+      'ఏదో తప్పు జరిగింది — దయచేసి మళ్లీ ప్రయత్నించండి';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'మొదటిసారి ఎంపీ సెటప్';
+
+  @override
+  String get mpForgotCredentialsTitle => 'ఆధారాలు మర్చిపోయారా';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'మీ నియోజకవర్గానికి జారీ చేసిన ప్రత్యేక గుర్తింపు సంఖ్య మరియు మీ ఇమెయిల్ చిరునామాను నమోదు చేయండి — మేము మీ లాగిన్ ఆధారాలను ఆ ఇమెయిల్‌కు పంపుతాము.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'మీ నియోజకవర్గం యొక్క ప్రత్యేక గుర్తింపు సంఖ్య మరియు మీరు నమోదు చేసిన ఇమెయిల్‌ను నమోదు చేయండి — మేము మీ లాగిన్ ఆధారాలను ఆ ఇమెయిల్‌కు పంపుతాము.';
+
+  @override
+  String get mpUniqueId => 'ప్రత్యేక గుర్తింపు సంఖ్య';
+
+  @override
+  String get emailAddress => 'ఇమెయిల్ చిరునామా';
+
+  @override
+  String get sendMyCredentials => 'నా ఆధారాలను పంపండి';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'ఆధారాలు $emailకు పంపబడ్డాయి';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'మీ లాగిన్ ఐడీ మరియు పాస్‌వర్డ్ కోసం మీ ఇన్‌బాక్స్ (మరియు స్పామ్ ఫోల్డర్) తనిఖీ చేయండి.';
+
+  @override
+  String get backToSignIn => 'సైన్ ఇన్‌కు తిరిగి వెళ్లండి';
 }

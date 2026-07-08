@@ -9,7 +9,7 @@ class AppLocalizationsTa extends AppLocalizations {
   AppLocalizationsTa([String locale = 'ta']) : super(locale);
 
   @override
-  String get appTagline => 'தொகுதி மக்களின் குரல்';
+  String get appTagline => 'மக்களின் குரல்';
 
   @override
   String get tabCitizen => 'குடிமகன்';
@@ -830,4 +830,42 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'அறிக்கையை உருவாக்க முடியவில்லை — மீண்டும் முயற்சிக்கவும்';
+
+  @override
+  String get somethingWentWrong => 'ஏதோ தவறு நடந்தது — மீண்டும் முயற்சிக்கவும்';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'முதல் முறை எம்.பி அமைப்பு';
+
+  @override
+  String get mpForgotCredentialsTitle => 'சான்றுகளை மறந்துவிட்டீர்களா';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'உங்கள் தொகுதிக்கு வழங்கப்பட்ட தனித்துவ அடையாள எண் மற்றும் உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும் — உங்கள் உள்நுழைவு சான்றுகளை அந்த மின்னஞ்சலுக்கு அனுப்புவோம்.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'உங்கள் தொகுதியின் தனித்துவ அடையாள எண் மற்றும் நீங்கள் பதிவு செய்த மின்னஞ்சலை உள்ளிடவும் — உங்கள் உள்நுழைவு சான்றுகளை அந்த மின்னஞ்சலுக்கு அனுப்புவோம்.';
+
+  @override
+  String get mpUniqueId => 'தனித்துவ அடையாள எண்';
+
+  @override
+  String get emailAddress => 'மின்னஞ்சல் முகவரி';
+
+  @override
+  String get sendMyCredentials => 'எனது சான்றுகளை அனுப்பவும்';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'சான்றுகள் $email க்கு அனுப்பப்பட்டன';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'உங்கள் உள்நுழைவு ஐடி மற்றும் கடவுச்சொல்லுக்கு உங்கள் இன்பாக்ஸை (மற்றும் ஸ்பேம் கோப்புறையை) சரிபார்க்கவும்.';
+
+  @override
+  String get backToSignIn => 'உள்நுழைவுக்குத் திரும்பு';
 }

@@ -9,7 +9,7 @@ class AppLocalizationsBn extends AppLocalizations {
   AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
-  String get appTagline => 'নির্বাচনী এলাকার কণ্ঠস্বর';
+  String get appTagline => 'জনগণের কণ্ঠস্বর';
 
   @override
   String get tabCitizen => 'নাগরিক';
@@ -817,4 +817,43 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'প্রতিবেদন তৈরি করা যায়নি — অনুগ্রহ করে আবার চেষ্টা করুন';
+
+  @override
+  String get somethingWentWrong =>
+      'কিছু ভুল হয়েছে — অনুগ্রহ করে আবার চেষ্টা করুন';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'প্রথমবার সাংসদ সেটআপ';
+
+  @override
+  String get mpForgotCredentialsTitle => 'পরিচয়পত্র ভুলে গেছেন';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'আপনার নির্বাচনী এলাকায় প্রদত্ত অনন্য শনাক্তকরণ নম্বর এবং আপনার ইমেল ঠিকানা লিখুন — আমরা আপনার লগইন পরিচয়পত্র সেই ইমেলে পাঠাব।';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'আপনার নির্বাচনী এলাকার অনন্য শনাক্তকরণ নম্বর এবং আপনি নিবন্ধিত ইমেল লিখুন — আমরা আপনার লগইন পরিচয়পত্র সেই ইমেলে পাঠাব।';
+
+  @override
+  String get mpUniqueId => 'অনন্য শনাক্তকরণ নম্বর';
+
+  @override
+  String get emailAddress => 'ইমেল ঠিকানা';
+
+  @override
+  String get sendMyCredentials => 'আমার পরিচয়পত্র পাঠান';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'পরিচয়পত্র $email এ পাঠানো হয়েছে';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'আপনার লগইন আইডি এবং পাসওয়ার্ডের জন্য আপনার ইনবক্স (এবং স্প্যাম ফোল্ডার) পরীক্ষা করুন।';
+
+  @override
+  String get backToSignIn => 'সাইন ইনে ফিরে যান';
 }

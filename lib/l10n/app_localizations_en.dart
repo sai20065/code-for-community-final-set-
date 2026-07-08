@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTagline => 'Voice of the constituency';
+  String get appTagline => 'Voice of the People';
 
   @override
   String get tabCitizen => 'Citizen';
@@ -809,4 +809,42 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'Couldn\'t generate the report — please try again';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong — please try again';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'First-time MP setup';
+
+  @override
+  String get mpForgotCredentialsTitle => 'Forgot credentials';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'Enter the unique identification number issued to your constituency and your email address — we\'ll send your login credentials to that email.';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'Enter your constituency\'s unique identification number and the email you registered — we\'ll send your login credentials to that email.';
+
+  @override
+  String get mpUniqueId => 'Unique identification number';
+
+  @override
+  String get emailAddress => 'Email address';
+
+  @override
+  String get sendMyCredentials => 'Send my credentials';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'Credentials sent to $email';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'Check your inbox (and spam folder) for your login ID and password.';
+
+  @override
+  String get backToSignIn => 'Back to sign in';
 }

@@ -9,7 +9,7 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appTagline => 'निर्वाचन क्षेत्र की आवाज़';
+  String get appTagline => 'जनता की आवाज़';
 
   @override
   String get tabCitizen => 'नागरिक';
@@ -821,4 +821,42 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get couldNotGenerateReport =>
       'रिपोर्ट नहीं बन सकी — कृपया फिर से प्रयास करें';
+
+  @override
+  String get somethingWentWrong => 'कुछ गलत हो गया — कृपया फिर से प्रयास करें';
+
+  @override
+  String get mpFirstTimeSetupTitle => 'पहली बार सांसद सेटअप';
+
+  @override
+  String get mpForgotCredentialsTitle => 'क्रेडेंशियल भूल गए';
+
+  @override
+  String get mpFirstTimeSetupHint =>
+      'अपने निर्वाचन क्षेत्र को जारी की गई विशिष्ट पहचान संख्या और अपना ईमेल पता दर्ज करें — हम आपके लॉगिन क्रेडेंशियल उस ईमेल पर भेज देंगे।';
+
+  @override
+  String get mpForgotCredentialsHint =>
+      'अपने निर्वाचन क्षेत्र की विशिष्ट पहचान संख्या और आपके द्वारा पंजीकृत ईमेल दर्ज करें — हम आपके लॉगिन क्रेडेंशियल उस ईमेल पर भेज देंगे।';
+
+  @override
+  String get mpUniqueId => 'विशिष्ट पहचान संख्या';
+
+  @override
+  String get emailAddress => 'ईमेल पता';
+
+  @override
+  String get sendMyCredentials => 'मेरे क्रेडेंशियल भेजें';
+
+  @override
+  String credentialsSentTo(String email) {
+    return 'क्रेडेंशियल $email पर भेजे गए';
+  }
+
+  @override
+  String get checkYourInbox =>
+      'अपने लॉगिन आईडी और पासवर्ड के लिए अपना इनबॉक्स (और स्पैम फ़ोल्डर) जांचें।';
+
+  @override
+  String get backToSignIn => 'साइन इन पर वापस जाएं';
 }
