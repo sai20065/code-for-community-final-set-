@@ -32,3 +32,4 @@ ios/Runner/GoogleService-Info.plist
 
 # Misc
 .DS_Store
+.claude/
