@@ -237,11 +237,29 @@ final _karnatakaFallbackBounds = LatLngBounds(
   const LatLng(18.5, 78.6),
 );
 
+/// The category chips across the top of the map, in the order they appear.
+/// Same ids as `kThemeLabels` so the chip, the marker and the report row all
+/// take their colour and icon from one place.
+const _kMapThemes = [
+  'roads',
+  'water',
+  'electricity',
+  'sanitation',
+  'health',
+  'education',
+  'skilling',
+];
+
 class _AreaMapState extends ConsumerState<_AreaMap> {
   final _mapController = MapController();
   String? _selectedBoothId;
   String? _fittedKey;
   bool _showBoothPins = true;
+
+  /// Null means "every category". Filtering narrows which clusters roll up
+  /// into each area, so both the polygon tint and the indicator count answer
+  /// the same question the chip asks.
+  String? _themeFilter;
 
   /// Frames the camera once per distinct target, so switching area in the
   /// picker re-frames but a rebuild from a stream tick does not yank the map
@@ -310,7 +328,11 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
             ? (taluksAsync.valueOrNull ?? const <TalukModel>[])
             : const <TalukModel>[];
         final booths = boothsAsync.valueOrNull ?? const <BoothModel>[];
-        final clusters = clustersAsync.valueOrNull ?? const <PublicClusterModel>[];
+        final allClusters =
+            clustersAsync.valueOrNull ?? const <PublicClusterModel>[];
+        final clusters = _themeFilter == null
+            ? allClusters
+            : allClusters.where((c) => c.theme == _themeFilter).toList();
 
         final areas = _buildAreas(wards: wards, taluks: taluks, clusters: clusters);
         final areasById = {for (final a in areas) a.id: a};
@@ -420,12 +442,27 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
               ],
             ),
             Positioned(
-              left: 12,
-              right: 12,
+              left: 0,
+              right: 0,
               top: 12,
-              child: _RepresentativesBanner(
-                constituency: constituency,
-                area: highlighted,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: _RepresentativesBanner(
+                      constituency: constituency,
+                      area: highlighted,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _ThemeFilterBar(
+                    selected: _themeFilter,
+                    counts: _clusterCountsByTheme(allClusters),
+                    onSelect: (theme) => setState(
+                      () => _themeFilter = _themeFilter == theme ? null : theme,
+                    ),
+                  ),
+                ],
               ),
             ),
             Positioned(
@@ -471,6 +508,18 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
       error: (_, __) =>
           Center(child: Text(AppLocalizations.of(context).couldNotLoadBooths)),
     );
+  }
+
+  /// Report totals per category, for the chip badges. Always computed from
+  /// the *unfiltered* clusters — a chip that showed zero the moment you
+  /// selected a different one would be useless for deciding what to look at
+  /// next.
+  Map<String, int> _clusterCountsByTheme(List<PublicClusterModel> clusters) {
+    final counts = <String, int>{};
+    for (final c in clusters) {
+      counts[c.theme] = (counts[c.theme] ?? 0) + c.submissionCount;
+    }
+    return counts;
   }
 
   /// Rolls ward/taluk geometry together with the clusters sitting inside it,
@@ -570,7 +619,12 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
   /// single number, and the ring colour is the same severity ramp as the
   /// polygon underneath it.
   Marker _areaIndicator(_MapArea area) {
-    final color = _severityColor(area.priority);
+    // Severity normally, but the selected category's own colour while a
+    // filter is on — so a filtered map reads as "this is the water map"
+    // rather than looking identical to the unfiltered one.
+    final color = _themeFilter == null
+        ? _severityColor(area.priority)
+        : categoryColor(_themeFilter!);
     final diameter = _indicatorDiameter(area.reportCount);
     return Marker(
       point: area.center,
@@ -727,6 +781,85 @@ class _RepRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Horizontally scrolling category chips across the top of the map.
+///
+/// Borrowed from Namma KASA's complaint map, where the category filter sits
+/// on the map itself rather than behind a menu — on a civic map the first
+/// question is almost always "show me the water problems", and making that
+/// one tap is worth the strip of screen it costs.
+class _ThemeFilterBar extends StatelessWidget {
+  const _ThemeFilterBar({
+    required this.selected,
+    required this.counts,
+    required this.onSelect,
+  });
+
+  final String? selected;
+  final Map<String, int> counts;
+  final void Function(String theme) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    // Categories with nothing filed are dropped rather than shown greyed:
+    // a chip that can only ever return an empty map is noise.
+    final visible = _kMapThemes.where((t) => (counts[t] ?? 0) > 0).toList();
+    if (visible.isEmpty) return const SizedBox.shrink();
+    return SizedBox(
+      height: 34,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        itemCount: visible.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 7),
+        itemBuilder: (context, i) {
+          final theme = visible[i];
+          final tint = categoryColor(theme);
+          final isSelected = selected == theme;
+          return Material(
+            color: isSelected ? tint : Colors.white.withValues(alpha: 0.94),
+            borderRadius: BorderRadius.circular(20),
+            elevation: 2,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => onSelect(theme),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(kThemeIcons[theme],
+                        size: 14, color: isSelected ? Colors.white : tint),
+                    const SizedBox(width: 6),
+                    Text(
+                      kThemeLabels[theme] ?? theme,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: isSelected ? Colors.white : AppColors.inkSoft,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${counts[theme]}',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                        color: isSelected
+                            ? Colors.white70
+                            : tint.withValues(alpha: 0.85),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
