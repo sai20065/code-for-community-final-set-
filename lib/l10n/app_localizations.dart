@@ -1565,6 +1565,600 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to sign in'**
   String get backToSignIn;
+
+  /// No description provided for @aadhaarErrorAuthUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.'**
+  String get aadhaarErrorAuthUnavailable;
+
+  /// No description provided for @aadhaarErrorNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session expired. Please try again, or type your details below.'**
+  String get aadhaarErrorNotSignedIn;
+
+  /// No description provided for @aadhaarErrorImageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'That photo is too large to process. Try a closer, smaller shot of the card.'**
+  String get aadhaarErrorImageTooLarge;
+
+  /// No description provided for @aadhaarErrorUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.'**
+  String get aadhaarErrorUnreadable;
+
+  /// No description provided for @aadhaarErrorModelBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Our reader is busy right now. Try again in a moment, or type your details below.'**
+  String get aadhaarErrorModelBusy;
+
+  /// No description provided for @aadhaarErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t reach the network. Check your connection and try again, or type your details below.'**
+  String get aadhaarErrorNetwork;
+
+  /// No description provided for @aadhaarErrorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong reading the card. You can type your details below instead.'**
+  String get aadhaarErrorUnknown;
+
+  /// No description provided for @aadhaarPartialExtracted.
+  ///
+  /// In en, this message translates to:
+  /// **'We read part of your card. Please check the details below and fill in anything missing.'**
+  String get aadhaarPartialExtracted;
+
+  /// No description provided for @aadhaarBackImageSkippedTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The back photo was too large, so we read the front only. Please check the address below.'**
+  String get aadhaarBackImageSkippedTooLarge;
+
+  /// No description provided for @mapLayerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.'**
+  String get mapLayerFailed;
+
+  /// No description provided for @mapRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get mapRetry;
+
+  /// No description provided for @hotspotsShownCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hotspots'**
+  String hotspotsShownCount(int count);
+
+  /// No description provided for @hotspotsOffMapCount.
+  ///
+  /// In en, this message translates to:
+  /// **'· {count} off-map'**
+  String hotspotsOffMapCount(int count);
+
+  /// No description provided for @hotspotClusterSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'HOTSPOT'**
+  String get hotspotClusterSheetTitle;
+
+  /// No description provided for @publicDashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public dashboard'**
+  String get publicDashboardTitle;
+
+  /// No description provided for @exploreYourArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore your area'**
+  String get exploreYourArea;
+
+  /// No description provided for @noSignInNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'No sign-in needed'**
+  String get noSignInNeeded;
+
+  /// No description provided for @chooseConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a constituency'**
+  String get chooseConstituency;
+
+  /// No description provided for @searchConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Search constituencies'**
+  String get searchConstituency;
+
+  /// No description provided for @noConstituenciesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No constituencies match that search.'**
+  String get noConstituenciesFound;
+
+  /// No description provided for @publicPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only anonymous ticket IDs and approximate locations are shown here. No names, addresses or contact details are ever published.'**
+  String get publicPrivacyNote;
+
+  /// No description provided for @trackedIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracked issues'**
+  String get trackedIssues;
+
+  /// No description provided for @totalReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Total reports'**
+  String get totalReports;
+
+  /// No description provided for @officialActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Official actions'**
+  String get officialActions;
+
+  /// No description provided for @officialActionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see these — they need your official sign-in.'**
+  String get officialActionsHint;
+
+  /// No description provided for @updateTicketStatuses.
+  ///
+  /// In en, this message translates to:
+  /// **'Update ticket statuses'**
+  String get updateTicketStatuses;
+
+  /// No description provided for @generateReportExplainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Generates an AI-written PDF briefing for your constituency: executive summary, recommended actions, and the top issues by priority with their Solution Card recommendations. Scoped to your own constituency and never shared publicly.'**
+  String get generateReportExplainer;
+
+  /// No description provided for @solutionCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Solution card'**
+  String get solutionCardTitle;
+
+  /// No description provided for @forCitizens.
+  ///
+  /// In en, this message translates to:
+  /// **'For citizens'**
+  String get forCitizens;
+
+  /// No description provided for @forDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'For the department'**
+  String get forDepartment;
+
+  /// No description provided for @routedToDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Routed to'**
+  String get routedToDepartment;
+
+  /// No description provided for @escalatesTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Escalates to'**
+  String get escalatesTo;
+
+  /// No description provided for @routingApproximate.
+  ///
+  /// In en, this message translates to:
+  /// **'No exact local body is mapped for this area yet, so this is a broader fallback.'**
+  String get routingApproximate;
+
+  /// No description provided for @estimatedCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated cost'**
+  String get estimatedCost;
+
+  /// No description provided for @costNotEstimated.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost not estimated'**
+  String get costNotEstimated;
+
+  /// No description provided for @householdsNotEstimated.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach not estimated'**
+  String get householdsNotEstimated;
+
+  /// No description provided for @expectedImpact.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected impact'**
+  String get expectedImpact;
+
+  /// No description provided for @problemStatement.
+  ///
+  /// In en, this message translates to:
+  /// **'Problem statement'**
+  String get problemStatement;
+
+  /// No description provided for @recommendedActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended actions'**
+  String get recommendedActions;
+
+  /// No description provided for @proposedInterventions.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposed interventions'**
+  String get proposedInterventions;
+
+  /// No description provided for @whatWeAreAskingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What is being asked for'**
+  String get whatWeAreAskingFor;
+
+  /// No description provided for @quickWin.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick win'**
+  String get quickWin;
+
+  /// No description provided for @prerequisites.
+  ///
+  /// In en, this message translates to:
+  /// **'Needed first'**
+  String get prerequisites;
+
+  /// No description provided for @dataGaps.
+  ///
+  /// In en, this message translates to:
+  /// **'What we could not determine'**
+  String get dataGaps;
+
+  /// No description provided for @sdgAlignment.
+  ///
+  /// In en, this message translates to:
+  /// **'UN Sustainable Development Goals'**
+  String get sdgAlignment;
+
+  /// No description provided for @evidenceFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence from citizen reports'**
+  String get evidenceFrom;
+
+  /// No description provided for @analysisPending.
+  ///
+  /// In en, this message translates to:
+  /// **'No analysis yet. An issue gets a full solution card once enough neighbours have reported it.'**
+  String get analysisPending;
+
+  /// No description provided for @analysisDegradedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Part of this analysis could not be completed automatically, so some sections are simplified.'**
+  String get analysisDegradedNote;
+
+  /// No description provided for @aiGeneratedDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-generated from citizen reports and typical municipal cost ranges. Verify against a site survey before acting or committing budget.'**
+  String get aiGeneratedDisclaimer;
+
+  /// No description provided for @viewSolutionCard.
+  ///
+  /// In en, this message translates to:
+  /// **'View solution card'**
+  String get viewSolutionCard;
+
+  /// No description provided for @shareSolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareSolution;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copiedToClipboard;
+
+  /// No description provided for @viewAgentTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent transcript'**
+  String get viewAgentTranscript;
+
+  /// No description provided for @agentTranscriptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How this was analysed'**
+  String get agentTranscriptTitle;
+
+  /// No description provided for @agentChainRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Four-agent analysis run'**
+  String get agentChainRun;
+
+  /// No description provided for @agentTrigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Triggered by'**
+  String get agentTrigger;
+
+  /// No description provided for @agentModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get agentModel;
+
+  /// No description provided for @agentTotalTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Total time'**
+  String get agentTotalTime;
+
+  /// No description provided for @agentRunAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Run at'**
+  String get agentRunAt;
+
+  /// No description provided for @agentRootCause.
+  ///
+  /// In en, this message translates to:
+  /// **'Root-cause agent'**
+  String get agentRootCause;
+
+  /// No description provided for @agentSolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Solution agent'**
+  String get agentSolution;
+
+  /// No description provided for @agentRouting.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing agent'**
+  String get agentRouting;
+
+  /// No description provided for @agentReportCompiler.
+  ///
+  /// In en, this message translates to:
+  /// **'Report compiler agent'**
+  String get agentReportCompiler;
+
+  /// No description provided for @agentOk.
+  ///
+  /// In en, this message translates to:
+  /// **'completed'**
+  String get agentOk;
+
+  /// No description provided for @agentUsedFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'fell back'**
+  String get agentUsedFallback;
+
+  /// No description provided for @agentSystemRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions given'**
+  String get agentSystemRole;
+
+  /// No description provided for @agentPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Input'**
+  String get agentPrompt;
+
+  /// No description provided for @agentResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Raw response'**
+  String get agentResponse;
+
+  /// No description provided for @agentError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get agentError;
+
+  /// No description provided for @agentFellBackNote.
+  ///
+  /// In en, this message translates to:
+  /// **'These agents did not complete and used a fallback: {agents}. Treat the affected sections as placeholders, not findings.'**
+  String agentFellBackNote(String agents);
+
+  /// No description provided for @agentAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} attempts'**
+  String agentAttempts(int count);
+
+  /// No description provided for @reportsFromResidents.
+  ///
+  /// In en, this message translates to:
+  /// **'{reports} reports from {residents} residents'**
+  String reportsFromResidents(int reports, int residents);
+
+  /// No description provided for @weeksRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{min}–{max} weeks'**
+  String weeksRange(int min, int max);
+
+  /// No description provided for @householdsAddressed.
+  ///
+  /// In en, this message translates to:
+  /// **'~{count} households'**
+  String householdsAddressed(int count);
+
+  /// No description provided for @yourCivicActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Your civic activity'**
+  String get yourCivicActivity;
+
+  /// No description provided for @activeWeeksStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Active weeks'**
+  String get activeWeeksStreak;
+
+  /// No description provided for @longestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest streak'**
+  String get longestStreak;
+
+  /// No description provided for @levelMaxReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Top level reached'**
+  String get levelMaxReached;
+
+  /// No description provided for @reportsToNextLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more to next level'**
+  String reportsToNextLevel(int count);
+
+  /// No description provided for @levelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}'**
+  String levelLabel(int level);
+
+  /// No description provided for @badgeFirstReport.
+  ///
+  /// In en, this message translates to:
+  /// **'First report'**
+  String get badgeFirstReport;
+
+  /// No description provided for @badgeWeekStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'2-week streak'**
+  String get badgeWeekStreak;
+
+  /// No description provided for @badgeMonthActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Month active'**
+  String get badgeMonthActive;
+
+  /// No description provided for @badgeMultiTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Multi-issue reporter'**
+  String get badgeMultiTheme;
+
+  /// No description provided for @badgeResolvedTen.
+  ///
+  /// In en, this message translates to:
+  /// **'10 resolved'**
+  String get badgeResolvedTen;
+
+  /// No description provided for @badgePhotoReporter.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo reporter'**
+  String get badgePhotoReporter;
+
+  /// No description provided for @badgeVoiceReporter.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice reporter'**
+  String get badgeVoiceReporter;
+
+  /// No description provided for @badgeLockedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'keep reporting to unlock'**
+  String get badgeLockedHint;
+
+  /// No description provided for @consistencyEmptyNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first report will start showing up here.'**
+  String get consistencyEmptyNudge;
+
+  /// No description provided for @contributionsInLast26Weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports in the last 26 weeks'**
+  String get contributionsInLast26Weeks;
+
+  /// No description provided for @seePublicDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'See your area\'s public dashboard'**
+  String get seePublicDashboard;
+
+  /// No description provided for @liveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get liveLabel;
+
+  /// No description provided for @reportsNearYouThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reports near you this week'**
+  String reportsNearYouThisWeek(int count);
+
+  /// No description provided for @beTheFirstThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to report this week'**
+  String get beTheFirstThisWeek;
+
+  /// No description provided for @topHotspots.
+  ///
+  /// In en, this message translates to:
+  /// **'Top hotspots'**
+  String get topHotspots;
+
+  /// No description provided for @latestSolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest solutions'**
+  String get latestSolutions;
+
+  /// No description provided for @noTrackedIssuesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No issues tracked yet for this area.'**
+  String get noTrackedIssuesYet;
+
+  /// No description provided for @reportsCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reports'**
+  String reportsCountShort(int count);
+
+  /// No description provided for @hasSolutionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Solution ready'**
+  String get hasSolutionLabel;
 }
 
 class _AppLocalizationsDelegate

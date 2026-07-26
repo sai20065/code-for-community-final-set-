@@ -72,20 +72,43 @@ service cloud.firestore {
     // carry per-constituency submission analytics, so — same as
     // `submissions` above — reads are scoped to the official who represents
     // that constituency, or a citizen whose own home constituency matches.
-    match /constituencies/{constituencyId} {
-      allow read: if isSignedIn();
+    // ---- PUBLIC PROJECTIONS ------------------------------------------
+    // Cloud-Function-written denormalisations containing ONLY the
+    // allowlisted safe fields in functions/src/public/projection.ts. The
+    // rules on `submissions` and `users` are deliberately NOT loosened to
+    // make the public dashboard work — nothing public reads them.
+    //
+    // That indirection is the whole privacy argument. If these rules were
+    // somehow wrong tomorrow, the worst case is exposing fields a Cloud
+    // Function deliberately copied here after review. There is no
+    // misconfiguration that turns "the dashboard is public" into "citizen
+    // home addresses are public", because the addresses were never written
+    // anywhere a public reader can reach. Run `npm run backfill:public --
+    // --audit` to verify what is actually in these collections.
+    match /publicTickets/{submissionId} {
+      allow read: if true;
       allow write: if false;
     }
+    match /publicClusters/{clusterId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Public MP-roster info — name, party, photo, boundary. No citizen
+    // content. Readable signed-OUT so the public dashboard works without an
+    // account, which is the point of it being public.
+    match /constituencies/{constituencyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    // Polling-booth catchment areas — name, lat/lng, aggregate counts,
+    // dominant theme, local context. Same character as `wards`/`taluks`
+    // below (a geographic reference/analytics unit, not citizen content: no
+    // uid, no submission text, no address), so it gets the same public
+    // read as those, which is also what lets the public map draw booth
+    // density dots without an account.
     match /booths/{boothId} {
-      // `constituencyId == null` covers LocationService.resolveHomeBooth's
-      // pincode scan during signup, which runs BEFORE the citizen's own
-      // constituencyId is resolved — that discovery read must stay open,
-      // same reasoning as the null-constituencyId escape hatch on
-      // `submissions.create` above.
-      allow read: if isSignedIn() &&
-        (isOfficialForConstituency(resource.data.constituencyId) ||
-         userDoc(request.auth.uid).constituencyId == null ||
-         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
+      allow read: if true;
       allow write: if false;
     }
     match /clusters/{clusterId} {
@@ -95,23 +118,25 @@ service cloud.firestore {
       allow write: if false;
     }
     // Bengaluru's 369 GBA municipal wards — each tagged with its parent
-    // Lok Sabha constituencyId (see seedWards.ts). Same scoped-read pattern
-    // as booths/clusters; a handful of wards have a null constituencyId
-    // (centroid fell outside all 543 boundaries) and are effectively
-    // unreadable by constituency-scoped rules until backfilled manually.
+    // Lok Sabha constituencyId (see seedWards.ts).
+    // Readable by anyone, including signed-out. These are published
+    // government boundary polygons — geometry, names and populations — with
+    // no citizen content whatsoever, and the public map needs them to draw
+    // anything at all. The alternative, copying megabytes of GeoJSON into
+    // each public cluster document, would be strictly worse for no privacy
+    // gain. (Note a handful of wards still carry a null constituencyId
+    // where their centroid fell outside all 543 boundaries.)
     match /wards/{wardId} {
-      allow read: if isSignedIn() &&
-        (isOfficialForConstituency(resource.data.constituencyId) ||
-         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
+      allow read: if true;
       allow write: if false;
     }
     // Karnataka's 227 taluks (KGIS/KSRSAC official data) — the
     // ward-equivalent fine-grained unit for every constituency outside
     // Bengaluru Urban. Same scoped-read pattern as wards.
+    // Same reasoning as `wards` above — published KGIS/KSRSAC boundary
+    // data, no citizen content, needed by the public map.
     match /taluks/{talukId} {
-      allow read: if isSignedIn() &&
-        (isOfficialForConstituency(resource.data.constituencyId) ||
-         userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
+      allow read: if true;
       allow write: if false;
     }
     // District boundaries — a coarser reference/display layer only (a
@@ -120,6 +145,41 @@ service cloud.firestore {
     // read, same as `constituencies`.
     match /districts/{districtId} {
       allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // AI-generated Solution Cards — the output of the four-agent civic
+    // intelligence chain (functions/src/agents/). World-readable, including
+    // signed-out, because the whole point of the public dashboard is
+    // accountability without an account.
+    //
+    // Safe to publish because the card is PII-free BY CONSTRUCTION, not by
+    // convention: the agents are only ever shown `tokenId` +
+    // AI-generated `publicSummary` per ticket (never a uid, raw citizen
+    // text, pincode or exact coordinate — see agents/context.ts), and every
+    // free-text field is regex-scrubbed again before it is written (see
+    // reportCompilerAgent.ts). The stored centroid is already snapped to a
+    // ~330m grid and omitted entirely below the k-anonymity floor.
+    match /solutionCards/{clusterId} {
+      allow read: if true;
+      allow write: if false;
+
+      // Transcripts are a different matter: they record each agent's raw
+      // prompt and reply, which quote the ticket summaries and the model's
+      // unfiltered reasoning. Officials only.
+      match /agentTranscripts/{runId} {
+        allow read: if isSignedIn() &&
+          userDoc(request.auth.uid).role == 'official';
+        allow write: if false;
+      }
+    }
+
+    // Published government department contacts and grievance portals used
+    // by the Routing agent. Public reference data — no citizen content —
+    // and the public dashboard needs it signed-out to say who a report was
+    // routed to.
+    match /departments/{departmentId} {
+      allow read: if true;
       allow write: if false;
     }
 

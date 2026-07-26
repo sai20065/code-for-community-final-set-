@@ -3,95 +3,71 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/providers/current_user_profile_provider.dart';
+import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
-import '../../../core/models/cluster_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 /// Section 5.4: bar chart (tickets by theme) + line chart (trend over
-/// time) — max 2 chart types visible at once. Bar chart reads live
-/// `clusters` data (populated by the Gemini pipeline); the weekly trend
-/// reads live per-day ticket counts. Scoped to the signed-in official's own
-/// constituency.
+/// time) — max 2 chart types visible at once.
+///
+/// Public: both charts are built entirely from `publicClusters` (theme
+/// totals and each cluster's `weeklyCounts`), never from a per-day scan of
+/// `submissions` — which the public dashboard can't read, and which the
+/// previous version of this screen queried fourteen times on every load.
 class ThemesOverviewScreen extends ConsumerWidget {
   const ThemesOverviewScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final profileAsync = ref.watch(currentUserProfileProvider);
+    final constituencyId = ref.watch(effectivePublicConstituencyProvider);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/public/dashboard'),
         ),
         title: Text(l10n.themesOverview),
       ),
       body: SafeArea(
-        child: profileAsync.when(
-          data: (profile) {
-            final constituencyId = profile?.constituencyId;
-            if (constituencyId == null) {
-              return Center(
+        child: constituencyId == null
+            ? Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Text(
-                    l10n.notLinkedConstituency,
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(l10n.chooseConstituency, textAlign: TextAlign.center),
                 ),
-              );
-            }
-            return _ThemesBody(constituencyId: constituencyId);
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
-        ),
+              )
+            : _ThemesBody(constituencyId: constituencyId),
       ),
     );
   }
 }
 
-class _ThemesBody extends ConsumerStatefulWidget {
+class _ThemesBody extends ConsumerWidget {
   const _ThemesBody({required this.constituencyId});
 
   final String constituencyId;
 
-  @override
-  ConsumerState<_ThemesBody> createState() => _ThemesBodyState();
-}
-
-class _ThemesBodyState extends ConsumerState<_ThemesBody> {
-  List<double>? _weeklyTrend;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadWeeklyTrend();
-  }
-
-  Future<void> _loadWeeklyTrend() async {
-    final service = ref.read(firestoreServiceProvider);
-    final now = DateTime.now();
-    final counts = <double>[];
-    for (var i = 6; i >= 0; i--) {
-      final dayStart = DateTime(now.year, now.month, now.day - i);
-      final dayEnd = dayStart.add(const Duration(days: 1));
-      final startCount =
-          await service.countSubmissionsSince(widget.constituencyId, dayStart);
-      final endCount =
-          await service.countSubmissionsSince(widget.constituencyId, dayEnd);
-      counts.add((startCount - endCount).toDouble().abs());
+  /// Sums each cluster's `weeklyCounts` into a single constituency-wide
+  /// series, last 8 ISO weeks. All the granularity this needs — and all the
+  /// granularity `publicClusters` publishes on purpose.
+  List<double> _weeklySeries(List clusters) {
+    final totals = <String, double>{};
+    for (final c in clusters) {
+      c.weeklyCounts.forEach((week, count) {
+        totals[week] = (totals[week] ?? 0) + count;
+      });
     }
-    if (mounted) setState(() => _weeklyTrend = counts);
+    final weeks = totals.keys.toList()..sort();
+    final recent = weeks.length <= 8 ? weeks : weeks.sublist(weeks.length - 8);
+    return [for (final w in recent) totals[w] ?? 0];
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final clustersAsync = ref.watch(_clustersProvider(widget.constituencyId));
+    final clustersAsync = ref.watch(publicClustersProvider(constituencyId));
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -165,40 +141,44 @@ class _ThemesBodyState extends ConsumerState<_ThemesBody> {
         const SizedBox(height: 12),
         SizedBox(
           height: 200,
-          child: _weeklyTrend == null
-              ? const Center(child: CircularProgressIndicator())
-              : LineChart(
-                  LineChartData(
-                    gridData: const FlGridData(show: false),
-                    titlesData: const FlTitlesData(show: false),
-                    borderData: FlBorderData(show: false),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: [
-                          for (var i = 0; i < _weeklyTrend!.length; i++)
-                            FlSpot(i.toDouble(), _weeklyTrend![i]),
-                        ],
-                        isCurved: true,
-                        color: AppColors.trustBlue,
-                        barWidth: 3,
-                        dotData: const FlDotData(show: false),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          color: AppColors.trustBlue.withValues(alpha: 0.1),
-                        ),
+          child: clustersAsync.when(
+            data: (clusters) {
+              final series = _weeklySeries(clusters);
+              if (series.isEmpty) {
+                return Center(
+                  child: Text(l10n.noClusteredTickets,
+                      style: const TextStyle(color: Colors.grey)),
+                );
+              }
+              return LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: false),
+                  titlesData: const FlTitlesData(show: false),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: [
+                        for (var i = 0; i < series.length; i++)
+                          FlSpot(i.toDouble(), series[i]),
+                      ],
+                      isCurved: true,
+                      color: AppColors.indigo,
+                      barWidth: 3,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppColors.indigo.withValues(alpha: 0.1),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (_, __) => Text(l10n.couldNotLoadThemes),
+          ),
         ),
       ],
     );
   }
 }
-
-final _clustersProvider =
-    StreamProvider.family<List<ClusterModel>, String>((ref, constituencyId) {
-  return ref
-      .watch(firestoreServiceProvider)
-      .watchClustersForConstituency(constituencyId);
-});

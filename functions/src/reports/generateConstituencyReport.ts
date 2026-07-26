@@ -61,11 +61,39 @@ export const generateConstituencyReport = onCall(
         .get(),
     ]);
 
-    const clusters = clustersSnap.docs.map((d) => d.data() as ClusterData);
+    const clusters = clustersSnap.docs.map(
+      (d) => ({...(d.data() as ClusterData), id: d.id}),
+    );
     const submissions = submissionsSnap.docs.map((d) => d.data());
     const resolvedCount = submissions.filter((s) => s.status === "resolved").length;
     const urgentClusters = clusters.filter((c) => (c.priorityScore ?? 0) >= URGENT_THRESHOLD);
     const topClusters = clusters.slice(0, 8);
+
+    // Pull the civic-intelligence Solution Cards for the issues in this
+    // report. Where one exists, the printed briefing can say what should be
+    // done, roughly what it costs and who owns it — rather than restating
+    // the problem back to the person already dealing with it.
+    const cardSnaps = await db.getAll(
+      ...topClusters.map((c) => db.collection("solutionCards").doc(c.id)),
+    );
+    const cardsByCluster = new Map<string, SolutionCardSummary>();
+    for (const snap of cardSnaps) {
+      if (!snap.exists) continue;
+      const card = snap.data() ?? {};
+      const top = card.solutions?.interventions?.[0];
+      cardsByCluster.set(snap.id, {
+        headline: card.headline ?? "",
+        interventionTitle: top?.title ?? null,
+        costBandLabel: top?.costBandInr?.label ?? null,
+        department: card.routing?.primary?.name ?? null,
+        sdgGoals: Array.isArray(card.sdg) ?
+          card.sdg.map((s: {goal: number}) => s.goal) :
+          [],
+        // Surfaced, not hidden: a card assembled from fallback outputs must
+        // not read with the same authority as one where every agent ran.
+        degraded: card.degraded === true,
+      });
+    }
 
     const gemini = new GeminiClient();
     let aiSummary = {
@@ -92,6 +120,7 @@ export const generateConstituencyReport = onCall(
       mpName,
       stats: {total: submissions.length, resolved: resolvedCount, urgent: urgentClusters.length},
       topClusters,
+      cardsByCluster,
       aiSummary,
     });
 
@@ -187,11 +216,22 @@ function statTile(
     .text(label.toUpperCase(), x, y + 40, {width, align: "center", characterSpacing: 0.5, lineBreak: false});
 }
 
+/** The parts of a Solution Card that earn space on a printed page. */
+interface SolutionCardSummary {
+  headline: string;
+  interventionTitle: string | null;
+  costBandLabel: string | null;
+  department: string | null;
+  sdgGoals: number[];
+  degraded: boolean;
+}
+
 function renderPdf(data: {
   constituencyName: string;
   mpName: string;
   stats: {total: number; resolved: number; urgent: number};
-  topClusters: ClusterData[];
+  topClusters: Array<ClusterData & {id: string}>;
+  cardsByCluster: Map<string, SolutionCardSummary>;
   aiSummary: {executiveSummary: string; keyRecommendations: string[]};
 }): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -267,10 +307,35 @@ function renderPdf(data: {
     y = sectionHeader(doc, y, "Top Issues by Priority", BRAND.vermilion);
     data.topClusters.forEach((c, i) => {
       const color = priorityColor(c.priorityScore);
+      const card = data.cardsByCluster.get(c.id);
       const titleText = `${i + 1}. [${c.theme}]  ${c.summaryText}`;
+
+      // Recommended-action line, present only when the agent chain has run
+      // for this cluster.
+      const actionText = card?.interventionTitle ?
+        `Recommended: ${card.interventionTitle}` +
+          (card.costBandLabel ? `  (${card.costBandLabel})` : "") :
+        null;
+      const routingText = card?.department ?
+        `Route to: ${card.department}` +
+          (card.sdgGoals.length ?
+            `   ·   SDG ${card.sdgGoals.join(", ")}` :
+            "") +
+          (card.degraded ? "   ·   partial analysis" : "") :
+        null;
+
       doc.font("Helvetica-Bold").fontSize(11);
       const titleHeight = doc.heightOfString(titleText, {width: contentWidth - 20});
-      const cardHeight = titleHeight + 34;
+      let extraHeight = 0;
+      if (actionText) {
+        doc.font("Helvetica-Bold").fontSize(9);
+        extraHeight += doc.heightOfString(actionText, {width: contentWidth - 28}) + 4;
+      }
+      if (routingText) {
+        doc.font("Helvetica").fontSize(8.5);
+        extraHeight += doc.heightOfString(routingText, {width: contentWidth - 28}) + 3;
+      }
+      const cardHeight = titleHeight + 34 + extraHeight;
       y = ensureSpace(doc, y, cardHeight + 10);
 
       doc.roundedRect(MARGIN, y, contentWidth, cardHeight, 4).fill(BRAND.paper);
@@ -289,8 +354,34 @@ function renderPdf(data: {
           MARGIN + 14 + priorityLabelWidth, metaY,
           {lineBreak: false},
         );
+
+      let detailY = metaY + 14;
+      if (actionText) {
+        doc.font("Helvetica-Bold").fontSize(9).fillColor(BRAND.saffronDeep)
+          .text(actionText, MARGIN + 14, detailY, {width: contentWidth - 28});
+        detailY += doc.heightOfString(actionText, {width: contentWidth - 28}) + 4;
+      }
+      if (routingText) {
+        doc.font("Helvetica").fontSize(8.5).fillColor(BRAND.indigo)
+          .text(routingText, MARGIN + 14, detailY, {width: contentWidth - 28});
+      }
+
       y += cardHeight + 10;
     });
+
+    // Cost figures on this page are model-generated order-of-magnitude
+    // estimates. Printing them without saying so would invite someone to
+    // treat them as a costing, which they are emphatically not.
+    if ([...data.cardsByCluster.values()].some((c) => c.interventionTitle)) {
+      y = ensureSpace(doc, y + 6, 30);
+      doc.font("Helvetica-Oblique").fontSize(8).fillColor(BRAND.inkFaint)
+        .text(
+          "Recommendations and cost bands are AI-generated estimates based on " +
+          "citizen reports and typical municipal cost ranges. Verify against a " +
+          "site survey before acting or committing budget.",
+          MARGIN, y, {width: contentWidth},
+        );
+    }
 
     doc.end();
   });

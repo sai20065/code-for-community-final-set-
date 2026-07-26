@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/providers/current_user_profile_provider.dart';
+import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
-import '../../../core/models/cluster_model.dart';
+import '../../../core/models/public_models.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
@@ -13,7 +13,7 @@ import '../../../shared/widgets/theme_icon_chip.dart';
 /// recommendation line that cites the specific numbers rather than a bare
 /// "we recommend X." The recommendation is generated client-side from the
 /// same demand/demographic/infra-gap fields shown in the ranked list — no
-/// separate black-box call.
+/// separate black-box call. Public: reads `publicClusters`.
 class CompareProposalsScreen extends ConsumerStatefulWidget {
   const CompareProposalsScreen({super.key});
 
@@ -28,28 +28,24 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final profileAsync = ref.watch(currentUserProfileProvider);
+    final constituencyId = ref.watch(effectivePublicConstituencyProvider);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/official/works'),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/public/works'),
         ),
         title: Text(l10n.compareProposals),
       ),
-      body: profileAsync.when(
-        data: (profile) {
-          final constituencyId = profile?.constituencyId;
-          if (constituencyId == null) {
-            return Center(
+      body: constituencyId == null
+          ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: Text(l10n.notLinkedConstituency,
-                    textAlign: TextAlign.center),
+                child: Text(l10n.chooseConstituency, textAlign: TextAlign.center),
               ),
-            );
-          }
-          final clustersAsync = ref.watch(_clustersProvider(constituencyId));
+            )
+          : Builder(builder: (context) {
+          final clustersAsync = ref.watch(publicClustersProvider(constituencyId));
           return clustersAsync.when(
             data: (clusters) {
               if (clusters.length < 2) {
@@ -111,18 +107,10 @@ class _CompareProposalsScreenState extends ConsumerState<CompareProposalsScreen>
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (_, __) => Center(child: Text(l10n.couldNotLoadProposals)),
           );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
-      ),
+        }),
     );
   }
 }
-
-final _clustersProvider =
-    StreamProvider.family<List<ClusterModel>, String>((ref, constituencyId) {
-  return ref.watch(firestoreServiceProvider).watchClustersForConstituency(constituencyId);
-});
 
 class _ProposalPicker extends StatelessWidget {
   const _ProposalPicker({
@@ -133,7 +121,7 @@ class _ProposalPicker extends StatelessWidget {
   });
 
   final String label;
-  final List<ClusterModel> clusters;
+  final List<PublicClusterModel> clusters;
   final String selectedId;
   final ValueChanged<String?> onChanged;
 
@@ -160,7 +148,7 @@ class _ProposalPicker extends StatelessWidget {
 class _ProposalCard extends StatelessWidget {
   const _ProposalCard({required this.cluster});
 
-  final ClusterModel cluster;
+  final PublicClusterModel cluster;
 
   @override
   Widget build(BuildContext context) {
@@ -245,13 +233,13 @@ class _StatRow extends StatelessWidget {
 class _TradeOffBrief extends StatelessWidget {
   const _TradeOffBrief({required this.left, required this.right});
 
-  final ClusterModel left;
-  final ClusterModel right;
+  final PublicClusterModel left;
+  final PublicClusterModel right;
 
-  double _total(ClusterModel c) =>
-      c.priorityScore ?? ((c.demandScore ?? 0) + (c.demographicScore ?? 0) + (c.infraGapScore ?? 0));
+  double _total(PublicClusterModel c) =>
+      c.priorityScore;
 
-  String _name(ClusterModel c) => c.title ?? kThemeLabels[c.theme] ?? c.theme;
+  String _name(PublicClusterModel c) => c.title ?? kThemeLabels[c.theme] ?? c.theme;
 
   @override
   Widget build(BuildContext context) {

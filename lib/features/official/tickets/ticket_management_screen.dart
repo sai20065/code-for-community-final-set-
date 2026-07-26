@@ -30,7 +30,7 @@ class TicketManagementScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/public/dashboard'),
         ),
         title: Text(l10n.problemReports),
       ),

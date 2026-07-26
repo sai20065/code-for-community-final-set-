@@ -86,7 +86,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (user != null) {
       final profile = await ref.read(firestoreServiceProvider).getUser(user.uid);
       if (profile?.role == UserRole.official) {
-        context.go('/official/dashboard');
+        context.go('/public/dashboard');
         return;
       }
       // `signupCompletedAt` on the Firestore profile is the authoritative

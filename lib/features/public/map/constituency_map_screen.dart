@@ -6,13 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../app/providers/current_user_profile_provider.dart';
+import '../../../app/providers/current_user_profile_provider.dart'
+    show constituencyProvider, firestoreServiceProvider;
+import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
-import '../../../core/models/cluster_model.dart';
+import '../../../core/models/public_models.dart';
 import '../../../core/models/taluk_model.dart';
 import '../../../core/models/ward_model.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/app_map_tiles.dart';
 import '../booth/booth_detail_sheet.dart';
 
 /// Extracts every polygon's outer ring (holes ignored — this is an outline
@@ -86,8 +89,9 @@ LatLng _ringCenter(List<LatLng> ring) {
 /// band (red = hotspot / amber = moderate / green = mostly resolved, from
 /// `BoothModel.densityLevel`, i.e. `openIssueCount`) rather than theme, so
 /// the map answers "where does this MP need to look first" at a glance.
-/// Every official only ever sees their OWN constituency here, scoped via
-/// `currentUserProfileProvider`. Tapping a booth highlights it and opens a
+/// Scoped to whichever constituency the public dashboard is currently
+/// showing (`effectivePublicConstituencyProvider`) — the same map every
+/// visitor sees, signed in or not. Tapping a booth highlights it and opens a
 /// callout panel (submission count, dominant theme, local context) via the
 /// shared `BoothDetailSheet`.
 Color _densityColor(String level) {
@@ -101,16 +105,23 @@ Color _densityColor(String level) {
   }
 }
 
-/// A flame-icon pin marking a ward/taluk whose worst tracked cluster has
-/// crossed the red-tier priority threshold — see `hotspotThreshold` in
-/// `_BoothMapState.build`. Badges the report count so the MP knows the
-/// scale, not just that "somewhere in here" is bad.
-Marker _hotspotMarker(LatLng point, int submissionCount) {
+/// A flame-icon pin marking a cluster that has crossed the red-tier
+/// priority threshold — see `hotspotThreshold` in `_BoothMapState.build`.
+/// Badges the report count so the MP knows the scale, not just that
+/// "somewhere in here" is bad. Tappable: a decorative marker on a map whose
+/// whole purpose is triage is a wasted affordance.
+Marker _hotspotMarker(
+  LatLng point,
+  int submissionCount, {
+  VoidCallback? onTap,
+}) {
   return Marker(
     point: point,
     width: 40,
     height: 40,
-    child: Stack(
+    child: GestureDetector(
+      onTap: onTap,
+      child: Stack(
       clipBehavior: Clip.none,
       children: [
         Container(
@@ -139,7 +150,8 @@ Marker _hotspotMarker(LatLng point, int submissionCount) {
               ),
             ),
           ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -154,41 +166,82 @@ Color _wardColorForPriority(double? priority) {
   if (priority >= 40) return AppColors.saffron;
   return AppColors.teal;
 }
+
+/// Where to plant a cluster's hotspot pin, in descending order of fidelity.
+///
+/// The old code only ever attempted step 3 — a ward or taluk polygon
+/// centroid — and required the cluster to carry a matching `wardId`. Since
+/// no seeded cluster had one, and clusters outside Bengaluru have no ward
+/// geometry at all, `hotspotMarkers` was **always empty**: a map built to
+/// show where the problems are, reliably showing none of them.
+///
+/// Returns null only when a cluster genuinely cannot be placed, which the
+/// caller surfaces as an "N off-map" count rather than hiding.
+LatLng? _hotspotPointFor(
+  PublicClusterModel cluster, {
+  required Map<String, WardModel> wardsById,
+  required Map<String, TalukModel> taluksById,
+  required Map<String, BoothModel> boothsById,
+}) {
+  // 1. Backend-maintained mean of the cluster's own tickets. The most
+  //    faithful answer, and the one the backfill guarantees for legacy data.
+  final centroid = cluster.centroid;
+  if (centroid != null) return LatLng(centroid.lat, centroid.lng);
+
+  // 2. The booth the cluster belongs to.
+  final booth = cluster.boothId == null ? null : boothsById[cluster.boothId!];
+  if (booth != null) return LatLng(booth.lat, booth.lng);
+
+  // 3. Ward, then taluk polygon centre.
+  final wardRings =
+      _extractRings(wardsById[cluster.wardId ?? '']?.boundaryGeoJson);
+  if (wardRings.isNotEmpty) return _ringCenter(wardRings.first);
+
+  final talukRings =
+      _extractRings(taluksById[cluster.talukId ?? '']?.boundaryGeoJson);
+  if (talukRings.isNotEmpty) return _ringCenter(talukRings.first);
+
+  return null;
+}
+/// Public since this was pivoted off `/official/map` — reads only
+/// `PublicClusterModel` (from `publicClusters`) plus the reference-data
+/// collections (`booths`/`wards`/`taluks`/`constituencies`), all readable
+/// signed-out. No `submissions`, no `users`, no auth-scoped query anywhere
+/// on this screen.
 class ConstituencyMapScreen extends ConsumerWidget {
   const ConstituencyMapScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileAsync = ref.watch(currentUserProfileProvider);
-
+    final constituencyId = ref.watch(effectivePublicConstituencyProvider);
     final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/public/dashboard'),
         ),
         title: Text(l10n.boothDemandMap),
       ),
-      body: profileAsync.when(
-        data: (profile) {
-          final constituencyId = profile?.constituencyId;
-          if (constituencyId == null) {
-            return Center(
+      body: constituencyId == null
+          ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: Text(
-                  l10n.notLinkedConstituency,
-                  textAlign: TextAlign.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(l10n.chooseConstituency, textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () => context.go('/public/constituency'),
+                      child: Text(l10n.chooseConstituency),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }
-          return _BoothMap(constituencyId: constituencyId);
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
-      ),
+            )
+          : _BoothMap(constituencyId: constituencyId),
     );
   }
 }
@@ -216,6 +269,17 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
   final _mapController = MapController();
   bool _hasFitBounds = false;
 
+  /// Opens a cluster's detail from its hotspot pin. Booth markers already
+  /// had this; hotspot pins — the markers flagging the *worst* problems on
+  /// the map — were purely decorative.
+  void _openClusterSheet(PublicClusterModel cluster) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _HotspotClusterSheet(cluster: cluster),
+    );
+  }
+
   void _fitBoundsOnce(LatLngBounds bounds) {
     if (_hasFitBounds) return;
     _hasFitBounds = true;
@@ -232,7 +296,31 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
     final wardsAsync = ref.watch(_wardsProvider(widget.constituencyId));
     final taluksAsync = ref.watch(_taluksProvider(widget.constituencyId));
     final boothsAsync = ref.watch(_boothsProvider(widget.constituencyId));
-    final clustersAsync = ref.watch(_clustersProvider(widget.constituencyId));
+    final clustersAsync = ref.watch(publicClustersProvider(widget.constituencyId));
+
+    final l10n = AppLocalizations.of(context);
+
+    // Every one of these four layers used to be read as
+    // `valueOrNull ?? const []`, which turned a permission-denied or a
+    // missing index into a perfectly normal-looking empty map. Surface the
+    // failure instead: an empty map and a broken map must not look alike.
+    final layers = [wardsAsync, taluksAsync, boothsAsync, clustersAsync];
+    final failed = layers.where((a) => a.hasError).toList();
+    if (failed.isNotEmpty) {
+      for (final layer in failed) {
+        debugPrint('Constituency map layer failed: ${layer.error}');
+      }
+      return _MapErrorState(
+        message: l10n.mapLayerFailed,
+        retryLabel: l10n.mapRetry,
+        onRetry: () {
+          ref.invalidate(_wardsProvider(widget.constituencyId));
+          ref.invalidate(_taluksProvider(widget.constituencyId));
+          ref.invalidate(_boothsProvider(widget.constituencyId));
+          ref.invalidate(publicClustersProvider(widget.constituencyId));
+        },
+      );
+    }
 
     return constituencyAsync.when(
       data: (constituency) {
@@ -245,50 +333,63 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
         final clusters = clustersAsync.valueOrNull ?? const [];
 
         // Highest priorityScore among a ward's/taluk's clusters — drives the
-        // fill color below, same red/amber/green language as booth markers.
-        // Submission counts are summed per unit too, purely to badge the
-        // hotspot flame markers below with "how many reports" at a glance.
+        // polygon fill colour below, same red/amber/green language as booth
+        // markers. Marker report counts come straight off each cluster now,
+        // so no per-unit count roll-up is needed here.
         final wardPriority = <String, double>{};
         final talukPriority = <String, double>{};
-        final wardSubmissionCount = <String, int>{};
-        final talukSubmissionCount = <String, int>{};
         for (final cluster in clusters) {
           final score = cluster.priorityScore;
-          final count = cluster.submissionCount;
           final wardId = cluster.wardId;
           if (wardId != null) {
-            wardSubmissionCount[wardId] = (wardSubmissionCount[wardId] ?? 0) + count;
-            if (score != null) {
-              final existing = wardPriority[wardId];
-              if (existing == null || score > existing) wardPriority[wardId] = score;
-            }
+            final existing = wardPriority[wardId];
+            if (existing == null || score > existing) wardPriority[wardId] = score;
           }
           final talukId = cluster.talukId;
           if (talukId != null) {
-            talukSubmissionCount[talukId] = (talukSubmissionCount[talukId] ?? 0) + count;
-            if (score != null) {
-              final existing = talukPriority[talukId];
-              if (existing == null || score > existing) talukPriority[talukId] = score;
-            }
+            final existing = talukPriority[talukId];
+            if (existing == null || score > existing) talukPriority[talukId] = score;
           }
         }
-        // Explicit hotspot markers (flame icon + report count) for any
-        // ward/taluk whose worst cluster crosses the same red-tier
-        // threshold as `_wardColorForPriority` — the polygon tint alone is
-        // easy to miss at a glance, especially before zooming in.
+        // Explicit hotspot markers (flame icon + report count) for every
+        // cluster crossing the same red-tier threshold as
+        // `_wardColorForPriority` — the polygon tint alone is easy to miss
+        // at a glance, especially before zooming in.
+        //
+        // Derived per *cluster*, via `_hotspotPointFor`'s fallback chain,
+        // rather than per ward/taluk polygon. The old polygon-only approach
+        // silently produced zero markers for any cluster without ward
+        // geometry, which was all of them outside Bengaluru.
         const hotspotThreshold = 70.0;
-        final hotspotMarkers = <Marker>[
-          ...wards.where((w) => (wardPriority[w.id] ?? 0) >= hotspotThreshold).expand((w) {
-            final rings = _extractRings(w.boundaryGeoJson);
-            if (rings.isEmpty) return const <Marker>[];
-            return [_hotspotMarker(_ringCenter(rings.first), wardSubmissionCount[w.id] ?? 0)];
-          }),
-          ...taluks.where((t) => (talukPriority[t.id] ?? 0) >= hotspotThreshold).expand((t) {
-            final rings = _extractRings(t.boundaryGeoJson);
-            if (rings.isEmpty) return const <Marker>[];
-            return [_hotspotMarker(_ringCenter(rings.first), talukSubmissionCount[t.id] ?? 0)];
-          }),
-        ];
+        final wardsById = {for (final w in wards) w.id: w};
+        final taluksById = {for (final t in taluks) t.id: t};
+        final boothsById = {for (final b in booths) b.id: b};
+
+        final hotspotClusters = clusters
+            .where((c) => c.priorityScore >= hotspotThreshold)
+            .toList();
+        final placed = <(PublicClusterModel, LatLng)>[];
+        var offMapCount = 0;
+        for (final cluster in hotspotClusters) {
+          final point = _hotspotPointFor(
+            cluster,
+            wardsById: wardsById,
+            taluksById: taluksById,
+            boothsById: boothsById,
+          );
+          if (point == null) {
+            offMapCount++;
+          } else {
+            placed.add((cluster, point));
+          }
+        }
+        final hotspotMarkers = placed
+            .map((entry) => _hotspotMarker(
+                  entry.$2,
+                  entry.$1.submissionCount,
+                  onTap: () => _openClusterSheet(entry.$1),
+                ))
+            .toList();
 
         final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
         final wardPolygons = wards.expand((ward) {
@@ -330,10 +431,11 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
               mapController: _mapController,
               options: MapOptions(initialCenter: bounds.center, initialZoom: 12),
               children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.prajadhvani.app',
-                ),
+                // Positron rather than Voyager here: this map paints
+                // coloured ward/taluk polygons and red hotspot markers on
+                // top, and a near-greyscale basemap keeps those readable
+                // instead of competing with them.
+                appBaseTileLayer(context, style: AppMapStyle.positron),
                 if (wardPolygons.isNotEmpty)
                   PolygonLayer(polygons: wardPolygons),
                 if (talukPolygons.isNotEmpty)
@@ -395,12 +497,25 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
                 ),
                 if (hotspotMarkers.isNotEmpty)
                   MarkerLayer(markers: hotspotMarkers),
+                appMapAttribution(),
               ],
             ),
             const Positioned(
               left: 16,
               bottom: 16,
               child: _Legend(),
+            ),
+            // Makes the hotspot layer's state legible. Without this, "no
+            // hotspots" and "the hotspot layer is broken" render
+            // identically — which is exactly how the empty-marker bug
+            // survived unnoticed.
+            Positioned(
+              right: 12,
+              top: 12,
+              child: _LayerStatusChip(
+                shown: hotspotMarkers.length,
+                offMap: offMapCount,
+              ),
             ),
           ],
         );
@@ -444,6 +559,197 @@ class _Legend extends StatelessWidget {
             l10n.hotspotFlameNote,
             style: const TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "N hotspots · M off-map" badge.
+///
+/// Exists so the hotspot layer can never fail *quietly* again. A map that
+/// shows nothing because there is nothing to show and a map that shows
+/// nothing because its marker derivation is broken looked identical for the
+/// entire life of this screen; this makes them distinguishable at a glance.
+class _LayerStatusChip extends StatelessWidget {
+  const _LayerStatusChip({required this.shown, required this.offMap});
+
+  final int shown;
+  final int offMap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        boxShadow: appCardShadow,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.local_fire_department_rounded,
+            size: 13,
+            color: shown > 0 ? AppColors.vermilion : AppColors.inkFaint,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            l10n.hotspotsShownCount(shown),
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+          ),
+          if (offMap > 0) ...[
+            const SizedBox(width: 6),
+            Text(
+              l10n.hotspotsOffMapCount(offMap),
+              style: const TextStyle(fontSize: 10, color: AppColors.inkFaint),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Shown when any map layer's stream errors, instead of degrading to a
+/// blank map. Most likely cause in practice: the `clusters` read rule
+/// requires the reader's own `constituencyId` to equal the cluster's, so an
+/// official whose profile constituency doesn't match sees permission-denied
+/// on every cluster — previously indistinguishable from "no data yet".
+class _MapErrorState extends StatelessWidget {
+  const _MapErrorState({
+    required this.message,
+    required this.retryLabel,
+    required this.onRetry,
+  });
+
+  final String message;
+  final String retryLabel;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.layers_clear_rounded,
+                size: 40, color: AppColors.inkFaint),
+            const SizedBox(height: 12),
+            Text(message, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: Text(retryLabel),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Cluster detail reached by tapping a hotspot flame.
+class _HotspotClusterSheet extends StatelessWidget {
+  const _HotspotClusterSheet({required this.cluster});
+
+  final PublicClusterModel cluster;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final priority = cluster.priorityScore;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.local_fire_department_rounded,
+                    color: AppColors.vermilion, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.hotspotClusterSheetTitle,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.inkFaint),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              cluster.title ?? cluster.summaryText,
+              style: const TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.w700, height: 1.3),
+            ),
+            if (cluster.title != null && cluster.summaryText.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(cluster.summaryText,
+                  style: const TextStyle(fontSize: 13, height: 1.4)),
+            ],
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _StatPill(
+                  icon: Icons.description_outlined,
+                  label: '${cluster.submissionCount}',
+                ),
+                if (cluster.uniqueReporterCount > 0)
+                  _StatPill(
+                    icon: Icons.people_outline_rounded,
+                    label: '${cluster.uniqueReporterCount}',
+                  ),
+                _StatPill(
+                  icon: Icons.priority_high_rounded,
+                  label: priority.toStringAsFixed(0),
+                  color: AppColors.vermilion,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatPill extends StatelessWidget {
+  const _StatPill({required this.icon, required this.label, this.color});
+
+  final IconData icon;
+  final String label;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final tint = color ?? AppColors.indigo;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: tint.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: tint),
+          const SizedBox(width: 5),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w700, color: tint)),
         ],
       ),
     );
@@ -497,9 +803,3 @@ final _taluksProvider =
       .watchTaluksForConstituency(constituencyId);
 });
 
-final _clustersProvider =
-    StreamProvider.family<List<ClusterModel>, String>((ref, constituencyId) {
-  return ref
-      .watch(firestoreServiceProvider)
-      .watchClustersForConstituency(constituencyId);
-});

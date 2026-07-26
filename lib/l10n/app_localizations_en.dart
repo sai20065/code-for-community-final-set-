@@ -850,4 +850,323 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get aadhaarErrorAuthUnavailable => 'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
+
+  @override
+  String get aadhaarErrorNotSignedIn => 'Your session expired. Please try again, or type your details below.';
+
+  @override
+  String get aadhaarErrorImageTooLarge => 'That photo is too large to process. Try a closer, smaller shot of the card.';
+
+  @override
+  String get aadhaarErrorUnreadable => 'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
+
+  @override
+  String get aadhaarErrorModelBusy => 'Our reader is busy right now. Try again in a moment, or type your details below.';
+
+  @override
+  String get aadhaarErrorNetwork => 'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
+
+  @override
+  String get aadhaarErrorUnknown => 'Something went wrong reading the card. You can type your details below instead.';
+
+  @override
+  String get aadhaarPartialExtracted => 'We read part of your card. Please check the details below and fill in anything missing.';
+
+  @override
+  String get aadhaarBackImageSkippedTooLarge => 'The back photo was too large, so we read the front only. Please check the address below.';
+
+  @override
+  String get mapLayerFailed => 'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
+
+  @override
+  String get mapRetry => 'Retry';
+
+  @override
+  String hotspotsShownCount(int count) {
+    return '$count hotspots';
+  }
+
+  @override
+  String hotspotsOffMapCount(int count) {
+    return '· $count off-map';
+  }
+
+  @override
+  String get hotspotClusterSheetTitle => 'HOTSPOT';
+
+  @override
+  String get publicDashboardTitle => 'Public dashboard';
+
+  @override
+  String get exploreYourArea => 'Explore your area';
+
+  @override
+  String get noSignInNeeded => 'No sign-in needed';
+
+  @override
+  String get chooseConstituency => 'Choose a constituency';
+
+  @override
+  String get searchConstituency => 'Search constituencies';
+
+  @override
+  String get noConstituenciesFound => 'No constituencies match that search.';
+
+  @override
+  String get publicPrivacyNote => 'Only anonymous ticket IDs and approximate locations are shown here. No names, addresses or contact details are ever published.';
+
+  @override
+  String get trackedIssues => 'Tracked issues';
+
+  @override
+  String get totalReports => 'Total reports';
+
+  @override
+  String get officialActions => 'Official actions';
+
+  @override
+  String get officialActionsHint => 'Only you can see these — they need your official sign-in.';
+
+  @override
+  String get updateTicketStatuses => 'Update ticket statuses';
+
+  @override
+  String get generateReportExplainer => 'Generates an AI-written PDF briefing for your constituency: executive summary, recommended actions, and the top issues by priority with their Solution Card recommendations. Scoped to your own constituency and never shared publicly.';
+
+  @override
+  String get solutionCardTitle => 'Solution card';
+
+  @override
+  String get forCitizens => 'For citizens';
+
+  @override
+  String get forDepartment => 'For the department';
+
+  @override
+  String get routedToDepartment => 'Routed to';
+
+  @override
+  String get escalatesTo => 'Escalates to';
+
+  @override
+  String get routingApproximate => 'No exact local body is mapped for this area yet, so this is a broader fallback.';
+
+  @override
+  String get estimatedCost => 'Estimated cost';
+
+  @override
+  String get costNotEstimated => 'Cost not estimated';
+
+  @override
+  String get householdsNotEstimated => 'Reach not estimated';
+
+  @override
+  String get expectedImpact => 'Expected impact';
+
+  @override
+  String get problemStatement => 'Problem statement';
+
+  @override
+  String get recommendedActions => 'Recommended actions';
+
+  @override
+  String get proposedInterventions => 'Proposed interventions';
+
+  @override
+  String get whatWeAreAskingFor => 'What is being asked for';
+
+  @override
+  String get quickWin => 'Quick win';
+
+  @override
+  String get prerequisites => 'Needed first';
+
+  @override
+  String get dataGaps => 'What we could not determine';
+
+  @override
+  String get sdgAlignment => 'UN Sustainable Development Goals';
+
+  @override
+  String get evidenceFrom => 'Evidence from citizen reports';
+
+  @override
+  String get analysisPending => 'No analysis yet. An issue gets a full solution card once enough neighbours have reported it.';
+
+  @override
+  String get analysisDegradedNote => 'Part of this analysis could not be completed automatically, so some sections are simplified.';
+
+  @override
+  String get aiGeneratedDisclaimer => 'AI-generated from citizen reports and typical municipal cost ranges. Verify against a site survey before acting or committing budget.';
+
+  @override
+  String get viewSolutionCard => 'View solution card';
+
+  @override
+  String get shareSolution => 'Share';
+
+  @override
+  String get copiedToClipboard => 'Copied to clipboard';
+
+  @override
+  String get viewAgentTranscript => 'Agent transcript';
+
+  @override
+  String get agentTranscriptTitle => 'How this was analysed';
+
+  @override
+  String get agentChainRun => 'Four-agent analysis run';
+
+  @override
+  String get agentTrigger => 'Triggered by';
+
+  @override
+  String get agentModel => 'Model';
+
+  @override
+  String get agentTotalTime => 'Total time';
+
+  @override
+  String get agentRunAt => 'Run at';
+
+  @override
+  String get agentRootCause => 'Root-cause agent';
+
+  @override
+  String get agentSolution => 'Solution agent';
+
+  @override
+  String get agentRouting => 'Routing agent';
+
+  @override
+  String get agentReportCompiler => 'Report compiler agent';
+
+  @override
+  String get agentOk => 'completed';
+
+  @override
+  String get agentUsedFallback => 'fell back';
+
+  @override
+  String get agentSystemRole => 'Instructions given';
+
+  @override
+  String get agentPrompt => 'Input';
+
+  @override
+  String get agentResponse => 'Raw response';
+
+  @override
+  String get agentError => 'Error';
+
+  @override
+  String agentFellBackNote(String agents) {
+    return 'These agents did not complete and used a fallback: $agents. Treat the affected sections as placeholders, not findings.';
+  }
+
+  @override
+  String agentAttempts(int count) {
+    return '$count attempts';
+  }
+
+  @override
+  String reportsFromResidents(int reports, int residents) {
+    return '$reports reports from $residents residents';
+  }
+
+  @override
+  String weeksRange(int min, int max) {
+    return '$min–$max weeks';
+  }
+
+  @override
+  String householdsAddressed(int count) {
+    return '~$count households';
+  }
+
+  @override
+  String get yourCivicActivity => 'Your civic activity';
+
+  @override
+  String get activeWeeksStreak => 'Active weeks';
+
+  @override
+  String get longestStreak => 'Longest streak';
+
+  @override
+  String get levelMaxReached => 'Top level reached';
+
+  @override
+  String reportsToNextLevel(int count) {
+    return '$count more to next level';
+  }
+
+  @override
+  String levelLabel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String get badgeFirstReport => 'First report';
+
+  @override
+  String get badgeWeekStreak => '2-week streak';
+
+  @override
+  String get badgeMonthActive => 'Month active';
+
+  @override
+  String get badgeMultiTheme => 'Multi-issue reporter';
+
+  @override
+  String get badgeResolvedTen => '10 resolved';
+
+  @override
+  String get badgePhotoReporter => 'Photo reporter';
+
+  @override
+  String get badgeVoiceReporter => 'Voice reporter';
+
+  @override
+  String get badgeLockedHint => 'keep reporting to unlock';
+
+  @override
+  String get consistencyEmptyNudge => 'Your first report will start showing up here.';
+
+  @override
+  String get contributionsInLast26Weeks => 'Reports in the last 26 weeks';
+
+  @override
+  String get seePublicDashboard => 'See your area\'s public dashboard';
+
+  @override
+  String get liveLabel => 'Live';
+
+  @override
+  String reportsNearYouThisWeek(int count) {
+    return '$count reports near you this week';
+  }
+
+  @override
+  String get beTheFirstThisWeek => 'Be the first to report this week';
+
+  @override
+  String get topHotspots => 'Top hotspots';
+
+  @override
+  String get latestSolutions => 'Latest solutions';
+
+  @override
+  String get noTrackedIssuesYet => 'No issues tracked yet for this area.';
+
+  @override
+  String reportsCountShort(int count) {
+    return '$count reports';
+  }
+
+  @override
+  String get hasSolutionLabel => 'Solution ready';
 }

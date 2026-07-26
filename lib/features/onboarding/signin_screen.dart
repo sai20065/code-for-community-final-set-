@@ -54,7 +54,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     await ref.read(onboardingProgressProvider.notifier).advanceTo(OnboardingStep.done);
     if (!mounted) return;
     if (profile.role == UserRole.official) {
-      context.go('/official/dashboard');
+      context.go('/public/dashboard');
     } else {
       context.go('/home');
     }

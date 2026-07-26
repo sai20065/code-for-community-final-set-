@@ -56,22 +56,32 @@ neither is ever required) lives on `SignUpScreen`. It's a one-time
 **convenience OCR extraction**, not verified UIDAI eKYC:
 
 - The citizen uploads photo(s) of their Aadhaar; a Cloud Function
-  (`functions/src/aadhaar/extractAadhaarDetails.ts`) reads them with an
-  NVIDIA NIM document-understanding vision model (see
-  `functions/src/lib/nvidiaClient.ts` — `nvidia/llama-3.1-nemotron-nano-vl-8b-v1`)
-  **once, in memory**, extracts `{name, address, pincode, wardNumber}`, and
-  discards the images immediately. They are never written to Cloud Storage,
-  Firestore, or disk at any point. Every other AI task in this app
-  (transcription, translation, photo captioning, theme classification,
-  cluster summarization) stays on Gemini — NVIDIA is scoped to Aadhaar OCR
-  only. Note this is a carefully engineered extraction prompt against a
-  hosted model, not real fine-tuning — true fine-tuning would need NVIDIA
-  NeMo Customizer, a labeled dataset, and a GPU training job, a separate and
-  much larger effort than this app's scope.
-- The extraction callable requires an authenticated caller, so the app
-  establishes an anonymous Firebase session the moment Sign Up opens (before
-  the citizen picks phone/anonymous) — otherwise the call is rejected with
-  `unauthenticated` and OCR silently fails.
+  (`functions/src/aadhaar/extractAadhaarDetails.ts`) reads them with
+  Vertex-AI-backed Gemini vision (`GeminiClient.extractAadhaarFields`,
+  `gemini-2.5-flash`) **once, in memory**, extracts
+  `{name, address, pincode, wardNumber}`, and discards the images
+  immediately. They are never written to Cloud Storage, Firestore, or disk
+  at any point. Every AI task in this app — Aadhaar OCR, transcription,
+  photo captioning, theme classification, cluster summarization, and the
+  civic-intelligence agents — runs on the same Vertex AI billing path, so
+  there is no second balance to run dry (see `functions/src/config.ts`).
+  Note this is a carefully engineered extraction prompt against a hosted
+  model, not fine-tuning.
+- **Prerequisite: Anonymous sign-in must be enabled** in the Firebase
+  console (Authentication → Sign-in method). The extraction callable
+  requires an authenticated caller, so the app establishes an anonymous
+  session the moment Sign Up opens, before the citizen picks
+  phone/anonymous. If the provider is disabled the project returns
+  `CONFIGURATION_NOT_FOUND` and no OCR call can succeed.
+- Every failure mode is reported distinctly rather than as one catch-all
+  message — a disabled auth provider, an oversized photo, a Vertex quota
+  error, and a genuinely blurry card are four different problems with four
+  different fixes, and only the last is solved by retaking the picture. The
+  cause travels from the function as `HttpsError.details.reason` and is
+  mapped to `AadhaarOcrFailure` on the client.
+- A *partial* read (say, a clear name but a smudged pincode) is treated as
+  success with a "check these details" hint, not a failure — the previous
+  pincode-only success test discarded otherwise perfectly good extractions.
 - The Aadhaar number itself is never returned to the client and is
   regex-scrubbed server-side as defense-in-depth even if the model includes
   one by mistake.
@@ -229,8 +239,13 @@ community"), `.firebaserc` included:
 - ✅ **Cloud Functions + Gemini + Cloud Translate** — deployed and live
   (verified directly against the project: all three functions —
   `extractAadhaarDetails`, `onSubmissionCreated`, `transcribeAndTranslate` —
-  are running in `asia-south1` on Node 20). Blaze billing is attached and
-  `GEMINI_API_KEY` is already configured as a secret. The Bhashini
+  are running in `asia-south1` on Node 20). Blaze billing is attached.
+  Gemini runs through **Vertex AI** on the function's own runtime service
+  account (Application Default Credentials — no API key or secret to
+  manage); this replaced an AI-Studio `GEMINI_API_KEY` after that prepaid
+  balance silently ran dry and broke the whole pipeline with no visible
+  error. The runtime service account needs `roles/aiplatform.user` and
+  `aiplatform.googleapis.com` enabled. The Bhashini
   integration mentioned in older versions of this doc has been fully
   replaced by Gemini audio transcription + Cloud Translate — there is no
   `bhashiniClient.ts` anymore and no separate Bhashini credentials needed.

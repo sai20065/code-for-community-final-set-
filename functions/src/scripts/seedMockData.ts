@@ -18,6 +18,7 @@
  *   npx ts-node src/scripts/seedMockData.ts
  */
 import * as admin from "firebase-admin";
+import { isoWeekKey } from "../submissions/clusterAggregates";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -46,6 +47,8 @@ async function main() {
       submissionVolume: 42,
       dominantTheme: "roads",
       localContext: "Nearest govt school 3.1km away; local roads see heavy peak-hour traffic.",
+      estimatedPopulation: 34000,
+      estimatedHouseholds: 7900,
     },
     {
       id: "booth-yelahanka",
@@ -57,6 +60,8 @@ async function main() {
       submissionVolume: 28,
       dominantTheme: "water",
       localContext: "Borewell-dependent supply; municipal Cauvery line not yet extended here.",
+      estimatedPopulation: 21000,
+      estimatedHouseholds: 4900,
     },
     {
       id: "booth-jalahalli",
@@ -68,6 +73,8 @@ async function main() {
       submissionVolume: 35,
       dominantTheme: "education",
       localContext: "Single govt school serves 3 wards; capacity gap ~340 seats.",
+      estimatedPopulation: 28500,
+      estimatedHouseholds: 6600,
     },
     {
       id: "booth-vidyaranyapura",
@@ -77,8 +84,10 @@ async function main() {
       pincodesCovered: ["560097"],
       openIssueCount: 3,
       submissionVolume: 15,
-      dominantTheme: "skilling",
+      dominantTheme: "education",
       localContext: "High youth unemployment reported; nearest ITI is 8km away.",
+      estimatedPopulation: 16000,
+      estimatedHouseholds: 3700,
     },
     {
       id: "booth-rtnagar",
@@ -90,6 +99,8 @@ async function main() {
       submissionVolume: 22,
       dominantTheme: "health",
       localContext: "Nearest PHC serves 40,000+ residents; frequent medicine stockouts reported.",
+      estimatedPopulation: 41000,
+      estimatedHouseholds: 9500,
     },
   ];
 
@@ -117,7 +128,10 @@ async function main() {
     {
       id: "cluster-vidyaranyapura-iti",
       boothId: "booth-vidyaranyapura",
-      theme: "skilling",
+      // "skilling" is not one of the six THEME_IDS the app actually
+      // supports, so a cluster tagged with it was unreachable from every
+      // theme filter in the UI. Vocational training sits under education.
+      theme: "education",
       title: "Skilling & livelihoods training centre — Vidyaranyapura",
       summaryText: "73 citizens requested a local skilling centre, citing an 8km commute to the nearest ITI.",
       submissionCount: 73,
@@ -191,9 +205,56 @@ async function main() {
     },
   ];
 
+  // Enrich each seeded cluster with the grounding fields the map and the
+  // civic-intelligence agents depend on.
+  //
+  // This is what previously broke the hotspot layer: seeded clusters had no
+  // `centroid`, no `wardId` and no `talukId`, and the map derived hotspot
+  // markers *only* from ward/taluk polygons — so a cluster with
+  // priorityScore 88 rendered no marker at all, on a map whose entire point
+  // is showing where the problems are.
+  const boothsById = new Map(booths.map((b) => [b.id, b]));
+  const seedNow = new Date();
+  const weekKey = isoWeekKey(seedNow);
+
   for (const cluster of clusters) {
     const { id, ...data } = cluster;
-    await db.collection("clusters").doc(id).set({ constituencyId: CONSTITUENCY_ID, ...data });
+    const booth = cluster.boothId ? boothsById.get(cluster.boothId) : undefined;
+    const firstReported = new Date(seedNow);
+    firstReported.setDate(firstReported.getDate() - 120);
+
+    await db.collection("clusters").doc(id).set({
+      constituencyId: CONSTITUENCY_ID,
+      ...data,
+      centroid: booth ? { lat: booth.lat, lng: booth.lng } : null,
+      centroidSource: booth ? "seed" : null,
+      centroidSum: booth ? { lat: booth.lat, lng: booth.lng } : { lat: 0, lng: 0 },
+      centroidCount: booth ? 1 : 0,
+      wardId: null,
+      talukId: null,
+      firstReportedAt: admin.firestore.Timestamp.fromDate(firstReported),
+      lastReportedAt: admin.firestore.Timestamp.fromDate(seedNow),
+      // A single bucket rather than a fabricated multi-week trend — a
+      // sparkline invented at seed time would look like real evidence.
+      weeklyCounts: { [weekKey]: Math.min(cluster.submissionCount, 12) },
+      monsoonReportCount: 0,
+      monsoonShare: 0,
+      reporterHashes: [],
+      uniqueReporterCount: cluster.submissionCount,
+      repeatReporterCount: 0,
+      statusCounts: {
+        new: cluster.submissionCount,
+        reviewed: 0,
+        inProgress: 0,
+        resolved: 0,
+      },
+      estimatedAffectedHouseholds: booth?.estimatedHouseholds ?? null,
+      estimatedAffectedPeople: booth?.estimatedPopulation ?? null,
+      hasSolutionCard: false,
+      agentRunCount: 0,
+      solutionCardVersion: 0,
+      lastAgentRunAt: null,
+    });
   }
 
   const now = admin.firestore.Timestamp.now();

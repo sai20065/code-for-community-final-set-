@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/providers/current_user_profile_provider.dart';
+import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
-import '../../../core/models/cluster_model.dart';
+import '../../../core/models/public_models.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
@@ -15,8 +15,11 @@ import '../../../shared/widgets/theme_icon_chip.dart';
 /// Gemini pipeline in `functions/src/submissions/onSubmissionCreated.ts`),
 /// and "Why it's happening here" cites `booth.localContext`, an actual
 /// seeded/derived field — never a fabricated citation the backend doesn't
-/// actually have. Other clusters at this booth are listed below, with raw
-/// sample ticket ids expandable underneath.
+/// actually have. Other clusters at this booth are listed below.
+///
+/// Public: reads `PublicClusterModel` (`publicClusters`), never the private
+/// `clusters` collection — so this sheet works from the anonymous public
+/// map with no account, the same as every other `/public/*` screen.
 class BoothDetailSheet extends ConsumerWidget {
   const BoothDetailSheet({super.key, required this.booth});
 
@@ -25,7 +28,7 @@ class BoothDetailSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final clustersAsync = ref.watch(_boothClustersProvider(booth.id));
+    final clustersAsync = ref.watch(publicClustersForBoothProvider(booth.id));
     return DraggableScrollableSheet(
       initialChildSize: 0.65,
       minChildSize: 0.3,
@@ -60,7 +63,9 @@ class BoothDetailSheet extends ConsumerWidget {
             const SizedBox(height: 8),
             clustersAsync.when(
               data: (clusters) {
-                final rest = clusters.length > 1 ? clusters.sublist(1) : const <ClusterModel>[];
+                final rest = clusters.length > 1
+                    ? clusters.sublist(1)
+                    : const <PublicClusterModel>[];
                 if (rest.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -77,19 +82,6 @@ class BoothDetailSheet extends ConsumerWidget {
                 child: LinearProgressIndicator(),
               ),
               error: (_, __) => Text(l10n.couldNotLoadClusters),
-            ),
-            const SizedBox(height: 16),
-            clustersAsync.maybeWhen(
-              data: (clusters) => ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(l10n.sampleTickets),
-                children: [
-                  for (final c in clusters)
-                    for (final id in c.sampleSubmissionIds)
-                      ListTile(title: Text('$id — ${c.theme}')),
-                ],
-              ),
-              orElse: () => const SizedBox.shrink(),
             ),
           ],
         );
@@ -158,12 +150,12 @@ class _HotspotCard extends StatelessWidget {
   const _HotspotCard({required this.booth, required this.topCluster});
 
   final BoothModel booth;
-  final ClusterModel topCluster;
+  final PublicClusterModel topCluster;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final hotspotScore = ((topCluster.priorityScore ?? 50) / 100).clamp(0.0, 1.0);
+    final hotspotScore = (topCluster.priorityScore / 100).clamp(0.0, 1.0);
     final color = categoryColor(topCluster.theme);
     final themeLabel = kThemeLabels[topCluster.theme] ?? topCluster.theme;
     final recurSummary = topCluster.summaryText.isEmpty
@@ -250,11 +242,20 @@ class _HotspotCard extends StatelessWidget {
               TextButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  context.go('/official/works');
+                  context.go('/public/works');
                 },
                 icon: const Icon(Icons.arrow_forward_rounded, size: 16),
                 label: Text(l10n.seeInRankedWorks),
               ),
+              if (topCluster.hasSolutionCard)
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    context.go('/public/cluster/${topCluster.id}');
+                  },
+                  icon: const Icon(Icons.auto_awesome_rounded, size: 16),
+                  label: Text(l10n.viewSolutionCard),
+                ),
             ],
           ),
           const SizedBox(height: 6),
@@ -270,11 +271,6 @@ class _HotspotCard extends StatelessWidget {
     );
   }
 }
-
-final _boothClustersProvider =
-    StreamProvider.family<List<ClusterModel>, String>((ref, boothId) {
-  return ref.watch(firestoreServiceProvider).watchClustersForBooth(boothId);
-});
 
 class _StatPill extends StatelessWidget {
   const _StatPill({required this.icon, required this.label, this.color});
@@ -307,7 +303,7 @@ class _StatPill extends StatelessWidget {
 class _ClusterTile extends StatelessWidget {
   const _ClusterTile({required this.cluster});
 
-  final ClusterModel cluster;
+  final PublicClusterModel cluster;
 
   @override
   Widget build(BuildContext context) {
@@ -318,9 +314,7 @@ class _ClusterTile extends StatelessWidget {
         title: Text(cluster.summaryText.isEmpty
             ? l10n.ticketsInBooth(kThemeLabels[cluster.theme] ?? cluster.theme)
             : cluster.summaryText),
-        subtitle: cluster.priorityScore != null
-            ? Text(l10n.priorityValue(cluster.priorityScore!.toStringAsFixed(1)))
-            : null,
+        subtitle: Text(l10n.priorityValue(cluster.priorityScore.toStringAsFixed(1))),
         trailing: CircleAvatar(
           radius: 14,
           child: Text('${cluster.submissionCount}',

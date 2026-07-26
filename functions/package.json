@@ -16,7 +16,11 @@
     "seed:mock": "ts-node src/scripts/seedMockData.ts",
     "seed:constituencies": "ts-node src/scripts/seedConstituencies.ts",
     "seed:karnataka-officials": "ts-node src/scripts/seedKarnatakaOfficials.ts",
-    "seed:wards": "ts-node src/scripts/seedWards.ts"
+    "seed:wards": "ts-node src/scripts/seedWards.ts",
+    "seed:departments": "ts-node src/scripts/seedDepartments.ts",
+    "verify:routing": "ts-node src/scripts/verifyRouting.ts",
+    "backfill:cluster-geo": "ts-node src/scripts/backfillClusterGeo.ts",
+    "backfill:public": "ts-node src/scripts/backfillPublicProjections.ts"
   },
   "dependencies": {
     "@google-cloud/translate": "^8.5.0",

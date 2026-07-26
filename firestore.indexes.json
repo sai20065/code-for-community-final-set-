@@ -56,6 +56,65 @@
         { "fieldPath": "boothId", "order": "ASCENDING" },
         { "fieldPath": "priorityScore", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "submissions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "clusterId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "publicTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "constituencyId", "order": "ASCENDING" },
+        { "fieldPath": "createdDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "publicTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "constituencyId", "order": "ASCENDING" },
+        { "fieldPath": "theme", "order": "ASCENDING" },
+        { "fieldPath": "createdDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "publicTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "constituencyId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "createdDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "publicClusters",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "constituencyId", "order": "ASCENDING" },
+        { "fieldPath": "priorityScore", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "publicClusters",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "constituencyId", "order": "ASCENDING" },
+        { "fieldPath": "theme", "order": "ASCENDING" },
+        { "fieldPath": "priorityScore", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "solutionCards",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "constituencyId", "order": "ASCENDING" },
+        { "fieldPath": "priorityScore", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

@@ -2,52 +2,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/providers/current_user_profile_provider.dart';
+import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
-import '../../../core/models/cluster_model.dart';
+import '../../../core/models/public_models.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
-/// Ranked development-works panel: each recurring theme (`ClusterModel`)
+/// Ranked development-works panel: each recurring theme (`PublicClusterModel`)
 /// doubles as a candidate development work, ranked by a composite score
 /// (citizen demand / demographic weight / infrastructure-gap weight) that
-/// the official can re-weight live via the slider strip — the "weigh
-/// competing proposals against real demand" capability made visible and
-/// adjustable, rather than a single fixed opaque number.
+/// re-weights live via the slider strip — the "weigh competing proposals
+/// against real demand" capability made visible and adjustable, rather than
+/// a single fixed opaque number. Public: reads `publicClusters`, so this
+/// works the same for a signed-out visitor as for an official.
 class RankedWorksScreen extends ConsumerWidget {
   const RankedWorksScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final profileAsync = ref.watch(currentUserProfileProvider);
+    final constituencyId = ref.watch(effectivePublicConstituencyProvider);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/official/dashboard'),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/public/dashboard'),
         ),
         title: Text(l10n.rankedDevelopmentWorks),
       ),
-      body: profileAsync.when(
-        data: (profile) {
-          final constituencyId = profile?.constituencyId;
-          if (constituencyId == null) {
-            return Center(
+      body: constituencyId == null
+          ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: Text(l10n.notLinkedConstituency,
-                    textAlign: TextAlign.center),
+                child: Text(l10n.chooseConstituency, textAlign: TextAlign.center),
               ),
-            );
-          }
-          return _RankedList(constituencyId: constituencyId);
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
-      ),
+            )
+          : _RankedList(constituencyId: constituencyId),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/official/compare'),
+        onPressed: () => context.go('/public/compare'),
         icon: const Icon(Icons.compare_arrows_rounded),
         label: Text(l10n.compare),
       ),
@@ -70,7 +62,7 @@ class _RankedListState extends ConsumerState<_RankedList> {
   double _wInfraGap = 0.30;
   final Set<String> _expanded = {};
 
-  double _weightedScore(ClusterModel c) {
+  double _weightedScore(PublicClusterModel c) {
     return (c.demandScore ?? 0) * _wDemand +
         (c.demographicScore ?? 0) * _wDemographic +
         (c.infraGapScore ?? 0) * _wInfraGap;
@@ -78,7 +70,7 @@ class _RankedListState extends ConsumerState<_RankedList> {
 
   @override
   Widget build(BuildContext context) {
-    final clustersAsync = ref.watch(_clustersProvider(widget.constituencyId));
+    final clustersAsync = ref.watch(publicClustersProvider(widget.constituencyId));
     return clustersAsync.when(
       data: (clusters) {
         if (clusters.isEmpty) {
@@ -123,10 +115,6 @@ class _RankedListState extends ConsumerState<_RankedList> {
   }
 }
 
-final _clustersProvider =
-    StreamProvider.family<List<ClusterModel>, String>((ref, constituencyId) {
-  return ref.watch(firestoreServiceProvider).watchClustersForConstituency(constituencyId);
-});
 
 /// Non-functional-visual-only in the original design brief, but since this
 /// is real shipping code (not a static preview) the sliders actually
@@ -262,7 +250,7 @@ class _WorkCard extends StatelessWidget {
   });
 
   final int rank;
-  final ClusterModel cluster;
+  final PublicClusterModel cluster;
   final double weightedScore;
   final bool expanded;
   final VoidCallback onToggleWhy;
@@ -373,7 +361,7 @@ class _WorkCard extends StatelessWidget {
 class _ScoreBar extends StatelessWidget {
   const _ScoreBar({required this.cluster, required this.total});
 
-  final ClusterModel cluster;
+  final PublicClusterModel cluster;
   final double total;
 
   @override

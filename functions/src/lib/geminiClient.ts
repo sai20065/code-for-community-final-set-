@@ -1,7 +1,13 @@
 import {VertexAI} from "@google-cloud/vertexai";
-import {THEME_IDS, ThemeId, VERTEX_AI_LOCATION, VERTEX_AI_PROJECT} from "../config";
+import {
+  GEMINI_MODEL,
+  THEME_IDS,
+  ThemeId,
+  VERTEX_AI_LOCATION,
+  VERTEX_AI_PROJECT,
+} from "../config";
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = GEMINI_MODEL;
 
 /**
  * Thin wrapper over Vertex AI's Gemini models — used for every "Gemma-
@@ -141,6 +147,7 @@ confidence 0.`;
     demandScore: number;
     demographicScore: number;
     infraGapScore: number;
+    publicSummary: string;
   }> {
     const prompt = `Classify this civic ticket into exactly one of these
 categories: ${THEME_IDS.join(", ")}.
@@ -149,24 +156,42 @@ Also give:
 - demandScore from 0-100: how strong is the apparent citizen demand behind this (volume/urgency of language)?
 - demographicScore from 0-100: how broad is the population this affects (a school/hospital/transit issue affecting thousands scores high; a single household's issue scores low)?
 - infraGapScore from 0-100: how much does this reflect a missing or inadequate piece of infrastructure (new school/road/water line needed) vs. a simple maintenance fix (score low for maintenance)?
+- publicSummary: a neutral, third-person description of the issue, at most 15
+  words, suitable for display on a PUBLIC dashboard that anyone on the
+  internet can read. It must contain NO personal names, NO house or door
+  numbers, NO street addresses, NO phone numbers, NO email addresses and NO
+  pincodes — only the civic issue itself and at most a general landmark TYPE
+  (e.g. "near a school", "near a bus stop"). Never name a specific person or
+  building. Example: "Waterlogging on the main road near a school after rain."
 Ticket: "${input.text}"
 ${
   input.existingClusterSummaries.length
     ? `Similar existing issues already reported nearby:\n- ${input.existingClusterSummaries.join("\n- ")}`
     : ""
 }
-Respond with strict JSON: {"theme": string, "priorityHint": number, "demandScore": number, "demographicScore": number, "infraGapScore": number}.`;
+Respond with strict JSON: {"theme": string, "priorityHint": number, "demandScore": number, "demographicScore": number, "infraGapScore": number, "publicSummary": string}.`;
 
     const text = await this.generateText([prompt]);
     const parsed = safeParseJson(text) ?? {};
     const theme = THEME_IDS.includes(parsed.theme) ? parsed.theme : "roads";
     const num = (v: unknown, fallback: number) => (typeof v === "number" ? v : fallback);
+
+    // Defense in depth, exactly as with the Aadhaar-number scrub: the prompt
+    // asks for no identifiers, and then we remove them anyway. This string
+    // is the *only* free text that reaches the public dashboard, so a single
+    // model lapse here is a privacy incident rather than a cosmetic bug.
+    const publicSummary =
+      typeof parsed.publicSummary === "string" && parsed.publicSummary.trim() ?
+        scrubPublicText(parsed.publicSummary) :
+        `${theme} issue reported in this area`;
+
     return {
       theme,
       priorityHint: num(parsed.priorityHint, 3),
       demandScore: num(parsed.demandScore, 50),
       demographicScore: num(parsed.demographicScore, 50),
       infraGapScore: num(parsed.infraGapScore, 50),
+      publicSummary,
     };
   }
 
@@ -229,7 +254,39 @@ impact. Respond with strict JSON: {"executiveSummary": string,
   }
 }
 
-function safeParseJson(text: string): any {
+/**
+ * Strips anything identifier-shaped from text destined for a world-readable
+ * surface (the public dashboard, a Solution Card).
+ *
+ * This is a *second* line of defence, never the first — the prompts already
+ * instruct the model to emit none of this. It exists because the cost of the
+ * model slipping once is a citizen's phone number on a public web page,
+ * which is not a failure mode worth trusting a prompt with. Deliberately
+ * blunt: over-redacting a house number out of a summary costs nothing,
+ * under-redacting one is irreversible.
+ */
+export function scrubPublicText(text: string): string {
+  return text
+    // Aadhaar-shaped (before the generic 6-digit rule, which would only
+    // chew the middle out of a 12-digit run and leave the rest).
+    .replace(/\b\d{4}\s?\d{4}\s?\d{4}\b/g, "")
+    // Indian mobile numbers, with or without a country code.
+    .replace(/\b(?:\+?91[-\s]?)?[6-9]\d{9}\b/g, "")
+    // Pincodes and any other bare 6-digit run.
+    .replace(/\b\d{6}\b/g, "")
+    .replace(/\S+@\S+\.\S+/g, "")
+    // Door/house numbers ("No. 42", "#12/3", "42/A Cross").
+    .replace(/\b(?:no\.?|door|house|flat|plot|#)\s*\d+[/-]?\w*/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+([.,;])/g, "$1")
+    .trim();
+}
+
+/** Parses a model reply that is *supposed* to be JSON but may be wrapped in
+ * a markdown fence. Returns null rather than throwing — every caller here
+ * treats an unparseable reply as "use the fallback", never as a crash.
+ * Exported for `functions/src/agents/`, which needs the identical leniency. */
+export function safeParseJson(text: string): any {
   try {
     const cleaned = text.replace(/```json|```/g, "").trim();
     return JSON.parse(cleaned);
@@ -238,7 +295,7 @@ function safeParseJson(text: string): any {
   }
 }
 
-async function fetchAsBase64(
+export async function fetchAsBase64(
   url: string,
 ): Promise<{data: string; mimeType: string}> {
   const response = await fetch(url);

@@ -17,6 +17,12 @@ class SubmissionLocation {
   final String? constituencyId;
   final String? wardId;
 
+  /// The ward-equivalent granular unit outside Bengaluru Urban, resolved
+  /// server-side by `onSubmissionCreated`. Modelled here because a client
+  /// read-modify-write used to silently drop it back to null on every
+  /// `toMap()` — which quietly unscoped tickets outside Bengaluru.
+  final String? talukId;
+
   const SubmissionLocation({
     required this.pincode,
     this.lat,
@@ -24,6 +30,7 @@ class SubmissionLocation {
     this.boothId,
     this.constituencyId,
     this.wardId,
+    this.talukId,
   });
 
   factory SubmissionLocation.fromMap(Map<String, dynamic> map) {
@@ -34,6 +41,7 @@ class SubmissionLocation {
       boothId: map['boothId'] as String?,
       constituencyId: map['constituencyId'] as String?,
       wardId: map['wardId'] as String?,
+      talukId: map['talukId'] as String?,
     );
   }
 
@@ -45,6 +53,7 @@ class SubmissionLocation {
       'boothId': boothId,
       'constituencyId': constituencyId,
       'wardId': wardId,
+      'talukId': talukId,
     };
   }
 }

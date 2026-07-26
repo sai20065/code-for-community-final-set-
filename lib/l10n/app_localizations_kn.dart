@@ -861,4 +861,323 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get backToSignIn => 'ಸೈನ್ ಇನ್‌ಗೆ ಹಿಂತಿರುಗಿ';
+
+  @override
+  String get aadhaarErrorAuthUnavailable => 'ಈಗ ಸೈನ್-ಇನ್ ಲಭ್ಯವಿಲ್ಲ, ಆದ್ದರಿಂದ ರೀಡರ್ ಚಲಾಯಿಸಲಾಗಲಿಲ್ಲ. ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.';
+
+  @override
+  String get aadhaarErrorNotSignedIn => 'ನಿಮ್ಮ ಸೆಷನ್ ಮುಗಿದಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
+
+  @override
+  String get aadhaarErrorImageTooLarge => 'ಈ ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ. ಕಾರ್ಡ್‌ನ ಹತ್ತಿರದ, ಚಿಕ್ಕ ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get aadhaarErrorUnreadable => 'ಆ ಕಾರ್ಡ್ ಓದಲಾಗಲಿಲ್ಲ. ಉತ್ತಮ ಬೆಳಕಿನಲ್ಲಿ, ಹೊಳಪಿಲ್ಲದ ನೇರ ಫೋಟೋ ತೆಗೆಯಿರಿ — ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
+
+  @override
+  String get aadhaarErrorModelBusy => 'ನಮ್ಮ ರೀಡರ್ ಈಗ ಬ್ಯುಸಿಯಾಗಿದೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
+
+  @override
+  String get aadhaarErrorNetwork => 'ನೆಟ್‌ವರ್ಕ್ ತಲುಪಲಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
+
+  @override
+  String get aadhaarErrorUnknown => 'ಕಾರ್ಡ್ ಓದುವಾಗ ಏನೋ ತಪ್ಪಾಯಿತು. ಬದಲಿಗೆ ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.';
+
+  @override
+  String get aadhaarPartialExtracted => 'ನಿಮ್ಮ ಕಾರ್ಡ್‌ನ ಒಂದು ಭಾಗವನ್ನು ಓದಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಬಿಟ್ಟುಹೋದದ್ದನ್ನು ಭರ್ತಿ ಮಾಡಿ.';
+
+  @override
+  String get aadhaarBackImageSkippedTooLarge => 'ಹಿಂಬದಿಯ ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದಾಗಿತ್ತು, ಹಾಗಾಗಿ ಮುಂಬದಿಯನ್ನು ಮಾತ್ರ ಓದಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ವಿಳಾಸ ಪರಿಶೀಲಿಸಿ.';
+
+  @override
+  String get mapLayerFailed => 'ನಕ್ಷೆಯ ಒಂದು ಭಾಗ ಲೋಡ್ ಆಗಲಿಲ್ಲ. ಕೆಲವು ವಾರ್ಡ್‌ಗಳು, ಬೂತ್‌ಗಳು ಅಥವಾ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು ಕಾಣೆಯಾಗಬಹುದು.';
+
+  @override
+  String get mapRetry => 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ';
+
+  @override
+  String hotspotsShownCount(int count) {
+    return '$count ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು';
+  }
+
+  @override
+  String hotspotsOffMapCount(int count) {
+    return '· $count ನಕ್ಷೆಯ ಹೊರಗೆ';
+  }
+
+  @override
+  String get hotspotClusterSheetTitle => 'ಹಾಟ್‌ಸ್ಪಾಟ್';
+
+  @override
+  String get publicDashboardTitle => 'ಸಾರ್ವಜನಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್';
+
+  @override
+  String get exploreYourArea => 'ನಿಮ್ಮ ಪ್ರದೇಶವನ್ನು ನೋಡಿ';
+
+  @override
+  String get noSignInNeeded => 'ಸೈನ್-ಇನ್ ಅಗತ್ಯವಿಲ್ಲ';
+
+  @override
+  String get chooseConstituency => 'ಒಂದು ಕ್ಷೇತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ';
+
+  @override
+  String get searchConstituency => 'ಕ್ಷೇತ್ರಗಳನ್ನು ಹುಡುಕಿ';
+
+  @override
+  String get noConstituenciesFound => 'ಆ ಹುಡುಕಾಟಕ್ಕೆ ಯಾವುದೇ ಕ್ಷೇತ್ರ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ.';
+
+  @override
+  String get publicPrivacyNote => 'ಇಲ್ಲಿ ಅನಾಮಧೇಯ ಟಿಕೆಟ್ ಐಡಿ ಮತ್ತು ಅಂದಾಜು ಸ್ಥಳಗಳನ್ನು ಮಾತ್ರ ತೋರಿಸಲಾಗುತ್ತದೆ. ಹೆಸರುಗಳು, ವಿಳಾಸಗಳು ಅಥವಾ ಸಂಪರ್ಕ ವಿವರಗಳನ್ನು ಎಂದಿಗೂ ಪ್ರಕಟಿಸುವುದಿಲ್ಲ.';
+
+  @override
+  String get trackedIssues => 'ಟ್ರ್ಯಾಕ್ ಮಾಡಿದ ಸಮಸ್ಯೆಗಳು';
+
+  @override
+  String get totalReports => 'ಒಟ್ಟು ವರದಿಗಳು';
+
+  @override
+  String get officialActions => 'ಅಧಿಕೃತ ಕ್ರಮಗಳು';
+
+  @override
+  String get officialActionsHint => 'ಇವುಗಳನ್ನು ನೀವು ಮಾತ್ರ ನೋಡಬಹುದು — ಇವುಗಳಿಗೆ ನಿಮ್ಮ ಅಧಿಕೃತ ಸೈನ್-ಇನ್ ಅಗತ್ಯ.';
+
+  @override
+  String get updateTicketStatuses => 'ಟಿಕೆಟ್ ಸ್ಥಿತಿ ನವೀಕರಿಸಿ';
+
+  @override
+  String get generateReportExplainer => 'ನಿಮ್ಮ ಕ್ಷೇತ್ರಕ್ಕಾಗಿ AI-ಬರೆದ PDF ಬ್ರೀಫಿಂಗ್ ರಚಿಸುತ್ತದೆ: ಕಾರ್ಯನಿರ್ವಾಹಕ ಸಾರಾಂಶ, ಶಿಫಾರಸು ಮಾಡಿದ ಕ್ರಮಗಳು, ಮತ್ತು ಆದ್ಯತೆಯ ಪ್ರಕಾರ ಪ್ರಮುಖ ಸಮಸ್ಯೆಗಳು. ನಿಮ್ಮ ಕ್ಷೇತ್ರಕ್ಕೆ ಮಾತ್ರ ಸೀಮಿತ ಮತ್ತು ಎಂದಿಗೂ ಸಾರ್ವಜನಿಕವಾಗಿ ಹಂಚಿಕೊಳ್ಳುವುದಿಲ್ಲ.';
+
+  @override
+  String get solutionCardTitle => 'ಪರಿಹಾರ ಕಾರ್ಡ್';
+
+  @override
+  String get forCitizens => 'ನಾಗರಿಕರಿಗಾಗಿ';
+
+  @override
+  String get forDepartment => 'ಇಲಾಖೆಗಾಗಿ';
+
+  @override
+  String get routedToDepartment => 'ರವಾನಿಸಲಾಗಿದೆ';
+
+  @override
+  String get escalatesTo => 'ಮುಂದೆ ರವಾನಿಸಲಾಗುತ್ತದೆ';
+
+  @override
+  String get routingApproximate => 'ಈ ಪ್ರದೇಶಕ್ಕೆ ನಿಖರವಾದ ಸ್ಥಳೀಯ ಸಂಸ್ಥೆ ಇನ್ನೂ ಮ್ಯಾಪ್ ಆಗಿಲ್ಲ, ಆದ್ದರಿಂದ ಇದು ವಿಶಾಲವಾದ ಪರ್ಯಾಯ.';
+
+  @override
+  String get estimatedCost => 'ಅಂದಾಜು ವೆಚ್ಚ';
+
+  @override
+  String get costNotEstimated => 'ವೆಚ್ಚ ಅಂದಾಜಿಸಿಲ್ಲ';
+
+  @override
+  String get householdsNotEstimated => 'ವ್ಯಾಪ್ತಿ ಅಂದಾಜಿಸಿಲ್ಲ';
+
+  @override
+  String get expectedImpact => 'ನಿರೀಕ್ಷಿತ ಪರಿಣಾಮ';
+
+  @override
+  String get problemStatement => 'ಸಮಸ್ಯೆಯ ವಿವರಣೆ';
+
+  @override
+  String get recommendedActions => 'ಶಿಫಾರಸು ಮಾಡಿದ ಕ್ರಮಗಳು';
+
+  @override
+  String get proposedInterventions => 'ಪ್ರಸ್ತಾವಿತ ಕ್ರಮಗಳು';
+
+  @override
+  String get whatWeAreAskingFor => 'ಏನನ್ನು ಕೇಳಲಾಗುತ್ತಿದೆ';
+
+  @override
+  String get quickWin => 'ತ್ವರಿತ ಪರಿಹಾರ';
+
+  @override
+  String get prerequisites => 'ಮೊದಲು ಅಗತ್ಯ';
+
+  @override
+  String get dataGaps => 'ನಿರ್ಧರಿಸಲಾಗದ ಸಂಗತಿಗಳು';
+
+  @override
+  String get sdgAlignment => 'ವಿಶ್ವಸಂಸ್ಥೆಯ ಸುಸ್ಥಿರ ಅಭಿವೃದ್ಧಿ ಗುರಿಗಳು';
+
+  @override
+  String get evidenceFrom => 'ನಾಗರಿಕ ವರದಿಗಳಿಂದ ಸಾಕ್ಷ್ಯ';
+
+  @override
+  String get analysisPending => 'ಇನ್ನೂ ವಿಶ್ಲೇಷಣೆ ಇಲ್ಲ. ಸಾಕಷ್ಟು ನೆರೆಹೊರೆಯವರು ವರದಿ ಮಾಡಿದ ನಂತರ ಸಮಸ್ಯೆಗೆ ಪೂರ್ಣ ಪರಿಹಾರ ಕಾರ್ಡ್ ಸಿಗುತ್ತದೆ.';
+
+  @override
+  String get analysisDegradedNote => 'ಈ ವಿಶ್ಲೇಷಣೆಯ ಒಂದು ಭಾಗ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪೂರ್ಣಗೊಳ್ಳಲಿಲ್ಲ, ಆದ್ದರಿಂದ ಕೆಲವು ವಿಭಾಗಗಳು ಸರಳೀಕೃತವಾಗಿವೆ.';
+
+  @override
+  String get aiGeneratedDisclaimer => 'ನಾಗರಿಕ ವರದಿಗಳು ಮತ್ತು ಸಾಮಾನ್ಯ ಪುರಸಭೆ ವೆಚ್ಚ ಶ್ರೇಣಿಗಳಿಂದ AI ರಚಿಸಿದೆ. ಕ್ರಮ ಅಥವಾ ಬಜೆಟ್‌ಗೂ ಮೊದಲು ಸ್ಥಳ ಸಮೀಕ್ಷೆಯಿಂದ ಪರಿಶೀಲಿಸಿ.';
+
+  @override
+  String get viewSolutionCard => 'ಪರಿಹಾರ ಕಾರ್ಡ್ ನೋಡಿ';
+
+  @override
+  String get shareSolution => 'ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get copiedToClipboard => 'ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ';
+
+  @override
+  String get viewAgentTranscript => 'ಏಜೆಂಟ್ ಪ್ರತಿಲಿಪಿ';
+
+  @override
+  String get agentTranscriptTitle => 'ಇದನ್ನು ಹೇಗೆ ವಿಶ್ಲೇಷಿಸಲಾಯಿತು';
+
+  @override
+  String get agentChainRun => 'ನಾಲ್ಕು-ಏಜೆಂಟ್ ವಿಶ್ಲೇಷಣೆ';
+
+  @override
+  String get agentTrigger => 'ಪ್ರಚೋದನೆ';
+
+  @override
+  String get agentModel => 'ಮಾದರಿ';
+
+  @override
+  String get agentTotalTime => 'ಒಟ್ಟು ಸಮಯ';
+
+  @override
+  String get agentRunAt => 'ಚಲಾಯಿಸಿದ ಸಮಯ';
+
+  @override
+  String get agentRootCause => 'ಮೂಲ ಕಾರಣ ಏಜೆಂಟ್';
+
+  @override
+  String get agentSolution => 'ಪರಿಹಾರ ಏಜೆಂಟ್';
+
+  @override
+  String get agentRouting => 'ರೂಟಿಂಗ್ ಏಜೆಂಟ್';
+
+  @override
+  String get agentReportCompiler => 'ವರದಿ ಸಂಕಲನ ಏಜೆಂಟ್';
+
+  @override
+  String get agentOk => 'ಪೂರ್ಣಗೊಂಡಿದೆ';
+
+  @override
+  String get agentUsedFallback => 'ಪರ್ಯಾಯ ಬಳಸಿದೆ';
+
+  @override
+  String get agentSystemRole => 'ನೀಡಿದ ಸೂಚನೆಗಳು';
+
+  @override
+  String get agentPrompt => 'ಇನ್‌ಪುಟ್';
+
+  @override
+  String get agentResponse => 'ಕಚ್ಚಾ ಪ್ರತಿಕ್ರಿಯೆ';
+
+  @override
+  String get agentError => 'ದೋಷ';
+
+  @override
+  String agentFellBackNote(String agents) {
+    return 'ಈ ಏಜೆಂಟ್‌ಗಳು ಪೂರ್ಣಗೊಳ್ಳಲಿಲ್ಲ ಮತ್ತು ಪರ್ಯಾಯ ಬಳಸಿದವು: $agents. ಸಂಬಂಧಿತ ವಿಭಾಗಗಳನ್ನು ಸಂಶೋಧನೆಗಳಲ್ಲ, ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್‌ಗಳಾಗಿ ಪರಿಗಣಿಸಿ.';
+  }
+
+  @override
+  String agentAttempts(int count) {
+    return '$count ಪ್ರಯತ್ನಗಳು';
+  }
+
+  @override
+  String reportsFromResidents(int reports, int residents) {
+    return '$residents ನಿವಾಸಿಗಳಿಂದ $reports ವರದಿಗಳು';
+  }
+
+  @override
+  String weeksRange(int min, int max) {
+    return '$min–$max ವಾರಗಳು';
+  }
+
+  @override
+  String householdsAddressed(int count) {
+    return '~$count ಮನೆಗಳು';
+  }
+
+  @override
+  String get yourCivicActivity => 'ನಿಮ್ಮ ನಾಗರಿಕ ಚಟುವಟಿಕೆ';
+
+  @override
+  String get activeWeeksStreak => 'ಸಕ್ರಿಯ ವಾರಗಳು';
+
+  @override
+  String get longestStreak => 'ಸುದೀರ್ಘ ಸರಣಿ';
+
+  @override
+  String get levelMaxReached => 'ಉನ್ನತ ಮಟ್ಟ ತಲುಪಿದೆ';
+
+  @override
+  String reportsToNextLevel(int count) {
+    return 'ಮುಂದಿನ ಹಂತಕ್ಕೆ $count ಇನ್ನಷ್ಟು';
+  }
+
+  @override
+  String levelLabel(int level) {
+    return 'ಹಂತ $level';
+  }
+
+  @override
+  String get badgeFirstReport => 'ಮೊದಲ ವರದಿ';
+
+  @override
+  String get badgeWeekStreak => '2-ವಾರದ ಸರಣಿ';
+
+  @override
+  String get badgeMonthActive => 'ತಿಂಗಳ ಸಕ್ರಿಯತೆ';
+
+  @override
+  String get badgeMultiTheme => 'ಬಹು-ಸಮಸ್ಯೆ ವರದಿಗಾರ';
+
+  @override
+  String get badgeResolvedTen => '10 ಪರಿಹರಿಸಲಾಗಿದೆ';
+
+  @override
+  String get badgePhotoReporter => 'ಫೋಟೋ ವರದಿಗಾರ';
+
+  @override
+  String get badgeVoiceReporter => 'ಧ್ವನಿ ವರದಿಗಾರ';
+
+  @override
+  String get badgeLockedHint => 'ಅನ್‌ಲಾಕ್ ಮಾಡಲು ವರದಿ ಮಾಡುತ್ತಿರಿ';
+
+  @override
+  String get consistencyEmptyNudge => 'ನಿಮ್ಮ ಮೊದಲ ವರದಿ ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳಲು ಪ್ರಾರಂಭವಾಗುತ್ತದೆ.';
+
+  @override
+  String get contributionsInLast26Weeks => 'ಕಳೆದ 26 ವಾರಗಳ ವರದಿಗಳು';
+
+  @override
+  String get seePublicDashboard => 'ನಿಮ್ಮ ಪ್ರದೇಶದ ಸಾರ್ವಜನಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ನೋಡಿ';
+
+  @override
+  String get liveLabel => 'ಲೈವ್';
+
+  @override
+  String reportsNearYouThisWeek(int count) {
+    return 'ಈ ವಾರ ನಿಮ್ಮ ಬಳಿ $count ವರದಿಗಳು';
+  }
+
+  @override
+  String get beTheFirstThisWeek => 'ಈ ವಾರ ವರದಿ ಮಾಡಿದ ಮೊದಲಿಗರಾಗಿ';
+
+  @override
+  String get topHotspots => 'ಪ್ರಮುಖ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು';
+
+  @override
+  String get latestSolutions => 'ಇತ್ತೀಚಿನ ಪರಿಹಾರಗಳು';
+
+  @override
+  String get noTrackedIssuesYet => 'ಈ ಪ್ರದೇಶಕ್ಕೆ ಇನ್ನೂ ಯಾವುದೇ ಸಮಸ್ಯೆ ಟ್ರ್ಯಾಕ್ ಆಗಿಲ್ಲ.';
+
+  @override
+  String reportsCountShort(int count) {
+    return '$count ವರದಿಗಳು';
+  }
+
+  @override
+  String get hasSolutionLabel => 'ಪರಿಹಾರ ಸಿದ್ಧ';
 }

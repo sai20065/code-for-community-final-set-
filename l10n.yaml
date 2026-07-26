@@ -3,3 +3,8 @@ template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 output-class: AppLocalizations
 nullable-getter: false
+# Writes every key that exists in app_en.arb but is missing from another
+# locale to this file on each `flutter gen-l10n`. Without it, a locale
+# silently falls back to English and the drift is invisible — which is how
+# ~60 keys ended up English-only. Do not commit the generated report.
+untranslated-messages-file: l10n_missing.json

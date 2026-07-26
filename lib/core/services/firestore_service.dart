@@ -261,21 +261,54 @@ class FirestoreService {
     return TalukModel.fromMap(doc.id, doc.data()!);
   }
 
+  /// Sorts by priority in Dart rather than with `orderBy`.
+  ///
+  /// This is deliberate and load-bearing. Firestore's `orderBy` **excludes
+  /// every document that lacks the ordered field** — so a single cluster
+  /// written without a `priorityScore` silently disappeared from the map
+  /// and the rankings, with no error and no empty-state, as though it had
+  /// never existed. Clusters number in the tens per constituency, so
+  /// sorting client-side costs nothing and cannot lose a document.
+  ///
+  /// Use [watchTopClustersForConstituency] where server-side limiting
+  /// genuinely matters.
+  static List<ClusterModel> _sortedByPriority(
+      QuerySnapshot<Map<String, dynamic>> snap) {
+    final list =
+        snap.docs.map((d) => ClusterModel.fromMap(d.id, d.data())).toList();
+    list.sort(
+        (a, b) => (b.priorityScore ?? 0).compareTo(a.priorityScore ?? 0));
+    return list;
+  }
+
   Stream<List<ClusterModel>> watchClustersForConstituency(
       String constituencyId) {
     return _clusters
         .where('constituencyId', isEqualTo: constituencyId)
-        .orderBy('priorityScore', descending: true)
         .snapshots()
-        .map((snap) => snap.docs
-            .map((d) => ClusterModel.fromMap(d.id, d.data()))
-            .toList());
+        .map(_sortedByPriority);
   }
 
   Stream<List<ClusterModel>> watchClustersForBooth(String boothId) {
     return _clusters
         .where('boothId', isEqualTo: boothId)
+        .snapshots()
+        .map(_sortedByPriority);
+  }
+
+  /// Server-ordered and limited — for the ranked-works screen, which wants
+  /// the top N without shipping every cluster to the device. Safe to use
+  /// `orderBy` here only because `onSubmissionCreated` now always writes
+  /// `priorityScore` and `backfill:cluster-geo` fills in legacy documents;
+  /// anything still missing the field is invisible to this query by design.
+  Stream<List<ClusterModel>> watchTopClustersForConstituency(
+    String constituencyId, {
+    int limit = 20,
+  }) {
+    return _clusters
+        .where('constituencyId', isEqualTo: constituencyId)
         .orderBy('priorityScore', descending: true)
+        .limit(limit)
         .snapshots()
         .map((snap) => snap.docs
             .map((d) => ClusterModel.fromMap(d.id, d.data()))

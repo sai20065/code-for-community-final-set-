@@ -11,6 +11,7 @@ import '../../../core/services/constituency_resolution_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/location_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/app_map_tiles.dart';
 import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
@@ -260,10 +261,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
             onTap: (tapPosition, point) => setState(() => _pin = point),
           ),
           children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.prajadhvani.app',
-            ),
+            appBaseTileLayer(context),
             MarkerLayer(
               markers: [
                 Marker(

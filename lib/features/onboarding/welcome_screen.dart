@@ -70,6 +70,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Expanded(
                 child: _mpTab ? const _MpLoginForm() : const _CitizenEntry(),
               ),
+              // The signed-out doorway into the public dashboard. Deliberately
+              // below the fold of the login choice but always present: the
+              // civic data is public, and requiring an account just to look
+              // at your own area's problems would defeat the point of
+              // publishing it.
+              const Divider(height: 28),
+              TextButton.icon(
+                onPressed: () => context.go('/public/constituency'),
+                icon: const Icon(Icons.travel_explore_rounded, size: 18),
+                label: Text('${l10n.exploreYourArea} · ${l10n.noSignInNeeded}'),
+              ),
             ],
           ),
         ),
@@ -210,7 +221,7 @@ class _MpLoginFormState extends State<_MpLoginForm> {
         constituencyId: _constituencyController.text.trim(),
         password: _passwordController.text,
       );
-      if (mounted) context.go('/official/dashboard');
+      if (mounted) context.go('/public/dashboard');
     } catch (e) {
       setState(() {
         _loading = false;

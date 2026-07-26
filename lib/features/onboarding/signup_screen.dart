@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +12,13 @@ import '../../app/providers/onboarding_progress_provider.dart';
 import '../../app/theme.dart';
 import '../../core/models/user_model.dart';
 import '../../core/services/aadhaar_ocr_service.dart';
+import '../../core/services/app_exceptions.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/services/location_service.dart';
+import '../../core/utils/image_bytes.dart';
 import '../../l10n/app_localizations.dart';
+import '../../shared/widgets/app_map_tiles.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// New-citizen entry point — folds one-time Aadhaar-photo OCR (front AND
@@ -51,11 +54,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _phoneController = TextEditingController();
   final _codeController = TextEditingController();
 
-  File? _frontImage;
-  File? _backImage;
+  // Raw bytes, not `File` — `dart:io` doesn't exist on the web, where
+  // `XFile.path` is a blob URL that `File()` cannot open. Holding bytes
+  // keeps this screen buildable and working on every platform.
+  Uint8List? _frontImage;
+  Uint8List? _backImage;
+  String? _frontFileName;
+  String? _backFileName;
   bool _extracting = false;
   bool _manualEntry = false;
   String? _error;
+
+  /// Set when extraction *partly* succeeded. Rendered as a neutral hint,
+  /// not an error — the citizen got usable prefill and only needs to check
+  /// it, which is a different message from "this failed".
+  String? _notice;
   double? _extractionConfidence;
 
   // Captured home location (from the "Use my location" button / map pin).
@@ -82,15 +95,50 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       imageQuality: 70,
       maxWidth: 1600,
     );
-    if (picked != null) {
-      setState(() {
-        if (front) {
-          _frontImage = File(picked.path);
-        } else {
-          _backImage = File(picked.path);
-        }
-        _error = null;
-      });
+    if (picked == null) return;
+
+    // `imageQuality`/`maxWidth` above are honoured on mobile but silently
+    // ignored by image_picker_for_web, so a web pick arrives at full 12 MP.
+    // `downscaleForOcr` is a no-op when the bytes already fit.
+    final processed = await downscaleForOcr(
+      await picked.readAsBytes(),
+      mimeType: picked.mimeType ?? 'image/jpeg',
+    );
+    if (!mounted) return;
+
+    setState(() {
+      if (front) {
+        _frontImage = processed.bytes;
+        _frontFileName = processed.reEncoded ? 'aadhaar.png' : picked.name;
+      } else {
+        _backImage = processed.bytes;
+        _backFileName = processed.reEncoded ? 'aadhaar.png' : picked.name;
+      }
+      _error = null;
+      _notice = null;
+    });
+  }
+
+  /// One distinct, actionable sentence per failure cause. The point of the
+  /// typed [AadhaarOcrFailure] is that only `imageUnreadable` is fixed by
+  /// retaking the photo — telling someone to "try a clearer picture" when
+  /// their project's auth provider is disabled wastes their time.
+  String _messageFor(AadhaarOcrFailure failure, AppLocalizations l10n) {
+    switch (failure) {
+      case AadhaarOcrFailure.authUnavailable:
+        return l10n.aadhaarErrorAuthUnavailable;
+      case AadhaarOcrFailure.notSignedIn:
+        return l10n.aadhaarErrorNotSignedIn;
+      case AadhaarOcrFailure.imageTooLarge:
+        return l10n.aadhaarErrorImageTooLarge;
+      case AadhaarOcrFailure.imageUnreadable:
+        return l10n.aadhaarErrorUnreadable;
+      case AadhaarOcrFailure.modelUnavailable:
+        return l10n.aadhaarErrorModelBusy;
+      case AadhaarOcrFailure.network:
+        return l10n.aadhaarErrorNetwork;
+      case AadhaarOcrFailure.unknown:
+        return l10n.aadhaarErrorUnknown;
     }
   }
 
@@ -99,6 +147,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     setState(() {
       _extracting = true;
       _error = null;
+      _notice = null;
     });
     try {
       // The Aadhaar OCR Cloud Function is `onCall` and requires an
@@ -110,9 +159,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       await _authService.ensureSignedIn();
       final result = await _ocrService.extractDetails(
         front: _frontImage!,
+        frontFileName: _frontFileName,
         back: _backImage,
+        backFileName: _backFileName,
       );
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       setState(() {
         _extracting = false;
         _extractionConfidence = result.confidence;
@@ -120,17 +172,36 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         if (result.pincode != null) _pincodeController.text = result.pincode!;
         if (result.address != null) _addressLabel = result.address!;
         if (result.wardNumber != null) _wardController.text = result.wardNumber!;
+
         if (!result.looksUsable) {
-          _error = AppLocalizations.of(context).couldNotReadClearly;
+          _error = l10n.couldNotReadClearly;
+          _manualEntry = true;
+        } else if (result.backDropped) {
+          _notice = l10n.aadhaarBackImageSkippedTooLarge;
+          _manualEntry = true;
+        } else if (result.isPartial) {
+          // Partial success is not a failure: they got real prefill and
+          // only need to check it. Showing red here would push people to
+          // discard perfectly good extracted data and start over.
+          _notice = l10n.aadhaarPartialExtracted;
           _manualEntry = true;
         }
       });
-    } catch (_) {
+    } on AadhaarOcrException catch (e) {
+      debugPrint('Aadhaar OCR failed: $e');
       if (!mounted) return;
       setState(() {
         _extracting = false;
         _manualEntry = true;
-        _error = AppLocalizations.of(context).couldNotProcessImage;
+        _error = _messageFor(e.failure, AppLocalizations.of(context));
+      });
+    } catch (e, st) {
+      debugPrint('Aadhaar OCR unexpected failure: $e\n$st');
+      if (!mounted) return;
+      setState(() {
+        _extracting = false;
+        _manualEntry = true;
+        _error = AppLocalizations.of(context).aadhaarErrorUnknown;
       });
     }
   }
@@ -357,6 +428,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 const SizedBox(height: 10),
                 Text(_error!, style: const TextStyle(color: AppColors.vermilion, fontSize: 12.5)),
               ],
+              // Deliberately a separate, non-red slot from `_error`: a
+              // partial extraction gave the citizen usable prefill, and
+              // colouring that failure-red pushes people to throw it away.
+              if (_notice != null) ...[
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.info_outline_rounded,
+                        size: 15, color: AppColors.indigo),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        _notice!,
+                        style: const TextStyle(
+                            color: AppColors.indigo, fontSize: 12.5),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 6),
               Align(
                 alignment: Alignment.centerLeft,
@@ -412,10 +504,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           onTap: (_, point) => _movePin(point),
                         ),
                         children: [
-                          TileLayer(
-                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName: 'com.prajadhvani.app',
-                          ),
+                          appBaseTileLayer(context),
                           MarkerLayer(markers: [
                             Marker(
                               point: _homePin!,
@@ -425,6 +514,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                   color: AppColors.vermilion, size: 34),
                             ),
                           ]),
+                          appMapAttributionCompact(),
                         ],
                       ),
                     ),
@@ -540,7 +630,7 @@ class _AadhaarImageSlot extends StatelessWidget {
   });
 
   final String label;
-  final File? image;
+  final Uint8List? image;
   final VoidCallback onCamera;
   final VoidCallback onGallery;
 
@@ -555,7 +645,7 @@ class _AadhaarImageSlot extends StatelessWidget {
         if (image != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.file(image!, height: 90, fit: BoxFit.cover),
+            child: Image.memory(image!, height: 90, fit: BoxFit.cover),
           )
         else
           Container(

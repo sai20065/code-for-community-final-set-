@@ -28,7 +28,9 @@ class PrajaDhvaniApp extends ConsumerWidget {
       title: 'Prajadhwani',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.citizen,
-      routerConfig: appRouter,
+      // A provider rather than a global: the router's redirect needs to read
+      // auth state to gate the remaining official-only routes.
+      routerConfig: ref.watch(appRouterProvider),
       locale: languageCode != null ? Locale(languageCode) : null,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

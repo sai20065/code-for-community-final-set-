@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'app_exceptions.dart';
+
 /// Citizen identity has two entry points, both landing on the same
 /// `users/{uid}` document shape: **Phone** (real Firebase Phone Auth with
 /// SMS OTP) and **Anonymous** (invisible, no credential — still available as
@@ -38,11 +40,41 @@ class AuthService {
   /// Signs in anonymously if no session exists yet. Firebase Auth persists
   /// the anonymous session across app restarts, so this only actually hits
   /// the network the very first time a device opens the app.
+  ///
+  /// Translates "the Anonymous provider isn't enabled on this Firebase
+  /// project" into [AadhaarOcrFailure.authUnavailable] rather than letting a
+  /// raw `FirebaseAuthException` escape. That distinction matters: this is
+  /// called from the Aadhaar upload step *before* the citizen has picked a
+  /// sign-in method, so a disabled provider used to surface to them as
+  /// "we couldn't read your photo" — a project misconfiguration disguised
+  /// as an image problem, which is close to undiagnosable from the UI.
   Future<User> ensureSignedIn() async {
     final existing = _auth.currentUser;
     if (existing != null) return existing;
-    final credential = await _auth.signInAnonymously();
-    return credential.user!;
+    try {
+      final credential = await _auth.signInAnonymously();
+      return credential.user!;
+    } on FirebaseAuthException catch (e) {
+      const providerDisabledCodes = {
+        'operation-not-allowed',
+        'admin-restricted-operation',
+        'configuration-not-found',
+      };
+      if (providerDisabledCodes.contains(e.code) ||
+          (e.message?.contains('CONFIGURATION_NOT_FOUND') ?? false)) {
+        throw AadhaarOcrException(
+          AadhaarOcrFailure.authUnavailable,
+          debugMessage: 'Anonymous sign-in unavailable: ${e.code} ${e.message}',
+        );
+      }
+      if (e.code == 'network-request-failed') {
+        throw AadhaarOcrException(
+          AadhaarOcrFailure.network,
+          debugMessage: e.message,
+        );
+      }
+      rethrow;
+    }
   }
 
   /// Starts real Firebase Phone Auth for a citizen entering their number on

@@ -10,6 +10,19 @@ class BoothModel {
   final String? dominantTheme;
   final String? localContext;
 
+  /// Population/household estimates for the booth's catchment, used to
+  /// scale a cluster's impact when no ward population is available.
+  /// Nullable on purpose — the agents are instructed to say "unknown"
+  /// rather than invent a figure, which only works if we never hand them
+  /// a fabricated one.
+  final int? estimatedPopulation;
+  final int? estimatedHouseholds;
+
+  /// The ward/taluk this booth sits in, when known. Lets a cluster inherit
+  /// an administrative unit even when its tickets carried no GPS fix.
+  final String? wardId;
+  final String? talukId;
+
   const BoothModel({
     required this.id,
     required this.constituencyId,
@@ -21,6 +34,10 @@ class BoothModel {
     this.submissionVolume = 0,
     this.dominantTheme,
     this.localContext,
+    this.estimatedPopulation,
+    this.estimatedHouseholds,
+    this.wardId,
+    this.talukId,
   });
 
   factory BoothModel.fromMap(String id, Map<String, dynamic> map) {
@@ -36,6 +53,10 @@ class BoothModel {
       submissionVolume: map['submissionVolume'] as int? ?? 0,
       dominantTheme: map['dominantTheme'] as String?,
       localContext: map['localContext'] as String?,
+      estimatedPopulation: (map['estimatedPopulation'] as num?)?.toInt(),
+      estimatedHouseholds: (map['estimatedHouseholds'] as num?)?.toInt(),
+      wardId: map['wardId'] as String?,
+      talukId: map['talukId'] as String?,
     );
   }
 
@@ -50,6 +71,10 @@ class BoothModel {
       'submissionVolume': submissionVolume,
       'dominantTheme': dominantTheme,
       'localContext': localContext,
+      'estimatedPopulation': estimatedPopulation,
+      'estimatedHouseholds': estimatedHouseholds,
+      'wardId': wardId,
+      'talukId': talukId,
     };
   }
 

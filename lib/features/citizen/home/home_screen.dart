@@ -6,7 +6,11 @@ import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
+import '../../../core/services/citizen_stats.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/citizen_activity_widgets.dart';
+import '../../../shared/widgets/consistency_map.dart';
+import '../../../shared/widgets/hotspot_leaderboard.dart';
 import '../../../shared/widgets/mp_constituency_card.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
@@ -120,8 +124,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 if (uid != null) ...[
                   const SizedBox(height: 14),
+                  _ConsistencyStrip(uid: uid),
+                  const SizedBox(height: 14),
                   _MyRecentReports(uid: uid),
                 ],
+                const SizedBox(height: 14),
+                profileAsync.when(
+                  data: (profile) {
+                    final cid = profile?.constituencyId;
+                    if (cid == null) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: [
+                          NearYouBanner(constituencyId: cid),
+                          const SizedBox(height: 10),
+                          // The citizen's doorway into the public dashboard.
+                          // Their own reports are only half the picture; the
+                          // constituency-wide view is what shows their report
+                          // sitting alongside forty neighbours' identical ones.
+                          Material(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(AppRadii.md),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(AppRadii.md),
+                              onTap: () => context.go('/public/dashboard'),
+                              child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.travel_explore_rounded,
+                                        size: 20, color: AppColors.indigo),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        l10n.seePublicDashboard,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    const Icon(Icons.chevron_right_rounded,
+                                        color: AppColors.inkFaint),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
                 const SizedBox(height: 14),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -366,6 +422,99 @@ final _userSubmissionsProvider =
     StreamProvider.family<List<SubmissionModel>, String>((ref, uid) {
   return ref.watch(firestoreServiceProvider).watchUserSubmissions(uid);
 });
+
+/// Compact contribution grid + weekly streaks, tappable through to the full
+/// activity card on the profile screen.
+///
+/// Reuses the *existing* `_userSubmissionsProvider` that `_MyRecentReports`
+/// already watches — riverpod dedupes the stream, so this whole strip costs
+/// zero additional Firestore reads. That's the reason these stats are
+/// derived client-side instead of maintained in a `users/{uid}/stats`
+/// document: no new writes, no new rules, and it works from the offline
+/// cache.
+class _ConsistencyStrip extends ConsumerWidget {
+  const _ConsistencyStrip({required this.uid});
+
+  final String uid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final submissionsAsync = ref.watch(_userSubmissionsProvider(uid));
+
+    return submissionsAsync.maybeWhen(
+      data: (submissions) {
+        // A brand-new citizen gets an invitation, not an empty grid. Six
+        // months of blank squares on day one reads as failure.
+        if (submissions.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.indigoMist,
+                borderRadius: BorderRadius.circular(AppRadii.md),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.auto_graph_rounded,
+                      size: 18, color: AppColors.indigo),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      l10n.consistencyEmptyNudge,
+                      style: const TextStyle(fontSize: 12.5, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        final grid = buildContributionGrid(submissions, weeks: 13);
+        final streaks = computeStreaks(submissions);
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Material(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppRadii.md),
+              onTap: () => context.go('/profile'),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          l10n.yourCivicActivity,
+                          style: const TextStyle(
+                              fontSize: 12.5, fontWeight: FontWeight.w700),
+                        ),
+                        const Spacer(),
+                        const Icon(Icons.chevron_right_rounded,
+                            size: 18, color: AppColors.inkFaint),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    StreakBadgeRow(stats: streaks, compact: true),
+                    const SizedBox(height: 12),
+                    ConsistencyMap(grid: grid, cellSize: 10),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      orElse: () => const SizedBox.shrink(),
+    );
+  }
+}
 
 class _MyReportCard extends StatelessWidget {
   const _MyReportCard({required this.submission, required this.onTap});

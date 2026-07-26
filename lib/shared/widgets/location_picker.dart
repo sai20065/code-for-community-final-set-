@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../../app/theme.dart';
 import '../../core/services/location_service.dart';
 import '../../l10n/app_localizations.dart';
+import 'app_map_tiles.dart';
 
 enum LocationPickMode { current, home, pin }
 
@@ -155,10 +156,7 @@ class _LocationPickerState extends State<LocationPicker> {
                   },
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.prajadhvani.app',
-                  ),
+                  appBaseTileLayer(context),
                   if (_pin != null)
                     MarkerLayer(markers: [
                       Marker(
@@ -169,6 +167,7 @@ class _LocationPickerState extends State<LocationPicker> {
                             color: AppColors.vermilion, size: 34),
                       ),
                     ]),
+                  appMapAttributionCompact(),
                 ],
               ),
             ),
