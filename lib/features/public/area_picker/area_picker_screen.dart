@@ -37,12 +37,50 @@ bool _isBengaluruUrban(String districtName) {
       n.contains('urban');
 }
 
+/// Bengaluru's wards are keyed by GBA corporation — the five zones the 369
+/// wards are split across (`corporation` in `gba_wards.json`). Ward numbers
+/// only repeat *within* a corporation, so this is also the level that makes
+/// a ward id unique.
+///
+/// Used as an extra picker level inside Bengaluru rather than showing all
+/// 369 wards flat: each ward document carries its full boundary polygon, so
+/// a flat list would pull several megabytes of geometry just to render
+/// names.
+const _kGbaCorporations = ['Central', 'East', 'North', 'South', 'West'];
+
 class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
   String _query = '';
   String? _districtId;
   String _districtName = '';
+  String? _corporation;
 
   bool get _atDistrictLevel => _districtId == null;
+
+  void _back() {
+    if (_corporation != null) {
+      setState(() {
+        _corporation = null;
+        _query = '';
+      });
+      return;
+    }
+    if (!_atDistrictLevel) {
+      setState(() {
+        _districtId = null;
+        _districtName = '';
+        _query = '';
+      });
+      return;
+    }
+    context.canPop() ? context.pop() : context.go('/welcome');
+  }
+
+  void _resetToDistricts() => setState(() {
+        _districtId = null;
+        _districtName = '';
+        _corporation = null;
+        _query = '';
+      });
 
   Future<void> _choose({
     required AreaKind kind,
@@ -66,6 +104,52 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
     if (mounted) context.go('/public/map');
   }
 
+  /// District → Taluk everywhere, District → Corporation → Ward inside
+  /// Bengaluru Urban.
+  Widget _body() {
+    if (_atDistrictLevel) {
+      return _DistrictList(
+        query: _query,
+        onSelect: (d) => setState(() {
+          _districtId = d.id;
+          _districtName = d.name;
+          _query = '';
+        }),
+      );
+    }
+    if (_isBengaluruUrban(_districtName)) {
+      if (_corporation == null) {
+        return _CorporationList(
+          query: _query,
+          onSelect: (corporation) => setState(() {
+            _corporation = corporation;
+            _query = '';
+          }),
+        );
+      }
+      return _WardList(
+        corporation: _corporation!,
+        query: _query,
+        onSelect: (w) => _choose(
+          kind: AreaKind.ward,
+          id: w.id,
+          name: w.wardName,
+          constituencyId: w.constituencyId,
+        ),
+      );
+    }
+    return _TalukList(
+      districtId: _districtId!,
+      query: _query,
+      onSelect: (t) => _choose(
+        kind: AreaKind.taluk,
+        id: t.id,
+        name: t.talukName,
+        constituencyId: t.constituencyId,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,19 +157,11 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () {
-            if (!_atDistrictLevel) {
-              setState(() {
-                _districtId = null;
-                _districtName = '';
-                _query = '';
-              });
-              return;
-            }
-            context.canPop() ? context.pop() : context.go('/welcome');
-          },
+          onPressed: _back,
         ),
-        title: Text(_atDistrictLevel ? 'Choose your district' : _districtName),
+        title: Text(_atDistrictLevel
+            ? 'Choose your district'
+            : _corporation ?? _districtName),
       ),
       body: SafeArea(
         child: Column(
@@ -93,11 +169,11 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: TextField(
-                key: ValueKey(_districtId ?? 'districts'),
+                key: ValueKey('${_districtId ?? "districts"}|$_corporation'),
                 decoration: InputDecoration(
                   hintText: _atDistrictLevel
                       ? 'Search districts'
-                      : 'Search within $_districtName',
+                      : 'Search within ${_corporation ?? _districtName}',
                   prefixIcon: const Icon(Icons.search_rounded),
                   isDense: true,
                   filled: true,
@@ -112,43 +188,14 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
             ),
             _Breadcrumb(
               districtName: _districtName,
-              onReset: () => setState(() {
-                _districtId = null;
-                _districtName = '';
+              corporation: _corporation,
+              onReset: _resetToDistricts,
+              onDistrictTap: () => setState(() {
+                _corporation = null;
                 _query = '';
               }),
             ),
-            Expanded(
-              child: _atDistrictLevel
-                  ? _DistrictList(
-                      query: _query,
-                      onSelect: (d) => setState(() {
-                        _districtId = d.id;
-                        _districtName = d.name;
-                        _query = '';
-                      }),
-                    )
-                  : _isBengaluruUrban(_districtName)
-                      ? _WardList(
-                          query: _query,
-                          onSelect: (w) => _choose(
-                            kind: AreaKind.ward,
-                            id: w.id,
-                            name: w.wardName,
-                            constituencyId: w.constituencyId,
-                          ),
-                        )
-                      : _TalukList(
-                          districtId: _districtId!,
-                          query: _query,
-                          onSelect: (t) => _choose(
-                            kind: AreaKind.taluk,
-                            id: t.id,
-                            name: t.talukName,
-                            constituencyId: t.constituencyId,
-                          ),
-                        ),
-            ),
+            Expanded(child: _body()),
           ],
         ),
       ),
@@ -157,10 +204,17 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
 }
 
 class _Breadcrumb extends StatelessWidget {
-  const _Breadcrumb({required this.districtName, required this.onReset});
+  const _Breadcrumb({
+    required this.districtName,
+    required this.corporation,
+    required this.onReset,
+    required this.onDistrictTap,
+  });
 
   final String districtName;
+  final String? corporation;
   final VoidCallback onReset;
+  final VoidCallback onDistrictTap;
 
   @override
   Widget build(BuildContext context) {
@@ -172,23 +226,93 @@ class _Breadcrumb extends StatelessWidget {
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            InkWell(
-              onTap: onReset,
-              child: const Text('Karnataka',
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.indigo)),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6),
-              child: Icon(Icons.chevron_right_rounded,
-                  size: 14, color: AppColors.inkFaint),
-            ),
-            Text(districtName,
-                style: const TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+            _Crumb(label: 'Karnataka', onTap: onReset),
+            const _CrumbArrow(),
+            if (corporation == null)
+              Text(districtName,
+                  style:
+                      const TextStyle(fontSize: 12, color: AppColors.inkSoft))
+            else ...[
+              _Crumb(label: districtName, onTap: onDistrictTap),
+              const _CrumbArrow(),
+              Text('$corporation zone',
+                  style:
+                      const TextStyle(fontSize: 12, color: AppColors.inkSoft)),
+            ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _Crumb extends StatelessWidget {
+  const _Crumb({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Text(label,
+          style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.indigo)),
+    );
+  }
+}
+
+class _CrumbArrow extends StatelessWidget {
+  const _CrumbArrow();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 6),
+      child: Icon(Icons.chevron_right_rounded,
+          size: 14, color: AppColors.inkFaint),
+    );
+  }
+}
+
+/// The five GBA corporations. Rendered from a constant rather than a
+/// Firestore query: the zones are fixed by the 19 Nov 2025 delimitation
+/// notification, and reading 369 ward documents (each carrying a full
+/// boundary polygon) just to derive five distinct strings would cost
+/// megabytes for a list that never changes.
+class _CorporationList extends StatelessWidget {
+  const _CorporationList({required this.query, required this.onSelect});
+
+  final String query;
+  final void Function(String corporation) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = query.isEmpty
+        ? _kGbaCorporations
+        : _kGbaCorporations
+            .where((c) => c.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+    if (filtered.isEmpty) {
+      return const _Empty(
+        message: 'No zone matches that search.',
+        hint: 'Bengaluru has five GBA zones: Central, East, North, South '
+            'and West.',
+      );
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+      itemCount: filtered.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, i) => _AreaTile(
+        icon: Icons.grid_view_rounded,
+        tint: AppColors.indigo,
+        title: '${filtered[i]} zone',
+        subtitle: 'GBA / BBMP wards',
+        onTap: () => onSelect(filtered[i]),
       ),
     );
   }
@@ -301,16 +425,19 @@ class _TalukList extends ConsumerWidget {
 }
 
 class _WardList extends ConsumerWidget {
-  const _WardList({required this.query, required this.onSelect});
+  const _WardList({
+    required this.corporation,
+    required this.query,
+    required this.onSelect,
+  });
 
+  final String corporation;
   final String query;
   final void Function(WardModel ward) onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Wards are keyed by corporation, not district — Bengaluru Urban is the
-    // only district with a ward layer at all, so the two are equivalent here.
-    final async = ref.watch(wardsForCorporationProvider('GBA'));
+    final async = ref.watch(wardsForCorporationProvider(corporation));
     return async.when(
       data: (all) {
         final filtered = query.isEmpty
