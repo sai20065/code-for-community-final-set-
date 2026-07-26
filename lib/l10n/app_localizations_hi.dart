@@ -864,34 +864,44 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backToSignIn => 'साइन इन पर वापस जाएं';
 
   @override
-  String get aadhaarErrorAuthUnavailable => 'अभी साइन-इन उपलब्ध नहीं है, इसलिए हम रीडर नहीं चला सके। आप नीचे अपनी जानकारी टाइप कर सकते हैं।';
+  String get aadhaarErrorAuthUnavailable =>
+      'अभी साइन-इन उपलब्ध नहीं है, इसलिए हम रीडर नहीं चला सके। आप नीचे अपनी जानकारी टाइप कर सकते हैं।';
 
   @override
-  String get aadhaarErrorNotSignedIn => 'आपका सत्र समाप्त हो गया। कृपया फिर से प्रयास करें, या नीचे अपनी जानकारी टाइप करें।';
+  String get aadhaarErrorNotSignedIn =>
+      'आपका सत्र समाप्त हो गया। कृपया फिर से प्रयास करें, या नीचे अपनी जानकारी टाइप करें।';
 
   @override
-  String get aadhaarErrorImageTooLarge => 'यह फ़ोटो बहुत बड़ी है। कार्ड की पास से ली गई छोटी फ़ोटो आज़माएँ।';
+  String get aadhaarErrorImageTooLarge =>
+      'यह फ़ोटो बहुत बड़ी है। कार्ड की पास से ली गई छोटी फ़ोटो आज़माएँ।';
 
   @override
-  String get aadhaarErrorUnreadable => 'हम वह कार्ड नहीं पढ़ सके। बेहतर रोशनी में, बिना चमक वाली सीधी फ़ोटो लें — या नीचे अपनी जानकारी टाइप करें।';
+  String get aadhaarErrorUnreadable =>
+      'हम वह कार्ड नहीं पढ़ सके। बेहतर रोशनी में, बिना चमक वाली सीधी फ़ोटो लें — या नीचे अपनी जानकारी टाइप करें।';
 
   @override
-  String get aadhaarErrorModelBusy => 'हमारा रीडर अभी व्यस्त है। थोड़ी देर में फिर प्रयास करें, या नीचे अपनी जानकारी टाइप करें।';
+  String get aadhaarErrorModelBusy =>
+      'हमारा रीडर अभी व्यस्त है। थोड़ी देर में फिर प्रयास करें, या नीचे अपनी जानकारी टाइप करें।';
 
   @override
-  String get aadhaarErrorNetwork => 'नेटवर्क से संपर्क नहीं हो सका। अपना कनेक्शन जाँचें और फिर प्रयास करें, या नीचे अपनी जानकारी टाइप करें।';
+  String get aadhaarErrorNetwork =>
+      'नेटवर्क से संपर्क नहीं हो सका। अपना कनेक्शन जाँचें और फिर प्रयास करें, या नीचे अपनी जानकारी टाइप करें।';
 
   @override
-  String get aadhaarErrorUnknown => 'कार्ड पढ़ने में कुछ गड़बड़ हुई। आप इसके बजाय नीचे अपनी जानकारी टाइप कर सकते हैं।';
+  String get aadhaarErrorUnknown =>
+      'कार्ड पढ़ने में कुछ गड़बड़ हुई। आप इसके बजाय नीचे अपनी जानकारी टाइप कर सकते हैं।';
 
   @override
-  String get aadhaarPartialExtracted => 'हमने आपके कार्ड का कुछ हिस्सा पढ़ा। कृपया नीचे दी गई जानकारी जाँचें और छूटी हुई जानकारी भरें।';
+  String get aadhaarPartialExtracted =>
+      'हमने आपके कार्ड का कुछ हिस्सा पढ़ा। कृपया नीचे दी गई जानकारी जाँचें और छूटी हुई जानकारी भरें।';
 
   @override
-  String get aadhaarBackImageSkippedTooLarge => 'पीछे की फ़ोटो बहुत बड़ी थी, इसलिए हमने केवल सामने का हिस्सा पढ़ा। कृपया नीचे पता जाँचें।';
+  String get aadhaarBackImageSkippedTooLarge =>
+      'पीछे की फ़ोटो बहुत बड़ी थी, इसलिए हमने केवल सामने का हिस्सा पढ़ा। कृपया नीचे पता जाँचें।';
 
   @override
-  String get mapLayerFailed => 'मानचित्र का कुछ हिस्सा लोड नहीं हो सका। कुछ वार्ड, बूथ या हॉटस्पॉट गायब हो सकते हैं।';
+  String get mapLayerFailed =>
+      'मानचित्र का कुछ हिस्सा लोड नहीं हो सका। कुछ वार्ड, बूथ या हॉटस्पॉट गायब हो सकते हैं।';
 
   @override
   String get mapRetry => 'पुनः प्रयास करें';
@@ -925,10 +935,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get searchConstituency => 'निर्वाचन क्षेत्र खोजें';
 
   @override
-  String get noConstituenciesFound => 'उस खोज से कोई निर्वाचन क्षेत्र मेल नहीं खाता।';
+  String get noConstituenciesFound =>
+      'उस खोज से कोई निर्वाचन क्षेत्र मेल नहीं खाता।';
 
   @override
-  String get publicPrivacyNote => 'यहाँ केवल गुमनाम टिकट आईडी और अनुमानित स्थान दिखाए जाते हैं। नाम, पते या संपर्क विवरण कभी प्रकाशित नहीं किए जाते।';
+  String get publicPrivacyNote =>
+      'यहाँ केवल गुमनाम टिकट आईडी और अनुमानित स्थान दिखाए जाते हैं। नाम, पते या संपर्क विवरण कभी प्रकाशित नहीं किए जाते।';
 
   @override
   String get trackedIssues => 'ट्रैक किए गए मुद्दे';
@@ -940,13 +952,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get officialActions => 'आधिकारिक कार्रवाई';
 
   @override
-  String get officialActionsHint => 'इन्हें केवल आप देख सकते हैं — इनके लिए आपका आधिकारिक साइन-इन आवश्यक है।';
+  String get officialActionsHint =>
+      'इन्हें केवल आप देख सकते हैं — इनके लिए आपका आधिकारिक साइन-इन आवश्यक है।';
 
   @override
   String get updateTicketStatuses => 'टिकट स्थिति अपडेट करें';
 
   @override
-  String get generateReportExplainer => 'आपके निर्वाचन क्षेत्र के लिए एक AI-लिखित PDF ब्रीफिंग बनाता है: कार्यकारी सारांश, अनुशंसित कार्रवाई, और प्राथमिकता के अनुसार शीर्ष मुद्दे। केवल आपके निर्वाचन क्षेत्र तक सीमित और कभी सार्वजनिक रूप से साझा नहीं किया जाता।';
+  String get generateReportExplainer =>
+      'आपके निर्वाचन क्षेत्र के लिए एक AI-लिखित PDF ब्रीफिंग बनाता है: कार्यकारी सारांश, अनुशंसित कार्रवाई, और प्राथमिकता के अनुसार शीर्ष मुद्दे। केवल आपके निर्वाचन क्षेत्र तक सीमित और कभी सार्वजनिक रूप से साझा नहीं किया जाता।';
 
   @override
   String get solutionCardTitle => 'समाधान कार्ड';
@@ -958,13 +972,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get forDepartment => 'विभाग के लिए';
 
   @override
-  String get routedToDepartment => 'भेजा गया';
-
-  @override
   String get escalatesTo => 'आगे भेजा जाता है';
 
   @override
-  String get routingApproximate => 'इस क्षेत्र के लिए अभी कोई सटीक स्थानीय निकाय मैप नहीं है, इसलिए यह एक व्यापक विकल्प है।';
+  String get routingApproximate =>
+      'इस क्षेत्र के लिए अभी कोई सटीक स्थानीय निकाय मैप नहीं है, इसलिए यह एक व्यापक विकल्प है।';
 
   @override
   String get estimatedCost => 'अनुमानित लागत';
@@ -1006,13 +1018,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get evidenceFrom => 'नागरिक रिपोर्टों से साक्ष्य';
 
   @override
-  String get analysisPending => 'अभी कोई विश्लेषण नहीं। पर्याप्त पड़ोसियों द्वारा रिपोर्ट करने पर मुद्दे को पूरा समाधान कार्ड मिलता है।';
+  String get analysisPending =>
+      'अभी कोई विश्लेषण नहीं। पर्याप्त पड़ोसियों द्वारा रिपोर्ट करने पर मुद्दे को पूरा समाधान कार्ड मिलता है।';
 
   @override
-  String get analysisDegradedNote => 'इस विश्लेषण का कुछ हिस्सा स्वचालित रूप से पूरा नहीं हो सका, इसलिए कुछ अनुभाग सरल किए गए हैं।';
+  String get analysisDegradedNote =>
+      'इस विश्लेषण का कुछ हिस्सा स्वचालित रूप से पूरा नहीं हो सका, इसलिए कुछ अनुभाग सरल किए गए हैं।';
 
   @override
-  String get aiGeneratedDisclaimer => 'नागरिक रिपोर्टों और सामान्य नगरपालिका लागत सीमाओं से AI द्वारा तैयार। कार्रवाई या बजट देने से पहले स्थल सर्वेक्षण से सत्यापित करें।';
+  String get aiGeneratedDisclaimer =>
+      'नागरिक रिपोर्टों और सामान्य नगरपालिका लागत सीमाओं से AI द्वारा तैयार। कार्रवाई या बजट देने से पहले स्थल सर्वेक्षण से सत्यापित करें।';
 
   @override
   String get viewSolutionCard => 'समाधान कार्ड देखें';
@@ -1100,6 +1115,9 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get routedToDepartment => 'भेजा गया';
+
+  @override
   String get yourCivicActivity => 'आपकी नागरिक गतिविधि';
 
   @override
@@ -1146,7 +1164,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get badgeLockedHint => 'अनलॉक करने के लिए रिपोर्ट करते रहें';
 
   @override
-  String get consistencyEmptyNudge => 'आपकी पहली रिपोर्ट यहां दिखनी शुरू हो जाएगी।';
+  String get consistencyEmptyNudge =>
+      'आपकी पहली रिपोर्ट यहां दिखनी शुरू हो जाएगी।';
 
   @override
   String get contributionsInLast26Weeks => 'पिछले 26 सप्ताह की रिपोर्ट';
@@ -1163,7 +1182,8 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get beTheFirstThisWeek => 'इस सप्ताह रिपोर्ट करने वाले पहले व्यक्ति बनें';
+  String get beTheFirstThisWeek =>
+      'इस सप्ताह रिपोर्ट करने वाले पहले व्यक्ति बनें';
 
   @override
   String get topHotspots => 'शीर्ष हॉटस्पॉट';
@@ -1172,7 +1192,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get latestSolutions => 'नवीनतम समाधान';
 
   @override
-  String get noTrackedIssuesYet => 'इस क्षेत्र के लिए अभी तक कोई मुद्दा ट्रैक नहीं किया गया।';
+  String get noTrackedIssuesYet =>
+      'इस क्षेत्र के लिए अभी तक कोई मुद्दा ट्रैक नहीं किया गया।';
 
   @override
   String reportsCountShort(int count) {

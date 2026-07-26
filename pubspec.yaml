@@ -65,6 +65,11 @@ flutter:
     - assets/images/
     - assets/icon/
     - assets/sounds/
+    # Simplified Karnataka district/taluk outlines for the statewide map.
+    # Bundled rather than fetched: the full-precision copies in Firestore
+    # total ~5.5MB, which is too slow to draw a whole-state overview from.
+    # Display only — see lib/core/services/karnataka_geo_service.dart.
+    - assets/geo/
 
 # Icon generation uses two separate config files (flutter_launcher_icons-
 # android.yaml, flutter_launcher_icons-web.yaml), NOT this shared section

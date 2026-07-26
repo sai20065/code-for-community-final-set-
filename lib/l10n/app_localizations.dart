@@ -129,7 +129,7 @@ abstract class AppLocalizations {
   /// No description provided for @tabMpOffice.
   ///
   /// In en, this message translates to:
-  /// **'MP office'**
+  /// **'Government access'**
   String get tabMpOffice;
 
   /// No description provided for @signIn.
@@ -1746,12 +1746,6 @@ abstract class AppLocalizations {
   /// **'For the department'**
   String get forDepartment;
 
-  /// No description provided for @routedToDepartment.
-  ///
-  /// In en, this message translates to:
-  /// **'Routed to'**
-  String get routedToDepartment;
-
   /// No description provided for @escalatesTo.
   ///
   /// In en, this message translates to:
@@ -2009,6 +2003,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'~{count} households'**
   String householdsAddressed(int count);
+
+  /// No description provided for @routedToDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Routed to'**
+  String get routedToDepartment;
 
   /// No description provided for @yourCivicActivity.
   ///

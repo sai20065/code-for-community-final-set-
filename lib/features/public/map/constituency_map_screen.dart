@@ -20,6 +20,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/app_map_tiles.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 import '../booth/booth_detail_sheet.dart';
+import 'area_reports_sheet.dart';
 
 // ---------------------------------------------------------------------------
 // GeoJSON → LatLng
@@ -96,15 +97,9 @@ LatLng _ringCenter(List<LatLng> ring) {
 // Colour language
 // ---------------------------------------------------------------------------
 
-/// Red / amber / teal severity ramp, used identically for polygon fills,
-/// area indicators and the legend so one colour never means two things.
-Color _severityColor(double? priority) {
-  if (priority == null) return AppColors.indigoMist;
-  if (priority >= 70) return AppColors.vermilion;
-  if (priority >= 40) return AppColors.saffron;
-  return AppColors.teal;
-}
-
+/// Booth pins keep their own three-band scale, which comes from
+/// `BoothModel.densityLevel` (a precomputed string) rather than a numeric
+/// priority — same colours as [severityColor], different input.
 Color _densityColor(String level) {
   switch (level) {
     case 'red':
@@ -155,8 +150,6 @@ class _MapArea {
   /// The `publicTickets` field this area is queried by. Ward and taluk ids
   /// live in different columns, so the indicator has to say which.
   String get ticketField => layer == _AreaLayer.ward ? 'wardId' : 'talukId';
-
-  String get ticketQueryKey => '$ticketField:$id';
 }
 
 // ---------------------------------------------------------------------------
@@ -280,7 +273,21 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _AreaReportsSheet(area: area),
+      builder: (_) => AreaReportsSheet(
+        areaName: area.name,
+        ticketField: area.ticketField,
+        areaId: area.id,
+        reportCount: area.reportCount,
+        priority: area.priority,
+        icon: area.layer == _AreaLayer.ward
+            ? Icons.holiday_village_rounded
+            : Icons.location_city_rounded,
+        representativeLine: [
+          if ((area.mlaName ?? '').isNotEmpty) area.mlaName!,
+          if ((area.assemblyConstituency ?? '').isNotEmpty)
+            area.assemblyConstituency!,
+        ].join(' · '),
+      ),
     );
   }
 
@@ -390,9 +397,9 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
                         for (final ring in area.rings)
                           Polygon(
                             points: ring,
-                            color: _severityColor(area.priority)
+                            color: severityColor(area.priority)
                                 .withValues(alpha: 0.22),
-                            borderColor: _severityColor(area.priority)
+                            borderColor: severityColor(area.priority)
                                 .withValues(alpha: 0.85),
                             borderStrokeWidth: 1.4,
                           ),
@@ -623,7 +630,7 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
     // filter is on — so a filtered map reads as "this is the water map"
     // rather than looking identical to the unfiltered one.
     final color = _themeFilter == null
-        ? _severityColor(area.priority)
+        ? severityColor(area.priority)
         : categoryColor(_themeFilter!);
     final diameter = _indicatorDiameter(area.reportCount);
     return Marker(
@@ -1008,318 +1015,6 @@ class _MapErrorState extends StatelessWidget {
               icon: const Icon(Icons.refresh_rounded, size: 18),
               label: Text(retryLabel),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Area reports sheet
-// ---------------------------------------------------------------------------
-
-/// Every report filed inside one ward/taluk, opened by tapping that area's
-/// circle indicator.
-///
-/// Reads `publicTickets` — the anonymised projection — so this list carries
-/// a token number, an AI-written summary and an area, and structurally
-/// cannot carry a name, a phone number or an exact address. That holds for
-/// officials too: this is the same sheet they get.
-class _AreaReportsSheet extends ConsumerWidget {
-  const _AreaReportsSheet({required this.area});
-
-  final _MapArea area;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ticketsAsync =
-        ref.watch(publicTicketsForAreaProvider(area.ticketQueryKey));
-    final tint = _severityColor(area.priority);
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.35,
-      maxChildSize: 0.92,
-      expand: false,
-      builder: (context, scrollController) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.paper,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [tint.withValues(alpha: 0.16), Colors.transparent],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.inkFaint.withValues(alpha: 0.35),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: tint.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(13),
-                        ),
-                        child: Icon(
-                          area.layer == _AreaLayer.ward
-                              ? Icons.holiday_village_rounded
-                              : Icons.location_city_rounded,
-                          color: tint,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(area.name,
-                                style: const TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w800)),
-                            Text(
-                              '${area.reportCount} report'
-                              '${area.reportCount == 1 ? "" : "s"} tracked here',
-                              style: const TextStyle(
-                                  fontSize: 12, color: AppColors.inkSoft),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  if ((area.mlaName ?? '').isNotEmpty ||
-                      (area.assemblyConstituency ?? '').isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _Pill(
-                        icon: Icons.how_to_vote_rounded,
-                        label: [
-                          if ((area.mlaName ?? '').isNotEmpty) area.mlaName!,
-                          if ((area.assemblyConstituency ?? '').isNotEmpty)
-                            area.assemblyConstituency!,
-                        ].join(' · '),
-                        tint: AppColors.saffronDeep,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            Expanded(
-              child: ticketsAsync.when(
-                data: (tickets) {
-                  if (tickets.isEmpty) {
-                    return const _SheetEmpty(
-                      message: 'No individual reports published for this area '
-                          'yet.',
-                      hint: 'Reports appear here once enough have been filed '
-                          'that publishing them cannot identify anyone.',
-                    );
-                  }
-                  return ListView.separated(
-                    controller: scrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
-                    itemCount: tickets.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, i) =>
-                        _TicketRow(ticket: tickets[i], areaName: area.name),
-                  );
-                },
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const _SheetEmpty(
-                  message: 'Could not load reports for this area.',
-                  hint: 'Check your connection and try again.',
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// One anonymised report row: token number, the problem, its area, status.
-/// Deliberately the whole of what anyone — citizen or official — may see
-/// about a report from the map.
-class _TicketRow extends StatelessWidget {
-  const _TicketRow({required this.ticket, required this.areaName});
-
-  final PublicTicketModel ticket;
-  final String areaName;
-
-  @override
-  Widget build(BuildContext context) {
-    final themeId = ticket.theme ?? 'more';
-    final tint = categoryColor(themeId);
-    return Container(
-      padding: const EdgeInsets.all(13),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        boxShadow: appCardShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(kThemeIcons[themeId], size: 15, color: tint),
-              const SizedBox(width: 7),
-              Expanded(
-                child: Text(
-                  ticket.tokenId,
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.indigo,
-                  ),
-                ),
-              ),
-              _StatusChip(status: ticket.status),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            ticket.publicSummary.isEmpty
-                ? 'Summary pending review'
-                : ticket.publicSummary,
-            style: const TextStyle(fontSize: 13, height: 1.4),
-          ),
-          const SizedBox(height: 9),
-          Wrap(
-            spacing: 7,
-            runSpacing: 7,
-            children: [
-              _Pill(
-                icon: Icons.place_outlined,
-                label: areaName,
-                tint: AppColors.teal,
-              ),
-              if (ticket.createdDate.isNotEmpty)
-                _Pill(
-                  icon: Icons.calendar_today_rounded,
-                  label: ticket.createdDate,
-                  tint: AppColors.inkFaint,
-                ),
-              if (ticket.supporterCount > 0)
-                _Pill(
-                  icon: Icons.people_outline_rounded,
-                  label: '${ticket.supporterCount} supporting',
-                  tint: AppColors.saffronDeep,
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
-
-  final String status;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, tint) = switch (status) {
-      'resolved' => ('Resolved', AppColors.teal),
-      'inProgress' => ('In progress', AppColors.saffronDeep),
-      'reviewed' => ('Reviewed', AppColors.indigo),
-      _ => ('New', AppColors.inkFaint),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: tint.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-            fontSize: 9.5, fontWeight: FontWeight.w800, color: tint),
-      ),
-    );
-  }
-}
-
-class _Pill extends StatelessWidget {
-  const _Pill({required this.icon, required this.label, required this.tint});
-
-  final IconData icon;
-  final String label;
-  final Color tint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-      decoration: BoxDecoration(
-        color: tint.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppRadii.sm),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: tint),
-          const SizedBox(width: 5),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w600, color: tint)),
-        ],
-      ),
-    );
-  }
-}
-
-class _SheetEmpty extends StatelessWidget {
-  const _SheetEmpty({required this.message, required this.hint});
-
-  final String message;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.inbox_rounded, size: 38, color: AppColors.indigoMist),
-            const SizedBox(height: 12),
-            Text(message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(height: 6),
-            Text(hint,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 12, color: AppColors.inkFaint, height: 1.4)),
           ],
         ),
       ),

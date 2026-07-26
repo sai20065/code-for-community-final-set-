@@ -68,6 +68,19 @@ class PublicDataService {
     });
   }
 
+  /// Every tracked issue group, statewide — what the Karnataka map colours
+  /// its 227 taluks from.
+  ///
+  /// Unfiltered by constituency, because the statewide view's claim is that
+  /// the whole state is covered. Hard-capped: past a couple of thousand
+  /// clusters the right shape is a server-maintained per-taluk rollup
+  /// document, not a larger client download.
+  Stream<List<PublicClusterModel>> watchAllClusters({int limit = 2000}) {
+    return _clusters.limit(limit).snapshots().map((snap) => snap.docs
+        .map((d) => PublicClusterModel.fromMap(d.id, d.data()))
+        .toList());
+  }
+
   /// Every issue group tracked at one booth, worst first.
   Stream<List<PublicClusterModel>> watchClustersForBooth(String boothId) {
     return _clusters.where('boothId', isEqualTo: boothId).snapshots().map((snap) {

@@ -555,6 +555,14 @@ class _MapTab extends StatelessWidget {
           subtitle: 'Frame the map on one area',
           onTap: () => context.go('/public/area'),
         ),
+        const SizedBox(height: 10),
+        _ActionRow(
+          icon: Icons.public_rounded,
+          tint: AppColors.vermilion,
+          title: 'Statewide view',
+          subtitle: 'All 30 districts and 227 taluks of Karnataka',
+          onTap: () => context.go('/public/karnataka'),
+        ),
       ],
     );
   }

@@ -110,6 +110,17 @@ final publicTicketsForAreaProvider =
       .watchTicketsForArea(field: field, areaId: areaId);
 });
 
+/// Every tracked issue group in the state, for the statewide Karnataka map.
+///
+/// Unscoped by constituency on purpose — that map's whole claim is that
+/// every district and taluk is covered, which it cannot make from one
+/// constituency's clusters. Capped at 2000: past that the right answer is a
+/// server-side per-taluk rollup, not a bigger download, and the cap failing
+/// loudly beats a map that silently drops half the state.
+final allPublicClustersProvider =
+    StreamProvider<List<PublicClusterModel>>((ref) =>
+        ref.watch(publicDataServiceProvider).watchAllClusters());
+
 /// The full anonymised ticket queue behind the government dashboard's
 /// Reports tab. Capped at 300 — a triage queue nobody scrolls past is not
 /// worth the reads, and the search box narrows it anyway.

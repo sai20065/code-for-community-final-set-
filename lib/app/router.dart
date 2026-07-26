@@ -32,6 +32,7 @@ import '../features/public/booth/booth_detail_sheet.dart';
 import '../features/public/constituency_picker/constituency_picker_screen.dart';
 import '../features/public/dashboard/dashboard_home_screen.dart';
 import '../features/public/map/constituency_map_screen.dart';
+import '../features/public/map/karnataka_map_screen.dart';
 import '../features/public/solution/solution_card_screen.dart';
 import '../features/public/themes/themes_overview_screen.dart';
 import '../features/public/works/compare_proposals_screen.dart';
@@ -211,6 +212,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/public/map',
         builder: (context, state) => const ConstituencyMapScreen(),
+      ),
+      // Statewide view: all 30 districts and 227 taluks, always drawn,
+      // whether or not anything has been reported there. Complements
+      // /public/map, which shows one constituency in full detail.
+      GoRoute(
+        path: '/public/karnataka',
+        builder: (context, state) => const KarnatakaMapScreen(),
       ),
       GoRoute(
         path: '/public/booth/:id',

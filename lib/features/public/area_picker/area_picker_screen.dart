@@ -343,10 +343,20 @@ class _DistrictList extends ConsumerWidget {
         }
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
-          itemCount: filtered.length,
+          // +1 for the statewide entry pinned above the list.
+          itemCount: filtered.length + 1,
           separatorBuilder: (_, __) => const SizedBox(height: 8),
           itemBuilder: (context, i) {
-            final d = filtered[i];
+            if (i == 0) {
+              return _AreaTile(
+                icon: Icons.public_rounded,
+                tint: AppColors.vermilion,
+                title: 'See all of Karnataka',
+                subtitle: 'All 30 districts and 227 taluks on one map',
+                onTap: () => context.go('/public/karnataka'),
+              );
+            }
+            final d = filtered[i - 1];
             return _AreaTile(
               icon: Icons.map_outlined,
               tint: AppColors.indigo,

@@ -238,6 +238,12 @@ class _DashboardBody extends ConsumerWidget {
             ),
           ),
         ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: () => context.go('/public/karnataka'),
+          icon: const Icon(Icons.public_rounded),
+          label: const Text('See all of Karnataka'),
+        ),
         const SizedBox(height: 20),
         Wrap(
           spacing: 12,

@@ -859,34 +859,44 @@ class AppLocalizationsMr extends AppLocalizations {
   String get backToSignIn => 'साइन इनवर परत जा';
 
   @override
-  String get aadhaarErrorAuthUnavailable => 'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
+  String get aadhaarErrorAuthUnavailable =>
+      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
 
   @override
-  String get aadhaarErrorNotSignedIn => 'Your session expired. Please try again, or type your details below.';
+  String get aadhaarErrorNotSignedIn =>
+      'Your session expired. Please try again, or type your details below.';
 
   @override
-  String get aadhaarErrorImageTooLarge => 'That photo is too large to process. Try a closer, smaller shot of the card.';
+  String get aadhaarErrorImageTooLarge =>
+      'That photo is too large to process. Try a closer, smaller shot of the card.';
 
   @override
-  String get aadhaarErrorUnreadable => 'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
+  String get aadhaarErrorUnreadable =>
+      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
 
   @override
-  String get aadhaarErrorModelBusy => 'Our reader is busy right now. Try again in a moment, or type your details below.';
+  String get aadhaarErrorModelBusy =>
+      'Our reader is busy right now. Try again in a moment, or type your details below.';
 
   @override
-  String get aadhaarErrorNetwork => 'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
+  String get aadhaarErrorNetwork =>
+      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
 
   @override
-  String get aadhaarErrorUnknown => 'Something went wrong reading the card. You can type your details below instead.';
+  String get aadhaarErrorUnknown =>
+      'Something went wrong reading the card. You can type your details below instead.';
 
   @override
-  String get aadhaarPartialExtracted => 'We read part of your card. Please check the details below and fill in anything missing.';
+  String get aadhaarPartialExtracted =>
+      'We read part of your card. Please check the details below and fill in anything missing.';
 
   @override
-  String get aadhaarBackImageSkippedTooLarge => 'The back photo was too large, so we read the front only. Please check the address below.';
+  String get aadhaarBackImageSkippedTooLarge =>
+      'The back photo was too large, so we read the front only. Please check the address below.';
 
   @override
-  String get mapLayerFailed => 'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
+  String get mapLayerFailed =>
+      'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
   @override
   String get mapRetry => 'Retry';
@@ -923,7 +933,8 @@ class AppLocalizationsMr extends AppLocalizations {
   String get noConstituenciesFound => 'No constituencies match that search.';
 
   @override
-  String get publicPrivacyNote => 'Only anonymous ticket IDs and approximate locations are shown here. No names, addresses or contact details are ever published.';
+  String get publicPrivacyNote =>
+      'Only anonymous ticket IDs and approximate locations are shown here. No names, addresses or contact details are ever published.';
 
   @override
   String get trackedIssues => 'Tracked issues';
@@ -935,13 +946,15 @@ class AppLocalizationsMr extends AppLocalizations {
   String get officialActions => 'Official actions';
 
   @override
-  String get officialActionsHint => 'Only you can see these — they need your official sign-in.';
+  String get officialActionsHint =>
+      'Only you can see these — they need your official sign-in.';
 
   @override
   String get updateTicketStatuses => 'Update ticket statuses';
 
   @override
-  String get generateReportExplainer => 'Generates an AI-written PDF briefing for your constituency: executive summary, recommended actions, and the top issues by priority with their Solution Card recommendations. Scoped to your own constituency and never shared publicly.';
+  String get generateReportExplainer =>
+      'Generates an AI-written PDF briefing for your constituency: executive summary, recommended actions, and the top issues by priority with their Solution Card recommendations. Scoped to your own constituency and never shared publicly.';
 
   @override
   String get solutionCardTitle => 'Solution card';
@@ -953,13 +966,11 @@ class AppLocalizationsMr extends AppLocalizations {
   String get forDepartment => 'For the department';
 
   @override
-  String get routedToDepartment => 'Routed to';
-
-  @override
   String get escalatesTo => 'Escalates to';
 
   @override
-  String get routingApproximate => 'No exact local body is mapped for this area yet, so this is a broader fallback.';
+  String get routingApproximate =>
+      'No exact local body is mapped for this area yet, so this is a broader fallback.';
 
   @override
   String get estimatedCost => 'Estimated cost';
@@ -1001,13 +1012,16 @@ class AppLocalizationsMr extends AppLocalizations {
   String get evidenceFrom => 'Evidence from citizen reports';
 
   @override
-  String get analysisPending => 'No analysis yet. An issue gets a full solution card once enough neighbours have reported it.';
+  String get analysisPending =>
+      'No analysis yet. An issue gets a full solution card once enough neighbours have reported it.';
 
   @override
-  String get analysisDegradedNote => 'Part of this analysis could not be completed automatically, so some sections are simplified.';
+  String get analysisDegradedNote =>
+      'Part of this analysis could not be completed automatically, so some sections are simplified.';
 
   @override
-  String get aiGeneratedDisclaimer => 'AI-generated from citizen reports and typical municipal cost ranges. Verify against a site survey before acting or committing budget.';
+  String get aiGeneratedDisclaimer =>
+      'AI-generated from citizen reports and typical municipal cost ranges. Verify against a site survey before acting or committing budget.';
 
   @override
   String get viewSolutionCard => 'View solution card';
@@ -1095,6 +1109,9 @@ class AppLocalizationsMr extends AppLocalizations {
   }
 
   @override
+  String get routedToDepartment => 'Routed to';
+
+  @override
   String get yourCivicActivity => 'Your civic activity';
 
   @override
@@ -1141,7 +1158,8 @@ class AppLocalizationsMr extends AppLocalizations {
   String get badgeLockedHint => 'keep reporting to unlock';
 
   @override
-  String get consistencyEmptyNudge => 'Your first report will start showing up here.';
+  String get consistencyEmptyNudge =>
+      'Your first report will start showing up here.';
 
   @override
   String get contributionsInLast26Weeks => 'Reports in the last 26 weeks';
