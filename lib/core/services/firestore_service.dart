@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/booth_model.dart';
 import '../models/cluster_model.dart';
 import '../models/constituency_model.dart';
+import '../models/district_model.dart';
 import '../models/submission_model.dart';
 import '../models/taluk_model.dart';
 import '../models/user_model.dart';
@@ -30,6 +31,8 @@ class FirestoreService {
       _db.collection('wards');
   CollectionReference<Map<String, dynamic>> get _taluks =>
       _db.collection('taluks');
+  CollectionReference<Map<String, dynamic>> get _districts =>
+      _db.collection('districts');
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
@@ -259,6 +262,45 @@ class FirestoreService {
     final doc = await _taluks.doc(talukId).get();
     if (!doc.exists) return null;
     return TalukModel.fromMap(doc.id, doc.data()!);
+  }
+
+  /// Every Karnataka district, for the District → Taluk area picker.
+  Stream<List<DistrictModel>> watchDistricts() {
+    return _districts.orderBy('name').snapshots().map((snap) =>
+        snap.docs.map((d) => DistrictModel.fromMap(d.id, d.data())).toList());
+  }
+
+  /// The taluks inside one district, alphabetically.
+  ///
+  /// Sorted in Dart rather than with `orderBy`, for the same reason as
+  /// [_sortedByPriority]: an `orderBy` silently drops every document missing
+  /// the ordered field, and a taluk vanishing from the picker with no error
+  /// is exactly the class of bug this codebase already had once.
+  Stream<List<TalukModel>> watchTaluksForDistrict(String districtId) {
+    return _taluks
+        .where('districtId', isEqualTo: districtId)
+        .snapshots()
+        .map((snap) {
+      final list =
+          snap.docs.map((d) => TalukModel.fromMap(d.id, d.data())).toList();
+      list.sort((a, b) => a.talukName.compareTo(b.talukName));
+      return list;
+    });
+  }
+
+  /// Every ward of one municipal corporation (`BBMP`/`GBA`), alphabetically —
+  /// the fine-grained picker layer inside Bengaluru Urban, where taluks are
+  /// too coarse to be useful.
+  Stream<List<WardModel>> watchWardsForCorporation(String corporation) {
+    return _wards
+        .where('corporation', isEqualTo: corporation)
+        .snapshots()
+        .map((snap) {
+      final list =
+          snap.docs.map((d) => WardModel.fromMap(d.id, d.data())).toList();
+      list.sort((a, b) => a.wardName.compareTo(b.wardName));
+      return list;
+    });
   }
 
   /// Sorts by priority in Dart rather than with `orderBy`.

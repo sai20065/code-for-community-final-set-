@@ -32,7 +32,28 @@ class DashboardHomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        // Every route into this screen uses `context.go`, which replaces the
+        // location instead of pushing — so Flutter's automatic back button
+        // never appears. Explicit leading + fallback, same as every sibling
+        // screen.
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(
+                  ref.watch(currentUserProfileProvider).valueOrNull == null
+                      ? '/welcome'
+                      : '/home',
+                ),
+        ),
         title: Text(l10n.publicDashboardTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.travel_explore_rounded),
+            tooltip: l10n.chooseConstituency,
+            onPressed: () => context.go('/public/area'),
+          ),
+        ],
         bottom: const TricolorTrustStrip(),
       ),
       body: SafeArea(
@@ -246,11 +267,16 @@ class _DashboardBody extends ConsumerWidget {
             runSpacing: 12,
             children: [
               FilledButton.icon(
+                onPressed: () => context.go('/gov/dashboard'),
+                icon: const Icon(Icons.space_dashboard_rounded),
+                label: const Text('Government dashboard'),
+              ),
+              OutlinedButton.icon(
                 onPressed: () => context.go('/official/tickets'),
                 icon: const Icon(Icons.list_alt_rounded),
                 label: Text(l10n.updateTicketStatuses),
               ),
-              FilledButton.icon(
+              OutlinedButton.icon(
                 onPressed: () => context.go('/official/report'),
                 icon: const Icon(Icons.picture_as_pdf_rounded),
                 label: Text(l10n.generateReport),

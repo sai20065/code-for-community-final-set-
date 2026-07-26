@@ -34,6 +34,12 @@ export interface DepartmentDoc {
   phone: string | null;
   grievancePortalUrl: string | null;
   escalationDepartmentId: string | null;
+  /** The post accountable for grievances here — "Executive Engineer (Roads)",
+   * "Assistant Commissioner", etc. A *designation*, never a person's name:
+   * postings change constantly, and printing a named individual in a report
+   * that stays on file for months would be wrong within weeks. Null falls
+   * back to a jurisdiction-level generic in the printed briefing. */
+  officerDesignation?: string | null;
   sdgGoals: number[];
   /** Where this contact came from and when it was checked. Government
    * contact details go stale constantly; a row without provenance is

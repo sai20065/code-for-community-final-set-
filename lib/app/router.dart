@@ -16,6 +16,7 @@ import '../features/citizen/reports/report_detail_screen.dart';
 import '../features/official/report/generate_report_screen.dart';
 import '../features/official/tickets/ticket_management_screen.dart';
 import '../features/official/transcript/agent_transcript_screen.dart';
+import '../features/onboarding/gov_login_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
 import '../features/onboarding/mp_credentials_request_screen.dart';
 import '../features/onboarding/signin_screen.dart';
@@ -25,6 +26,8 @@ import '../features/onboarding/signup/onboarding_done_screen.dart';
 import '../features/onboarding/signup_screen.dart';
 import '../features/onboarding/splash_screen.dart';
 import '../features/onboarding/welcome_screen.dart';
+import '../features/official/dashboard/gov_dashboard_screen.dart';
+import '../features/public/area_picker/area_picker_screen.dart';
 import '../features/public/booth/booth_detail_sheet.dart';
 import '../features/public/constituency_picker/constituency_picker_screen.dart';
 import '../features/public/dashboard/dashboard_home_screen.dart';
@@ -53,6 +56,7 @@ const _officialOnlyPrefixes = <String>[
   '/official/tickets',
   '/official/report',
   '/official/transcript',
+  '/gov/dashboard',
 ];
 
 /// The app's router.
@@ -112,6 +116,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/signin',
         builder: (context, state) => const SignInScreen(),
+      ),
+      GoRoute(
+        path: '/gov/login',
+        builder: (context, state) => const GovLoginScreen(),
+      ),
+      GoRoute(
+        path: '/gov/dashboard',
+        builder: (context, state) => const GovDashboardScreen(),
       ),
       GoRoute(
         path: '/mp/first-time-setup',
@@ -184,6 +196,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/public/constituency',
         builder: (context, state) => const ConstituencyPickerScreen(),
+      ),
+      // District → Taluk (or → BBMP ward inside Bengaluru) picker. The
+      // primary way in: people know their district and taluk, almost nobody
+      // knows their Lok Sabha constituency by name.
+      GoRoute(
+        path: '/public/area',
+        builder: (context, state) => const AreaPickerScreen(),
       ),
       GoRoute(
         path: '/public/dashboard',

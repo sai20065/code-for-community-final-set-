@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabCitizen => 'Citizen';
 
   @override
-  String get tabMpOffice => 'MP office';
+  String get tabMpOffice => 'Government access';
 
   @override
   String get signIn => 'Sign In';

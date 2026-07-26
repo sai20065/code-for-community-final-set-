@@ -10,6 +10,11 @@ class WardModel {
   final String assemblyConstituency;
   final String assemblyNo;
   final String zoneName;
+  /// Sitting MLA for [assemblyConstituency], stamped on by
+  /// `functions/src/scripts/seedMlaRoster.ts`. Null until that roster is
+  /// seeded — the UI shows the assembly name alone rather than a blank.
+  final String? mlaName;
+  final String? mlaParty;
   final int totalPopulation;
   final int scPopulation;
   final int stPopulation;
@@ -25,6 +30,8 @@ class WardModel {
     required this.assemblyConstituency,
     required this.assemblyNo,
     required this.zoneName,
+    this.mlaName,
+    this.mlaParty,
     this.totalPopulation = 0,
     this.scPopulation = 0,
     this.stPopulation = 0,
@@ -40,6 +47,8 @@ class WardModel {
       assemblyConstituency: map['assemblyConstituency'] as String? ?? '',
       assemblyNo: map['assemblyNo'] as String? ?? '',
       zoneName: map['zoneName'] as String? ?? '',
+      mlaName: map['mlaName'] as String?,
+      mlaParty: map['mlaParty'] as String?,
       totalPopulation: map['totalPopulation'] as int? ?? 0,
       scPopulation: map['scPopulation'] as int? ?? 0,
       stPopulation: map['stPopulation'] as int? ?? 0,
@@ -55,6 +64,8 @@ class WardModel {
       'assemblyConstituency': assemblyConstituency,
       'assemblyNo': assemblyNo,
       'zoneName': zoneName,
+      'mlaName': mlaName,
+      'mlaParty': mlaParty,
       'totalPopulation': totalPopulation,
       'scPopulation': scPopulation,
       'stPopulation': stPopulation,

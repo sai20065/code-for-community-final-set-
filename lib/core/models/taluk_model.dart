@@ -8,6 +8,12 @@ class TalukModel {
   final String? districtId;
   final String? districtName;
   final String? constituencyId;
+  /// Assembly (Vidhan Sabha) segment and its sitting MLA, stamped on by
+  /// `functions/src/scripts/seedMlaRoster.ts`. Null until that roster is
+  /// seeded.
+  final String? assemblyConstituency;
+  final String? mlaName;
+  final String? mlaParty;
   // Raw GeoJSON geometry, JSON-encoded — same Firestore nested-array
   // workaround as ConstituencyModel.boundaryGeoJson.
   final String? boundaryGeoJson;
@@ -18,6 +24,9 @@ class TalukModel {
     this.districtId,
     this.districtName,
     this.constituencyId,
+    this.assemblyConstituency,
+    this.mlaName,
+    this.mlaParty,
     this.boundaryGeoJson,
   });
 
@@ -28,6 +37,9 @@ class TalukModel {
       districtId: map['districtId'] as String?,
       districtName: map['districtName'] as String?,
       constituencyId: map['constituencyId'] as String?,
+      assemblyConstituency: map['assemblyConstituency'] as String?,
+      mlaName: map['mlaName'] as String?,
+      mlaParty: map['mlaParty'] as String?,
       boundaryGeoJson: map['boundaryGeoJson'] as String?,
     );
   }
@@ -38,6 +50,9 @@ class TalukModel {
       'districtId': districtId,
       'districtName': districtName,
       'constituencyId': constituencyId,
+      'assemblyConstituency': assemblyConstituency,
+      'mlaName': mlaName,
+      'mlaParty': mlaParty,
       'boundaryGeoJson': boundaryGeoJson,
     };
   }

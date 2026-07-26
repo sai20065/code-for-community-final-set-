@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -11,12 +12,18 @@ import '../../../app/providers/current_user_profile_provider.dart'
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/booth_model.dart';
+import '../../../core/models/constituency_model.dart';
 import '../../../core/models/public_models.dart';
 import '../../../core/models/taluk_model.dart';
 import '../../../core/models/ward_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/app_map_tiles.dart';
+import '../../../shared/widgets/theme_icon_chip.dart';
 import '../booth/booth_detail_sheet.dart';
+
+// ---------------------------------------------------------------------------
+// GeoJSON → LatLng
+// ---------------------------------------------------------------------------
 
 /// Extracts every polygon's outer ring (holes ignored — this is an outline
 /// overlay for orientation, not an exact area render) as a list of
@@ -76,24 +83,28 @@ LatLngBounds? _boundsFromRings(List<List<LatLng>> rings) {
 }
 
 /// Average-of-vertices center of a ring — not a true area centroid, just
-/// good enough to plant a hotspot marker roughly in the middle of a ward/
-/// taluk polygon (same "close enough" tradeoff `seedWards.ts`'s own
-/// centroid helper makes server-side).
+/// good enough to plant an indicator roughly in the middle of a ward/taluk
+/// polygon (same "close enough" tradeoff `seedWards.ts`'s own centroid
+/// helper makes server-side).
 LatLng _ringCenter(List<LatLng> ring) {
   final lat = ring.map((p) => p.latitude).reduce((a, b) => a + b) / ring.length;
   final lng = ring.map((p) => p.longitude).reduce((a, b) => a + b) / ring.length;
   return LatLng(lat, lng);
 }
 
-/// Booth-level demand map: dot size = submission volume, dot color = density
-/// band (red = hotspot / amber = moderate / green = mostly resolved, from
-/// `BoothModel.densityLevel`, i.e. `openIssueCount`) rather than theme, so
-/// the map answers "where does this MP need to look first" at a glance.
-/// Scoped to whichever constituency the public dashboard is currently
-/// showing (`effectivePublicConstituencyProvider`) — the same map every
-/// visitor sees, signed in or not. Tapping a booth highlights it and opens a
-/// callout panel (submission count, dominant theme, local context) via the
-/// shared `BoothDetailSheet`.
+// ---------------------------------------------------------------------------
+// Colour language
+// ---------------------------------------------------------------------------
+
+/// Red / amber / teal severity ramp, used identically for polygon fills,
+/// area indicators and the legend so one colour never means two things.
+Color _severityColor(double? priority) {
+  if (priority == null) return AppColors.indigoMist;
+  if (priority >= 70) return AppColors.vermilion;
+  if (priority >= 40) return AppColors.saffron;
+  return AppColors.teal;
+}
+
 Color _densityColor(String level) {
   switch (level) {
     case 'red':
@@ -105,109 +116,62 @@ Color _densityColor(String level) {
   }
 }
 
-/// A flame-icon pin marking a cluster that has crossed the red-tier
-/// priority threshold — see `hotspotThreshold` in `_BoothMapState.build`.
-/// Badges the report count so the MP knows the scale, not just that
-/// "somewhere in here" is bad. Tappable: a decorative marker on a map whose
-/// whole purpose is triage is a wasted affordance.
-Marker _hotspotMarker(
-  LatLng point,
-  int submissionCount, {
-  VoidCallback? onTap,
-}) {
-  return Marker(
-    point: point,
-    width: 40,
-    height: 40,
-    child: GestureDetector(
-      onTap: onTap,
-      child: Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.vermilion,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
-            boxShadow: appCardShadow,
-          ),
-          child: const Icon(Icons.local_fire_department_rounded, color: Colors.white, size: 22),
-        ),
-        if (submissionCount > 0)
-          Positioned(
-            right: -4,
-            top: -4,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-              decoration: BoxDecoration(
-                color: AppColors.indigoDeep,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white, width: 1.5),
-              ),
-              child: Text(
-                submissionCount > 99 ? '99+' : '$submissionCount',
-                style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w800),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
+// ---------------------------------------------------------------------------
+// Area rollup — one clickable indicator per ward/taluk
+// ---------------------------------------------------------------------------
 
-/// Same red/amber/green hotspot language as booth markers, applied to
-/// wards from their highest cluster `priorityScore` — so a ward with no
-/// tracked issues yet reads as neutral, not alarmingly red or misleadingly
-/// green. `null` (no cluster data for this ward) gets a plain neutral tint.
-Color _wardColorForPriority(double? priority) {
-  if (priority == null) return AppColors.inkFaint;
-  if (priority >= 70) return AppColors.vermilion;
-  if (priority >= 40) return AppColors.saffron;
-  return AppColors.teal;
-}
-
-/// Where to plant a cluster's hotspot pin, in descending order of fidelity.
+/// Which sub-unit layer a constituency's map is drawn from.
 ///
-/// The old code only ever attempted step 3 — a ward or taluk polygon
-/// centroid — and required the cluster to carry a matching `wardId`. Since
-/// no seeded cluster had one, and clusters outside Bengaluru have no ward
-/// geometry at all, `hotspotMarkers` was **always empty**: a map built to
-/// show where the problems are, reliably showing none of them.
-///
-/// Returns null only when a cluster genuinely cannot be placed, which the
-/// caller surfaces as an "N off-map" count rather than hiding.
-LatLng? _hotspotPointFor(
-  PublicClusterModel cluster, {
-  required Map<String, WardModel> wardsById,
-  required Map<String, TalukModel> taluksById,
-  required Map<String, BoothModel> boothsById,
-}) {
-  // 1. Backend-maintained mean of the cluster's own tickets. The most
-  //    faithful answer, and the one the backfill guarantees for legacy data.
-  final centroid = cluster.centroid;
-  if (centroid != null) return LatLng(centroid.lat, centroid.lng);
+/// Never both at once: Bengaluru Urban has real GBA ward geometry, and every
+/// other constituency has taluks. Showing both would double-paint the same
+/// ground.
+enum _AreaLayer { ward, taluk }
 
-  // 2. The booth the cluster belongs to.
-  final booth = cluster.boothId == null ? null : boothsById[cluster.boothId!];
-  if (booth != null) return LatLng(booth.lat, booth.lng);
+/// One ward or taluk, with its geometry, its representatives and the tickets
+/// rolled up inside it — the unit behind every circle indicator on the map.
+class _MapArea {
+  _MapArea({
+    required this.layer,
+    required this.id,
+    required this.name,
+    required this.rings,
+    required this.center,
+    this.assemblyConstituency,
+    this.mlaName,
+  });
 
-  // 3. Ward, then taluk polygon centre.
-  final wardRings =
-      _extractRings(wardsById[cluster.wardId ?? '']?.boundaryGeoJson);
-  if (wardRings.isNotEmpty) return _ringCenter(wardRings.first);
+  final _AreaLayer layer;
+  final String id;
+  final String name;
+  final List<List<LatLng>> rings;
+  final LatLng center;
+  final String? assemblyConstituency;
+  final String? mlaName;
+  /// Mutated during the single roll-up pass in `_buildAreas`, which is the
+  /// only writer.
+  int reportCount = 0;
+  double? priority;
 
-  final talukRings =
-      _extractRings(taluksById[cluster.talukId ?? '']?.boundaryGeoJson);
-  if (talukRings.isNotEmpty) return _ringCenter(talukRings.first);
+  /// The `publicTickets` field this area is queried by. Ward and taluk ids
+  /// live in different columns, so the indicator has to say which.
+  String get ticketField => layer == _AreaLayer.ward ? 'wardId' : 'talukId';
 
-  return null;
+  String get ticketQueryKey => '$ticketField:$id';
 }
+
+// ---------------------------------------------------------------------------
+// Screen
+// ---------------------------------------------------------------------------
+
+/// The area map: district/taluk (or BBMP ward) boundaries, colour-coded by
+/// how bad things are, with a tappable indicator on every area that has
+/// reports.
+///
 /// Public since this was pivoted off `/official/map` — reads only
-/// `PublicClusterModel` (from `publicClusters`) plus the reference-data
-/// collections (`booths`/`wards`/`taluks`/`constituencies`), all readable
-/// signed-out. No `submissions`, no `users`, no auth-scoped query anywhere
-/// on this screen.
+/// `PublicClusterModel`/`PublicTicketModel` (from `publicClusters` and
+/// `publicTickets`) plus the reference-data collections
+/// (`booths`/`wards`/`taluks`/`constituencies`), all readable signed-out. No
+/// `submissions`, no `users`, no auth-scoped query anywhere on this screen.
 class ConstituencyMapScreen extends ConsumerWidget {
   const ConstituencyMapScreen({super.key});
 
@@ -220,9 +184,17 @@ class ConstituencyMapScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/public/dashboard'),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/public/dashboard'),
         ),
         title: Text(l10n.boothDemandMap),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune_rounded),
+            tooltip: 'Change area',
+            onPressed: () => context.go('/public/area'),
+          ),
+        ],
       ),
       body: constituencyId == null
           ? Center(
@@ -233,26 +205,27 @@ class ConstituencyMapScreen extends ConsumerWidget {
                   children: [
                     Text(l10n.chooseConstituency, textAlign: TextAlign.center),
                     const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: () => context.go('/public/constituency'),
-                      child: Text(l10n.chooseConstituency),
+                    FilledButton.icon(
+                      onPressed: () => context.go('/public/area'),
+                      icon: const Icon(Icons.travel_explore_rounded),
+                      label: const Text('Pick a district'),
                     ),
                   ],
                 ),
               ),
             )
-          : _BoothMap(constituencyId: constituencyId),
+          : _AreaMap(constituencyId: constituencyId),
     );
   }
 }
 
-class _BoothMap extends ConsumerStatefulWidget {
-  const _BoothMap({required this.constituencyId});
+class _AreaMap extends ConsumerStatefulWidget {
+  const _AreaMap({required this.constituencyId});
 
   final String constituencyId;
 
   @override
-  ConsumerState<_BoothMap> createState() => _BoothMapState();
+  ConsumerState<_AreaMap> createState() => _AreaMapState();
 }
 
 /// Bounds the initial camera to Karnataka's rough extent when no
@@ -264,39 +237,44 @@ final _karnatakaFallbackBounds = LatLngBounds(
   const LatLng(18.5, 78.6),
 );
 
-class _BoothMapState extends ConsumerState<_BoothMap> {
-  String? _selectedBoothId;
+class _AreaMapState extends ConsumerState<_AreaMap> {
   final _mapController = MapController();
-  bool _hasFitBounds = false;
+  String? _selectedBoothId;
+  String? _fittedKey;
+  bool _showBoothPins = true;
 
-  /// Opens a cluster's detail from its hotspot pin. Booth markers already
-  /// had this; hotspot pins — the markers flagging the *worst* problems on
-  /// the map — were purely decorative.
-  void _openClusterSheet(PublicClusterModel cluster) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => _HotspotClusterSheet(cluster: cluster),
-    );
-  }
-
-  void _fitBoundsOnce(LatLngBounds bounds) {
-    if (_hasFitBounds) return;
-    _hasFitBounds = true;
+  /// Frames the camera once per distinct target, so switching area in the
+  /// picker re-frames but a rebuild from a stream tick does not yank the map
+  /// out from under someone who has panned away.
+  void _fitBoundsOnce(String key, LatLngBounds bounds) {
+    if (_fittedKey == key) return;
+    _fittedKey = key;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       _mapController.fitCamera(
-        CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(32)),
+        CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(36)),
       );
     });
   }
 
+  void _openAreaSheet(_MapArea area) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AreaReportsSheet(area: area),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final constituencyAsync = ref.watch(constituencyProvider(widget.constituencyId));
+    final constituencyAsync =
+        ref.watch(constituencyProvider(widget.constituencyId));
     final wardsAsync = ref.watch(_wardsProvider(widget.constituencyId));
     final taluksAsync = ref.watch(_taluksProvider(widget.constituencyId));
     final boothsAsync = ref.watch(_boothsProvider(widget.constituencyId));
     final clustersAsync = ref.watch(publicClustersProvider(widget.constituencyId));
+    final selectedArea = ref.watch(selectedAreaProvider);
 
     final l10n = AppLocalizations.of(context);
 
@@ -308,7 +286,7 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
     final failed = layers.where((a) => a.hasError).toList();
     if (failed.isNotEmpty) {
       for (final layer in failed) {
-        debugPrint('Constituency map layer failed: ${layer.error}');
+        debugPrint('Area map layer failed: ${layer.error}');
       }
       return _MapErrorState(
         message: l10n.mapLayerFailed,
@@ -324,219 +302,483 @@ class _BoothMapState extends ConsumerState<_BoothMap> {
 
     return constituencyAsync.when(
       data: (constituency) {
-        final wards = wardsAsync.valueOrNull ?? const [];
+        final wards = wardsAsync.valueOrNull ?? const <WardModel>[];
         // Taluks are the ward-equivalent granular layer for every
         // constituency outside Bengaluru Urban, which has real ward data
         // instead — never show both on the same map.
-        final taluks = wards.isEmpty ? (taluksAsync.valueOrNull ?? const []) : const <TalukModel>[];
-        final booths = boothsAsync.valueOrNull ?? const [];
-        final clusters = clustersAsync.valueOrNull ?? const [];
+        final taluks = wards.isEmpty
+            ? (taluksAsync.valueOrNull ?? const <TalukModel>[])
+            : const <TalukModel>[];
+        final booths = boothsAsync.valueOrNull ?? const <BoothModel>[];
+        final clusters = clustersAsync.valueOrNull ?? const <PublicClusterModel>[];
 
-        // Highest priorityScore among a ward's/taluk's clusters — drives the
-        // polygon fill colour below, same red/amber/green language as booth
-        // markers. Marker report counts come straight off each cluster now,
-        // so no per-unit count roll-up is needed here.
-        final wardPriority = <String, double>{};
-        final talukPriority = <String, double>{};
-        for (final cluster in clusters) {
-          final score = cluster.priorityScore;
-          final wardId = cluster.wardId;
-          if (wardId != null) {
-            final existing = wardPriority[wardId];
-            if (existing == null || score > existing) wardPriority[wardId] = score;
-          }
-          final talukId = cluster.talukId;
-          if (talukId != null) {
-            final existing = talukPriority[talukId];
-            if (existing == null || score > existing) talukPriority[talukId] = score;
-          }
-        }
-        // Explicit hotspot markers (flame icon + report count) for every
-        // cluster crossing the same red-tier threshold as
-        // `_wardColorForPriority` — the polygon tint alone is easy to miss
-        // at a glance, especially before zooming in.
-        //
-        // Derived per *cluster*, via `_hotspotPointFor`'s fallback chain,
-        // rather than per ward/taluk polygon. The old polygon-only approach
-        // silently produced zero markers for any cluster without ward
-        // geometry, which was all of them outside Bengaluru.
-        const hotspotThreshold = 70.0;
-        final wardsById = {for (final w in wards) w.id: w};
-        final taluksById = {for (final t in taluks) t.id: t};
-        final boothsById = {for (final b in booths) b.id: b};
-
-        final hotspotClusters = clusters
-            .where((c) => c.priorityScore >= hotspotThreshold)
-            .toList();
-        final placed = <(PublicClusterModel, LatLng)>[];
-        var offMapCount = 0;
-        for (final cluster in hotspotClusters) {
-          final point = _hotspotPointFor(
-            cluster,
-            wardsById: wardsById,
-            taluksById: taluksById,
-            boothsById: boothsById,
-          );
-          if (point == null) {
-            offMapCount++;
-          } else {
-            placed.add((cluster, point));
-          }
-        }
-        final hotspotMarkers = placed
-            .map((entry) => _hotspotMarker(
-                  entry.$2,
-                  entry.$1.submissionCount,
-                  onTap: () => _openClusterSheet(entry.$1),
-                ))
-            .toList();
+        final areas = _buildAreas(wards: wards, taluks: taluks, clusters: clusters);
+        final areasById = {for (final a in areas) a.id: a};
 
         final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
-        final wardPolygons = wards.expand((ward) {
-          final color = _wardColorForPriority(wardPriority[ward.id]);
-          return _extractRings(ward.boundaryGeoJson).map((ring) => Polygon(
-                points: ring,
-                color: color.withValues(alpha: 0.28),
-                borderColor: color,
-                borderStrokeWidth: 1.5,
-              ));
-        }).toList();
-        final talukPolygons = taluks.expand((taluk) {
-          final color = _wardColorForPriority(talukPriority[taluk.id]);
-          return _extractRings(taluk.boundaryGeoJson).map((ring) => Polygon(
-                points: ring,
-                color: color.withValues(alpha: 0.28),
-                borderColor: color,
-                borderStrokeWidth: 1.5,
-              ));
-        }).toList();
-        final subUnitRings = <List<LatLng>>[
-          ...wards.expand((w) => _extractRings(w.boundaryGeoJson)),
-          ...taluks.expand((t) => _extractRings(t.boundaryGeoJson)),
-        ];
-        final boothPoints = booths.map((b) => LatLng(b.lat, b.lng)).toList();
+        final highlighted =
+            selectedArea == null ? null : areasById[selectedArea.id];
 
-        final bounds = _boundsFromRings(constituencyRings) ??
-            _boundsFromRings(subUnitRings) ??
-            (boothPoints.isNotEmpty ? LatLngBounds.fromPoints(boothPoints) : null) ??
+        // Frame on the chosen ward/taluk if there is one, else the whole
+        // constituency, else whatever geometry exists at all.
+        final focusBounds = (highlighted == null
+                ? null
+                : _boundsFromRings(highlighted.rings)) ??
+            _boundsFromRings(constituencyRings) ??
+            _boundsFromRings([for (final a in areas) ...a.rings]) ??
+            (booths.isNotEmpty
+                ? LatLngBounds.fromPoints(
+                    booths.map((b) => LatLng(b.lat, b.lng)).toList())
+                : null) ??
             _karnatakaFallbackBounds;
-        _fitBoundsOnce(bounds);
+        _fitBoundsOnce(
+          '${widget.constituencyId}|${highlighted?.id ?? ''}',
+          focusBounds,
+        );
 
         final maxVolume = booths
             .map((b) => b.submissionVolume)
             .fold<int>(1, (a, b) => b > a ? b : a);
+
         return Stack(
           children: [
             FlutterMap(
               mapController: _mapController,
-              options: MapOptions(initialCenter: bounds.center, initialZoom: 12),
+              options: MapOptions(
+                initialCenter: focusBounds.center,
+                initialZoom: 11,
+                // Tapping bare map dismisses the booth highlight, so a
+                // selection is never stuck on.
+                onTap: (_, __) {
+                  if (_selectedBoothId != null) {
+                    setState(() => _selectedBoothId = null);
+                  }
+                },
+              ),
               children: [
-                // Positron rather than Voyager here: this map paints
-                // coloured ward/taluk polygons and red hotspot markers on
-                // top, and a near-greyscale basemap keeps those readable
-                // instead of competing with them.
-                appBaseTileLayer(context, style: AppMapStyle.positron),
-                if (wardPolygons.isNotEmpty)
-                  PolygonLayer(polygons: wardPolygons),
-                if (talukPolygons.isNotEmpty)
-                  PolygonLayer(polygons: talukPolygons),
+                // Voyager rather than the near-greyscale Positron: the
+                // polygon fills below are translucent, so a basemap with
+                // real green parks, blue water and legible road colour reads
+                // as a map of a place rather than a chart.
+                appBaseTileLayer(context, style: AppMapStyle.voyager),
+                if (areas.isNotEmpty)
+                  PolygonLayer(
+                    polygons: [
+                      for (final area in areas)
+                        for (final ring in area.rings)
+                          Polygon(
+                            points: ring,
+                            color: _severityColor(area.priority)
+                                .withValues(alpha: 0.22),
+                            borderColor: _severityColor(area.priority)
+                                .withValues(alpha: 0.85),
+                            borderStrokeWidth: 1.4,
+                          ),
+                    ],
+                  ),
+                if (highlighted != null)
+                  PolygonLayer(
+                    polygons: [
+                      for (final ring in highlighted.rings)
+                        Polygon(
+                          points: ring,
+                          color: AppColors.saffron.withValues(alpha: 0.18),
+                          borderColor: AppColors.saffronDeep,
+                          borderStrokeWidth: 3.5,
+                        ),
+                    ],
+                  ),
                 if (constituencyRings.isNotEmpty)
                   PolygonLayer(
-                    polygons: constituencyRings
-                        .map((ring) => Polygon(
-                              points: ring,
-                              color: Colors.transparent,
-                              borderColor: AppColors.indigo,
-                              borderStrokeWidth: 3,
-                            ))
-                        .toList(),
-                  ),
-                MarkerLayer(
-                  markers: booths.map((booth) {
-                    final color = _densityColor(booth.densityLevel);
-                    final selected = booth.id == _selectedBoothId;
-                    final size = 18.0 + (booth.submissionVolume / maxVolume) * 26.0;
-                    return Marker(
-                      point: LatLng(booth.lat, booth.lng),
-                      width: size + 8,
-                      height: size + 8,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() => _selectedBoothId = booth.id);
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (_) => BoothDetailSheet(booth: booth),
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.85),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: selected ? AppColors.indigo : Colors.white,
-                              width: selected ? 3 : 2,
-                            ),
-                            boxShadow: appCardShadow,
-                          ),
-                          alignment: Alignment.center,
-                          child: selected
-                              ? Text(
-                                  '${booth.openIssueCount}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                )
-                              : null,
+                    polygons: [
+                      for (final ring in constituencyRings)
+                        Polygon(
+                          points: ring,
+                          color: Colors.transparent,
+                          borderColor: AppColors.indigoDeep,
+                          borderStrokeWidth: 3,
                         ),
-                      ),
-                    );
-                  }).toList(),
+                    ],
+                  ),
+                if (_showBoothPins)
+                  MarkerLayer(
+                    markers: [
+                      for (final booth in booths)
+                        _boothMarker(booth, maxVolume),
+                    ],
+                  ),
+                // Area indicators sit above everything else: they are the
+                // primary affordance on this screen and must never end up
+                // underneath a booth pin.
+                MarkerLayer(
+                  markers: [
+                    for (final area in areas.where((a) => a.reportCount > 0))
+                      _areaIndicator(area),
+                  ],
                 ),
-                if (hotspotMarkers.isNotEmpty)
-                  MarkerLayer(markers: hotspotMarkers),
                 appMapAttribution(),
               ],
             ),
-            const Positioned(
-              left: 16,
-              bottom: 16,
-              child: _Legend(),
-            ),
-            // Makes the hotspot layer's state legible. Without this, "no
-            // hotspots" and "the hotspot layer is broken" render
-            // identically — which is exactly how the empty-marker bug
-            // survived unnoticed.
             Positioned(
+              left: 12,
               right: 12,
               top: 12,
-              child: _LayerStatusChip(
-                shown: hotspotMarkers.length,
-                offMap: offMapCount,
+              child: _RepresentativesBanner(
+                constituency: constituency,
+                area: highlighted,
+              ),
+            ),
+            Positioned(
+              left: 12,
+              bottom: 12,
+              child: _Legend(
+                areaCount: areas.where((a) => a.reportCount > 0).length,
+              ),
+            ),
+            Positioned(
+              right: 12,
+              bottom: 12,
+              child: Column(
+                children: [
+                  _MapChipButton(
+                    icon: _showBoothPins
+                        ? Icons.location_on_rounded
+                        : Icons.location_off_rounded,
+                    tooltip: 'Toggle booth pins',
+                    active: _showBoothPins,
+                    onTap: () =>
+                        setState(() => _showBoothPins = !_showBoothPins),
+                  ),
+                  const SizedBox(height: 8),
+                  _MapChipButton(
+                    icon: Icons.center_focus_strong_rounded,
+                    tooltip: 'Recentre',
+                    active: false,
+                    onTap: () => _mapController.fitCamera(
+                      CameraFit.bounds(
+                        bounds: focusBounds,
+                        padding: const EdgeInsets.all(36),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => Center(child: Text(AppLocalizations.of(context).couldNotLoadBooths)),
+      error: (_, __) =>
+          Center(child: Text(AppLocalizations.of(context).couldNotLoadBooths)),
+    );
+  }
+
+  /// Rolls ward/taluk geometry together with the clusters sitting inside it,
+  /// so one pass produces both the polygon colour and the indicator badge.
+  List<_MapArea> _buildAreas({
+    required List<WardModel> wards,
+    required List<TalukModel> taluks,
+    required List<PublicClusterModel> clusters,
+  }) {
+    final areas = <_MapArea>[];
+
+    for (final ward in wards) {
+      final rings = _extractRings(ward.boundaryGeoJson);
+      if (rings.isEmpty) continue;
+      areas.add(_MapArea(
+        layer: _AreaLayer.ward,
+        id: ward.id,
+        name: ward.wardName,
+        rings: rings,
+        center: _ringCenter(rings.first),
+        assemblyConstituency: ward.assemblyConstituency,
+        mlaName: ward.mlaName,
+      ));
+    }
+    for (final taluk in taluks) {
+      final rings = _extractRings(taluk.boundaryGeoJson);
+      if (rings.isEmpty) continue;
+      areas.add(_MapArea(
+        layer: _AreaLayer.taluk,
+        id: taluk.id,
+        name: taluk.talukName,
+        rings: rings,
+        center: _ringCenter(rings.first),
+        assemblyConstituency: taluk.assemblyConstituency,
+        mlaName: taluk.mlaName,
+      ));
+    }
+
+    final byId = {for (final a in areas) a.id: a};
+    for (final cluster in clusters) {
+      final area = byId[cluster.wardId] ?? byId[cluster.talukId];
+      if (area == null) continue;
+      area.reportCount += cluster.submissionCount;
+      final current = area.priority;
+      if (current == null || cluster.priorityScore > current) {
+        area.priority = cluster.priorityScore;
+      }
+    }
+    return areas;
+  }
+
+  Marker _boothMarker(BoothModel booth, int maxVolume) {
+    final color = _densityColor(booth.densityLevel);
+    final selected = booth.id == _selectedBoothId;
+    final size = 16.0 + (booth.submissionVolume / maxVolume) * 20.0;
+    return Marker(
+      point: LatLng(booth.lat, booth.lng),
+      width: size + 8,
+      height: size + 8,
+      child: GestureDetector(
+        onTap: () {
+          setState(() => _selectedBoothId = booth.id);
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => BoothDetailSheet(booth: booth),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.85),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: selected ? AppColors.indigoDeep : Colors.white,
+              width: selected ? 3 : 2,
+            ),
+            boxShadow: appCardShadow,
+          ),
+          alignment: Alignment.center,
+          child: selected
+              ? Text(
+                  '${booth.openIssueCount}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                  ),
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  /// The circle indicator sitting in the middle of a ward/taluk. Diameter
+  /// grows with report volume so a glance ranks areas without reading a
+  /// single number, and the ring colour is the same severity ramp as the
+  /// polygon underneath it.
+  Marker _areaIndicator(_MapArea area) {
+    final color = _severityColor(area.priority);
+    final diameter = _indicatorDiameter(area.reportCount);
+    return Marker(
+      point: area.center,
+      width: diameter + 12,
+      height: diameter + 12,
+      child: GestureDetector(
+        onTap: () => _openAreaSheet(area),
+        child: Center(
+          child: Container(
+            width: diameter,
+            height: diameter,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  color.withValues(alpha: 0.95),
+                  color.withValues(alpha: 0.7),
+                ],
+              ),
+              border: Border.all(color: Colors.white, width: 2.5),
+              boxShadow: appCardShadow,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              area.reportCount > 999 ? '999+' : '${area.reportCount}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 30px at one report up to 62px at a hundred, on a log curve so a handful
+/// of huge areas can't swamp the map while small ones stay tappable.
+double _indicatorDiameter(int reportCount) {
+  final scaled = math.log(reportCount + 1) / math.log(101);
+  return 30 + (scaled.clamp(0.0, 1.0) * 32);
+}
+
+// ---------------------------------------------------------------------------
+// Overlays
+// ---------------------------------------------------------------------------
+
+/// Who represents the area currently in view — MP for the constituency, MLA
+/// for the highlighted ward/taluk.
+class _RepresentativesBanner extends StatelessWidget {
+  const _RepresentativesBanner({required this.constituency, required this.area});
+
+  final ConstituencyModel? constituency;
+  final _MapArea? area;
+
+  @override
+  Widget build(BuildContext context) {
+    if (constituency == null && area == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.94),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        boxShadow: appCardShadow,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (constituency != null)
+            _RepRow(
+              tint: AppColors.indigo,
+              badge: 'MP',
+              area: constituency!.name,
+              person: constituency!.mpName,
+            ),
+          if (constituency != null && area != null)
+            const Divider(height: 14, thickness: 0.6),
+          if (area != null)
+            _RepRow(
+              tint: AppColors.saffronDeep,
+              badge: 'MLA',
+              area: (area!.assemblyConstituency ?? '').isEmpty
+                  ? area!.name
+                  : '${area!.name} · ${area!.assemblyConstituency}',
+              person: area!.mlaName,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RepRow extends StatelessWidget {
+  const _RepRow({
+    required this.tint,
+    required this.badge,
+    required this.area,
+    required this.person,
+  });
+
+  final Color tint;
+  final String badge;
+  final String area;
+  final String? person;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = (person ?? '').trim();
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+          decoration: BoxDecoration(
+            color: tint.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            badge,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w800,
+              color: tint,
+              letterSpacing: 0.4,
+            ),
+          ),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                area,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontSize: 12.5, fontWeight: FontWeight.w700),
+              ),
+              Text(
+                // An unseeded roster shows "Not yet recorded" rather than a
+                // blank line that reads like a rendering bug.
+                name.isEmpty ? 'Representative not yet recorded' : name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: name.isEmpty ? AppColors.inkFaint : AppColors.inkSoft,
+                  fontStyle: name.isEmpty ? FontStyle.italic : FontStyle.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MapChipButton extends StatelessWidget {
+  const _MapChipButton({
+    required this.icon,
+    required this.tooltip,
+    required this.active,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final bool active;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: active ? AppColors.indigo : Colors.white,
+        shape: const CircleBorder(),
+        elevation: 3,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(icon,
+                size: 19, color: active ? Colors.white : AppColors.inkSoft),
+          ),
+        ),
+      ),
     );
   }
 }
 
 class _Legend extends StatelessWidget {
-  const _Legend();
+  const _Legend({required this.areaCount});
+
+  final int areaCount;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Container(
-      padding: const EdgeInsets.all(12),
-      constraints: const BoxConstraints(maxWidth: 220),
+      padding: const EdgeInsets.all(11),
+      constraints: const BoxConstraints(maxWidth: 190),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withValues(alpha: 0.94),
         borderRadius: BorderRadius.circular(AppRadii.sm),
         boxShadow: appCardShadow,
       ),
@@ -545,19 +787,27 @@ class _Legend extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(l10n.openIssueDensity,
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.inkFaint)),
+              style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.inkFaint,
+                  letterSpacing: 0.3)),
           const SizedBox(height: 6),
           _LegendRow(color: AppColors.vermilion, label: l10n.densityHigh),
           _LegendRow(color: AppColors.saffron, label: l10n.densityModerate),
           _LegendRow(color: AppColors.teal, label: l10n.densityLow),
-          const SizedBox(height: 6),
+          const SizedBox(height: 7),
           Text(
-            l10n.dotSizeVolume,
-            style: const TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
-          ),
-          Text(
-            l10n.hotspotFlameNote,
-            style: const TextStyle(fontSize: 9.5, color: AppColors.inkFaint, fontStyle: FontStyle.italic),
+            // Makes the indicator layer's state legible. Without this, "no
+            // areas have reports" and "the indicator layer is broken" render
+            // identically — which is how an empty-marker bug survived
+            // unnoticed on this screen once already.
+            areaCount == 0
+                ? 'No areas with reports yet'
+                : 'Tap a circle to read the $areaCount '
+                    'area${areaCount == 1 ? "" : "s"} with reports',
+            style: const TextStyle(
+                fontSize: 9.5, color: AppColors.inkFaint, height: 1.35),
           ),
         ],
       ),
@@ -565,48 +815,26 @@ class _Legend extends StatelessWidget {
   }
 }
 
-/// "N hotspots · M off-map" badge.
-///
-/// Exists so the hotspot layer can never fail *quietly* again. A map that
-/// shows nothing because there is nothing to show and a map that shows
-/// nothing because its marker derivation is broken looked identical for the
-/// entire life of this screen; this makes them distinguishable at a glance.
-class _LayerStatusChip extends StatelessWidget {
-  const _LayerStatusChip({required this.shown, required this.offMap});
+class _LegendRow extends StatelessWidget {
+  const _LegendRow({required this.color, required this.label});
 
-  final int shown;
-  final int offMap;
+  final Color color;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadii.sm),
-        boxShadow: appCardShadow,
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.local_fire_department_rounded,
-            size: 13,
-            color: shown > 0 ? AppColors.vermilion : AppColors.inkFaint,
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
-          const SizedBox(width: 5),
-          Text(
-            l10n.hotspotsShownCount(shown),
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-          ),
-          if (offMap > 0) ...[
-            const SizedBox(width: 6),
-            Text(
-              l10n.hotspotsOffMapCount(offMap),
-              style: const TextStyle(fontSize: 10, color: AppColors.inkFaint),
-            ),
-          ],
+          const SizedBox(width: 6),
+          Text(label, style: const TextStyle(fontSize: 11)),
         ],
       ),
     );
@@ -654,70 +882,144 @@ class _MapErrorState extends StatelessWidget {
   }
 }
 
-/// Cluster detail reached by tapping a hotspot flame.
-class _HotspotClusterSheet extends StatelessWidget {
-  const _HotspotClusterSheet({required this.cluster});
+// ---------------------------------------------------------------------------
+// Area reports sheet
+// ---------------------------------------------------------------------------
 
-  final PublicClusterModel cluster;
+/// Every report filed inside one ward/taluk, opened by tapping that area's
+/// circle indicator.
+///
+/// Reads `publicTickets` — the anonymised projection — so this list carries
+/// a token number, an AI-written summary and an area, and structurally
+/// cannot carry a name, a phone number or an exact address. That holds for
+/// officials too: this is the same sheet they get.
+class _AreaReportsSheet extends ConsumerWidget {
+  const _AreaReportsSheet({required this.area});
+
+  final _MapArea area;
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final priority = cluster.priorityScore;
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ticketsAsync =
+        ref.watch(publicTicketsForAreaProvider(area.ticketQueryKey));
+    final tint = _severityColor(area.priority);
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.35,
+      maxChildSize: 0.92,
+      expand: false,
+      builder: (context, scrollController) => Container(
+        decoration: const BoxDecoration(
+          color: AppColors.paper,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                const Icon(Icons.local_fire_department_rounded,
-                    color: AppColors.vermilion, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    l10n.hotspotClusterSheetTitle,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.inkFaint),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [tint.withValues(alpha: 0.16), Colors.transparent],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.inkFaint.withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              cluster.title ?? cluster.summaryText,
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w700, height: 1.3),
-            ),
-            if (cluster.title != null && cluster.summaryText.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text(cluster.summaryText,
-                  style: const TextStyle(fontSize: 13, height: 1.4)),
-            ],
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _StatPill(
-                  icon: Icons.description_outlined,
-                  label: '${cluster.submissionCount}',
-                ),
-                if (cluster.uniqueReporterCount > 0)
-                  _StatPill(
-                    icon: Icons.people_outline_rounded,
-                    label: '${cluster.uniqueReporterCount}',
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: tint.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                        child: Icon(
+                          area.layer == _AreaLayer.ward
+                              ? Icons.holiday_village_rounded
+                              : Icons.location_city_rounded,
+                          color: tint,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(area.name,
+                                style: const TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w800)),
+                            Text(
+                              '${area.reportCount} report'
+                              '${area.reportCount == 1 ? "" : "s"} tracked here',
+                              style: const TextStyle(
+                                  fontSize: 12, color: AppColors.inkSoft),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                _StatPill(
-                  icon: Icons.priority_high_rounded,
-                  label: priority.toStringAsFixed(0),
-                  color: AppColors.vermilion,
+                  if ((area.mlaName ?? '').isNotEmpty ||
+                      (area.assemblyConstituency ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: _Pill(
+                        icon: Icons.how_to_vote_rounded,
+                        label: [
+                          if ((area.mlaName ?? '').isNotEmpty) area.mlaName!,
+                          if ((area.assemblyConstituency ?? '').isNotEmpty)
+                            area.assemblyConstituency!,
+                        ].join(' · '),
+                        tint: AppColors.saffronDeep,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Expanded(
+              child: ticketsAsync.when(
+                data: (tickets) {
+                  if (tickets.isEmpty) {
+                    return const _SheetEmpty(
+                      message: 'No individual reports published for this area '
+                          'yet.',
+                      hint: 'Reports appear here once enough have been filed '
+                          'that publishing them cannot identify anyone.',
+                    );
+                  }
+                  return ListView.separated(
+                    controller: scrollController,
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+                    itemCount: tickets.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (context, i) =>
+                        _TicketRow(ticket: tickets[i], areaName: area.name),
+                  );
+                },
+                loading: () =>
+                    const Center(child: CircularProgressIndicator()),
+                error: (_, __) => const _SheetEmpty(
+                  message: 'Could not load reports for this area.',
+                  hint: 'Check your connection and try again.',
                 ),
-              ],
+              ),
             ),
           ],
         ),
@@ -726,18 +1028,123 @@ class _HotspotClusterSheet extends StatelessWidget {
   }
 }
 
-class _StatPill extends StatelessWidget {
-  const _StatPill({required this.icon, required this.label, this.color});
+/// One anonymised report row: token number, the problem, its area, status.
+/// Deliberately the whole of what anyone — citizen or official — may see
+/// about a report from the map.
+class _TicketRow extends StatelessWidget {
+  const _TicketRow({required this.ticket, required this.areaName});
 
-  final IconData icon;
-  final String label;
-  final Color? color;
+  final PublicTicketModel ticket;
+  final String areaName;
 
   @override
   Widget build(BuildContext context) {
-    final tint = color ?? AppColors.indigo;
+    final themeId = ticket.theme ?? 'more';
+    final tint = categoryColor(themeId);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        boxShadow: appCardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(kThemeIcons[themeId], size: 15, color: tint),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  ticket.tokenId,
+                  style: const TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.indigo,
+                  ),
+                ),
+              ),
+              _StatusChip(status: ticket.status),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            ticket.publicSummary.isEmpty
+                ? 'Summary pending review'
+                : ticket.publicSummary,
+            style: const TextStyle(fontSize: 13, height: 1.4),
+          ),
+          const SizedBox(height: 9),
+          Wrap(
+            spacing: 7,
+            runSpacing: 7,
+            children: [
+              _Pill(
+                icon: Icons.place_outlined,
+                label: areaName,
+                tint: AppColors.teal,
+              ),
+              if (ticket.createdDate.isNotEmpty)
+                _Pill(
+                  icon: Icons.calendar_today_rounded,
+                  label: ticket.createdDate,
+                  tint: AppColors.inkFaint,
+                ),
+              if (ticket.supporterCount > 0)
+                _Pill(
+                  icon: Icons.people_outline_rounded,
+                  label: '${ticket.supporterCount} supporting',
+                  tint: AppColors.saffronDeep,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
+
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, tint) = switch (status) {
+      'resolved' => ('Resolved', AppColors.teal),
+      'inProgress' => ('In progress', AppColors.saffronDeep),
+      'reviewed' => ('Reviewed', AppColors.indigo),
+      _ => ('New', AppColors.inkFaint),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: tint.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+            fontSize: 9.5, fontWeight: FontWeight.w800, color: tint),
+      ),
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  const _Pill({required this.icon, required this.label, required this.tint});
+
+  final IconData icon;
+  final String label;
+  final Color tint;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
         color: tint.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(AppRadii.sm),
@@ -745,42 +1152,51 @@ class _StatPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: tint),
+          Icon(icon, size: 12, color: tint),
           const SizedBox(width: 5),
           Text(label,
               style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w700, color: tint)),
+                  fontSize: 11, fontWeight: FontWeight.w600, color: tint)),
         ],
       ),
     );
   }
 }
 
-class _LegendRow extends StatelessWidget {
-  const _LegendRow({required this.color, required this.label});
+class _SheetEmpty extends StatelessWidget {
+  const _SheetEmpty({required this.message, required this.hint});
 
-  final Color color;
-  final String label;
+  final String message;
+  final String hint;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 11)),
-        ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.inbox_rounded, size: 38, color: AppColors.indigoMist),
+            const SizedBox(height: 12),
+            Text(message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 6),
+            Text(hint,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 12, color: AppColors.inkFaint, height: 1.4)),
+          ],
+        ),
       ),
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Providers
+// ---------------------------------------------------------------------------
 
 final _boothsProvider =
     StreamProvider.family<List<BoothModel>, String>((ref, constituencyId) {
@@ -802,4 +1218,3 @@ final _taluksProvider =
       .watch(firestoreServiceProvider)
       .watchTaluksForConstituency(constituencyId);
 });
-

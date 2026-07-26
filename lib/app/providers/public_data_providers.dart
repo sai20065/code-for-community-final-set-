@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/models/constituency_model.dart';
+import '../../core/models/district_model.dart';
 import '../../core/models/public_models.dart';
 import '../../core/models/solution_card_model.dart';
+import '../../core/models/taluk_model.dart';
+import '../../core/models/ward_model.dart';
 import '../../core/services/public_data_service.dart';
 export '../../core/services/public_data_service.dart' show PublicConstituencyStats;
 import 'current_user_profile_provider.dart';
@@ -94,6 +97,29 @@ final publicRecentTicketsProvider =
       .watchRecentTickets(constituencyId),
 );
 
+/// Every public ticket inside one ward/taluk — the list a map area indicator
+/// opens. Keyed by `"wardId:blr-1"` / `"talukId:2903"` so one family covers
+/// both layers without a second provider.
+final publicTicketsForAreaProvider =
+    StreamProvider.family<List<PublicTicketModel>, String>((ref, key) {
+  final separator = key.indexOf(':');
+  final field = key.substring(0, separator);
+  final areaId = key.substring(separator + 1);
+  return ref
+      .watch(publicDataServiceProvider)
+      .watchTicketsForArea(field: field, areaId: areaId);
+});
+
+/// The full anonymised ticket queue behind the government dashboard's
+/// Reports tab. Capped at 300 — a triage queue nobody scrolls past is not
+/// worth the reads, and the search box narrows it anyway.
+final publicAllTicketsProvider =
+    StreamProvider.family<List<PublicTicketModel>, String>(
+  (ref, constituencyId) => ref
+      .watch(publicDataServiceProvider)
+      .watchRecentTickets(constituencyId, limit: 300),
+);
+
 final publicClustersForBoothProvider =
     StreamProvider.family<List<PublicClusterModel>, String>(
   (ref, boothId) =>
@@ -115,6 +141,55 @@ final solutionCardProvider =
 final allConstituenciesProvider =
     StreamProvider<List<ConstituencyModel>>(
   (ref) => ref.watch(publicDataServiceProvider).watchConstituencies(),
+);
+
+/// The finer-grained area a visitor drilled into from the District → Taluk
+/// picker, if any.
+///
+/// The map and dashboards stay scoped by `constituencyId` — that is the unit
+/// every ticket, cluster and official account is keyed on. This is purely a
+/// *view* refinement layered on top: which sub-unit polygon to highlight and
+/// frame the camera on. Null means "show the whole constituency", which is
+/// what every entry point other than the area picker produces.
+enum AreaKind { district, taluk, ward }
+
+class SelectedArea {
+  const SelectedArea({
+    required this.kind,
+    required this.id,
+    required this.name,
+    this.districtName,
+    this.constituencyId,
+  });
+
+  final AreaKind kind;
+  final String id;
+  final String name;
+  final String? districtName;
+  final String? constituencyId;
+
+  String get label =>
+      districtName == null || districtName!.isEmpty ? name : '$name, $districtName';
+}
+
+final selectedAreaProvider = StateProvider<SelectedArea?>((ref) => null);
+
+final allDistrictsProvider = StreamProvider<List<DistrictModel>>(
+  (ref) => ref.watch(firestoreServiceProvider).watchDistricts(),
+);
+
+final taluksForDistrictProvider =
+    StreamProvider.family<List<TalukModel>, String>(
+  (ref, districtId) =>
+      ref.watch(firestoreServiceProvider).watchTaluksForDistrict(districtId),
+);
+
+/// Bengaluru Urban's 369 GBA/BBMP wards — the picker's third level inside the
+/// city, where a taluk covers far too much ground to be a useful area choice.
+final wardsForCorporationProvider =
+    StreamProvider.family<List<WardModel>, String>(
+  (ref, corporation) =>
+      ref.watch(firestoreServiceProvider).watchWardsForCorporation(corporation),
 );
 
 /// Reports filed in the last seven days — the "N reports near you this

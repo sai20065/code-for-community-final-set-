@@ -8,10 +8,28 @@ class ResolvedConstituency {
   final String constituencyName;
   final String state;
 
+  /// The finer administrative layers the same lookup resolves, so a
+  /// citizen's profile records which district, taluk and ward they live in
+  /// rather than only their Lok Sabha seat. Null outside Karnataka (taluk /
+  /// district) or outside Bengaluru (ward), which is the normal case, not an
+  /// error.
+  final String? districtId;
+  final String? districtName;
+  final String? talukId;
+  final String? talukName;
+  final String? wardId;
+  final String? wardName;
+
   const ResolvedConstituency({
     required this.constituencyId,
     required this.constituencyName,
     required this.state,
+    this.districtId,
+    this.districtName,
+    this.talukId,
+    this.talukName,
+    this.wardId,
+    this.wardName,
   });
 }
 
@@ -49,6 +67,12 @@ class ConstituencyResolutionService {
       constituencyId: constituencyId,
       constituencyName: constituencyName,
       state: state,
+      districtId: data['districtId'] as String?,
+      districtName: data['districtName'] as String?,
+      talukId: data['talukId'] as String?,
+      talukName: data['talukName'] as String?,
+      wardId: data['wardId'] as String?,
+      wardName: data['wardName'] as String?,
     );
   }
 }

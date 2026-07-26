@@ -29,6 +29,22 @@ class UserModel {
   final String? constituencyId;
   final String? homeBoothId;
   final String? homeBoothName;
+
+  /// Home district / taluk / ward, resolved by point-in-polygon from the
+  /// citizen's confirmed location at Location Setup (see
+  /// `functions/src/constituencies/resolveConstituencyForLocation.ts`).
+  ///
+  /// These are what actually place a citizen on the map — a pincode does
+  /// not: pincodes are postal routing areas that straddle taluk and ward
+  /// boundaries, so [pincodeHome] is a display/contact field, never the
+  /// thing an area query is keyed on. Null outside Karnataka (district,
+  /// taluk) or outside Bengaluru (ward), which is normal, not an error.
+  final String? districtId;
+  final String? districtName;
+  final String? talukId;
+  final String? talukName;
+  final String? homeWardId;
+  final String? homeWardName;
   final String preferredLanguage;
   final SignInMethod? signInMethod;
   final double? aadhaarExtractionConfidence;
@@ -49,6 +65,12 @@ class UserModel {
     this.constituencyId,
     this.homeBoothId,
     this.homeBoothName,
+    this.districtId,
+    this.districtName,
+    this.talukId,
+    this.talukName,
+    this.homeWardId,
+    this.homeWardName,
     this.preferredLanguage = 'en',
     this.signInMethod,
     this.aadhaarExtractionConfidence,
@@ -84,6 +106,12 @@ class UserModel {
       constituencyId: map['constituencyId'] as String?,
       homeBoothId: map['homeBoothId'] as String?,
       homeBoothName: map['homeBoothName'] as String?,
+      districtId: map['districtId'] as String?,
+      districtName: map['districtName'] as String?,
+      talukId: map['talukId'] as String?,
+      talukName: map['talukName'] as String?,
+      homeWardId: map['homeWardId'] as String?,
+      homeWardName: map['homeWardName'] as String?,
       preferredLanguage: map['preferredLanguage'] as String? ?? 'en',
       signInMethod: _signInMethodFromString(map['signInMethod'] as String?),
       aadhaarExtractionConfidence:
@@ -106,6 +134,12 @@ class UserModel {
       if (constituencyId != null) 'constituencyId': constituencyId,
       if (homeBoothId != null) 'homeBoothId': homeBoothId,
       if (homeBoothName != null) 'homeBoothName': homeBoothName,
+      if (districtId != null) 'districtId': districtId,
+      if (districtName != null) 'districtName': districtName,
+      if (talukId != null) 'talukId': talukId,
+      if (talukName != null) 'talukName': talukName,
+      if (homeWardId != null) 'homeWardId': homeWardId,
+      if (homeWardName != null) 'homeWardName': homeWardName,
       'preferredLanguage': preferredLanguage,
       if (signInMethod != null) 'signInMethod': signInMethod!.name,
       if (aadhaarExtractionConfidence != null)
@@ -127,6 +161,12 @@ class UserModel {
     String? constituencyId,
     String? homeBoothId,
     String? homeBoothName,
+    String? districtId,
+    String? districtName,
+    String? talukId,
+    String? talukName,
+    String? homeWardId,
+    String? homeWardName,
     String? preferredLanguage,
     SignInMethod? signInMethod,
     double? aadhaarExtractionConfidence,
@@ -146,6 +186,12 @@ class UserModel {
       constituencyId: constituencyId ?? this.constituencyId,
       homeBoothId: homeBoothId ?? this.homeBoothId,
       homeBoothName: homeBoothName ?? this.homeBoothName,
+      districtId: districtId ?? this.districtId,
+      districtName: districtName ?? this.districtName,
+      talukId: talukId ?? this.talukId,
+      talukName: talukName ?? this.talukName,
+      homeWardId: homeWardId ?? this.homeWardId,
+      homeWardName: homeWardName ?? this.homeWardName,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       signInMethod: signInMethod ?? this.signInMethod,
       aadhaarExtractionConfidence:

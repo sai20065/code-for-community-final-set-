@@ -86,6 +86,9 @@ export const generateConstituencyReport = onCall(
         interventionTitle: top?.title ?? null,
         costBandLabel: top?.costBandInr?.label ?? null,
         department: card.routing?.primary?.name ?? null,
+        departmentId: card.routing?.primary?.departmentId ?? null,
+        jurisdictionLevel: card.routing?.jurisdictionLevel ?? null,
+        officerDesignation: null,
         sdgGoals: Array.isArray(card.sdg) ?
           card.sdg.map((s: {goal: number}) => s.goal) :
           [],
@@ -94,6 +97,41 @@ export const generateConstituencyReport = onCall(
         degraded: card.degraded === true,
       });
     }
+
+    // Fill in the accountable post for each routed department. A briefing
+    // that names the body but not the desk it lands on still leaves the
+    // reader asking "who, though" — and a *designation* is the right answer
+    // to print, since postings turn over faster than a report's shelf life.
+    const departmentIds = [
+      ...new Set(
+        [...cardsByCluster.values()]
+          .map((c) => c.departmentId)
+          .filter((id): id is string => !!id),
+      ),
+    ];
+    if (departmentIds.length) {
+      const deptSnaps = await db.getAll(
+        ...departmentIds.map((id) => db.collection("departments").doc(id)),
+      );
+      const designationById = new Map<string, string>();
+      for (const snap of deptSnaps) {
+        const designation = snap.data()?.officerDesignation as string | undefined;
+        if (designation) designationById.set(snap.id, designation);
+      }
+      for (const summary of cardsByCluster.values()) {
+        if (!summary.departmentId) continue;
+        summary.officerDesignation =
+          designationById.get(summary.departmentId) ??
+          defaultOfficerDesignation(summary.jurisdictionLevel);
+      }
+    }
+
+    // Who this copy was produced for. Read off the official's own profile,
+    // never a caller-supplied string, for the same reason `constituencyId`
+    // is: it appears on a document that may be tabled somewhere.
+    const officerDesignation =
+      (user.designation as string | undefined) ?? "Constituency Office";
+    const officerDepartment = user.department as string | undefined;
 
     const gemini = new GeminiClient();
     let aiSummary = {
@@ -118,6 +156,8 @@ export const generateConstituencyReport = onCall(
     const pdfBuffer = await renderPdf({
       constituencyName,
       mpName,
+      officerDesignation,
+      officerDepartment: officerDepartment ?? null,
       stats: {total: submissions.length, resolved: resolvedCount, urgent: urgentClusters.length},
       topClusters,
       cardsByCluster,
@@ -222,13 +262,35 @@ interface SolutionCardSummary {
   interventionTitle: string | null;
   costBandLabel: string | null;
   department: string | null;
+  departmentId: string | null;
+  jurisdictionLevel: string | null;
+  officerDesignation: string | null;
   sdgGoals: number[];
   degraded: boolean;
+}
+
+/** Used when a department row carries no `officerDesignation` of its own.
+ * Generic by jurisdiction rather than invented per department: a plausible
+ * but wrong post title sends the reader to the wrong desk, which is worse
+ * than sending them to the department's general grievance cell. */
+function defaultOfficerDesignation(level: string | null): string {
+  switch (level) {
+  case "municipal":
+    return "Assistant Executive Engineer / Ward Officer";
+  case "state":
+    return "Executive Engineer / Deputy Commissioner";
+  case "central":
+    return "Regional Officer / Grievance Cell";
+  default:
+    return "Grievance Redressal Officer";
+  }
 }
 
 function renderPdf(data: {
   constituencyName: string;
   mpName: string;
+  officerDesignation: string;
+  officerDepartment: string | null;
   stats: {total: number; resolved: number; urgent: number};
   topClusters: Array<ClusterData & {id: string}>;
   cardsByCluster: Map<string, SolutionCardSummary>;
@@ -258,11 +320,17 @@ function renderPdf(data: {
     doc.font("Helvetica-Bold").fontSize(18).fillColor(BRAND.white)
       .text(data.constituencyName, MARGIN, 76, {lineBreak: false});
     doc.font("Helvetica").fontSize(11).fillColor(BRAND.indigoMist)
-      .text(`MP: ${data.mpName}`, MARGIN, 100, {lineBreak: false});
+      .text(`MP: ${data.mpName}`, MARGIN, 98, {lineBreak: false});
+    doc.font("Helvetica").fontSize(9).fillColor(BRAND.indigoMist)
+      .text(
+        `Prepared for: ${data.officerDesignation}` +
+          (data.officerDepartment ? `, ${data.officerDepartment}` : ""),
+        MARGIN, 114, {lineBreak: false},
+      );
     doc.fontSize(9).fillColor(BRAND.indigoMist)
       .text(
         new Date().toLocaleDateString("en-IN", {year: "numeric", month: "long", day: "numeric"}),
-        MARGIN, 100, {width: contentWidth, align: "right", lineBreak: false},
+        MARGIN, 98, {width: contentWidth, align: "right", lineBreak: false},
       );
 
     let y = 155;
@@ -316,8 +384,14 @@ function renderPdf(data: {
         `Recommended: ${card.interventionTitle}` +
           (card.costBandLabel ? `  (${card.costBandLabel})` : "") :
         null;
+      // Department AND the post accountable inside it. "Route to: BWSSB" is
+      // a filing instruction; "Route to: BWSSB — Assistant Executive
+      // Engineer" is something the reader can actually act on.
       const routingText = card?.department ?
         `Route to: ${card.department}` +
+          (card.officerDesignation ?
+            `   ·   Responsible officer: ${card.officerDesignation}` :
+            "") +
           (card.sdgGoals.length ?
             `   ·   SDG ${card.sdgGoals.join(", ")}` :
             "") +

@@ -89,7 +89,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Stack(
         children: [
           SafeArea(
-            child: Column(
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
                 const SizedBox(height: 14),
                 SizedBox(
@@ -143,33 +144,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           // Their own reports are only half the picture; the
                           // constituency-wide view is what shows their report
                           // sitting alongside forty neighbours' identical ones.
-                          Material(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(AppRadii.md),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(AppRadii.md),
-                              onTap: () => context.go('/public/dashboard'),
-                              child: Padding(
-                                padding: const EdgeInsets.all(14),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.travel_explore_rounded,
-                                        size: 20, color: AppColors.indigo),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(
-                                        l10n.seePublicDashboard,
-                                        style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                    const Icon(Icons.chevron_right_rounded,
-                                        color: AppColors.inkFaint),
-                                  ],
-                                ),
-                              ),
-                            ),
+                          _HomeLinkCard(
+                            icon: Icons.dashboard_rounded,
+                            tint: AppColors.indigo,
+                            label: l10n.seePublicDashboard,
+                            onTap: () => context.go('/public/dashboard'),
+                          ),
+                          const SizedBox(height: 10),
+                          // Moved here from the signed-out Welcome screen: a
+                          // citizen who already has an account is exactly who
+                          // wants to browse another district or taluk, and
+                          // burying it below the login choice put it in front
+                          // of the only people who couldn't act on it.
+                          _HomeLinkCard(
+                            icon: Icons.travel_explore_rounded,
+                            tint: AppColors.teal,
+                            label: l10n.exploreYourArea,
+                            subtitle: 'District, taluk and ward maps',
+                            onTap: () => context.go('/public/area'),
                           ),
                         ],
                       ),
@@ -189,22 +181,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Expanded(
-                  child: profileAsync.when(
-                    data: (profile) {
-                      final constituencyId = profile?.constituencyId;
-                      if (uid == null || constituencyId == null) {
-                        return _EmptyState(message: l10n.emptyAreaSuggestions);
-                      }
-                      return _TrendingFeed(
-                        constituencyId: constituencyId,
-                        categoryFilter: _categoryFilter,
-                        uid: uid,
-                      );
-                    },
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (_, __) => _EmptyState(message: l10n.couldNotLoadSuggestions),
+                profileAsync.when(
+                  data: (profile) {
+                    final constituencyId = profile?.constituencyId;
+                    if (uid == null || constituencyId == null) {
+                      return _EmptyState(message: l10n.emptyAreaSuggestions);
+                    }
+                    return _TrendingFeed(
+                      constituencyId: constituencyId,
+                      categoryFilter: _categoryFilter,
+                      uid: uid,
+                    );
+                  },
+                  loading: () => const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Center(child: CircularProgressIndicator()),
                   ),
+                  error: (_, __) => _EmptyState(message: l10n.couldNotLoadSuggestions),
                 ),
                 const SizedBox(height: 96),
               ],
@@ -294,6 +287,74 @@ class _HomeActionButton extends StatelessWidget {
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One of the flat navigation rows under "Near You" — public dashboard,
+/// area explorer.
+class _HomeLinkCard extends StatelessWidget {
+  const _HomeLinkCard({
+    required this.icon,
+    required this.tint,
+    required this.label,
+    required this.onTap,
+    this.subtitle,
+  });
+
+  final IconData icon;
+  final Color tint;
+  final String label;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: tint.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: Icon(icon, size: 18, color: tint),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w700),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle!,
+                        style: const TextStyle(
+                            fontSize: 11.5, color: AppColors.inkFaint),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.inkFaint),
             ],
           ),
         ),
@@ -584,6 +645,8 @@ class _TrendingFeed extends ConsumerWidget {
           return _EmptyState(message: AppLocalizations.of(context).noSuggestionsYet);
         }
         return ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: filtered.length,
           separatorBuilder: (_, __) => const SizedBox(height: 10),

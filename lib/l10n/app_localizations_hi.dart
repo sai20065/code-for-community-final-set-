@@ -15,7 +15,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tabCitizen => 'नागरिक';
 
   @override
-  String get tabMpOffice => 'सांसद कार्यालय';
+  String get tabMpOffice => 'सरकारी पहुँच';
 
   @override
   String get signIn => 'दाखिल करना';

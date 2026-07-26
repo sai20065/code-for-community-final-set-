@@ -106,6 +106,33 @@ class PublicDataService {
             .toList());
   }
 
+  /// Every public ticket filed inside one ward or taluk — what a map's area
+  /// indicator opens.
+  ///
+  /// [field] is `wardId` inside Bengaluru and `talukId` everywhere else; the
+  /// caller knows which layer its indicator came from. Unordered on the
+  /// server and sorted in Dart, for the same reason as [watchClusters]:
+  /// Firestore's `orderBy` drops documents missing the ordered field, and a
+  /// report silently disappearing from an area list is the exact failure
+  /// mode this codebase has already hit once.
+  Stream<List<PublicTicketModel>> watchTicketsForArea({
+    required String field,
+    required String areaId,
+    int limit = 100,
+  }) {
+    return _tickets
+        .where(field, isEqualTo: areaId)
+        .limit(limit)
+        .snapshots()
+        .map((snap) {
+      final list = snap.docs
+          .map((d) => PublicTicketModel.fromMap(d.id, d.data()))
+          .toList();
+      list.sort((a, b) => b.createdDate.compareTo(a.createdDate));
+      return list;
+    });
+  }
+
   /// Tickets belonging to one issue group.
   Stream<List<PublicTicketModel>> watchTicketsForCluster(String clusterId) {
     return _tickets

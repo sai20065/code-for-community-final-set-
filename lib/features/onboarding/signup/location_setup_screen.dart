@@ -123,8 +123,9 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     // any) only if the network call itself fails, rather than leaving the
     // citizen permanently unmapped just because this one lookup hiccuped.
     String? constituencyId = match?.constituencyId;
+    ResolvedConstituency? resolved;
     try {
-      final resolved = await _constituencyResolutionService.resolve(
+      resolved = await _constituencyResolutionService.resolve(
         lat: _pin!.latitude,
         lng: _pin!.longitude,
       );
@@ -144,6 +145,16 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       constituencyId: constituencyId,
       homeBoothId: match?.boothId,
       homeBoothName: match?.boothName,
+      // The layers that actually place this citizen on a map. Pincode is
+      // kept above for contact/display only — postal areas straddle taluk
+      // and ward boundaries, so an area query keyed on one would put people
+      // in the wrong place.
+      districtId: resolved?.districtId,
+      districtName: resolved?.districtName,
+      talukId: resolved?.talukId,
+      talukName: resolved?.talukName,
+      homeWardId: resolved?.wardId,
+      homeWardName: resolved?.wardName,
     );
     await _firestoreService.upsertUser(updated);
     await ref

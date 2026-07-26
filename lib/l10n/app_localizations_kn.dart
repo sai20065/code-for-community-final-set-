@@ -15,7 +15,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get tabCitizen => 'ನಾಗರಿಕ';
 
   @override
-  String get tabMpOffice => 'ಸಂಸದರ ಕಚೇರಿ';
+  String get tabMpOffice => 'ಸರ್ಕಾರಿ ಪ್ರವೇಶ';
 
   @override
   String get signIn => 'ಸೈನ್ ಇನ್ ಮಾಡಿ';
