@@ -1,0 +1,19 @@
+// Realtime Database rules for Prajadhwani.
+//
+// Deny-by-default. The RTDB instance is enabled and ready, but no feature
+// reads or writes it yet — all app data lives in Firestore, which has its
+// own rules in firestore.rules. An enabled database with permissive rules
+// and no owner is exactly how civic apps leak data, so this stays shut
+// until something actually needs it.
+//
+// To use it, add a named path with its own rules rather than loosening
+// these — e.g. a /presence/$uid node writable only by that uid. Never put
+// anything here that identifies a reporter: the whole privacy model is
+// that officials see a token number, a problem and an area, never a person
+// (see functions/src/public/onSubmissionWritten.ts).
+{
+  "rules": {
+    ".read": false,
+    ".write": false
+  }
+}
