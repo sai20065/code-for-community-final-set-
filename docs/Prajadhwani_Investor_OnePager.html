@@ -1,0 +1,477 @@
+<title>Prajadhwani — Investor One-Pager</title>
+
+<style>
+  /* ---------------------------------------------------------------
+     PALETTE — midnight navy ground with a gold value accent: the
+     register international capital allocators read as institutional
+     rather than consumer. Emerald marks what is already built and
+     de-risked; coral marks the cost of the status quo; the brand's
+     own indigo survives as the violet that ties the sheet back to
+     the product. Every text/ground pairing below clears 7:1.
+     --------------------------------------------------------------- */
+  :root {
+    --ground:   #0A0F1F;
+    --panel:    #131B33;
+    --panel-2:  #1A2340;
+    --hairline: #2A3559;
+
+    --text:     #F4F7FF;  /* 17:1 on ground */
+    --text-mid: #B4BEDE;  /* 9.4:1 on ground */
+    --text-dim: #8A94BC;  /* 6.2:1 — labels only, never running text */
+
+    --gold:     #F5B942;  /* 10.6:1 on ground */
+    --gold-lo:  #C98B12;
+    --emerald:  #2FD3A0;  /* 9.8:1 on ground */
+    --coral:    #FF7A85;  /* 7.9:1 on ground */
+    --violet:   #9B8CFF;  /* 7.6:1 on ground */
+
+    --display: "Segoe UI Variable Display", "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --body: "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  /* The sheet commits to one visual world — a dark institutional
+     document — in both OS themes. Inverting it to parchment in light
+     mode would hand the investor a different, weaker document than
+     the one being pitched. Only the surround outside the sheet
+     responds to theme. */
+  :root { --surround: #05080F; }
+  @media (prefers-color-scheme: light) { :root { --surround: #E7E9F2; } }
+  :root[data-theme="light"] { --surround: #E7E9F2; }
+  :root[data-theme="dark"]  { --surround: #05080F; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--surround);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 56px;
+  }
+
+  /* A true A4 sheet: 210 x 297mm, one page exactly. */
+  .sheet {
+    width: 210mm;
+    min-height: 297mm;
+    max-width: 100%;
+    background: var(--ground);
+    box-shadow: 0 20px 70px rgba(0,0,0,.55);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* ---------------- Masthead ---------------- */
+  .masthead { position: relative; padding: 8mm 11mm 5mm; overflow: hidden; flex: 0 0 auto; }
+  #wave { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .34; }
+  .masthead > * { position: relative; }
+
+  .brandrow {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 7px;
+  }
+  .wordmark {
+    font-family: var(--display);
+    font-size: 30px; font-weight: 800; letter-spacing: -.028em;
+    line-height: 1; margin: 0; color: var(--text);
+  }
+  .wordmark span { color: var(--gold); }
+  .meaning {
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: .16em; text-transform: uppercase; font-weight: 700;
+  }
+
+  .thesis {
+    font-family: var(--display);
+    font-size: 17.5px; font-weight: 690; line-height: 1.19;
+    letter-spacing: -.018em; text-wrap: balance;
+    margin: 11px 0 0; max-width: 27em; color: var(--text);
+  }
+  .thesis em { color: var(--gold); font-style: normal; }
+  .sub {
+    margin: 6px 0 0; font-size: 11.8px; color: var(--text-mid);
+    max-width: 80ch; line-height: 1.5;
+  }
+
+  /* ---------------- Shared ---------------- */
+  .body {
+    padding: 0 11mm; display: flex; flex-direction: column;
+    gap: 2.6mm; flex: 1 1 auto; min-height: 0;
+  }
+  .eyebrow {
+    font-size: 9.5px; font-weight: 800; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--text-dim); margin: 0 0 4px;
+  }
+  h2.head {
+    font-family: var(--display);
+    font-size: 14.5px; font-weight: 750; letter-spacing: -.014em;
+    margin: 0 0 5px; color: var(--text); text-wrap: balance;
+  }
+  p.copy {
+    margin: 0; font-size: 11.8px; line-height: 1.48;
+    color: var(--text-mid); max-width: 62ch;
+  }
+  .copy b { color: var(--text); font-weight: 680; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5mm; }
+  @media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-left: 3px solid var(--edge, var(--hairline));
+    border-radius: 8px;
+    padding: 8px 11px 9px;
+  }
+  .panel.cost { --edge: var(--coral); }
+  .panel.built { --edge: var(--emerald); }
+
+  /* ---------------- Pipeline ---------------- */
+  .pipeline {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--hairline); border-radius: 8px;
+    overflow: hidden; background: var(--panel);
+  }
+  @media (max-width: 640px) { .pipeline { grid-template-columns: 1fr 1fr; } }
+  .step { padding: 7px 10px 8px; border-right: 1px solid var(--hairline); position: relative; }
+  .step:last-child { border-right: 0; }
+  .step::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2.5px; background: var(--tone); }
+  .step-n { font-family: var(--mono); font-size: 9.5px; font-weight: 700; color: var(--tone); letter-spacing: .08em; }
+  .step-t { font-family: var(--display); font-size: 13px; font-weight: 740; margin: 2px 0 2px; letter-spacing: -.01em; color: var(--text); }
+  .step-d { font-size: 10.5px; line-height: 1.38; color: var(--text-mid); margin: 0; }
+
+  /* ---------------- Proof band ---------------- */
+  .band { background: var(--panel); border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px 9px; }
+  .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; margin-top: 7px; }
+  @media (max-width: 640px) { .metrics { grid-template-columns: repeat(3, 1fr); } }
+  .metric { border-left: 2px solid var(--tone, var(--hairline)); padding-left: 8px; }
+  .metric b {
+    display: block; font-family: var(--display);
+    font-size: 19px; font-weight: 800; letter-spacing: -.032em;
+    line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text);
+  }
+  .metric span { display: block; font-size: 10.2px; line-height: 1.25; color: var(--text-mid); margin-top: 2px; }
+
+  /* ---------------- Horizons ---------------- */
+  .horizons { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+  .horizon {
+    display: grid; grid-template-columns: auto 1fr; gap: 9px;
+    align-items: start;
+    background: var(--panel-2); border-radius: 7px; padding: 6px 9px 7px;
+    border-left: 3px solid var(--tone);
+  }
+  .hz-tag {
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    color: var(--ground); background: var(--tone);
+    padding: 2px 6px; border-radius: 3px; white-space: nowrap;
+    letter-spacing: .04em; margin-top: 1px;
+  }
+  .hz-t { font-family: var(--display); font-size: 12.4px; font-weight: 740; color: var(--text); letter-spacing: -.008em; }
+  .hz-d { font-size: 10px; line-height: 1.34; color: var(--text-mid); margin: 2px 0 0; }
+
+  /* ---------------- Lists ---------------- */
+  .list { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+  .list li { font-size: 10.8px; line-height: 1.38; color: var(--text-mid); padding-left: 15px; position: relative; }
+  .list li::before {
+    content: ""; position: absolute; left: 0; top: 6px;
+    width: 6px; height: 6px; border-radius: 1.5px;
+    background: var(--tone, var(--gold)); transform: rotate(45deg);
+  }
+  .list li b { color: var(--text); font-weight: 700; }
+
+  /* Revenue reads as one line rather than three cards: at this size the
+     cards cost 60px of a fixed A4 page to say what a sentence says, and
+     the page has more valuable things to spend that height on. */
+  .rev-line {
+    margin: 5px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-mid);
+    background: var(--panel-2); border-radius: 6px; padding: 7px 10px 8px;
+    border-left: 3px solid var(--gold);
+  }
+  .rev-line b { color: var(--text); font-weight: 720; }
+  .rev-line .sep { color: var(--gold); font-weight: 700; padding: 0 3px; }
+
+  /* ---------------- Ask ---------------- */
+  .ask {
+    margin-top: auto;
+    flex: 0 0 auto;
+    background: linear-gradient(100deg, var(--gold) 0%, #FFD27A 100%);
+    color: #14100A;
+    padding: 3.5mm 11mm;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .ask h3 {
+    font-family: var(--display); font-size: 16.5px; font-weight: 800;
+    margin: 0 0 3px; letter-spacing: -.018em; color: #14100A;
+  }
+  .ask p { margin: 0; font-size: 11.8px; color: #3A2E12; max-width: 52ch; line-height: 1.45; font-weight: 500; }
+  .contact { text-align: right; font-size: 11.4px; color: #3A2E12; line-height: 1.55; font-weight: 600; }
+  .contact b { display: block; color: #14100A; font-size: 12.5px; font-weight: 800; }
+  .contact .fill { font-family: var(--mono); font-size: 10px; color: #6B4E0A; }
+
+  .fineprint {
+    padding: 2.5mm 11mm 3mm; font-size: 8.8px; line-height: 1.5; flex: 0 0 auto;
+    color: var(--text-dim); border-top: 1px solid var(--hairline);
+    background: var(--ground);
+  }
+
+  @media print {
+    /* Without this the dark ground and every accent drop out and the
+       sheet prints as black text on white — a different document. */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: var(--ground); padding: 0; display: block; }
+    .sheet { box-shadow: none; width: auto; min-height: 0; height: 296.5mm; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { #wave { display: none; } }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <canvas id="wave" aria-hidden="true"></canvas>
+
+    <div class="brandrow">
+      <h1 class="wordmark">Prajadhwani<span>.</span></h1>
+      <div class="meaning">Civic Intelligence · Bengaluru, India</div>
+    </div>
+
+    <p class="thesis">
+      1.4&nbsp;billion people know exactly what their neighbourhood needs.
+      No government on earth has a way to <em>hear them at scale</em>.
+      We built it.
+    </p>
+    <p class="sub">
+      Prajadhwani turns what citizens say — by voice, in ten Indian languages —
+      into ranked, routed work for the officials who control local budgets. India
+      spends through <b style="color:var(--text)">543 constituencies</b>; almost none
+      can prove what their people actually asked for.
+    </p>
+  </header>
+
+  <div class="body">
+
+    <section class="two">
+      <div class="panel cost">
+        <p class="eyebrow">The cost of the status quo</p>
+        <h2 class="head">Public money is being allocated on instinct — today, at scale.</h2>
+        <p class="copy">
+          A complaint reaches one clerk and one file. Nobody counts how many
+          others reported the same failure, so budgets follow petitions and
+          guesswork. <b>Every wasted allocation is spent before anyone can
+          measure it was wrong</b> — and each unanswered report teaches a
+          citizen not to bother again.
+        </p>
+      </div>
+
+      <div class="panel built">
+        <p class="eyebrow">What is already live</p>
+        <h2 class="head">A working platform — not a concept, not a pilot deck.</h2>
+        <p class="copy">
+          Citizens report by voice, photo or text — no form, no literacy
+          barrier. Our AI groups identical reports by area, ranks them against
+          who is affected, and names the department and officer who own the
+          fix. <b>The same map is public — that is the accountability.</b>
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">The loop, end to end</p>
+      <div class="pipeline">
+        <div class="step" style="--tone: var(--gold)">
+          <div class="step-n">01 · SPEAK</div>
+          <div class="step-t">Zero friction</div>
+          <p class="step-d">A voice note in Kannada. A photo of a broken pipe.
+          Thirty seconds, no training, no literacy requirement.</p>
+        </div>
+        <div class="step" style="--tone: var(--violet)">
+          <div class="step-n">02 · GROUP</div>
+          <div class="step-t">One voice becomes evidence</div>
+          <p class="step-d">AI clusters everyone reporting the same thing in
+          the same area and ranks it against who is affected.</p>
+        </div>
+        <div class="step" style="--tone: var(--emerald)">
+          <div class="step-n">03 · ROUTE</div>
+          <div class="step-t">To whoever owns it</div>
+          <p class="step-d">Four AI agents diagnose cause, draft the fix, name
+          the accountable department and compile the briefing.</p>
+        </div>
+        <div class="step" style="--tone: var(--coral)">
+          <div class="step-n">04 · PROVE</div>
+          <div class="step-t">Visible to both sides</div>
+          <p class="step-d">Citizens track a token number. Officials work a
+          ranked queue. Neither can quietly ignore the other.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="eyebrow">Ground already taken — the hard, unglamorous part is done</p>
+      <div class="metrics">
+        <div class="metric" style="--tone: var(--gold)"><b>543</b><span>Parliamentary constituencies mapped nationwide</span></div>
+        <div class="metric" style="--tone: var(--emerald)"><b>227</b><span>Karnataka taluks live, all 30 districts</span></div>
+        <div class="metric" style="--tone: var(--violet)"><b>369</b><span>Bengaluru wards, boundary-accurate</span></div>
+        <div class="metric" style="--tone: var(--coral)"><b>10</b><span>Indian languages, voice-first</span></div>
+        <div class="metric" style="--tone: var(--gold-lo)"><b>16</b><span>Departments wired for automatic routing</span></div>
+      </div>
+    </section>
+
+    <section class="two">
+      <div>
+        <p class="eyebrow">Where this goes — the civic intelligence layer</p>
+        <ul class="horizons">
+          <li class="horizon" style="--tone: var(--emerald)">
+            <span class="hz-tag">LIVE</span>
+            <div>
+              <div class="hz-t">Listening</div>
+              <p class="hz-d">What citizens are asking for, ranked by area and
+              routed to the accountable department.</p>
+            </div>
+          </li>
+          <li class="horizon" style="--tone: var(--gold)">
+            <span class="hz-tag">NEXT</span>
+            <div>
+              <div class="hz-t">Predicting</div>
+              <p class="hz-d">Forecast where water, sanitation and road failures
+              will surface next — so budgets move before the breakdown, not
+              after it.</p>
+            </div>
+          </li>
+          <li class="horizon" style="--tone: var(--violet)">
+            <span class="hz-tag">THEN</span>
+            <div>
+              <div class="hz-t">Allocating</div>
+              <p class="hz-d">Match ward budgets to measured citizen demand and
+              benchmark constituencies against each other.
+              <b style="color:var(--text)">The system of record for how a
+              democracy spends locally.</b></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow">Why this compounds</p>
+        <ul class="list">
+          <li style="--tone: var(--coral)"><b>Privacy is the product.</b>
+          Officials see a token, a problem and an area — never a name, phone or
+          address. Enforced by data design, not policy. Citizens report
+          honestly; no government can weaponise the list.</li>
+          <li style="--tone: var(--emerald)"><b>The map is the moat.</b> Every
+          district, taluk and ward boundary already digitised and matched to
+          its representatives and departments. Slow, unglamorous, hard to
+          shortcut.</li>
+          <li style="--tone: var(--gold)"><b>Why now.</b> Vernacular speech AI
+          became accurate and cheap enough for this only in the last two
+          years. India's digital public infrastructure did the rest.</li>
+        </ul>
+
+        <p class="eyebrow" style="margin-top:8px">How we earn</p>
+        <p class="rev-line">
+          <b>Constituency licence</b> — annual, per seat or urban body<span class="sep">·</span><b>State
+          rollout</b> — priced per citizen covered<span class="sep">·</span><b>Insight
+          reports</b> — anonymised, for CSR and development agencies
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="ask">
+    <div>
+      <h3>Karnataka first — ≈65 million people, the size of France.</h3>
+      <p>One state proves the model. The same product then repeats across
+      India's 543 seats, and across every democracy with the same problem,
+      without being rebuilt.</p>
+    </div>
+    <div class="contact">
+      <b>Seed round — now open</b>
+      Prajadhwani · Bengaluru, India<br />
+      <span class="fill">[ amount · use of funds · contact ]</span>
+    </div>
+  </section>
+
+  <p class="fineprint">
+    Figures describe boundary, language and department coverage built into the
+    platform today. "NEXT" and "THEN" horizons are roadmap, not shipped.
+    Raise amount, valuation, traction and market-size figures are left blank
+    rather than estimated — complete them from your own records before this
+    reaches an investor.
+  </p>
+
+</div>
+
+<script>
+  /* Masthead motif: the product's own four-bar voice-waveform, drawn as a
+     field that resolves left-to-right from a speaking waveform into the
+     even grid of a district map — a voice becoming administrative data.
+     The page's one piece of motion, spent on its single argument. */
+  (function () {
+    var canvas = document.getElementById("wave");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var COLS = 72, ROWS = 7, t = 0;
+
+    function size() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, r.width * dpr);
+      canvas.height = Math.max(1, r.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return r;
+    }
+
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); } else { ctx.rect(x, y, w, h); }
+      ctx.fill();
+    }
+
+    function draw() {
+      var r = size(), w = r.width, h = r.height;
+      ctx.clearRect(0, 0, w, h);
+      var cw = w / COLS, midY = h / 2;
+
+      for (var c = 0; c < COLS; c++) {
+        var p = c / (COLS - 1);
+        var settle = Math.pow(p, 1.75);
+        var phase = t * 0.85 + c * 0.42;
+        var amp = Math.sin(phase) * 0.5 + Math.sin(phase * 0.53 + 1.1) * 0.5;
+        var waveH = (Math.abs(amp) * 0.44 + 0.05) * h;
+        var barH = waveH * (1 - settle) + (h * 0.66) * settle;
+        var x = c * cw + cw * 0.24, bw = Math.max(1, cw * 0.52);
+
+        if (settle < 0.55) {
+          var a = 0.16 + (1 - settle) * 0.34;
+          ctx.fillStyle = "rgba(245,185,66," + a.toFixed(3) + ")";
+          roundRect(x, midY - barH / 2, bw, barH, Math.min(bw / 2, 3));
+        } else {
+          var gap = 3, cellH = (barH - gap * (ROWS - 1)) / ROWS;
+          for (var i = 0; i < ROWS; i++) {
+            var y = midY - barH / 2 + i * (cellH + gap);
+            var seed = Math.sin(c * 12.9898 + i * 78.233) * 43758.5453;
+            var n = seed - Math.floor(seed);
+            ctx.fillStyle = "rgba(155,140,255," + (0.08 + n * 0.34 * settle).toFixed(3) + ")";
+            roundRect(x, y, bw, Math.max(1, cellH), 1.5);
+          }
+        }
+      }
+    }
+
+    function loop() { t += 0.016; draw(); requestAnimationFrame(loop); }
+    draw();
+    if (!reduce) loop();
+    window.addEventListener("resize", draw);
+  })();
+</script>
