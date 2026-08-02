@@ -1,0 +1,860 @@
+<title>Prajadhwani — Innovation & Entrepreneurship for Sustainability</title>
+
+<style>
+  :root {
+    --ground:   #0A0F1F;
+    --panel:    #131B33;
+    --panel-2:  #1A2340;
+    --hairline: #2A3559;
+    --grid:     #202A4A;
+
+    --text:     #F4F7FF;
+    --text-mid: #B4BEDE;
+    --text-dim: #8A94BC;
+
+    /* UI / text accents — chosen for text legibility on the ground. */
+    --gold:     #F5B942;
+    --emerald:  #2FD3A0;
+    --coral:    #FF7A85;
+    --violet:   #9B8CFF;
+
+    /* Chart marks — a separate, validated categorical set. Marks and text
+       do different jobs: these sit in the L 0.48–0.67 band that reads as a
+       filled shape on this surface, and clear CVD separation pairwise
+       (validated, not eyeballed). Text never wears these. */
+    --c1: #BC8419;
+    --c2: #17AC7F;
+    --c3: #7566E8;
+    --c4: #E84F60;
+    --c5: #2C9DC4;
+
+    --display: "Segoe UI Variable Display", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --body: "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+
+    --surround: #05080F;
+  }
+  @media (prefers-color-scheme: light) { :root { --surround: #E7E9F2; } }
+  :root[data-theme="light"] { --surround: #E7E9F2; }
+  :root[data-theme="dark"]  { --surround: #05080F; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--surround);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 16px 56px;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    max-width: 100%;
+    background: var(--ground);
+    box-shadow: 0 20px 70px rgba(0,0,0,.55);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .pad { padding: 0 12mm; }
+
+  /* ---------------- Page furniture ---------------- */
+  .runner {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; padding: 7mm 12mm 5px;
+    border-bottom: 1px solid var(--hairline); margin-bottom: 5mm;
+    flex: 0 0 auto;
+  }
+  .runner .mk { font-family: var(--display); font-size: 17px; font-weight: 800; letter-spacing: -.025em; }
+  .runner .mk span { color: var(--gold); }
+  .runner .sec { font-size: 9.5px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); }
+
+  .foot {
+    margin-top: auto; flex: 0 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4mm 12mm 5mm; border-top: 1px solid var(--hairline);
+    font-size: 8.6px; color: var(--text-dim); letter-spacing: .04em;
+  }
+  .foot .pg { font-family: var(--mono); font-weight: 700; color: var(--text-mid); }
+
+  .flow { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 4.5mm; }
+
+  /* ---------------- Type ---------------- */
+  .eyebrow {
+    font-size: 9.5px; font-weight: 800; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--text-dim); margin: 0 0 5px;
+  }
+  h2.head {
+    font-family: var(--display); font-size: 15px; font-weight: 760;
+    letter-spacing: -.014em; margin: 0 0 6px; color: var(--text); text-wrap: balance;
+  }
+  h3.sub {
+    font-family: var(--display); font-size: 12.6px; font-weight: 740;
+    letter-spacing: -.008em; margin: 0 0 3px; color: var(--text);
+  }
+  p.copy { margin: 0; font-size: 11.6px; line-height: 1.52; color: var(--text-mid); }
+  p.copy + p.copy { margin-top: 6px; }
+  .copy b, .copy strong { color: var(--text); font-weight: 690; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+  .two-a { display: grid; grid-template-columns: 1.15fr 1fr; gap: 5mm; }
+  @media (max-width: 640px) { .two, .two-a { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--hairline);
+    border-radius: 9px; padding: 10px 12px 11px;
+  }
+  .card.edge { border-left: 3px solid var(--tone, var(--gold)); }
+
+  /* ---------------- Hero ---------------- */
+  .hero { position: relative; padding: 0 12mm; overflow: hidden; flex: 0 0 auto; }
+  .vision {
+    font-family: var(--display); font-size: 21px; font-weight: 700;
+    line-height: 1.22; letter-spacing: -.02em; margin: 0; text-wrap: balance;
+    color: var(--text);
+  }
+  .vision em { color: var(--gold); font-style: normal; }
+
+  /* ---------------- Stat tiles ---------------- */
+  .tiles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; }
+  .tile { border-left: 2px solid var(--tone); padding-left: 8px; }
+  .tile b {
+    display: block; font-family: var(--display); font-size: 19px; font-weight: 800;
+    letter-spacing: -.032em; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text);
+  }
+  .tile span { display: block; font-size: 9.8px; line-height: 1.28; color: var(--text-mid); margin-top: 2px; }
+
+  /* ---------------- Pipeline ---------------- */
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--hairline); border-radius: 9px; overflow: hidden; background: var(--panel); }
+  .step { padding: 8px 10px 9px; border-right: 1px solid var(--hairline); position: relative; }
+  .step:last-child { border-right: 0; }
+  .step::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2.5px; background: var(--tone); }
+  .step-n { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--tone); letter-spacing: .07em; }
+  .step-t { font-family: var(--display); font-size: 12.2px; font-weight: 740; margin: 2px 0; letter-spacing: -.01em; color: var(--text); }
+  .step-d { font-size: 10px; line-height: 1.38; color: var(--text-mid); margin: 0; }
+
+  /* ---------------- Lists ---------------- */
+  .list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .list li { font-size: 11px; line-height: 1.44; color: var(--text-mid); padding-left: 15px; position: relative; }
+  .list li::before {
+    content: ""; position: absolute; left: 0; top: 6px; width: 6px; height: 6px;
+    border-radius: 1.5px; background: var(--tone, var(--gold)); transform: rotate(45deg);
+  }
+  .list li b { color: var(--text); font-weight: 700; }
+
+  /* ---------------- Tables ---------------- */
+  table { width: 100%; border-collapse: collapse; font-size: 10.4px; }
+  caption { caption-side: top; text-align: left; font-size: 9.5px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); padding-bottom: 5px; }
+  th, td { text-align: left; padding: 5px 7px; border-bottom: 1px solid var(--hairline); vertical-align: top; line-height: 1.36; }
+  thead th { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--grid); }
+  td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tr.us td { background: rgba(245,185,66,.07); }
+  tr.us td:first-child { color: var(--text); font-weight: 700; }
+  .tbl-wrap { overflow-x: auto; }
+
+  /* ---------------- Charts ----------------
+     Bars are thin, sit on a recessive grid, carry 4px rounded data-ends and
+     a direct value label — so identity and magnitude both survive being
+     printed in grayscale or read by a colourblind reader. */
+  .bars { display: grid; gap: 6px; margin-top: 2px; }
+  .bar-row { display: grid; grid-template-columns: 88px 1fr auto; gap: 8px; align-items: center; }
+  .bar-lab { font-size: 9.8px; color: var(--text-mid); line-height: 1.25; }
+  .bar-track { display: block; height: 11px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+  .bar-fill { display: block; height: 100%; border-radius: 4px; background: var(--tone); }
+  .bar-val { font-family: var(--mono); font-size: 9.8px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+
+  .colchart { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-items: end; height: 96px; margin-top: 4px; padding-top: 4px; }
+  .col { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 4px; }
+  .col-val { font-family: var(--mono); font-size: 10.5px; font-weight: 800; color: var(--text); text-align: center; font-variant-numeric: tabular-nums; }
+  .col-bar { display: block; background: var(--c1); border-radius: 4px 4px 0 0; border-bottom: 2px solid var(--ground); }
+  .col-lab { font-size: 9.5px; color: var(--text-mid); text-align: center; border-top: 1px solid var(--grid); padding-top: 4px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 6px; }
+  .lg { display: inline-flex; align-items: center; gap: 5px; font-size: 9.4px; color: var(--text-mid); }
+  .lg i { width: 9px; height: 9px; border-radius: 2px; background: var(--tone); display: inline-block; }
+
+  /* ---------------- Timeline ---------------- */
+  .tl { display: grid; gap: 0; position: relative; }
+  .tl-row { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 6px 0 7px; border-bottom: 1px solid var(--hairline); }
+  .tl-row:last-child { border-bottom: 0; }
+  .tl-q { font-family: var(--mono); font-size: 9.4px; font-weight: 700; color: var(--ground); background: var(--tone); border-radius: 3px; padding: 2px 0; text-align: center; height: 17px; }
+  .tl-t { font-family: var(--display); font-size: 11.8px; font-weight: 740; color: var(--text); }
+  .tl-d { font-size: 10.2px; line-height: 1.4; color: var(--text-mid); margin: 1px 0 0; }
+
+  /* ---------------- Callouts ---------------- */
+  .uvp {
+    background: linear-gradient(100deg, rgba(245,185,66,.16), rgba(245,185,66,.04));
+    border: 1px solid rgba(245,185,66,.4); border-left: 3px solid var(--gold);
+    border-radius: 9px; padding: 10px 13px 11px;
+  }
+  .uvp p { margin: 0; font-family: var(--display); font-size: 13px; font-weight: 680; line-height: 1.4; color: var(--text); letter-spacing: -.01em; }
+
+  .ask-bar {
+    background: linear-gradient(100deg, var(--gold), #FFD27A);
+    color: #14100A; padding: 5mm 12mm; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .ask-bar h3 { font-family: var(--display); font-size: 15.5px; font-weight: 800; margin: 0 0 3px; letter-spacing: -.018em; color: #14100A; }
+  .ask-bar p { margin: 0; font-size: 11px; color: #3A2E12; max-width: 50ch; line-height: 1.45; font-weight: 500; }
+  .ask-bar .c { text-align: right; font-size: 10.8px; color: #3A2E12; font-weight: 600; line-height: 1.5; }
+  .ask-bar .c b { display: block; color: #14100A; font-size: 12px; font-weight: 800; }
+  .ask-bar .c .fill { font-family: var(--mono); font-size: 9.6px; color: #6B4E0A; }
+
+  .note { font-size: 9.2px; line-height: 1.45; color: var(--text-dim); margin: 0; }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: var(--ground); padding: 0; display: block; gap: 0; }
+    .page { box-shadow: none; width: auto; height: 296.5mm; page-break-after: always; break-after: page; }
+    .page:last-child { page-break-after: auto; break-after: auto; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <div class="runner">
+    <div class="mk">Prajadhwani<span>.</span></div>
+    <div class="sec">Innovation &amp; Entrepreneurship for Sustainability · 1 / 4</div>
+  </div>
+
+  <div class="hero">
+    <p class="eyebrow">The vision</p>
+    <p class="vision">
+      Every community already knows what it needs. We are building the
+      instrument that lets a government <em>hear all of it at once</em> —
+      and prove where the money should go.
+    </p>
+  </div>
+
+  <div class="flow pad">
+
+    <section class="card edge" style="--tone: var(--coral)">
+      <p class="eyebrow">The problem</p>
+      <h2 class="head">Public money is allocated on instinct — at scale, today.</h2>
+      <p class="copy">
+        A complaint reaches one clerk and one file. Nobody counts how many
+        other people reported the same failure, so local budgets follow
+        petitions, party channels and guesswork. <b>Every misallocation is
+        spent before anyone can measure that it was wrong</b> — and each
+        unanswered report teaches a citizen not to bother again. Local bodies
+        across India commit development spending every year with no instrument
+        that tells them what their own population actually asked for.
+      </p>
+    </section>
+
+    <section class="two-a">
+      <div>
+        <p class="eyebrow">The concrete idea</p>
+        <h2 class="head">A civic intelligence platform for local development planning.</h2>
+        <p class="copy">
+          A citizen speaks a problem or a suggestion into a phone, in their own
+          language — no form, no literacy requirement, thirty seconds. Our AI
+          transcribes and translates it, groups it with every other report
+          describing the same issue in the same area, scores that group against
+          who is affected, identifies the root cause, tags it to a specific UN
+          Sustainable Development Goal target, and routes it to the department
+          and officer accountable for the fix.
+        </p>
+        <p class="copy">
+          The official receives a ranked development agenda with evidence
+          behind every line. The citizen receives a token number they can
+          track. <b>The same map is public</b> — which is what converts a
+          complaint box into an accountability system.
+        </p>
+      </div>
+
+      <div class="card edge" style="--tone: var(--emerald)">
+        <p class="eyebrow">What has already been done</p>
+        <p class="copy">
+          The platform is <b>built and operational end to end</b> — citizen
+          app, AI pipeline, official workspace, public map and statewide
+          boundary data. It has not yet been opened to citizens or government
+          outside the founding team; this raise is to put it in the field.
+        </p>
+        <p class="copy" style="margin-top:7px">
+          <b>Working today:</b> voice/photo/text capture in 10 languages ·
+          four-agent AI analysis chain · automatic department routing ·
+          anonymised public dashboard · statewide interactive map · official
+          briefing PDFs.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <p class="eyebrow">Ground already covered — the slow, unglamorous groundwork is complete</p>
+      <div class="tiles">
+        <div class="tile" style="--tone: var(--gold)"><b>543</b><span>Parliamentary constituencies mapped nationwide</span></div>
+        <div class="tile" style="--tone: var(--emerald)"><b>227</b><span>Karnataka taluks, across all 30 districts</span></div>
+        <div class="tile" style="--tone: var(--violet)"><b>369</b><span>Bengaluru civic wards, boundary-accurate</span></div>
+        <div class="tile" style="--tone: var(--coral)"><b>10</b><span>Indian languages, voice-first</span></div>
+        <div class="tile" style="--tone: var(--c5)"><b>16</b><span>Departments wired for automatic routing</span></div>
+      </div>
+    </section>
+
+    <section class="two">
+      <div>
+        <p class="eyebrow">Why this is a sustainability innovation</p>
+        <p class="copy">
+          Sustainable development fails locally not for lack of goals but for
+          lack of ground truth. A district officer cannot act on a national
+          target; they act on what they believe their area needs. Prajadhwani
+          makes that belief measurable.
+        </p>
+        <p class="copy">
+          Every clustered issue is tagged to a specific SDG <b>target</b> — not
+          merely a goal number — so a local body can report its development
+          spending against the global framework as a by-product of doing its
+          work, rather than as a separate reporting exercise.
+        </p>
+      </div>
+      <div class="card edge" style="--tone: var(--violet)">
+        <h3 class="sub">SDG targets mapped in the product</h3>
+        <ul class="list" style="--tone: var(--violet); margin-top:6px">
+          <li><b>SDG 6</b> — Clean water and sanitation</li>
+          <li><b>SDG 11</b> — Sustainable cities and communities</li>
+          <li><b>SDG 3</b> — Good health and well-being</li>
+          <li><b>SDG 9</b> — Industry, innovation and infrastructure</li>
+          <li><b>SDG 4</b> — Quality education &nbsp;·&nbsp; <b>SDG 7</b> — Clean energy &nbsp;·&nbsp; <b>SDG 13</b> — Climate action</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="foot">
+    <span>Prajadhwani · Civic intelligence for local government · Bengaluru, India</span>
+    <span class="pg">01</span>
+  </div>
+</section>
+
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <div class="runner">
+    <div class="mk">Prajadhwani<span>.</span></div>
+    <div class="sec">The innovation, its value, and the competitive field · 2 / 4</div>
+  </div>
+
+  <div class="flow pad">
+
+    <section>
+      <p class="eyebrow">Implementation — how one report becomes a decision</p>
+      <div class="pipeline">
+        <div class="step" style="--tone: var(--gold)">
+          <div class="step-n">01 · CAPTURE</div>
+          <div class="step-t">Speak, don't fill a form</div>
+          <p class="step-d">Voice, photo or text in 10 languages. Location is
+          captured to ward or taluk precision automatically.</p>
+        </div>
+        <div class="step" style="--tone: var(--violet)">
+          <div class="step-n">02 · CLUSTER</div>
+          <div class="step-t">One voice becomes evidence</div>
+          <p class="step-d">Identical issues in the same area are grouped and
+          scored against population and infrastructure gaps.</p>
+        </div>
+        <div class="step" style="--tone: var(--emerald)">
+          <div class="step-n">03 · ANALYSE</div>
+          <div class="step-t">Four AI agents, in sequence</div>
+          <p class="step-d">Root cause → proposed solution → responsible
+          department and officer → compiled official briefing.</p>
+        </div>
+        <div class="step" style="--tone: var(--coral)">
+          <div class="step-n">04 · ACT</div>
+          <div class="step-t">Ranked, tracked, public</div>
+          <p class="step-d">Officials work a ranked queue; citizens track a
+          token; the anonymised map is open to everyone.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="uvp">
+      <p class="eyebrow" style="margin-bottom:4px">Unique value proposition</p>
+      <p>
+        The only platform that converts unstructured citizen speech into a
+        ranked, SDG-tagged, department-routed development plan — without ever
+        revealing who spoke.
+      </p>
+    </section>
+
+    <section class="two">
+      <div>
+        <p class="eyebrow">Added value over the alternatives</p>
+        <ul class="list">
+          <li style="--tone: var(--gold)"><b>A planning instrument, not a complaint pipe.</b>
+          Every existing system moves one complaint to one desk. We convert
+          thousands of them into a prioritised agenda a budget can be written
+          against.</li>
+          <li style="--tone: var(--emerald)"><b>Voice-first and vernacular.</b>
+          Written forms in English or formal Hindi silently exclude the people
+          with the most to report. Speech in 10 languages removes that filter.</li>
+          <li style="--tone: var(--coral)"><b>Privacy by construction.</b>
+          Officials see a token, a problem and an area — never a name, phone or
+          address, because those fields are never written to the data an
+          official can read. It is a property of the system, not a policy.</li>
+          <li style="--tone: var(--violet)"><b>SDG reporting as a by-product.</b>
+          Sustainability accounting falls out of normal operation rather than
+          requiring a separate audit.</li>
+          <li style="--tone: var(--c5)"><b>Geography others must still build.</b>
+          Every district, taluk and ward boundary already digitised and matched
+          to its representatives and departments.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow">Why now</p>
+        <p class="copy">
+          Two conditions became true only recently. Vernacular speech AI
+          reached the accuracy and the price point where a thirty-second
+          Kannada voice note can be understood at scale. And India's digital
+          public infrastructure normalised phone-based identity and
+          location for hundreds of millions of people.
+        </p>
+        <p class="copy">
+          Neither was true five years ago. Both are now true everywhere in the
+          developing world — which is why the same instrument, once proven in
+          one Indian state, is not India-specific.
+        </p>
+        <h3 class="sub" style="margin-top:9px">Barriers to imitation</h3>
+        <p class="copy">
+          The defensible asset is not the model — it is the boundary and
+          accountability graph beneath it: who represents this polygon, which
+          department owns this category here, and which officer answers for it.
+          That is slow, unglamorous, jurisdiction-by-jurisdiction work, and it
+          compounds with every area added.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="tbl-wrap">
+        <table>
+          <caption>Competitor analysis — the civic-technology field</caption>
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>What it does well</th>
+              <th>Where it stops</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Swachhata (national, Govt of India)</td>
+              <td>Mass reach for sanitation complaints; official standing</td>
+              <td>Single-domain; individual complaints, no clustering or prioritisation</td>
+            </tr>
+            <tr>
+              <td>CPGRAMS (national grievance portal)</td>
+              <td>Formal, auditable grievance redressal with escalation</td>
+              <td>Text and English-centric; case-by-case, not area patterns; no planning output</td>
+            </tr>
+            <tr>
+              <td>Municipal apps (e.g. Bengaluru's civic apps)</td>
+              <td>Direct routing into one city's departments</td>
+              <td>One city; complaint routing only; no cross-area intelligence or ranking</td>
+            </tr>
+            <tr>
+              <td>Civic-society platforms (e.g. NGO-run reporting)</td>
+              <td>Strong citizen trust and campaigning</td>
+              <td>Outside the official workflow; not a budgeting instrument for government</td>
+            </tr>
+            <tr>
+              <td>International 311 / request systems</td>
+              <td>Mature service-request management for cities</td>
+              <td>English-first, city-scale, service-desk model; not constituency development planning</td>
+            </tr>
+            <tr class="us">
+              <td>Prajadhwani</td>
+              <td>Voice in 10 languages → clustered, ranked, SDG-tagged, department-routed plan; public and anonymised</td>
+              <td>Pre-market: no external users yet — the risk this raise addresses</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin-top:6px">
+        Positioning reflects each platform's published purpose. Verify current
+        feature sets before submission — public-sector products change without
+        notice.
+      </p>
+    </section>
+
+  </div>
+
+  <div class="foot">
+    <span>Competitive position · Unique value proposition</span>
+    <span class="pg">02</span>
+  </div>
+</section>
+
+
+<!-- ============================ PAGE 3 ============================ -->
+<section class="page">
+  <div class="runner">
+    <div class="mk">Prajadhwani<span>.</span></div>
+    <div class="sec">Financial needs, funding sources and revenue dynamics · 3 / 4</div>
+  </div>
+
+  <div class="flow pad">
+
+    <section class="two-a">
+      <div class="card">
+        <p class="eyebrow">Financial need — ₹2.5 crore (≈ US$300,000) over 18 months</p>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="bar-lab">Engineering &amp; AI</span>
+            <span class="bar-track"><span class="bar-fill" style="--tone: var(--c1); width: 100%"></span></span>
+            <span class="bar-val">₹90L</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-lab">Government partnerships &amp; field onboarding</span>
+            <span class="bar-track"><span class="bar-fill" style="--tone: var(--c2); width: 72%"></span></span>
+            <span class="bar-val">₹65L</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-lab">Cloud &amp; AI inference</span>
+            <span class="bar-track"><span class="bar-fill" style="--tone: var(--c3); width: 39%"></span></span>
+            <span class="bar-val">₹35L</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-lab">Security, audit &amp; data-protection compliance</span>
+            <span class="bar-track"><span class="bar-fill" style="--tone: var(--c4); width: 28%"></span></span>
+            <span class="bar-val">₹25L</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-lab">Legal, operations &amp; contingency</span>
+            <span class="bar-track"><span class="bar-fill" style="--tone: var(--c5); width: 39%"></span></span>
+            <span class="bar-val">₹35L</span>
+          </div>
+        </div>
+        <p class="note" style="margin-top:7px">
+          Bars are proportional to allocation; each is labelled with its value
+          so the figure survives grayscale printing.
+        </p>
+      </div>
+
+      <div>
+        <p class="eyebrow">Funding sources</p>
+        <ul class="list">
+          <li style="--tone: var(--gold)"><b>Seed equity — ₹2–3 Cr (primary).</b>
+          Impact and early-stage funds active in Indian govtech and climate/
+          sustainability.</li>
+          <li style="--tone: var(--emerald)"><b>Non-dilutive grants.</b>
+          State startup-innovation programmes and sustainability innovation
+          awards; targeted at the pilot and compliance costs.</li>
+          <li style="--tone: var(--violet)"><b>Early customer revenue.</b>
+          Paid pilots convert during month 6–12 and fund a share of onboarding.</li>
+          <li style="--tone: var(--c5)"><b>CSR and development partners.</b>
+          Fund anonymised insight reporting in districts they already work in.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="two-a">
+      <div>
+        <div class="tbl-wrap">
+          <table>
+            <caption>Pricing — annual licence, by size of the local body</caption>
+            <thead>
+              <tr><th>Customer</th><th class="num">Per year</th><th class="num">Karnataka base</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Town panchayat / taluk body</td><td class="num">₹25,000</td><td class="num">227</td></tr>
+              <tr><td>Municipal council / assembly segment</td><td class="num">₹50,000</td><td class="num">224</td></tr>
+              <tr><td>City corporation / district / parliamentary seat</td><td class="num">₹1,00,000</td><td class="num">58</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="copy" style="margin-top:7px">
+          Priced deliberately below a government IT procurement threshold so it
+          is an operational decision rather than a tender. <b>This is a volume
+          model:</b> full Karnataka coverage represents roughly
+          <b>₹2.3 crore of annual recurring revenue</b>, and the equivalent
+          national base approaches <b>₹40 crore</b>. Scale comes from breadth of
+          adoption, not from price.
+        </p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Revenue estimate — first three years</p>
+        <div class="colchart">
+          <div class="col">
+            <span class="col-val">₹11L</span>
+            <span class="col-bar" style="height: 6%"></span>
+            <span class="col-lab">Year 1<br />25 bodies</span>
+          </div>
+          <div class="col">
+            <span class="col-val">₹55L</span>
+            <span class="col-bar" style="height: 26%"></span>
+            <span class="col-lab">Year 2<br />110 bodies</span>
+          </div>
+          <div class="col">
+            <span class="col-val">₹2.2Cr</span>
+            <span class="col-bar" style="height: 100%"></span>
+            <span class="col-lab">Year 3<br />320 bodies</span>
+          </div>
+        </div>
+        <p class="note" style="margin-top:6px">
+          Projection, not history — the platform has no external users today.
+          Year 3 includes ≈₹40L from anonymised insight reporting.
+        </p>
+      </div>
+    </section>
+
+    <section class="two">
+      <div>
+        <p class="eyebrow">Financial dynamics</p>
+        <ul class="list">
+          <li style="--tone: var(--emerald)"><b>Recurring by nature.</b> An annual
+          licence renewed by a body that has embedded the tool in its planning
+          cycle; switching means losing its own history.</li>
+          <li style="--tone: var(--gold)"><b>Target gross margin ≈ 85%.</b> The
+          only meaningful variable cost is cloud and AI inference, which falls
+          per report as volume rises.</li>
+          <li style="--tone: var(--violet)"><b>Land and expand.</b> Entry at one
+          taluk; expansion to the district and then the state is a pricing
+          change, not a new build.</li>
+          <li style="--tone: var(--coral)"><b>Break-even ≈ 400–450 paying bodies</b>
+          at the planned cost base — reachable within Karnataka alone, without
+          a second state.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow">Principal risks and how they are managed</p>
+        <ul class="list">
+          <li style="--tone: var(--coral)"><b>Government sales cycles are slow.</b>
+          Mitigated by pricing below tender thresholds and by entering at
+          taluk level, where a single officer can decide.</li>
+          <li style="--tone: var(--gold)"><b>Adoption depends on citizens
+          speaking up.</b> Field onboarding is funded as a first-class cost
+          line, not assumed to happen by itself.</li>
+          <li style="--tone: var(--emerald)"><b>Data protection scrutiny.</b> The
+          anonymisation is architectural, and a security and DPDP compliance
+          audit is funded in the first quarter.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="two-a">
+      <div>
+        <div class="tbl-wrap">
+          <table>
+            <caption>Unit economics — per local body, at plan</caption>
+            <thead><tr><th>Measure</th><th class="num">Assumed</th></tr></thead>
+            <tbody>
+              <tr><td>Average annual licence (blended)</td><td class="num">₹48,000</td></tr>
+              <tr><td>Cloud &amp; AI cost to serve, per year</td><td class="num">₹7,000</td></tr>
+              <tr><td>Gross profit per body per year</td><td class="num">₹41,000</td></tr>
+              <tr><td>Cost to acquire (field onboarding)</td><td class="num">₹35,000</td></tr>
+              <tr><td>Payback period</td><td class="num">≈10 months</td></tr>
+              <tr><td>Assumed annual retention</td><td class="num">85%</td></tr>
+              <tr><td>Lifetime value : acquisition cost</td><td class="num">≈7.8×</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow">What the projection rests on</p>
+        <ul class="list">
+          <li style="--tone: var(--coral)"><b>No traction is assumed from
+          history.</b> There are no external users today, so every figure above
+          is a forward assumption, not an extrapolation of a trend.</li>
+          <li style="--tone: var(--gold)"><b>Adoption is sequential, not viral.</b>
+          Each body is won by direct field engagement; growth is modelled on
+          team capacity, not on organic spread.</li>
+          <li style="--tone: var(--emerald)"><b>Retention is the load-bearing
+          assumption.</b> At 85% the model works; below roughly 70% the
+          break-even point moves outside Karnataka and a second state becomes
+          necessary rather than optional.</li>
+          <li style="--tone: var(--violet)"><b>Insight-report revenue is
+          treated as upside</b> and excluded until year three.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="foot">
+    <span>All financial figures are forward-looking projections, not results</span>
+    <span class="pg">03</span>
+  </div>
+</section>
+
+
+<!-- ============================ PAGE 4 ============================ -->
+<section class="page">
+  <div class="runner">
+    <div class="mk">Prajadhwani<span>.</span></div>
+    <div class="sec">Timeline, roadmap and the ask · 4 / 4</div>
+  </div>
+
+  <div class="flow pad">
+
+    <section class="two-a">
+      <div>
+        <p class="eyebrow">Timeline of next steps — 18 months</p>
+        <div class="tl">
+          <div class="tl-row">
+            <span class="tl-q" style="--tone: var(--c1)">Q1</span>
+            <div>
+              <div class="tl-t">Make it safe to deploy</div>
+              <p class="tl-d">Security and data-protection audit; first pilot
+              agreement with one constituency office; Kannada field-onboarding kit.</p>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-q" style="--tone: var(--c1)">Q2</span>
+            <div>
+              <div class="tl-t">First real citizens</div>
+              <p class="tl-d">Three live pilot areas; department integration
+              validated against real reports; first paid conversions.</p>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-q" style="--tone: var(--c2)">Q3</span>
+            <div>
+              <div class="tl-t">Prove the commercial model</div>
+              <p class="tl-d">25 paying local bodies; published evidence of
+              issues resolved through the platform; predictive layer in alpha.</p>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-q" style="--tone: var(--c2)">Q4</span>
+            <div>
+              <div class="tl-t">Multi-district rollout</div>
+              <p class="tl-d">75 bodies across several Karnataka districts;
+              first anonymised insight report with a CSR partner.</p>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-q" style="--tone: var(--c3)">Q5</span>
+            <div>
+              <div class="tl-t">From listening to allocating</div>
+              <p class="tl-d">150 bodies; budget-allocation module in beta with
+              a district administration.</p>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-q" style="--tone: var(--c3)">Q6</span>
+            <div>
+              <div class="tl-t">Prove it repeats</div>
+              <p class="tl-d">Entry into a second state; ~300 bodies; Series A
+              readiness on demonstrated retention.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow">Product roadmap — the civic intelligence layer</p>
+        <div class="card edge" style="--tone: var(--emerald); margin-bottom:6px">
+          <h3 class="sub">Listening &nbsp;·&nbsp; built</h3>
+          <p class="copy" style="font-size:10.6px">What citizens are asking for,
+          ranked by area, routed to the accountable department, tagged to an
+          SDG target.</p>
+        </div>
+        <div class="card edge" style="--tone: var(--gold); margin-bottom:6px">
+          <h3 class="sub">Predicting &nbsp;·&nbsp; months 9–15</h3>
+          <p class="copy" style="font-size:10.6px">Forecast where water,
+          sanitation and road failures will surface next, so budgets move
+          before the breakdown rather than after it.</p>
+        </div>
+        <div class="card edge" style="--tone: var(--violet)">
+          <h3 class="sub">Allocating &nbsp;·&nbsp; months 15–24</h3>
+          <p class="copy" style="font-size:10.6px">Match ward-level budgets to
+          measured citizen demand and benchmark comparable areas against each
+          other — the system of record for how a democracy spends locally.</p>
+        </div>
+
+        <p class="eyebrow" style="margin-top:9px">The team</p>
+        <p class="copy">
+          Two to three co-founders covering product engineering, AI, and
+          government partnerships. The raise funds the first engineering and
+          field-operations hires alongside the founding team.
+        </p>
+      </div>
+    </section>
+
+    <section class="two">
+      <div>
+        <p class="eyebrow">Impact we will measure and publish</p>
+        <ul class="list">
+          <li style="--tone: var(--emerald)"><b>Reach.</b> Reports filed per
+          1,000 residents in each covered area — the test of whether the voice
+          barrier actually came down.</li>
+          <li style="--tone: var(--gold)"><b>Responsiveness.</b> Median days
+          from report to department acknowledgement.</li>
+          <li style="--tone: var(--violet)"><b>Resolution.</b> Share of
+          clustered issues closed within one budget cycle.</li>
+          <li style="--tone: var(--coral)"><b>Equity.</b> Share of reports
+          coming from areas historically in the lowest quartile of civic
+          spend — the measure that says whether this narrows a gap or widens
+          it.</li>
+          <li style="--tone: var(--c5)"><b>SDG accounting.</b> Issues resolved
+          per SDG target, published per local body.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow">Why an award accelerates this specifically</p>
+        <p class="copy">
+          The binding constraint is not engineering — the platform is built.
+          It is credibility with the first government customer, who is being
+          asked to trust an unproven vendor with how their constituency is
+          seen.
+        </p>
+        <p class="copy">
+          Independent recognition of the innovation shortens that
+          conversation more than any feature would, and non-dilutive funding
+          is best spent exactly where this plan is thinnest: the security
+          audit and the field onboarding that turn a working product into a
+          used one.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <p class="eyebrow">What success looks like at the end of this plan</p>
+      <div class="tiles" style="grid-template-columns: repeat(4, 1fr)">
+        <div class="tile" style="--tone: var(--gold)"><b>300</b><span>Paying local bodies across two states</span></div>
+        <div class="tile" style="--tone: var(--emerald)"><b>2</b><span>States live, proving the model repeats</span></div>
+        <div class="tile" style="--tone: var(--violet)"><b>₹2.2Cr</b><span>Annual recurring revenue, year three</span></div>
+        <div class="tile" style="--tone: var(--coral)"><b>85%</b><span>Target gross margin at scale</span></div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="ask-bar">
+    <div>
+      <h3>₹2.5 crore seed — to put a built platform into citizens' hands.</h3>
+      <p>Karnataka first: ≈65 million people, comparable to France. One state
+      proves the model; the same product then repeats across India's 543
+      constituencies and every democracy with the same problem.</p>
+    </div>
+    <div class="c">
+      <b>Seed round — open</b>
+      Prajadhwani · Bengaluru, India<br />
+      <span class="fill">[ contact · email · phone ]</span>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>Figures marked as projections are forward-looking and unaudited</span>
+    <span class="pg">04</span>
+  </div>
+</section>
