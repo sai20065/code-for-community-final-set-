@@ -18,6 +18,7 @@ import '../../../core/models/taluk_model.dart';
 import '../../../core/models/ward_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/app_map_tiles.dart';
+import '../../../shared/widgets/map_area_palette.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 import '../booth/booth_detail_sheet.dart';
 import 'area_reports_sheet.dart';
@@ -117,10 +118,11 @@ Color _densityColor(String level) {
 
 /// Which sub-unit layer a constituency's map is drawn from.
 ///
-/// Never both at once: Bengaluru Urban has real GBA ward geometry, and every
-/// other constituency has taluks. Showing both would double-paint the same
-/// ground.
-enum _AreaLayer { ward, taluk }
+/// Never two at once: Bengaluru Urban has real ward geometry — in two
+/// layers, the 369 GBA wards ([ward]) and the 198 BBMP wards ([bbmpWard]),
+/// switchable on the map — and every other constituency has taluks. Showing
+/// more than one would double-paint the same ground.
+enum _AreaLayer { ward, bbmpWard, taluk }
 
 /// One ward or taluk, with its geometry, its representatives and the tickets
 /// rolled up inside it — the unit behind every circle indicator on the map.
@@ -149,7 +151,11 @@ class _MapArea {
 
   /// The `publicTickets` field this area is queried by. Ward and taluk ids
   /// live in different columns, so the indicator has to say which.
-  String get ticketField => layer == _AreaLayer.ward ? 'wardId' : 'talukId';
+  String get ticketField => switch (layer) {
+        _AreaLayer.ward => 'wardId',
+        _AreaLayer.bbmpWard => 'bbmpWardId',
+        _AreaLayer.taluk => 'talukId',
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -249,6 +255,46 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
   String? _fittedKey;
   bool _showBoothPins = true;
 
+  /// Area colouring: every ward/taluk its own pastel colour (like BBMP's
+  /// printed ward map), or the red/amber/teal problem-density ramp.
+  bool _colorByArea = true;
+
+  /// Which Bengaluru ward layer is drawn: the 198 BBMP wards (default) or
+  /// the 369 GBA wards. Both live in `wards/`; see [WardModel].
+  bool _bbmpLayer = true;
+
+  /// The last picker selection [_bbmpLayer] was synced to, so a ward picked
+  /// from one layer opens on that layer, but the toggle still works after.
+  String? _layerSyncedFor;
+
+  /// The viewer's own position, for the "you are here" dot. Null until (and
+  /// unless) they grant location permission.
+  LatLng? _me;
+
+  /// Ward names are only drawn when zoomed in far enough to read them.
+  static const _labelZoom = 13.0;
+  double _zoom = 11;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchViewerLocation().then((me) {
+      if (mounted && me != null) setState(() => _me = me);
+    });
+  }
+
+  Future<void> _goToMe() async {
+    final me = _me ?? await fetchViewerLocation();
+    if (!mounted) return;
+    if (me == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).locationFailPickMap)));
+      return;
+    }
+    setState(() => _me = me);
+    _mapController.move(me, 15);
+  }
+
   /// Null means "every category". Filtering narrows which clusters roll up
   /// into each area, so both the polygon tint and the indicator count answer
   /// the same question the chip asks.
@@ -279,7 +325,7 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
         areaId: area.id,
         reportCount: area.reportCount,
         priority: area.priority,
-        icon: area.layer == _AreaLayer.ward
+        icon: area.layer != _AreaLayer.taluk
             ? Icons.holiday_village_rounded
             : Icons.location_city_rounded,
         representativeLine: [
@@ -327,7 +373,18 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
 
     return constituencyAsync.when(
       data: (constituency) {
-        final wards = wardsAsync.valueOrNull ?? const <WardModel>[];
+        final allWards = wardsAsync.valueOrNull ?? const <WardModel>[];
+        if (selectedArea != null &&
+            selectedArea.kind == AreaKind.ward &&
+            _layerSyncedFor != selectedArea.id) {
+          _layerSyncedFor = selectedArea.id;
+          _bbmpLayer = selectedArea.id.startsWith('BBMP-');
+        }
+        final hasBothWardLayers = allWards.any((w) => w.isBbmp) &&
+            allWards.any((w) => !w.isBbmp);
+        final wards = hasBothWardLayers
+            ? allWards.where((w) => w.isBbmp == _bbmpLayer).toList()
+            : allWards;
         // Taluks are the ward-equivalent granular layer for every
         // constituency outside Bengaluru Urban, which has real ward data
         // instead — never show both on the same map.
@@ -343,6 +400,16 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
 
         final areas = _buildAreas(wards: wards, taluks: taluks, clusters: clusters);
         final areasById = {for (final a in areas) a.id: a};
+        final areaColors = assignAreaColors({
+          for (final a in areas)
+            if (_boundsFromRings(a.rings) != null)
+              a.id: _boundsFromRings(a.rings)!,
+        });
+        Color fillFor(_MapArea a) => _colorByArea
+            ? (areaColors[a.id] ?? kAreaPalette.first)
+            : severityColor(a.priority);
+        final pinnedClusters =
+            clusters.where((c) => c.centroid != null).toList();
 
         final constituencyRings = _extractRings(constituency?.boundaryGeoJson);
         final highlighted =
@@ -383,6 +450,12 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
                     setState(() => _selectedBoothId = null);
                   }
                 },
+                onPositionChanged: (camera, _) {
+                  final crossed =
+                      (camera.zoom >= _labelZoom) != (_zoom >= _labelZoom);
+                  _zoom = camera.zoom;
+                  if (crossed) setState(() {});
+                },
               ),
               children: [
                 // Voyager rather than the near-greyscale Positron: the
@@ -397,11 +470,12 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
                         for (final ring in area.rings)
                           Polygon(
                             points: ring,
-                            color: severityColor(area.priority)
-                                .withValues(alpha: 0.22),
-                            borderColor: severityColor(area.priority)
-                                .withValues(alpha: 0.85),
-                            borderStrokeWidth: 1.4,
+                            color: fillFor(area)
+                                .withValues(alpha: _colorByArea ? 0.38 : 0.22),
+                            borderColor: _colorByArea
+                                ? areaBorderColor(fillFor(area))
+                                : fillFor(area).withValues(alpha: 0.85),
+                            borderStrokeWidth: _colorByArea ? 1.2 : 1.4,
                           ),
                     ],
                   ),
@@ -429,6 +503,34 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
                         ),
                     ],
                   ),
+                if (_zoom >= _labelZoom && areas.isNotEmpty)
+                  MarkerLayer(
+                    markers: [
+                      for (final area in areas)
+                        Marker(
+                          point: area.center,
+                          width: 120,
+                          height: 30,
+                          child: IgnorePointer(
+                            child: Text(
+                              area.name,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.ink,
+                                shadows: [
+                                  Shadow(color: Colors.white, blurRadius: 3),
+                                  Shadow(color: Colors.white, blurRadius: 6),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 if (_showBoothPins)
                   MarkerLayer(
                     markers: [
@@ -436,6 +538,31 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
                         _boothMarker(booth, maxVolume),
                     ],
                   ),
+                // Report pins: one per hotspot, at its privacy-snapped
+                // centroid, in its category's colour. Tapping opens the
+                // hotspot's card, which has "Open in Google Maps".
+                if (_showBoothPins && pinnedClusters.isNotEmpty)
+                  MarkerLayer(
+                    markers: [
+                      for (final c in pinnedClusters)
+                        Marker(
+                          point: LatLng(c.centroid!.lat, c.centroid!.lng),
+                          width: 44,
+                          height: 46,
+                          alignment: Alignment.topCenter,
+                          child: GestureDetector(
+                            onTap: () => context.push('/public/cluster/${c.id}'),
+                            child: ReportPin(
+                              color: categoryColor(c.theme),
+                              icon: kThemeIcons[c.theme] ?? Icons.place,
+                              count: c.submissionCount,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                if (_me != null)
+                  MarkerLayer(markers: [youAreHereMarker(_me!)]),
                 // Area indicators sit above everything else: they are the
                 // primary affordance on this screen and must never end up
                 // underneath a booth pin.
@@ -477,6 +604,7 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
               bottom: 12,
               child: _Legend(
                 areaCount: areas.where((a) => a.reportCount > 0).length,
+                colorByArea: _colorByArea,
               ),
             ),
             Positioned(
@@ -484,11 +612,35 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
               bottom: 12,
               child: Column(
                 children: [
+                  if (hasBothWardLayers) ...[
+                    _LayerSwitch(
+                      bbmp: _bbmpLayer,
+                      onChanged: (bbmp) => setState(() => _bbmpLayer = bbmp),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  _MapChipButton(
+                    icon: Icons.palette_outlined,
+                    tooltip: _colorByArea
+                        ? 'Colour by problem density'
+                        : 'Colour each area',
+                    active: _colorByArea,
+                    onTap: () =>
+                        setState(() => _colorByArea = !_colorByArea),
+                  ),
+                  const SizedBox(height: 8),
+                  _MapChipButton(
+                    icon: Icons.my_location_rounded,
+                    tooltip: 'My location',
+                    active: _me != null,
+                    onTap: _goToMe,
+                  ),
+                  const SizedBox(height: 8),
                   _MapChipButton(
                     icon: _showBoothPins
                         ? Icons.location_on_rounded
                         : Icons.location_off_rounded,
-                    tooltip: 'Toggle booth pins',
+                    tooltip: 'Toggle booth and report pins',
                     active: _showBoothPins,
                     onTap: () =>
                         setState(() => _showBoothPins = !_showBoothPins),
@@ -542,9 +694,11 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
       final rings = _extractRings(ward.boundaryGeoJson);
       if (rings.isEmpty) continue;
       areas.add(_MapArea(
-        layer: _AreaLayer.ward,
+        layer: ward.isBbmp ? _AreaLayer.bbmpWard : _AreaLayer.ward,
         id: ward.id,
-        name: ward.wardName,
+        name: ward.wardNo == null
+            ? ward.wardName
+            : '${ward.wardNo}. ${ward.wardName}',
         rings: rings,
         center: _ringCenter(rings.first),
         assemblyConstituency: ward.assemblyConstituency,
@@ -567,7 +721,9 @@ class _AreaMapState extends ConsumerState<_AreaMap> {
 
     final byId = {for (final a in areas) a.id: a};
     for (final cluster in clusters) {
-      final area = byId[cluster.wardId] ?? byId[cluster.talukId];
+      final area = byId[cluster.wardId] ??
+          byId[cluster.bbmpWardId] ??
+          byId[cluster.talukId];
       if (area == null) continue;
       area.reportCount += cluster.submissionCount;
       final current = area.priority;
@@ -906,10 +1062,60 @@ class _MapChipButton extends StatelessWidget {
   }
 }
 
+/// BBMP (198) / GBA (369) ward-layer switch, shown only where both exist.
+class _LayerSwitch extends StatelessWidget {
+  const _LayerSwitch({required this.bbmp, required this.onChanged});
+
+  final bool bbmp;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget option(String label, bool value) {
+      final selected = bbmp == value;
+      return GestureDetector(
+        onTap: () => onChanged(value),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          decoration: BoxDecoration(
+            color: selected ? AppColors.indigo : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(label,
+              style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                  color: selected ? Colors.white : AppColors.inkSoft)),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: appCardShadow,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          option('BBMP 198', true),
+          option('GBA 369', false),
+        ],
+      ),
+    );
+  }
+}
+
 class _Legend extends StatelessWidget {
-  const _Legend({required this.areaCount});
+  const _Legend({required this.areaCount, required this.colorByArea});
 
   final int areaCount;
+
+  /// In area-colour mode the fills no longer mean severity, so the legend
+  /// says the severity now lives on the circles instead.
+  final bool colorByArea;
 
   @override
   Widget build(BuildContext context) {
@@ -926,7 +1132,31 @@ class _Legend extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(l10n.openIssueDensity,
+          if (colorByArea) ...[
+            const Text('EACH AREA ITS OWN COLOUR',
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.inkFaint,
+                    letterSpacing: 0.3)),
+            const SizedBox(height: 6),
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              for (final c in kAreaPalette.take(6))
+                Container(
+                  width: 14,
+                  height: 10,
+                  margin: const EdgeInsets.only(right: 3),
+                  decoration: BoxDecoration(
+                    color: c.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(2),
+                    border: Border.all(color: areaBorderColor(c), width: 0.8),
+                  ),
+                ),
+            ]),
+            const SizedBox(height: 8),
+          ],
+          Text(colorByArea ? 'CIRCLES: ${l10n.openIssueDensity}'.toUpperCase()
+              : l10n.openIssueDensity,
               style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w800,

@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _kOnboardingStepKey = 'onboarding_step';
 
-/// Which step of the signup flow (Aadhaar identity → Basic Info → Location →
+/// Which step of the signup flow (account → Basic Info → Location →
 /// done) the user last reached. Persisted so a killed-and-reopened app
 /// resumes at the right screen instead of restarting from Splash/Language
 /// Select every time.

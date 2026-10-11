@@ -4,21 +4,23 @@ enum UserRole { citizen, official }
 
 /// How a citizen authenticated — persisted so there's a stored record of it,
 /// rather than only being derivable transiently from the current Firebase
-/// Auth session.
-enum SignInMethod { anonymous, phone, email }
+/// Auth session. [password] (username + password) is the only method new
+/// citizens can use; the others are kept so older profiles still parse.
+enum SignInMethod { password, anonymous, phone, email }
 
-/// Identity is Firebase Auth — Anonymous, Phone (OTP), or Email/password,
-/// citizen's choice (no Aadhaar number ever stored regardless of which) —
-/// `users/{uid}` is created the moment sign-in succeeds and filled in
-/// incrementally: name/address/pincode/wardNumber arrive from one-time
-/// Aadhaar OCR extraction (image discarded immediately server-side, never
-/// persisted), age from Basic Info, constituencyId from pincode resolution
-/// in Location Setup. `signupCompletedAt` is the authoritative "this citizen
-/// has a real, saved profile" marker — Sign In trusts it over any local,
-/// per-device onboarding-progress state.
+/// Identity is Firebase Auth username + password (the username is mapped to
+/// a synthetic address internally — see `AuthService`; no email or phone
+/// number is ever asked for or stored). `users/{uid}` is created at Sign Up
+/// with [username] and name, then filled in incrementally: home location
+/// and constituency at Location Setup. `signupCompletedAt` is the
+/// authoritative "this citizen has a real, saved profile" marker — Sign In
+/// trusts it over any local, per-device onboarding-progress state.
 class UserModel {
   final String uid;
   final String? name;
+
+  /// Lowercase login name, unique app-wide via `usernames/{username}`.
+  final String? username;
   final int? age;
   final String? pincodeHome;
   final String? addressHome;
@@ -47,7 +49,6 @@ class UserModel {
   final String? homeWardName;
   final String preferredLanguage;
   final SignInMethod? signInMethod;
-  final double? aadhaarExtractionConfidence;
   final DateTime createdAt;
   final DateTime? signupCompletedAt;
 
@@ -56,6 +57,7 @@ class UserModel {
     required this.role,
     required this.createdAt,
     this.name,
+    this.username,
     this.age,
     this.pincodeHome,
     this.addressHome,
@@ -73,12 +75,13 @@ class UserModel {
     this.homeWardName,
     this.preferredLanguage = 'en',
     this.signInMethod,
-    this.aadhaarExtractionConfidence,
     this.signupCompletedAt,
   });
 
   static SignInMethod? _signInMethodFromString(String? value) {
     switch (value) {
+      case 'password':
+        return SignInMethod.password;
       case 'phone':
         return SignInMethod.phone;
       case 'email':
@@ -94,6 +97,7 @@ class UserModel {
     return UserModel(
       uid: uid,
       name: map['name'] as String?,
+      username: map['username'] as String?,
       age: map['age'] as int?,
       pincodeHome: map['pincodeHome'] as String?,
       addressHome: map['addressHome'] as String?,
@@ -114,8 +118,6 @@ class UserModel {
       homeWardName: map['homeWardName'] as String?,
       preferredLanguage: map['preferredLanguage'] as String? ?? 'en',
       signInMethod: _signInMethodFromString(map['signInMethod'] as String?),
-      aadhaarExtractionConfidence:
-          (map['aadhaarExtractionConfidence'] as num?)?.toDouble(),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       signupCompletedAt:
           (map['signupCompletedAt'] as Timestamp?)?.toDate(),
@@ -125,6 +127,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       if (name != null) 'name': name,
+      if (username != null) 'username': username,
       if (age != null) 'age': age,
       if (pincodeHome != null) 'pincodeHome': pincodeHome,
       if (addressHome != null) 'addressHome': addressHome,
@@ -142,8 +145,6 @@ class UserModel {
       if (homeWardName != null) 'homeWardName': homeWardName,
       'preferredLanguage': preferredLanguage,
       if (signInMethod != null) 'signInMethod': signInMethod!.name,
-      if (aadhaarExtractionConfidence != null)
-        'aadhaarExtractionConfidence': aadhaarExtractionConfidence,
       'createdAt': Timestamp.fromDate(createdAt),
       if (signupCompletedAt != null)
         'signupCompletedAt': Timestamp.fromDate(signupCompletedAt!),
@@ -152,6 +153,7 @@ class UserModel {
 
   UserModel copyWith({
     String? name,
+    String? username,
     int? age,
     String? pincodeHome,
     String? addressHome,
@@ -169,7 +171,6 @@ class UserModel {
     String? homeWardName,
     String? preferredLanguage,
     SignInMethod? signInMethod,
-    double? aadhaarExtractionConfidence,
     DateTime? signupCompletedAt,
   }) {
     return UserModel(
@@ -177,6 +178,7 @@ class UserModel {
       role: role,
       createdAt: createdAt,
       name: name ?? this.name,
+      username: username ?? this.username,
       age: age ?? this.age,
       pincodeHome: pincodeHome ?? this.pincodeHome,
       addressHome: addressHome ?? this.addressHome,
@@ -194,8 +196,6 @@ class UserModel {
       homeWardName: homeWardName ?? this.homeWardName,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       signInMethod: signInMethod ?? this.signInMethod,
-      aadhaarExtractionConfidence:
-          aadhaarExtractionConfidence ?? this.aadhaarExtractionConfidence,
       signupCompletedAt: signupCompletedAt ?? this.signupCompletedAt,
     );
   }

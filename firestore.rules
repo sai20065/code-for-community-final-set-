@@ -20,14 +20,39 @@ service cloud.firestore {
         userDoc(request.auth.uid).constituencyId == constituencyId;
     }
 
-    // Identity is Firebase Auth — Anonymous, Phone, or Email/password — a
-    // user may only read/write their own profile document, regardless of
-    // which sign-in method they used. No Aadhaar number is ever stored
-    // here; Aadhaar upload only ever contributes name/address/pincode via a
-    // Cloud Function that discards the image immediately.
+    // Citizens sign in with username + password (Firebase Auth, synthetic
+    // address); no email, phone or ID number is ever stored here. A user
+    // may only read/write their own profile document — and may never grant
+    // themselves the official role: a new profile must be a citizen, and
+    // `role` can't change on update. Officials are provisioned by an admin
+    // with the Admin SDK, which bypasses these rules.
     match /users/{uid} {
-      allow read, create, update: if isSignedIn() && request.auth.uid == uid;
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow create: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.role == 'citizen';
+      allow update: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.role == resource.data.role;
       allow delete: if false;
+    }
+
+    // Username reservations: `usernames/{username}` -> {uid}. Readable one
+    // doc at a time (the Sign Up form's "is this name free?" check), never
+    // listable, so the full roster can't be downloaded. Claimable once, by
+    // the account it names, and never reassigned or released.
+    match /usernames/{username} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        username.matches('^[a-z0-9_.]{4,20}$');
+      allow update, delete: if false;
+    }
+
+    // Hashed security-question answers. Only the Cloud Functions in
+    // functions/src/citizens/ (Admin SDK) touch this; no client, not even
+    // the account owner, can read or write it.
+    match /userSecrets/{uid} {
+      allow read, write: if false;
     }
 
     // Citizens create tickets only for their OWN area: the pincode on the

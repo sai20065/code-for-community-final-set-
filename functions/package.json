@@ -2,7 +2,7 @@
   "name": "praja-dhvani-functions",
   "version": "1.0.0",
   "private": true,
-  "description": "Cloud Functions backend for Praja Dhvani: Aadhaar OCR extraction, Gemini classification/clustering/vision/audio-transcription, Cloud Translation. Requires the code-for-community-e2cf2 GCP project on the Blaze plan to deploy.",
+  "description": "Cloud Functions backend for Praja Dhvani: citizen password recovery, Gemini classification/clustering/vision/audio-transcription, Cloud Translation. Requires the code-for-community-e2cf2 GCP project on the Blaze plan to deploy.",
   "engines": {
     "node": "20"
   },

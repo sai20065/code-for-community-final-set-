@@ -39,7 +39,7 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'ನೀವು ಇತರ ನಾಗರಿಕರಿಗೆ ಅನಾಮಧೇಯರಾಗಿರುತ್ತೀರಿ. ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಸಂಸದರ ಕಚೇರಿಯು ನಿಮ್ಮ ಗುರುತನ್ನು ನೋಡುವುದಲ್ಲ, ಒಟ್ಟು ಬೇಡಿಕೆಯನ್ನು ನೋಡುತ್ತದೆ.';
+      'ಇತರ ನಾಗರಿಕರಿಗೆ ನೀವು ಅನಾಮಧೇಯರಾಗಿರುತ್ತೀರಿ. ಫೋನ್ ಸಂಖ್ಯೆ, ಇಮೇಲ್ ಅಥವಾ ಐಡಿ ಬೇಡ — ಬಳಕೆದಾರ ಹೆಸರು ಸಾಕು. ನಿಮ್ಮ ಸಂಸದರ ಕಚೇರಿ ಒಟ್ಟು ಬೇಡಿಕೆಯನ್ನು ನೋಡುತ್ತದೆ, ನಿಮ್ಮ ಗುರುತನ್ನಲ್ಲ.';
 
   @override
   String get newHereSignUp => 'ಇಲ್ಲಿ ಹೊಸಬರೇ? ಸೈನ್ ಅಪ್ ಮಾಡಿ';
@@ -49,50 +49,14 @@ class AppLocalizationsKn extends AppLocalizations {
       'ನನಗೆ ಈಗಾಗಲೇ ಒಂದು ಖಾತೆ ಇದೆ — ಸೈನ್ ಇನ್ ಮಾಡಿ';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'ನಿಮ್ಮ ಆಧಾರ್‌ನ ಫೋಟೋವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಇದರಿಂದ ನಾವು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ವಿಳಾಸವನ್ನು ಓದಬಹುದು. ನಾವು ನಿಮ್ಮ ಹೆಸರು, ವಿಳಾಸ ಮತ್ತು ಪಿನ್‌ಕೋಡ್ ಅನ್ನು ಮಾತ್ರ ಇಟ್ಟುಕೊಳ್ಳುತ್ತೇವೆ - ಫೋಟೋ ಮತ್ತು ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ. ಇದು ಐಡಿ ಪರಿಶೀಲನೆಯಲ್ಲ; ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.';
-
-  @override
-  String get aadhaarUploadNote =>
-      'ನಿಮ್ಮ ಆಧಾರ್‌ನ ಫೋಟೋಗಳನ್ನು (ಮುಂಭಾಗ ಮತ್ತು ಹಿಂಭಾಗ) ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಇದರಿಂದ ನಾವು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ವಿಳಾಸವನ್ನು ಓದಬಹುದು - ಹಿಂಭಾಗವು ಹೆಚ್ಚಾಗಿ ನಿಮ್ಮ ಪೂರ್ಣ ವಿಳಾಸವನ್ನು ಹೊಂದಿರುತ್ತದೆ, ಆದ್ದರಿಂದ ಅದನ್ನು ಸೆರೆಹಿಡಿಯುವುದು ಸಹ ಹೆಚ್ಚು ನಿಖರವಾದ ಫಲಿತಾಂಶಗಳನ್ನು ನೀಡುತ್ತದೆ. ನಾವು ನಿಮ್ಮ ಹೆಸರು, ವಿಳಾಸ, ಪಿನ್‌ಕೋಡ್ ಮತ್ತು ವಾರ್ಡ್ ಸಂಖ್ಯೆಯನ್ನು ಮಾತ್ರ ಇಟ್ಟುಕೊಳ್ಳುತ್ತೇವೆ - ಫೋಟೋಗಳು ಮತ್ತು ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ. ಇದು ಐಡಿ ಪರಿಶೀಲನೆ ಅಲ್ಲ, ಮತ್ತು ಎರಡೂ ಫೋಟೋಗಳು ಐಚ್ಛಿಕ - ನೀವು ಯಾವಾಗಲೂ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ಟೈಪ್ ಮಾಡಬಹುದು.';
-
-  @override
-  String get slotFront => 'ಮುಂಭಾಗ';
-
-  @override
-  String get slotBack => 'ಹಿಂದೆ';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ? ಸೈನ್ ಇನ್ ಮಾಡಿ';
-
-  @override
-  String get aadhaarBackNote =>
-      'ಸಲಹೆ: ನಿಮ್ಮ ಆಧಾರ್‌ನ ಹಿಂಭಾಗವನ್ನು ಸಹ ಸೆರೆಹಿಡಿಯಿರಿ - ಇದು ಸಾಮಾನ್ಯವಾಗಿ ಮುಂಭಾಗದಲ್ಲಿ ನಿಮ್ಮ ಪೂರ್ಣ ವಿಳಾಸವನ್ನು ಹೊಂದಿರುತ್ತದೆ. ಎರಡೂ ಬದಿಗಳು ಐಚ್ಛಿಕವಾಗಿರುತ್ತವೆ.';
 
   @override
   String get camera => 'ಕ್ಯಾಮೆರಾ';
 
   @override
   String get gallery => 'ಗ್ಯಾಲರಿ';
-
-  @override
-  String get extractDetails => 'ವಿವರಗಳನ್ನು ಹೊರತೆಗೆಯಿರಿ';
-
-  @override
-  String get couldNotReadClearly =>
-      'ಅದನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಅಥವಾ ಅವುಗಳನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸಿ.';
-
-  @override
-  String get couldNotProcessImage =>
-      'ಆ ಚಿತ್ರವನ್ನು ಈಗ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸಿ.';
-
-  @override
-  String get hideManualEntry => 'ಹಸ್ತಚಾಲಿತ ನಮೂದನ್ನು ಮರೆಮಾಡಿ';
-
-  @override
-  String get skipEnterManually =>
-      'ಬಿಟ್ಟುಬಿಡಿ — ನಾನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸುತ್ತೇನೆ';
 
   @override
   String get fullName => 'ಪೂರ್ಣ ಹೆಸರು';
@@ -117,49 +81,12 @@ class AppLocalizationsKn extends AppLocalizations {
   String get continueLabel => 'ಮುಂದುವರಿಸಿ';
 
   @override
-  String get verifyWithPhone => 'ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯ ಮೂಲಕ ಪರಿಶೀಲಿಸಿ';
-
-  @override
-  String get mobileNumberHint => '10-ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ';
-
-  @override
-  String get sendCode => 'ಕೋಡ್ ಕಳುಹಿಸಿ';
-
-  @override
-  String get sixDigitCode => '6-ಅಂಕಿಯ ಕೋಡ್';
-
-  @override
-  String get verifyAndContinue => 'ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮುಂದುವರಿಸಿ';
-
-  @override
-  String get verifyAndSignIn => 'ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಸೈನ್ ಇನ್ ಮಾಡಿ';
-
-  @override
-  String get enterValidMobile =>
-      'ಮಾನ್ಯವಾದ 10-ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.';
-
-  @override
-  String get codeDidntMatch =>
-      'ಆ ಕೋಡ್ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ — ಅದನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
-
-  @override
   String get couldNotContinue =>
       'ಮುಂದುವರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಹಾಗೂ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
 
   @override
-  String get skipStayAnonymous => 'ಬಿಟ್ಟುಬಿಡಿ — ಅನಾಮಧೇಯರಾಗಿರಿ';
-
-  @override
   String get aggregatedDemandNote =>
       'ನೀವು ಯಾವುದೇ ರೀತಿಯಲ್ಲಿ ಸೈನ್ ಇನ್ ಮಾಡಿದರೂ, ನಿಮ್ಮ ಸಂಸದರ ಕಚೇರಿಯು ಒಟ್ಟಾರೆ ಬೇಡಿಕೆಯನ್ನು ಮಾತ್ರ ನೋಡುತ್ತದೆ, ನಿಮ್ಮ ಗುರುತನ್ನು ಎಂದಿಗೂ ನೋಡುವುದಿಲ್ಲ.';
-
-  @override
-  String get welcomeBack =>
-      'ಮರಳಿ ಸ್ವಾಗತ — ನೀವು ಸೈನ್ ಅಪ್ ಮಾಡಿದ ಫೋನ್ ಸಂಖ್ಯೆಯೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.';
-
-  @override
-  String get noAccountFound =>
-      'ಈ ಸಂಖ್ಯೆಗೆ ಯಾವುದೇ ಖಾತೆ ಕಂಡುಬಂದಿಲ್ಲ — ದಯವಿಟ್ಟು ಮೊದಲು ಸೈನ್ ಅಪ್ ಮಾಡಿ.';
 
   @override
   String get dontHaveAccountSignUp => 'ಖಾತೆ ಇಲ್ಲವೇ? ಸೈನ್ ಅಪ್ ಮಾಡಿ';
@@ -405,7 +332,7 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'ನಿಮ್ಮ ಸಲ್ಲಿಕೆಗಳನ್ನು ಸರಿಯಾದ ಸಂಸದರಿಗೆ ರವಾನಿಸಲು ನಾವು ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ಸಂಗ್ರಹಿಸುತ್ತೇವೆ. ನಿಮ್ಮ 12-ಅಂಕಿಯ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ.';
+      'ನಿಮ್ಮ ದೂರುಗಳನ್ನು ಸರಿಯಾದ ಸಂಸದರಿಗೆ ತಲುಪಿಸಲು ನಿಮ್ಮ ಮನೆಯ ಸ್ಥಳವನ್ನು ಉಳಿಸುತ್ತೇವೆ. ನಾವು ಎಂದಿಗೂ ಫೋನ್ ಸಂಖ್ಯೆ, ಇಮೇಲ್ ಅಥವಾ ಯಾವುದೇ ಐಡಿ ಕೇಳುವುದಿಲ್ಲ.';
 
   @override
   String get signOutClears => 'ಸೈನ್ ಔಟ್ ಮಾಡಿ (ಈ ಸಾಧನವನ್ನು ತೆರವುಗೊಳಿಸುತ್ತದೆ)';
@@ -863,42 +790,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get backToSignIn => 'ಸೈನ್ ಇನ್‌ಗೆ ಹಿಂತಿರುಗಿ';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'ಈಗ ಸೈನ್-ಇನ್ ಲಭ್ಯವಿಲ್ಲ, ಆದ್ದರಿಂದ ರೀಡರ್ ಚಲಾಯಿಸಲಾಗಲಿಲ್ಲ. ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'ನಿಮ್ಮ ಸೆಷನ್ ಮುಗಿದಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'ಈ ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ. ಕಾರ್ಡ್‌ನ ಹತ್ತಿರದ, ಚಿಕ್ಕ ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'ಆ ಕಾರ್ಡ್ ಓದಲಾಗಲಿಲ್ಲ. ಉತ್ತಮ ಬೆಳಕಿನಲ್ಲಿ, ಹೊಳಪಿಲ್ಲದ ನೇರ ಫೋಟೋ ತೆಗೆಯಿರಿ — ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'ನಮ್ಮ ರೀಡರ್ ಈಗ ಬ್ಯುಸಿಯಾಗಿದೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'ನೆಟ್‌ವರ್ಕ್ ತಲುಪಲಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'ಕಾರ್ಡ್ ಓದುವಾಗ ಏನೋ ತಪ್ಪಾಯಿತು. ಬದಲಿಗೆ ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'ನಿಮ್ಮ ಕಾರ್ಡ್‌ನ ಒಂದು ಭಾಗವನ್ನು ಓದಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಬಿಟ್ಟುಹೋದದ್ದನ್ನು ಭರ್ತಿ ಮಾಡಿ.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'ಹಿಂಬದಿಯ ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದಾಗಿತ್ತು, ಹಾಗಾಗಿ ಮುಂಬದಿಯನ್ನು ಮಾತ್ರ ಓದಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ವಿಳಾಸ ಪರಿಶೀಲಿಸಿ.';
-
-  @override
   String get mapLayerFailed =>
       'ನಕ್ಷೆಯ ಒಂದು ಭಾಗ ಲೋಡ್ ಆಗಲಿಲ್ಲ. ಕೆಲವು ವಾರ್ಡ್‌ಗಳು, ಬೂತ್‌ಗಳು ಅಥವಾ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು ಕಾಣೆಯಾಗಬಹುದು.';
 
@@ -1200,4 +1091,163 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'ಪರಿಹಾರ ಸಿದ್ಧ';
+
+  @override
+  String get openInGoogleMaps => 'Google Maps ನಲ್ಲಿ ದಾರಿ ನೋಡಿ';
+
+  @override
+  String get openInGoogleMapsApprox => 'ಈ ಪ್ರದೇಶಕ್ಕೆ ದಾರಿ (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps => 'ಈ ಸಾಧನದಲ್ಲಿ Google Maps ತೆರೆಯಲಾಗಲಿಲ್ಲ.';
+
+  @override
+  String get usernameLabel => 'ಬಳಕೆದಾರ ಹೆಸರು';
+
+  @override
+  String get usernameHelper => '4–20 ಅಕ್ಷರಗಳು, ಸಂಖ್ಯೆಗಳು, _ ಅಥವಾ .';
+
+  @override
+  String get usernameTooShort => 'ಬಳಕೆದಾರ ಹೆಸರು ಕನಿಷ್ಠ 4 ಅಕ್ಷರಗಳಿರಬೇಕು.';
+
+  @override
+  String get usernameTooLong => 'ಬಳಕೆದಾರ ಹೆಸರು ಗರಿಷ್ಠ 20 ಅಕ್ಷರಗಳಿರಬಹುದು.';
+
+  @override
+  String get usernameBadCharacters =>
+      'ಅಕ್ಷರಗಳು, ಸಂಖ್ಯೆಗಳು, _ ಮತ್ತು . ಮಾತ್ರ ಬಳಸಿ (ಸ್ಪೇಸ್ ಬೇಡ).';
+
+  @override
+  String get usernameAvailable => 'ಬಳಕೆದಾರ ಹೆಸರು ಲಭ್ಯವಿದೆ';
+
+  @override
+  String get usernameTaken =>
+      'ಈ ಬಳಕೆದಾರ ಹೆಸರು ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ. ಬೇರೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get confirmPasswordLabel => 'ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ';
+
+  @override
+  String get newPasswordLabel => 'ಹೊಸ ಪಾಸ್‌ವರ್ಡ್';
+
+  @override
+  String get currentPasswordLabel => 'ಈಗಿನ ಪಾಸ್‌ವರ್ಡ್';
+
+  @override
+  String get passwordTooShort => 'ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು.';
+
+  @override
+  String get passwordsDontMatch => 'ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ.';
+
+  @override
+  String get authWrongCredentials => 'ಬಳಕೆದಾರ ಹೆಸರು ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.';
+
+  @override
+  String get authTooManyAttempts =>
+      'ಹಲವು ಪ್ರಯತ್ನಗಳು. ಕೆಲವು ನಿಮಿಷ ಕಾದು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get authNetworkError =>
+      'ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲ. ನೆಟ್‌ವರ್ಕ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get nameRequired => 'ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರು ನಮೂದಿಸಿ.';
+
+  @override
+  String get createAccountTitle => 'ನಿಮ್ಮ ಖಾತೆ ರಚಿಸಿ';
+
+  @override
+  String get createAccountSubtitle =>
+      'ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್ ಸಾಕು — ಫೋನ್ ಸಂಖ್ಯೆ, ಇಮೇಲ್ ಅಥವಾ ಐಡಿ ಬೇಡ.';
+
+  @override
+  String get createAccountButton => 'ಖಾತೆ ರಚಿಸಿ';
+
+  @override
+  String get welcomeBackTitle => 'ಮತ್ತೆ ಸ್ವಾಗತ';
+
+  @override
+  String get signInSubtitle =>
+      'ನಿಮ್ಮ ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ.';
+
+  @override
+  String get forgotPasswordLink => 'ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ?';
+
+  @override
+  String get securityQuestionIntro =>
+      'ಒಂದು ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಆರಿಸಿ. ಪಾಸ್‌ವರ್ಡ್ ಮರೆತರೆ, ಇದಕ್ಕೆ ಉತ್ತರಿಸಿ ಹೊಸದನ್ನು ಹೊಂದಿಸಬಹುದು.';
+
+  @override
+  String get securityQuestionLabel => 'ಭದ್ರತಾ ಪ್ರಶ್ನೆ';
+
+  @override
+  String get securityAnswerLabel => 'ನಿಮ್ಮ ಉತ್ತರ';
+
+  @override
+  String get securityAnswerHelper =>
+      'ಈ ಉತ್ತರ ನೆನಪಿಡಿ. ದೊಡ್ಡ/ಸಣ್ಣ ಅಕ್ಷರಗಳಿಂದ ವ್ಯತ್ಯಾಸವಿಲ್ಲ.';
+
+  @override
+  String get securityAnswerRequired => 'ದಯವಿಟ್ಟು ಉತ್ತರ ನಮೂದಿಸಿ.';
+
+  @override
+  String get securityQuestionFirstSchool => 'ನಿಮ್ಮ ಮೊದಲ ಶಾಲೆಯ ಹೆಸರೇನು?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'ನಿಮ್ಮ ತಾಯಿ ಯಾವ ಊರು ಅಥವಾ ಹಳ್ಳಿಯಲ್ಲಿ ಜನಿಸಿದರು?';
+
+  @override
+  String get securityQuestionFavouriteFood => 'ನಿಮ್ಮ ನೆಚ್ಚಿನ ಆಹಾರ ಯಾವುದು?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'ನಿಮ್ಮ ಬಾಲ್ಯದ ಆತ್ಮೀಯ ಸ್ನೇಹಿತರ ಹೆಸರೇನು?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'ನಿಮ್ಮ ಮೊದಲ ಸೈಕಲ್ ಅಥವಾ ವಾಹನ ಯಾವುದು?';
+
+  @override
+  String get forgotPasswordTitle => 'ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ';
+
+  @override
+  String get forgotPasswordStep1 => 'ನಿಮ್ಮ ಖಾತೆ ಹುಡುಕಲು ಬಳಕೆದಾರ ಹೆಸರು ನಮೂದಿಸಿ.';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'ಭದ್ರತಾ ಪ್ರಶ್ನೆಗೆ ಉತ್ತರಿಸಿ ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಆರಿಸಿ.';
+
+  @override
+  String get passwordResetDone =>
+      'ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಗಿದೆ. ಹೊಸ ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ.';
+
+  @override
+  String get resetPasswordButton => 'ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಿ';
+
+  @override
+  String get recoveryNotMatched =>
+      'ಉತ್ತರ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ. ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get recoveryLocked =>
+      'ಹಲವು ತಪ್ಪು ಉತ್ತರಗಳು. ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಕೆ 15 ನಿಮಿಷ ಸ್ಥಗಿತ.';
+
+  @override
+  String get recoveryNoQuestion => 'ಈ ಬಳಕೆದಾರ ಹೆಸರಿಗೆ ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಸಿಗಲಿಲ್ಲ.';
+
+  @override
+  String get changePasswordTitle => 'ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ';
+
+  @override
+  String get changeSecurityQuestionTitle => 'ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಬದಲಿಸಿ';
+
+  @override
+  String get passwordChanged => 'ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಗಿದೆ.';
+
+  @override
+  String get securityQuestionSaved => 'ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಉಳಿಸಲಾಗಿದೆ.';
+
+  @override
+  String get saveLabel => 'ಉಳಿಸಿ';
 }

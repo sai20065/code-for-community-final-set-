@@ -2,7 +2,13 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-export {extractAadhaarDetails} from "./aadhaar/extractAadhaarDetails";
+// Citizen username/password accounts: security-question password recovery
+// (no email or phone on file to send a reset link to).
+export {
+  getSecurityQuestion,
+  resetPasswordWithSecurityQuestion,
+  setSecurityQuestion,
+} from "./citizens/securityQuestion";
 // Civic intelligence layer — the four-agent chain (root cause → solution →
 // routing → report compiler) and its manual re-run entry point.
 export {onClusterAnalysis} from "./agents/onClusterAnalysisTrigger";

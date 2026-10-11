@@ -26,6 +26,9 @@ class PublicTicketModel {
   final String constituencyId;
   final String? constituencyName;
   final String? wardId;
+
+  /// BBMP (198-ward) layer id, alongside the GBA [wardId].
+  final String? bbmpWardId;
   final String? talukId;
   final String? boothId;
   final String? clusterId;
@@ -55,6 +58,7 @@ class PublicTicketModel {
     this.theme,
     this.constituencyName,
     this.wardId,
+    this.bbmpWardId,
     this.talukId,
     this.boothId,
     this.clusterId,
@@ -75,6 +79,7 @@ class PublicTicketModel {
       constituencyId: map['constituencyId'] as String? ?? '',
       constituencyName: map['constituencyName'] as String?,
       wardId: map['wardId'] as String?,
+      bbmpWardId: map['bbmpWardId'] as String?,
       talukId: map['talukId'] as String?,
       boothId: map['boothId'] as String?,
       clusterId: map['clusterId'] as String?,
@@ -99,6 +104,9 @@ class PublicClusterModel {
   final String theme;
   final String? boothId;
   final String? wardId;
+
+  /// BBMP (198-ward) layer id, alongside the GBA [wardId].
+  final String? bbmpWardId;
   final String? talukId;
 
   final int submissionCount;
@@ -133,6 +141,7 @@ class PublicClusterModel {
     this.constituencyName,
     this.boothId,
     this.wardId,
+    this.bbmpWardId,
     this.talukId,
     this.uniqueReporterCount = 0,
     this.demandScore,
@@ -158,6 +167,7 @@ class PublicClusterModel {
       theme: map['theme'] as String? ?? 'unknown',
       boothId: map['boothId'] as String?,
       wardId: map['wardId'] as String?,
+      bbmpWardId: map['bbmpWardId'] as String?,
       talukId: map['talukId'] as String?,
       submissionCount: (map['submissionCount'] as num?)?.toInt() ?? 0,
       uniqueReporterCount: (map['uniqueReporterCount'] as num?)?.toInt() ?? 0,

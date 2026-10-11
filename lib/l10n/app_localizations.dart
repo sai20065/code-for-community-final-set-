@@ -171,7 +171,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeAnonymityNote.
   ///
   /// In en, this message translates to:
-  /// **'You stay anonymous to other citizens. Your Aadhaar number is never stored. Your MP\'s office sees aggregated demand, not your identity.'**
+  /// **'You stay anonymous to other citizens. No phone number, email or ID is needed — just a username. Your MP\'s office sees aggregated demand, not your identity.'**
   String get welcomeAnonymityNote;
 
   /// No description provided for @newHereSignUp.
@@ -186,41 +186,11 @@ abstract class AppLocalizations {
   /// **'I already have an account — Sign In'**
   String get alreadyHaveAccountSignIn;
 
-  /// No description provided for @aadhaarPrivacyNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload a photo of your Aadhaar so we can read your name and address. We keep only your name, address and pincode — the photo and your Aadhaar number are never saved. This is not ID verification; you can also just type your details below.'**
-  String get aadhaarPrivacyNote;
-
-  /// No description provided for @aadhaarUploadNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload photos of your Aadhaar (front and back) so we can read your name and address — the back side often has your full address, so capturing it too gives more accurate results. We keep only your name, address, pincode and ward number — the photos and your Aadhaar number are never saved. This is not ID verification, and both photos are optional — you can always just type your details below.'**
-  String get aadhaarUploadNote;
-
-  /// No description provided for @slotFront.
-  ///
-  /// In en, this message translates to:
-  /// **'Front'**
-  String get slotFront;
-
-  /// No description provided for @slotBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get slotBack;
-
   /// No description provided for @alreadyHaveAccountSignInShort.
   ///
   /// In en, this message translates to:
   /// **'Already have an account? Sign In'**
   String get alreadyHaveAccountSignInShort;
-
-  /// No description provided for @aadhaarBackNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Tip: capture the BACK of your Aadhaar too — it often has your full address the front leaves out. Both sides are optional.'**
-  String get aadhaarBackNote;
 
   /// No description provided for @camera.
   ///
@@ -233,36 +203,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gallery'**
   String get gallery;
-
-  /// No description provided for @extractDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Extract details'**
-  String get extractDetails;
-
-  /// No description provided for @couldNotReadClearly.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t read that clearly — check the details below or enter them manually.'**
-  String get couldNotReadClearly;
-
-  /// No description provided for @couldNotProcessImage.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t process that image right now — enter your details manually below.'**
-  String get couldNotProcessImage;
-
-  /// No description provided for @hideManualEntry.
-  ///
-  /// In en, this message translates to:
-  /// **'Hide manual entry'**
-  String get hideManualEntry;
-
-  /// No description provided for @skipEnterManually.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip — I\'ll enter manually'**
-  String get skipEnterManually;
 
   /// No description provided for @fullName.
   ///
@@ -306,83 +246,17 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueLabel;
 
-  /// No description provided for @verifyWithPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify with your phone number'**
-  String get verifyWithPhone;
-
-  /// No description provided for @mobileNumberHint.
-  ///
-  /// In en, this message translates to:
-  /// **'10-digit mobile number'**
-  String get mobileNumberHint;
-
-  /// No description provided for @sendCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Send code'**
-  String get sendCode;
-
-  /// No description provided for @sixDigitCode.
-  ///
-  /// In en, this message translates to:
-  /// **'6-digit code'**
-  String get sixDigitCode;
-
-  /// No description provided for @verifyAndContinue.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify & continue'**
-  String get verifyAndContinue;
-
-  /// No description provided for @verifyAndSignIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify & sign in'**
-  String get verifyAndSignIn;
-
-  /// No description provided for @enterValidMobile.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid 10-digit mobile number.'**
-  String get enterValidMobile;
-
-  /// No description provided for @codeDidntMatch.
-  ///
-  /// In en, this message translates to:
-  /// **'That code didn\'t match — check it and try again.'**
-  String get codeDidntMatch;
-
   /// No description provided for @couldNotContinue.
   ///
   /// In en, this message translates to:
   /// **'Could not continue — check your connection and try again.'**
   String get couldNotContinue;
 
-  /// No description provided for @skipStayAnonymous.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip — stay anonymous'**
-  String get skipStayAnonymous;
-
   /// No description provided for @aggregatedDemandNote.
   ///
   /// In en, this message translates to:
   /// **'Whichever way you sign in, your MP\'s office only ever sees aggregated demand, never your identity.'**
   String get aggregatedDemandNote;
-
-  /// No description provided for @welcomeBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome back — sign in with the phone number you signed up with.'**
-  String get welcomeBack;
-
-  /// No description provided for @noAccountFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No account found for this number — please Sign Up first.'**
-  String get noAccountFound;
 
   /// No description provided for @dontHaveAccountSignUp.
   ///
@@ -813,7 +687,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyStoreAddress.
   ///
   /// In en, this message translates to:
-  /// **'We store your address to route your submissions to the right MP. Your 12-digit Aadhaar number is never stored.'**
+  /// **'We store your home location to route your submissions to the right MP. We never ask for your phone number, email or any ID.'**
   String get privacyStoreAddress;
 
   /// No description provided for @signOutClears.
@@ -1566,60 +1440,6 @@ abstract class AppLocalizations {
   /// **'Back to sign in'**
   String get backToSignIn;
 
-  /// No description provided for @aadhaarErrorAuthUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.'**
-  String get aadhaarErrorAuthUnavailable;
-
-  /// No description provided for @aadhaarErrorNotSignedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Your session expired. Please try again, or type your details below.'**
-  String get aadhaarErrorNotSignedIn;
-
-  /// No description provided for @aadhaarErrorImageTooLarge.
-  ///
-  /// In en, this message translates to:
-  /// **'That photo is too large to process. Try a closer, smaller shot of the card.'**
-  String get aadhaarErrorImageTooLarge;
-
-  /// No description provided for @aadhaarErrorUnreadable.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.'**
-  String get aadhaarErrorUnreadable;
-
-  /// No description provided for @aadhaarErrorModelBusy.
-  ///
-  /// In en, this message translates to:
-  /// **'Our reader is busy right now. Try again in a moment, or type your details below.'**
-  String get aadhaarErrorModelBusy;
-
-  /// No description provided for @aadhaarErrorNetwork.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn\'t reach the network. Check your connection and try again, or type your details below.'**
-  String get aadhaarErrorNetwork;
-
-  /// No description provided for @aadhaarErrorUnknown.
-  ///
-  /// In en, this message translates to:
-  /// **'Something went wrong reading the card. You can type your details below instead.'**
-  String get aadhaarErrorUnknown;
-
-  /// No description provided for @aadhaarPartialExtracted.
-  ///
-  /// In en, this message translates to:
-  /// **'We read part of your card. Please check the details below and fill in anything missing.'**
-  String get aadhaarPartialExtracted;
-
-  /// No description provided for @aadhaarBackImageSkippedTooLarge.
-  ///
-  /// In en, this message translates to:
-  /// **'The back photo was too large, so we read the front only. Please check the address below.'**
-  String get aadhaarBackImageSkippedTooLarge;
-
   /// No description provided for @mapLayerFailed.
   ///
   /// In en, this message translates to:
@@ -2159,6 +1979,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Solution ready'**
   String get hasSolutionLabel;
+
+  /// No description provided for @openInGoogleMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions in Google Maps'**
+  String get openInGoogleMaps;
+
+  /// No description provided for @openInGoogleMapsApprox.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions to this area (Google Maps)'**
+  String get openInGoogleMapsApprox;
+
+  /// No description provided for @couldNotOpenMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open Google Maps on this device.'**
+  String get couldNotOpenMaps;
+
+  /// No description provided for @usernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get usernameLabel;
+
+  /// No description provided for @usernameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'4–20 letters, numbers, _ or .'**
+  String get usernameHelper;
+
+  /// No description provided for @usernameTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at least 4 characters.'**
+  String get usernameTooShort;
+
+  /// No description provided for @usernameTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Username can be at most 20 characters.'**
+  String get usernameTooLong;
+
+  /// No description provided for @usernameBadCharacters.
+  ///
+  /// In en, this message translates to:
+  /// **'Use only letters, numbers, _ and . (no spaces).'**
+  String get usernameBadCharacters;
+
+  /// No description provided for @usernameAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is available'**
+  String get usernameAvailable;
+
+  /// No description provided for @usernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That username is already taken. Try another.'**
+  String get usernameTaken;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters.'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match.'**
+  String get passwordsDontMatch;
+
+  /// No description provided for @authWrongCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong username or password.'**
+  String get authWrongCredentials;
+
+  /// No description provided for @authTooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many tries. Please wait a few minutes and try again.'**
+  String get authTooManyAttempts;
+
+  /// No description provided for @authNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get authNetworkError;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name.'**
+  String get nameRequired;
+
+  /// No description provided for @createAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get createAccountTitle;
+
+  /// No description provided for @createAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Just a username and password — no phone number, email or ID needed.'**
+  String get createAccountSubtitle;
+
+  /// No description provided for @createAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccountButton;
+
+  /// No description provided for @welcomeBackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBackTitle;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your username and password.'**
+  String get signInSubtitle;
+
+  /// No description provided for @forgotPasswordLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPasswordLink;
+
+  /// No description provided for @securityQuestionIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a security question. If you ever forget your password, answering it lets you set a new one.'**
+  String get securityQuestionIntro;
+
+  /// No description provided for @securityQuestionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Security question'**
+  String get securityQuestionLabel;
+
+  /// No description provided for @securityAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your answer'**
+  String get securityAnswerLabel;
+
+  /// No description provided for @securityAnswerHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember this answer. Capital letters don\'t matter.'**
+  String get securityAnswerHelper;
+
+  /// No description provided for @securityAnswerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an answer.'**
+  String get securityAnswerRequired;
+
+  /// No description provided for @securityQuestionFirstSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'What was the name of your first school?'**
+  String get securityQuestionFirstSchool;
+
+  /// No description provided for @securityQuestionMotherBirthplace.
+  ///
+  /// In en, this message translates to:
+  /// **'In which town or village was your mother born?'**
+  String get securityQuestionMotherBirthplace;
+
+  /// No description provided for @securityQuestionFavouriteFood.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your favourite food?'**
+  String get securityQuestionFavouriteFood;
+
+  /// No description provided for @securityQuestionChildhoodFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the name of your childhood best friend?'**
+  String get securityQuestionChildhoodFriend;
+
+  /// No description provided for @securityQuestionFirstVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'What was your first bicycle or vehicle?'**
+  String get securityQuestionFirstVehicle;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your username to find your account.'**
+  String get forgotPasswordStep1;
+
+  /// No description provided for @forgotPasswordStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer your security question and choose a new password.'**
+  String get forgotPasswordStep2;
+
+  /// No description provided for @passwordResetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been changed. Sign in with the new password.'**
+  String get passwordResetDone;
+
+  /// No description provided for @resetPasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Set new password'**
+  String get resetPasswordButton;
+
+  /// No description provided for @recoveryNotMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'That answer didn\'t match. Check it and try again.'**
+  String get recoveryNotMatched;
+
+  /// No description provided for @recoveryLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong answers. Password reset is locked for 15 minutes.'**
+  String get recoveryLocked;
+
+  /// No description provided for @recoveryNoQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find a security question for that username.'**
+  String get recoveryNoQuestion;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changeSecurityQuestionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change security question'**
+  String get changeSecurityQuestionTitle;
+
+  /// No description provided for @passwordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed.'**
+  String get passwordChanged;
+
+  /// No description provided for @securityQuestionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Security question saved.'**
+  String get securityQuestionSaved;
+
+  /// No description provided for @saveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveLabel;
 }
 
 class _AppLocalizationsDelegate

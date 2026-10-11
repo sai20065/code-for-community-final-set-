@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'You stay anonymous to other citizens. Your Aadhaar number is never stored. Your MP\'s office sees aggregated demand, not your identity.';
+      'You stay anonymous to other citizens. No phone number, email or ID is needed — just a username. Your MP\'s office sees aggregated demand, not your identity.';
 
   @override
   String get newHereSignUp => 'New here? Sign Up';
@@ -48,49 +48,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alreadyHaveAccountSignIn => 'I already have an account — Sign In';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'Upload a photo of your Aadhaar so we can read your name and address. We keep only your name, address and pincode — the photo and your Aadhaar number are never saved. This is not ID verification; you can also just type your details below.';
-
-  @override
-  String get aadhaarUploadNote =>
-      'Upload photos of your Aadhaar (front and back) so we can read your name and address — the back side often has your full address, so capturing it too gives more accurate results. We keep only your name, address, pincode and ward number — the photos and your Aadhaar number are never saved. This is not ID verification, and both photos are optional — you can always just type your details below.';
-
-  @override
-  String get slotFront => 'Front';
-
-  @override
-  String get slotBack => 'Back';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'Already have an account? Sign In';
-
-  @override
-  String get aadhaarBackNote =>
-      'Tip: capture the BACK of your Aadhaar too — it often has your full address the front leaves out. Both sides are optional.';
 
   @override
   String get camera => 'Camera';
 
   @override
   String get gallery => 'Gallery';
-
-  @override
-  String get extractDetails => 'Extract details';
-
-  @override
-  String get couldNotReadClearly =>
-      'Couldn\'t read that clearly — check the details below or enter them manually.';
-
-  @override
-  String get couldNotProcessImage =>
-      'Couldn\'t process that image right now — enter your details manually below.';
-
-  @override
-  String get hideManualEntry => 'Hide manual entry';
-
-  @override
-  String get skipEnterManually => 'Skip — I\'ll enter manually';
 
   @override
   String get fullName => 'Full name';
@@ -114,48 +79,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueLabel => 'Continue';
 
   @override
-  String get verifyWithPhone => 'Verify with your phone number';
-
-  @override
-  String get mobileNumberHint => '10-digit mobile number';
-
-  @override
-  String get sendCode => 'Send code';
-
-  @override
-  String get sixDigitCode => '6-digit code';
-
-  @override
-  String get verifyAndContinue => 'Verify & continue';
-
-  @override
-  String get verifyAndSignIn => 'Verify & sign in';
-
-  @override
-  String get enterValidMobile => 'Enter a valid 10-digit mobile number.';
-
-  @override
-  String get codeDidntMatch =>
-      'That code didn\'t match — check it and try again.';
-
-  @override
   String get couldNotContinue =>
       'Could not continue — check your connection and try again.';
 
   @override
-  String get skipStayAnonymous => 'Skip — stay anonymous';
-
-  @override
   String get aggregatedDemandNote =>
       'Whichever way you sign in, your MP\'s office only ever sees aggregated demand, never your identity.';
-
-  @override
-  String get welcomeBack =>
-      'Welcome back — sign in with the phone number you signed up with.';
-
-  @override
-  String get noAccountFound =>
-      'No account found for this number — please Sign Up first.';
 
   @override
   String get dontHaveAccountSignUp => 'Don\'t have an account? Sign Up';
@@ -399,7 +328,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'We store your address to route your submissions to the right MP. Your 12-digit Aadhaar number is never stored.';
+      'We store your home location to route your submissions to the right MP. We never ask for your phone number, email or any ID.';
 
   @override
   String get signOutClears => 'Sign out (clears this device)';
@@ -852,42 +781,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToSignIn => 'Back to sign in';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'Your session expired. Please try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'That photo is too large to process. Try a closer, smaller shot of the card.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'Our reader is busy right now. Try again in a moment, or type your details below.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'Something went wrong reading the card. You can type your details below instead.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'We read part of your card. Please check the details below and fill in anything missing.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'The back photo was too large, so we read the front only. Please check the address below.';
-
-  @override
   String get mapLayerFailed =>
       'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
@@ -1187,4 +1080,163 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'Solution ready';
+
+  @override
+  String get openInGoogleMaps => 'Directions in Google Maps';
+
+  @override
+  String get openInGoogleMapsApprox => 'Directions to this area (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps => 'Couldn\'t open Google Maps on this device.';
+
+  @override
+  String get usernameLabel => 'Username';
+
+  @override
+  String get usernameHelper => '4–20 letters, numbers, _ or .';
+
+  @override
+  String get usernameTooShort => 'Username must be at least 4 characters.';
+
+  @override
+  String get usernameTooLong => 'Username can be at most 20 characters.';
+
+  @override
+  String get usernameBadCharacters =>
+      'Use only letters, numbers, _ and . (no spaces).';
+
+  @override
+  String get usernameAvailable => 'Username is available';
+
+  @override
+  String get usernameTaken => 'That username is already taken. Try another.';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get currentPasswordLabel => 'Current password';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters.';
+
+  @override
+  String get passwordsDontMatch => 'Passwords don\'t match.';
+
+  @override
+  String get authWrongCredentials => 'Wrong username or password.';
+
+  @override
+  String get authTooManyAttempts =>
+      'Too many tries. Please wait a few minutes and try again.';
+
+  @override
+  String get authNetworkError =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String get nameRequired => 'Please enter your name.';
+
+  @override
+  String get createAccountTitle => 'Create your account';
+
+  @override
+  String get createAccountSubtitle =>
+      'Just a username and password — no phone number, email or ID needed.';
+
+  @override
+  String get createAccountButton => 'Create account';
+
+  @override
+  String get welcomeBackTitle => 'Welcome back';
+
+  @override
+  String get signInSubtitle => 'Sign in with your username and password.';
+
+  @override
+  String get forgotPasswordLink => 'Forgot password?';
+
+  @override
+  String get securityQuestionIntro =>
+      'Pick a security question. If you ever forget your password, answering it lets you set a new one.';
+
+  @override
+  String get securityQuestionLabel => 'Security question';
+
+  @override
+  String get securityAnswerLabel => 'Your answer';
+
+  @override
+  String get securityAnswerHelper =>
+      'Remember this answer. Capital letters don\'t matter.';
+
+  @override
+  String get securityAnswerRequired => 'Please enter an answer.';
+
+  @override
+  String get securityQuestionFirstSchool =>
+      'What was the name of your first school?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'In which town or village was your mother born?';
+
+  @override
+  String get securityQuestionFavouriteFood => 'What is your favourite food?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'What is the name of your childhood best friend?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'What was your first bicycle or vehicle?';
+
+  @override
+  String get forgotPasswordTitle => 'Reset your password';
+
+  @override
+  String get forgotPasswordStep1 => 'Enter your username to find your account.';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'Answer your security question and choose a new password.';
+
+  @override
+  String get passwordResetDone =>
+      'Your password has been changed. Sign in with the new password.';
+
+  @override
+  String get resetPasswordButton => 'Set new password';
+
+  @override
+  String get recoveryNotMatched =>
+      'That answer didn\'t match. Check it and try again.';
+
+  @override
+  String get recoveryLocked =>
+      'Too many wrong answers. Password reset is locked for 15 minutes.';
+
+  @override
+  String get recoveryNoQuestion =>
+      'We couldn\'t find a security question for that username.';
+
+  @override
+  String get changePasswordTitle => 'Change password';
+
+  @override
+  String get changeSecurityQuestionTitle => 'Change security question';
+
+  @override
+  String get passwordChanged => 'Password changed.';
+
+  @override
+  String get securityQuestionSaved => 'Security question saved.';
+
+  @override
+  String get saveLabel => 'Save';
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/public_models.dart';
+import '../../../shared/widgets/google_maps_directions_button.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 /// Red / amber / teal severity ramp, used identically for polygon fills,
@@ -207,6 +208,14 @@ class _TicketRow extends StatelessWidget {
                 ),
               ),
               _StatusChip(status: ticket.status),
+              // `geo` is the privacy-snapped point (a grid cell, never the
+              // reporter's exact pin), so the route is to the area.
+              GoogleMapsDirectionsButton(
+                lat: ticket.geo?.lat,
+                lng: ticket.geo?.lng,
+                approximate: true,
+                compact: true,
+              ),
             ],
           ),
           const SizedBox(height: 8),

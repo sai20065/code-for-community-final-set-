@@ -195,16 +195,22 @@ final taluksForDistrictProvider =
       ref.watch(firestoreServiceProvider).watchTaluksForDistrict(districtId),
 );
 
-/// The wards of one GBA corporation — `Central`, `East`, `North`, `South` or
-/// `West` (the `corporation` column in `gba_wards.json`, NOT the literal
-/// string "GBA"). Bengaluru Urban's 369 wards are the picker's finest level
-/// inside the city, where a taluk covers far too much ground to be a useful
-/// area choice, and they are fetched a corporation at a time because each
-/// ward document carries its whole boundary polygon.
+/// Bengaluru Urban has two ward layers, both kept: the 369 GBA wards
+/// (grouped by GBA corporation) and the 198 BBMP wards (grouped by assembly
+/// constituency). Either is the picker's finest level inside the city, where
+/// a taluk covers far too much ground to be a useful area choice; each is
+/// fetched one group at a time because every ward doc carries its whole
+/// boundary polygon.
 final wardsForCorporationProvider =
     StreamProvider.family<List<WardModel>, String>(
   (ref, corporation) =>
       ref.watch(firestoreServiceProvider).watchWardsForCorporation(corporation),
+);
+
+final bbmpWardsForAssemblyProvider =
+    StreamProvider.family<List<WardModel>, String>(
+  (ref, assembly) =>
+      ref.watch(firestoreServiceProvider).watchBbmpWardsForAssembly(assembly),
 );
 
 /// Reports filed in the last seven days — the "N reports near you this

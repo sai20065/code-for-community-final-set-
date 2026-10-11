@@ -11,6 +11,7 @@ import '../../../app/theme.dart';
 import '../../../core/models/public_models.dart';
 import '../../../core/services/karnataka_geo_service.dart';
 import '../../../shared/widgets/app_map_tiles.dart';
+import '../../../shared/widgets/map_area_palette.dart';
 import 'area_reports_sheet.dart';
 
 /// The statewide map: **every one of Karnataka's 30 districts and 227
@@ -44,6 +45,17 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
   /// outlines for that district's taluks and frames the camera on it.
   String? _districtId;
   String _districtName = '';
+
+  /// Viewer's own position for the "you are here" dot, if permitted.
+  LatLng? _me;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchViewerLocation().then((me) {
+      if (mounted && me != null) setState(() => _me = me);
+    });
+  }
 
   void _selectDistrict(KarnatakaArea district) {
     setState(() {
@@ -164,6 +176,11 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
           final showingTaluks = _districtId != null;
           final areas = showingTaluks ? geo.taluksIn(_districtId!) : geo.districts;
           final counts = showingTaluks ? talukReports : districtReports;
+          // Every district (or taluk) its own colour, neighbours always
+          // different — severity is carried by the circles on top instead.
+          final areaColors = assignAreaColors({
+            for (final a in areas) a.id: _boundsOf(a.rings),
+          });
 
           return Stack(
             children: [
@@ -185,12 +202,10 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
                         for (final ring in area.rings)
                           Polygon(
                             points: ring,
-                            color: _fillFor(
-                              counts[area.id] ?? 0,
-                              showingTaluks ? talukPriority[area.id] : null,
-                            ),
-                            borderColor: AppColors.indigoDeep
-                                .withValues(alpha: 0.55),
+                            color: (areaColors[area.id] ?? kAreaPalette.first)
+                                .withValues(alpha: 0.42),
+                            borderColor: areaBorderColor(
+                                areaColors[area.id] ?? kAreaPalette.first),
                             borderStrokeWidth: showingTaluks ? 1.2 : 1.6,
                           ),
                     ],
@@ -212,6 +227,8 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
                             ),
                       ],
                     ),
+                  if (_me != null)
+                    MarkerLayer(markers: [youAreHereMarker(_me!)]),
                   MarkerLayer(
                     markers: [
                       for (final area in areas)
@@ -244,14 +261,6 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
         },
       ),
     );
-  }
-
-  /// Neutral indigo tint for "no reports yet" — deliberately *not* green.
-  /// Green means "few open issues" everywhere else in this app, and an
-  /// unreported area is not the same claim as a healthy one.
-  Color _fillFor(int reports, double? priority) {
-    if (reports == 0) return AppColors.indigoMist.withValues(alpha: 0.45);
-    return severityColor(priority ?? 50).withValues(alpha: 0.34);
   }
 
   Marker _marker(

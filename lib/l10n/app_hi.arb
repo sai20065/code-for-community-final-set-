@@ -9,22 +9,12 @@
   "password": "पासवर्ड",
   "couldNotSignInOfficial": "लॉग इन नहीं कर पाए। कृपया अपनी निर्वाचन क्षेत्र आईडी और पासवर्ड जांचें।",
   "citizenIntro": "विकास संबंधी सुझाव साझा करें या किसी नागरिक समस्या की रिपोर्ट करें — अपनी भाषा में, आवाज, पाठ या फोटो के माध्यम से।",
-  "welcomeAnonymityNote": "आप अन्य नागरिकों से गुमनाम रहते हैं। आपका आधार नंबर कभी भी संग्रहीत नहीं किया जाता है। आपके सांसद का कार्यालय आपकी पहचान नहीं, बल्कि कुल मांग देखता है।",
+  "welcomeAnonymityNote": "अन्य नागरिकों के लिए आप गुमनाम रहते हैं। फ़ोन नंबर, ईमेल या आईडी की ज़रूरत नहीं — बस एक यूज़रनेम। आपके सांसद का कार्यालय कुल माँग देखता है, आपकी पहचान नहीं।",
   "newHereSignUp": "क्या आप यहां नए हैं? साइन अप करें",
   "alreadyHaveAccountSignIn": "मेरा पहले से ही खाता है — लॉग इन करें",
-  "aadhaarPrivacyNote": "कृपया अपने आधार कार्ड की फोटो अपलोड करें ताकि हम आपका नाम और पता पढ़ सकें। हम केवल आपका नाम, पता और पिनकोड ही रखते हैं — आपकी फोटो और आधार नंबर कभी भी सेव नहीं किए जाते। यह पहचान सत्यापन नहीं है; आप नीचे अपनी जानकारी स्वयं भी भर सकते हैं।",
-  "aadhaarUploadNote": "अपने आधार कार्ड की आगे और पीछे की फोटो अपलोड करें ताकि हम आपका नाम और पता पढ़ सकें। पीछे की तरफ अक्सर आपका पूरा पता होता है, इसलिए उसकी फोटो भी अपलोड करने से सटीक परिणाम मिलते हैं। हम सिर्फ आपका नाम, पता, पिन कोड और वार्ड नंबर ही रखते हैं। फोटो और आधार नंबर कभी भी सेव नहीं किए जाते। यह पहचान सत्यापन नहीं है, और दोनों फोटो अपलोड करना वैकल्पिक है। आप चाहें तो नीचे अपनी जानकारी भर सकते हैं।",
-  "slotFront": "सामने",
-  "slotBack": "पीछे",
   "alreadyHaveAccountSignInShort": "पहले से ही एक खाता है? साइन इन करें",
-  "aadhaarBackNote": "सलाह: अपने आधार कार्ड के पीछे की फोटो भी खींच लें — अक्सर पीछे की तरफ आपका पूरा पता होता है, जबकि आगे की तरफ की फोटो में यह जानकारी नहीं होती। दोनों तरफ की फोटो खींचना वैकल्पिक है।",
   "camera": "कैमरा",
   "gallery": "गैलरी",
-  "extractDetails": "विवरण निकालें",
-  "couldNotReadClearly": "मैं इसे स्पष्ट रूप से पढ़ नहीं पाया - कृपया नीचे दिए गए विवरण देखें या उन्हें मैन्युअल रूप से दर्ज करें।",
-  "couldNotProcessImage": "इस छवि को अभी संसाधित नहीं किया जा सकता है - कृपया नीचे अपनी जानकारी मैन्युअल रूप से दर्ज करें।",
-  "hideManualEntry": "मैन्युअल प्रविष्टि छुपाएँ",
-  "skipEnterManually": "छोड़ दें — मैं इसे मैन्युअल रूप से दर्ज करूँगा",
   "fullName": "पूरा नाम",
   "pincode": "पिनकोड",
   "wardNumberOptional": "वार्ड संख्या (वैकल्पिक)",
@@ -32,19 +22,8 @@
   "updateMyLocation": "मेरी लोकेशन अपडेट करें",
   "tapMapToAdjust": "अपना सटीक स्थान समायोजित करने के लिए मानचित्र पर टैप करें।",
   "continueLabel": "जारी रखना",
-  "verifyWithPhone": "अपने फ़ोन नंबर से सत्यापित करें",
-  "mobileNumberHint": "10 अंकों का मोबाइल नंबर",
-  "sendCode": "कोड भेजें",
-  "sixDigitCode": "6-अंकीय कोड",
-  "verifyAndContinue": "सत्यापित करें और जारी रखें",
-  "verifyAndSignIn": "सत्यापित करें और साइन इन करें",
-  "enterValidMobile": "एक वैध 10 अंकों का मोबाइल नंबर दर्ज करें।",
-  "codeDidntMatch": "वह कोड मेल नहीं खाता — कृपया इसे जांचें और दोबारा प्रयास करें।",
   "couldNotContinue": "आगे नहीं बढ़ सकता - कृपया अपना कनेक्शन जांचें और दोबारा प्रयास करें।",
-  "skipStayAnonymous": "छोड़ें — गुमनाम रहें",
   "aggregatedDemandNote": "आप चाहे जिस भी तरीके से लॉग इन करें, आपके सांसद के कार्यालय को केवल कुल मांग ही दिखाई देती है, आपकी पहचान कभी नहीं।",
-  "welcomeBack": "आपका फिर से स्वागत है — जिस फ़ोन नंबर से आपने साइन इन किया था, उसी से साइन इन करें।",
-  "noAccountFound": "इस नंबर से कोई खाता नहीं मिला — कृपया पहले साइन अप करें।",
   "dontHaveAccountSignUp": "क्या आपके पास खाता नहीं है? साइन अप करें",
   "yourName": "आपका नाम",
   "age": "आयु",
@@ -116,7 +95,7 @@
   "notYetMatched": "अभी तक मिलान नहीं हुआ है",
   "homeBooth": "होम बूथ",
   "preferredLanguage": "पसंदीदा भाषा",
-  "privacyStoreAddress": "हम आपके पते को इसलिए संग्रहित करते हैं ताकि आपके आवेदन सही सांसद तक पहुंच सकें। आपका 12 अंकों का आधार नंबर कभी भी संग्रहित नहीं किया जाता है।",
+  "privacyStoreAddress": "आपकी शिकायतें सही सांसद तक पहुँचाने के लिए हम आपका घर का स्थान सहेजते हैं। हम कभी आपका फ़ोन नंबर, ईमेल या कोई आईडी नहीं माँगते।",
   "signOutClears": "साइन आउट करें (इस डिवाइस को साफ़ करता है)",
   "couldNotLoadProfile": "आपकी प्रोफ़ाइल लोड नहीं हो सकी।",
   "statusFiled": "दायर",
@@ -242,21 +221,24 @@
   "credentialsSentTo": "क्रेडेंशियल {email} पर भेजे गए",
   "checkYourInbox": "अपने लॉगिन आईडी और पासवर्ड के लिए अपना इनबॉक्स (और स्पैम फ़ोल्डर) जांचें।",
   "backToSignIn": "साइन इन पर वापस जाएं",
-  "aadhaarErrorAuthUnavailable": "अभी साइन-इन उपलब्ध नहीं है, इसलिए हम रीडर नहीं चला सके। आप नीचे अपनी जानकारी टाइप कर सकते हैं।",
-  "aadhaarErrorNotSignedIn": "आपका सत्र समाप्त हो गया। कृपया फिर से प्रयास करें, या नीचे अपनी जानकारी टाइप करें।",
-  "aadhaarErrorImageTooLarge": "यह फ़ोटो बहुत बड़ी है। कार्ड की पास से ली गई छोटी फ़ोटो आज़माएँ।",
-  "aadhaarErrorUnreadable": "हम वह कार्ड नहीं पढ़ सके। बेहतर रोशनी में, बिना चमक वाली सीधी फ़ोटो लें — या नीचे अपनी जानकारी टाइप करें।",
-  "aadhaarErrorModelBusy": "हमारा रीडर अभी व्यस्त है। थोड़ी देर में फिर प्रयास करें, या नीचे अपनी जानकारी टाइप करें।",
-  "aadhaarErrorNetwork": "नेटवर्क से संपर्क नहीं हो सका। अपना कनेक्शन जाँचें और फिर प्रयास करें, या नीचे अपनी जानकारी टाइप करें।",
-  "aadhaarErrorUnknown": "कार्ड पढ़ने में कुछ गड़बड़ हुई। आप इसके बजाय नीचे अपनी जानकारी टाइप कर सकते हैं।",
-  "aadhaarPartialExtracted": "हमने आपके कार्ड का कुछ हिस्सा पढ़ा। कृपया नीचे दी गई जानकारी जाँचें और छूटी हुई जानकारी भरें।",
-  "aadhaarBackImageSkippedTooLarge": "पीछे की फ़ोटो बहुत बड़ी थी, इसलिए हमने केवल सामने का हिस्सा पढ़ा। कृपया नीचे पता जाँचें।",
   "mapLayerFailed": "मानचित्र का कुछ हिस्सा लोड नहीं हो सका। कुछ वार्ड, बूथ या हॉटस्पॉट गायब हो सकते हैं।",
   "mapRetry": "पुनः प्रयास करें",
   "hotspotsShownCount": "{count} हॉटस्पॉट",
-  "@hotspotsShownCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsShownCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotsOffMapCount": "· {count} मानचित्र से बाहर",
-  "@hotspotsOffMapCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsOffMapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotClusterSheetTitle": "हॉटस्पॉट",
   "publicDashboardTitle": "सार्वजनिक डैशबोर्ड",
   "exploreYourArea": "अपना क्षेत्र देखें",
@@ -313,24 +295,72 @@
   "agentResponse": "कच्ची प्रतिक्रिया",
   "agentError": "त्रुटि",
   "agentFellBackNote": "ये एजेंट पूरे नहीं हुए और विकल्प का उपयोग किया: {agents}. प्रभावित अनुभागों को निष्कर्ष नहीं, प्लेसहोल्डर मानें।",
-  "@agentFellBackNote": {"placeholders": {"agents": {"type": "String"}}},
+  "@agentFellBackNote": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      }
+    }
+  },
   "agentAttempts": "{count} प्रयास",
-  "@agentAttempts": {"placeholders": {"count": {"type": "int"}}},
+  "@agentAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportsFromResidents": "{residents} निवासियों से {reports} रिपोर्ट",
-  "@reportsFromResidents": {"placeholders": {"reports": {"type": "int"}, "residents": {"type": "int"}}},
+  "@reportsFromResidents": {
+    "placeholders": {
+      "reports": {
+        "type": "int"
+      },
+      "residents": {
+        "type": "int"
+      }
+    }
+  },
   "weeksRange": "{min}–{max} सप्ताह",
-  "@weeksRange": {"placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}},
+  "@weeksRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "householdsAddressed": "~{count} परिवार",
-  "@householdsAddressed": {"placeholders": {"count": {"type": "int"}}},
+  "@householdsAddressed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "routedToDepartment": "भेजा गया",
   "yourCivicActivity": "आपकी नागरिक गतिविधि",
   "activeWeeksStreak": "सक्रिय सप्ताह",
   "longestStreak": "सबसे लंबी लकीर",
   "levelMaxReached": "शीर्ष स्तर तक पहुंचे",
   "reportsToNextLevel": "अगले स्तर तक {count} और",
-  "@reportsToNextLevel": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsToNextLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "levelLabel": "स्तर {level}",
-  "@levelLabel": {"placeholders": {"level": {"type": "int"}}},
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "badgeFirstReport": "पहली रिपोर्ट",
   "badgeWeekStreak": "2 सप्ताह की लकीर",
   "badgeMonthActive": "महीने भर सक्रिय",
@@ -344,12 +374,72 @@
   "seePublicDashboard": "अपने क्षेत्र का सार्वजनिक डैशबोर्ड देखें",
   "liveLabel": "लाइव",
   "reportsNearYouThisWeek": "इस सप्ताह आपके पास {count} रिपोर्ट",
-  "@reportsNearYouThisWeek": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsNearYouThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "beTheFirstThisWeek": "इस सप्ताह रिपोर्ट करने वाले पहले व्यक्ति बनें",
   "topHotspots": "शीर्ष हॉटस्पॉट",
   "latestSolutions": "नवीनतम समाधान",
   "noTrackedIssuesYet": "इस क्षेत्र के लिए अभी तक कोई मुद्दा ट्रैक नहीं किया गया।",
   "reportsCountShort": "{count} रिपोर्ट",
-  "@reportsCountShort": {"placeholders": {"count": {"type": "int"}}},
-  "hasSolutionLabel": "समाधान तैयार"
+  "@reportsCountShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hasSolutionLabel": "समाधान तैयार",
+  "openInGoogleMaps": "Google Maps में रास्ता देखें",
+  "openInGoogleMapsApprox": "इस क्षेत्र का रास्ता (Google Maps)",
+  "couldNotOpenMaps": "इस डिवाइस पर Google Maps नहीं खुल सका।",
+  "usernameLabel": "यूज़रनेम",
+  "usernameHelper": "4–20 अक्षर, अंक, _ या .",
+  "usernameTooShort": "यूज़रनेम कम से कम 4 अक्षर का होना चाहिए।",
+  "usernameTooLong": "यूज़रनेम अधिकतम 20 अक्षर का हो सकता है।",
+  "usernameBadCharacters": "केवल अक्षर, अंक, _ और . का प्रयोग करें (स्पेस नहीं)।",
+  "usernameAvailable": "यूज़रनेम उपलब्ध है",
+  "usernameTaken": "यह यूज़रनेम पहले से लिया गया है। कोई दूसरा आज़माएँ।",
+  "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
+  "newPasswordLabel": "नया पासवर्ड",
+  "currentPasswordLabel": "मौजूदा पासवर्ड",
+  "passwordTooShort": "पासवर्ड कम से कम 6 अक्षर का होना चाहिए।",
+  "passwordsDontMatch": "पासवर्ड मेल नहीं खाते।",
+  "authWrongCredentials": "यूज़रनेम या पासवर्ड गलत है।",
+  "authTooManyAttempts": "बहुत अधिक प्रयास। कुछ मिनट रुककर फिर कोशिश करें।",
+  "authNetworkError": "इंटरनेट कनेक्शन नहीं है। नेटवर्क जाँचें और फिर कोशिश करें।",
+  "nameRequired": "कृपया अपना नाम लिखें।",
+  "createAccountTitle": "अपना खाता बनाएँ",
+  "createAccountSubtitle": "बस यूज़रनेम और पासवर्ड — फ़ोन नंबर, ईमेल या आईडी की ज़रूरत नहीं।",
+  "createAccountButton": "खाता बनाएँ",
+  "welcomeBackTitle": "फिर से स्वागत है",
+  "signInSubtitle": "अपने यूज़रनेम और पासवर्ड से साइन इन करें।",
+  "forgotPasswordLink": "पासवर्ड भूल गए?",
+  "securityQuestionIntro": "एक सुरक्षा प्रश्न चुनें। पासवर्ड भूलने पर इसका उत्तर देकर नया पासवर्ड बना सकते हैं।",
+  "securityQuestionLabel": "सुरक्षा प्रश्न",
+  "securityAnswerLabel": "आपका उत्तर",
+  "securityAnswerHelper": "यह उत्तर याद रखें। बड़े-छोटे अक्षर से फ़र्क नहीं पड़ता।",
+  "securityAnswerRequired": "कृपया उत्तर लिखें।",
+  "securityQuestionFirstSchool": "आपके पहले स्कूल का नाम क्या था?",
+  "securityQuestionMotherBirthplace": "आपकी माँ का जन्म किस शहर या गाँव में हुआ था?",
+  "securityQuestionFavouriteFood": "आपका पसंदीदा खाना क्या है?",
+  "securityQuestionChildhoodFriend": "आपके बचपन के सबसे अच्छे दोस्त का नाम क्या है?",
+  "securityQuestionFirstVehicle": "आपकी पहली साइकिल या गाड़ी कौन-सी थी?",
+  "forgotPasswordTitle": "पासवर्ड रीसेट करें",
+  "forgotPasswordStep1": "अपना खाता ढूँढने के लिए यूज़रनेम लिखें।",
+  "forgotPasswordStep2": "सुरक्षा प्रश्न का उत्तर दें और नया पासवर्ड चुनें।",
+  "passwordResetDone": "आपका पासवर्ड बदल गया है। नए पासवर्ड से साइन इन करें।",
+  "resetPasswordButton": "नया पासवर्ड सेट करें",
+  "recoveryNotMatched": "उत्तर मेल नहीं खाया। जाँचकर फिर कोशिश करें।",
+  "recoveryLocked": "बहुत सारे गलत उत्तर। पासवर्ड रीसेट 15 मिनट के लिए बंद है।",
+  "recoveryNoQuestion": "इस यूज़रनेम के लिए कोई सुरक्षा प्रश्न नहीं मिला।",
+  "changePasswordTitle": "पासवर्ड बदलें",
+  "changeSecurityQuestionTitle": "सुरक्षा प्रश्न बदलें",
+  "passwordChanged": "पासवर्ड बदल गया।",
+  "securityQuestionSaved": "सुरक्षा प्रश्न सहेजा गया।",
+  "saveLabel": "सहेजें"
 }

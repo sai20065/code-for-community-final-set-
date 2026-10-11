@@ -19,16 +19,16 @@ An AI platform for constituency development planning. Citizens suggest developme
 - **App:** Flutter, Riverpod, go_router
 - **Backend:** Firebase (Firestore in asia-south1, Auth, Cloud Functions on Node 20 / TypeScript)
 - **AI:** Gemini 3.8 via Vertex AI, plus Cloud Translate
-- **Maps:** OpenStreetMap (flutter_map) and Nominatim. No API keys needed.
+- **Maps:** OpenFreeMap vector tiles on Android, OpenStreetMap raster tiles on web and as the fallback (flutter_map), Nominatim for addresses. All free, no API keys. Directions open in Google Maps via a plain link, also keyless.
+- **Wards:** two Bengaluru layers, switchable on the map — the 369 GBA wards (2025) and the 198 BBMP wards (2010, DataMeet, CC BY-SA 2.5 India).
 - **Fonts:** Space Grotesk, Inter, Space Mono
 
 ## Citizen features
-- **Login:** a Citizen / MP office tab on the welcome screen.
-- **Sign Up:**
-  - Optional Aadhaar front and back photo OCR fills name, address, pincode and ward.
-  - Choose phone OTP or anonymous "skip".
-  - Then language, basic info and home location (GPS plus a map pin).
-- **Sign In:** for returning citizens only. It never creates an account.
+- **Login:** a Citizen / MP office choice on the welcome screen.
+- **Sign Up:** name, **username and password**, and a security question. No email, phone number, OTP or ID document. Then language, basic info and home location (GPS plus a map pin).
+- **Sign In:** username + password, for returning citizens only. It never creates an account.
+- **Forgot password:** enter the username, answer the security question, set a new password. Five wrong answers lock recovery for 15 minutes.
+- **Profile:** change password, change security question.
 - **Home:**
   - Category chips: Education, Roads, Water, Skilling, Health.
   - A "Trending near you" feed with an "I support this" button.
@@ -46,16 +46,17 @@ An AI platform for constituency development planning. Citizens suggest developme
 ## MP / official features
 - **Login:** constituency ID + password. Accounts are provisioned out-of-band.
 - **Dashboard:** live stats, with links to Ranked Works, Themes and Problem Reports.
-- **Map:** booth markers sized by volume and coloured by dominant theme, with a tap-to-open detail sheet.
+- **Map:** every ward / taluk / district in its own colour (neighbours never share one), a pulsing "you are here" dot, report pins per hotspot, ward names when zoomed in, and a toggle back to problem-density colouring.
+- **Directions:** "Directions in Google Maps" on report details, ticket rows, area report lists and hotspot cards. Google Maps starts from the viewer's current location.
 - **Ranked Works:** rank badges with score bars for demand, demographics and infrastructure gap.
 - **Compare Proposals:** pick two works and compare them side by side, with a recommendation that cites the numbers.
 - **Problem Reports:** ticket management for problem-type tickets only.
 
 ## Identity and privacy rules
-- The Aadhaar number and images are **never stored**. Photos are read once in memory and discarded.
-- The Aadhaar number is also regex-scrubbed server-side.
-- Aadhaar OCR is a convenience only, not UIDAI verification. Manual entry always works.
-- A partial OCR read counts as success, with a "check these details" hint.
+- Citizens never give an email, phone number or ID. The username maps to an undeliverable synthetic address (`<username>@citizen.prajadhwani.app`) inside Firebase Auth.
+- Security-question answers are stored only as salted scrypt hashes in `userSecrets/{uid}`, which no client can read.
+- A citizen can't grant themselves the official role: `firestore.rules` pins `users/{uid}.role`.
+- Aadhaar-number-shaped text is still regex-scrubbed from public report summaries.
 - `users/{uid}.signupCompletedAt` is the authoritative marker of a saved profile.
 - Citizens can only raise tickets for their own area, enforced in the app and in `firestore.rules`.
 - Officials only see their own constituency's data.
@@ -69,21 +70,21 @@ An AI platform for constituency development planning. Citizens suggest developme
 ## Project status
 - ✅ Firestore rules and indexes are deployed.
 - ✅ Android and iOS apps are registered (`com.prajadhvani.app`).
-- ✅ All three Cloud Functions are live: `extractAadhaarDetails`, `onSubmissionCreated`, `transcribeAndTranslate`.
+- ✅ Cloud Functions: AI pipeline (`onSubmissionCreated`, `transcribeAndTranslate`), agents, public projections, MP credentials, and citizen password recovery (`setSecurityQuestion`, `getSecurityQuestion`, `resetPasswordWithSecurityQuestion`). Aadhaar OCR was removed.
 - ✅ Blaze billing is attached, and Gemini runs through Vertex AI with no API key.
 - ⏳ Booth and constituency data is a Bengaluru demo set. Swap in the real dataset when ready.
 
 ## Getting started
 1. Install the Flutter SDK (stable channel).
-2. Run `flutter create . --platforms=android,ios`.
-3. Move the files in `firebase_config/` to `android/app/google-services.json` and `ios/Runner/GoogleService-Info.plist`.
-4. In the Firebase console, enable **Anonymous**, **Phone** and **Email/Password** sign-in. Email/Password is only for MP logins.
+2. Run `flutter create . --platforms=android --project-name praja_dhvani`.
+3. Run `python tool/prepare_android.py` (app id, Firebase config, permissions, app label).
+4. In the Firebase console, enable **Email/Password** sign-in (used by both citizen usernames and MP logins). Phone and Anonymous are no longer used.
 5. Run `flutter pub get`, then `flutter run`.
 6. Optional: seed demo data with `cd functions && npm install && npm run seed:mock`.
+7. Seed wards: `cd functions && npx ts-node src/scripts/seedWards.ts` (369 GBA) and `npx ts-node src/scripts/seedBbmpWards.ts` (198 BBMP).
 
 ## Good to know
-- **Phone auth on Android:** a stable debug keystore is committed at `ci-keystore/prajadhvani-debug.keystore`, and its SHA-1 and SHA-256 are registered in Firebase.
-- **Sideloaded APKs** show a brief reCAPTCHA before the SMS. This is expected.
+- **Signing:** a stable debug keystore is committed at `ci-keystore/prajadhvani-debug.keystore`, so every build has the same SHA fingerprint.
 - **Play Store release:** it needs its own upload key, with that SHA registered in Firebase.
 - **Nominatim:** the public instance is limited to about 1 request per second, so self-host it at scale.
 

@@ -11,6 +11,7 @@ import '../../../core/models/user_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/sdg_badge.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
+import '../../../shared/widgets/google_maps_directions_button.dart';
 
 /// The Solution Card — the end product of the four-agent civic intelligence
 /// chain (`functions/src/agents/`).
@@ -165,6 +166,16 @@ class _CardBody extends ConsumerWidget {
           '${card.constituencyName} · ${l10n.reportsFromResidents(card.submissionCount, card.uniqueReporterCount)}',
           style: const TextStyle(fontSize: 12, color: AppColors.inkFaint),
         ),
+        if (card.centroid != null) ...[
+          const SizedBox(height: 12),
+          // The card's centroid is snapped server-side before it's ever
+          // written (see orchestrator.ts), so this routes to the area.
+          GoogleMapsDirectionsButton(
+            lat: card.centroid!.lat,
+            lng: card.centroid!.lng,
+            approximate: true,
+          ),
+        ],
 
         // A card built partly from fallbacks must not read with the same
         // authority as one where every agent succeeded. Say so, up top.

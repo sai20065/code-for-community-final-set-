@@ -23,7 +23,7 @@ export const emailAppPassword = defineSecret("EMAIL_APP_PASSWORD");
 export const reporterHashSalt = defineSecret("REPORTER_HASH_SALT");
 
 /**
- * Every Gemini call (Aadhaar OCR, transcription, photo captioning,
+ * Every Gemini call (transcription, photo captioning,
  * classification, cluster summarization) runs via Vertex AI, authenticated
  * through the function's own runtime service account (Application Default
  * Credentials — no API key/secret to manage) rather than the Gemini
@@ -113,11 +113,24 @@ export const PUBLIC_GEO_SNAP_DEGREES = 0.003;
 export const PUBLIC_GEO_MIN_TICKETS = 3;
 
 /* -------------------------------------------------------------------------
- * Aadhaar OCR
+ * Citizen accounts (functions/src/citizens/)
  * ---------------------------------------------------------------------- */
 
-/** Per-image decoded-byte ceiling for the OCR callable. Callable requests
- * cap at 10 MB total and base64 inflates by 4/3, so two unbounded phone
- * photos can blow the limit — which used to surface as an indistinguishable
- * "could not process image". Rejected explicitly instead. */
-export const MAX_OCR_IMAGE_BYTES = 4 * 1024 * 1024;
+/** Citizens log in with a username; Firebase Auth gets this synthetic,
+ * undeliverable address instead. Must match `AuthService` in the app. */
+export const CITIZEN_EMAIL_SUFFIX = "@citizen.prajadhwani.app";
+
+/** Ids of the fixed security questions. Question text lives in the app's
+ * ARB files; must match `kSecurityQuestionIds` in auth_service.dart. */
+export const SECURITY_QUESTION_IDS = [
+  "firstSchool",
+  "motherBirthplace",
+  "favouriteFood",
+  "childhoodFriend",
+  "firstVehicle",
+];
+
+/** Wrong answers allowed before password recovery locks... */
+export const RECOVERY_MAX_ATTEMPTS = 5;
+/** ...and for how long. */
+export const RECOVERY_LOCK_MINUTES = 15;

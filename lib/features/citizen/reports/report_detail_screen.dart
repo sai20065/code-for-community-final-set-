@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/google_maps_directions_button.dart';
 import '../../../shared/widgets/status_stepper.dart';
 
 /// Section 4, screen 10: status stepper large at top, original submission
@@ -99,6 +100,11 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                 children: [Text(s.translatedText!)],
               ),
             ],
+            const SizedBox(height: 24),
+            GoogleMapsDirectionsButton(
+              lat: s.location.lat,
+              lng: s.location.lng,
+            ),
           ],
         ),
       ),

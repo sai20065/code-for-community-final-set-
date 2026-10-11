@@ -9,22 +9,12 @@
   "password": "ಪಾಸ್ವರ್ಡ್",
   "couldNotSignInOfficial": "ಸೈನ್ ಇನ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಕ್ಷೇತ್ರದ ಐಡಿ ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್ ಪರಿಶೀಲಿಸಿ.",
   "citizenIntro": "ಅಭಿವೃದ್ಧಿ ಸಲಹೆಯನ್ನು ಹಂಚಿಕೊಳ್ಳಿ ಅಥವಾ ನಾಗರಿಕ ಸಮಸ್ಯೆಯನ್ನು ವರದಿ ಮಾಡಿ — ನಿಮ್ಮ ಸ್ವಂತ ಭಾಷೆಯಲ್ಲಿ, ಧ್ವನಿ, ಪಠ್ಯ ಅಥವಾ ಫೋಟೋ ಮೂಲಕ.",
-  "welcomeAnonymityNote": "ನೀವು ಇತರ ನಾಗರಿಕರಿಗೆ ಅನಾಮಧೇಯರಾಗಿರುತ್ತೀರಿ. ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಸಂಸದರ ಕಚೇರಿಯು ನಿಮ್ಮ ಗುರುತನ್ನು ನೋಡುವುದಲ್ಲ, ಒಟ್ಟು ಬೇಡಿಕೆಯನ್ನು ನೋಡುತ್ತದೆ.",
+  "welcomeAnonymityNote": "ಇತರ ನಾಗರಿಕರಿಗೆ ನೀವು ಅನಾಮಧೇಯರಾಗಿರುತ್ತೀರಿ. ಫೋನ್ ಸಂಖ್ಯೆ, ಇಮೇಲ್ ಅಥವಾ ಐಡಿ ಬೇಡ — ಬಳಕೆದಾರ ಹೆಸರು ಸಾಕು. ನಿಮ್ಮ ಸಂಸದರ ಕಚೇರಿ ಒಟ್ಟು ಬೇಡಿಕೆಯನ್ನು ನೋಡುತ್ತದೆ, ನಿಮ್ಮ ಗುರುತನ್ನಲ್ಲ.",
   "newHereSignUp": "ಇಲ್ಲಿ ಹೊಸಬರೇ? ಸೈನ್ ಅಪ್ ಮಾಡಿ",
   "alreadyHaveAccountSignIn": "ನನಗೆ ಈಗಾಗಲೇ ಒಂದು ಖಾತೆ ಇದೆ — ಸೈನ್ ಇನ್ ಮಾಡಿ",
-  "aadhaarPrivacyNote": "ನಿಮ್ಮ ಆಧಾರ್‌ನ ಫೋಟೋವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಇದರಿಂದ ನಾವು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ವಿಳಾಸವನ್ನು ಓದಬಹುದು. ನಾವು ನಿಮ್ಮ ಹೆಸರು, ವಿಳಾಸ ಮತ್ತು ಪಿನ್‌ಕೋಡ್ ಅನ್ನು ಮಾತ್ರ ಇಟ್ಟುಕೊಳ್ಳುತ್ತೇವೆ - ಫೋಟೋ ಮತ್ತು ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ. ಇದು ಐಡಿ ಪರಿಶೀಲನೆಯಲ್ಲ; ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.",
-  "aadhaarUploadNote": "ನಿಮ್ಮ ಆಧಾರ್‌ನ ಫೋಟೋಗಳನ್ನು (ಮುಂಭಾಗ ಮತ್ತು ಹಿಂಭಾಗ) ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಇದರಿಂದ ನಾವು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ವಿಳಾಸವನ್ನು ಓದಬಹುದು - ಹಿಂಭಾಗವು ಹೆಚ್ಚಾಗಿ ನಿಮ್ಮ ಪೂರ್ಣ ವಿಳಾಸವನ್ನು ಹೊಂದಿರುತ್ತದೆ, ಆದ್ದರಿಂದ ಅದನ್ನು ಸೆರೆಹಿಡಿಯುವುದು ಸಹ ಹೆಚ್ಚು ನಿಖರವಾದ ಫಲಿತಾಂಶಗಳನ್ನು ನೀಡುತ್ತದೆ. ನಾವು ನಿಮ್ಮ ಹೆಸರು, ವಿಳಾಸ, ಪಿನ್‌ಕೋಡ್ ಮತ್ತು ವಾರ್ಡ್ ಸಂಖ್ಯೆಯನ್ನು ಮಾತ್ರ ಇಟ್ಟುಕೊಳ್ಳುತ್ತೇವೆ - ಫೋಟೋಗಳು ಮತ್ತು ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ. ಇದು ಐಡಿ ಪರಿಶೀಲನೆ ಅಲ್ಲ, ಮತ್ತು ಎರಡೂ ಫೋಟೋಗಳು ಐಚ್ಛಿಕ - ನೀವು ಯಾವಾಗಲೂ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ಟೈಪ್ ಮಾಡಬಹುದು.",
-  "slotFront": "ಮುಂಭಾಗ",
-  "slotBack": "ಹಿಂದೆ",
   "alreadyHaveAccountSignInShort": "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ? ಸೈನ್ ಇನ್ ಮಾಡಿ",
-  "aadhaarBackNote": "ಸಲಹೆ: ನಿಮ್ಮ ಆಧಾರ್‌ನ ಹಿಂಭಾಗವನ್ನು ಸಹ ಸೆರೆಹಿಡಿಯಿರಿ - ಇದು ಸಾಮಾನ್ಯವಾಗಿ ಮುಂಭಾಗದಲ್ಲಿ ನಿಮ್ಮ ಪೂರ್ಣ ವಿಳಾಸವನ್ನು ಹೊಂದಿರುತ್ತದೆ. ಎರಡೂ ಬದಿಗಳು ಐಚ್ಛಿಕವಾಗಿರುತ್ತವೆ.",
   "camera": "ಕ್ಯಾಮೆರಾ",
   "gallery": "ಗ್ಯಾಲರಿ",
-  "extractDetails": "ವಿವರಗಳನ್ನು ಹೊರತೆಗೆಯಿರಿ",
-  "couldNotReadClearly": "ಅದನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಅಥವಾ ಅವುಗಳನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸಿ.",
-  "couldNotProcessImage": "ಆ ಚಿತ್ರವನ್ನು ಈಗ ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸಿ.",
-  "hideManualEntry": "ಹಸ್ತಚಾಲಿತ ನಮೂದನ್ನು ಮರೆಮಾಡಿ",
-  "skipEnterManually": "ಬಿಟ್ಟುಬಿಡಿ — ನಾನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸುತ್ತೇನೆ",
   "fullName": "ಪೂರ್ಣ ಹೆಸರು",
   "pincode": "ಪಿನ್‌ಕೋಡ್",
   "wardNumberOptional": "ವಾರ್ಡ್ ಸಂಖ್ಯೆ (ಐಚ್ಛಿಕ)",
@@ -32,19 +22,8 @@
   "updateMyLocation": "ನನ್ನ ಸ್ಥಳವನ್ನು ನವೀಕರಿಸಿ",
   "tapMapToAdjust": "ನಿಮ್ಮ ನಿಖರವಾದ ಸ್ಥಳವನ್ನು ಹೊಂದಿಸಲು ನಕ್ಷೆಯನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.",
   "continueLabel": "ಮುಂದುವರಿಸಿ",
-  "verifyWithPhone": "ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯ ಮೂಲಕ ಪರಿಶೀಲಿಸಿ",
-  "mobileNumberHint": "10-ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
-  "sendCode": "ಕೋಡ್ ಕಳುಹಿಸಿ",
-  "sixDigitCode": "6-ಅಂಕಿಯ ಕೋಡ್",
-  "verifyAndContinue": "ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮುಂದುವರಿಸಿ",
-  "verifyAndSignIn": "ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಸೈನ್ ಇನ್ ಮಾಡಿ",
-  "enterValidMobile": "ಮಾನ್ಯವಾದ 10-ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.",
-  "codeDidntMatch": "ಆ ಕೋಡ್ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ — ಅದನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
   "couldNotContinue": "ಮುಂದುವರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಹಾಗೂ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
-  "skipStayAnonymous": "ಬಿಟ್ಟುಬಿಡಿ — ಅನಾಮಧೇಯರಾಗಿರಿ",
   "aggregatedDemandNote": "ನೀವು ಯಾವುದೇ ರೀತಿಯಲ್ಲಿ ಸೈನ್ ಇನ್ ಮಾಡಿದರೂ, ನಿಮ್ಮ ಸಂಸದರ ಕಚೇರಿಯು ಒಟ್ಟಾರೆ ಬೇಡಿಕೆಯನ್ನು ಮಾತ್ರ ನೋಡುತ್ತದೆ, ನಿಮ್ಮ ಗುರುತನ್ನು ಎಂದಿಗೂ ನೋಡುವುದಿಲ್ಲ.",
-  "welcomeBack": "ಮರಳಿ ಸ್ವಾಗತ — ನೀವು ಸೈನ್ ಅಪ್ ಮಾಡಿದ ಫೋನ್ ಸಂಖ್ಯೆಯೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.",
-  "noAccountFound": "ಈ ಸಂಖ್ಯೆಗೆ ಯಾವುದೇ ಖಾತೆ ಕಂಡುಬಂದಿಲ್ಲ — ದಯವಿಟ್ಟು ಮೊದಲು ಸೈನ್ ಅಪ್ ಮಾಡಿ.",
   "dontHaveAccountSignUp": "ಖಾತೆ ಇಲ್ಲವೇ? ಸೈನ್ ಅಪ್ ಮಾಡಿ",
   "yourName": "ನಿಮ್ಮ ಹೆಸರು",
   "age": "ವಯಸ್ಸು",
@@ -116,7 +95,7 @@
   "notYetMatched": "ಇನ್ನೂ ಹೊಂದಾಣಿಕೆಯಾಗಿಲ್ಲ",
   "homeBooth": "ಮನೆ ಬೂತ್",
   "preferredLanguage": "ಆದ್ಯತೆಯ ಭಾಷೆ",
-  "privacyStoreAddress": "ನಿಮ್ಮ ಸಲ್ಲಿಕೆಗಳನ್ನು ಸರಿಯಾದ ಸಂಸದರಿಗೆ ರವಾನಿಸಲು ನಾವು ನಿಮ್ಮ ವಿಳಾಸವನ್ನು ಸಂಗ್ರಹಿಸುತ್ತೇವೆ. ನಿಮ್ಮ 12-ಅಂಕಿಯ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ.",
+  "privacyStoreAddress": "ನಿಮ್ಮ ದೂರುಗಳನ್ನು ಸರಿಯಾದ ಸಂಸದರಿಗೆ ತಲುಪಿಸಲು ನಿಮ್ಮ ಮನೆಯ ಸ್ಥಳವನ್ನು ಉಳಿಸುತ್ತೇವೆ. ನಾವು ಎಂದಿಗೂ ಫೋನ್ ಸಂಖ್ಯೆ, ಇಮೇಲ್ ಅಥವಾ ಯಾವುದೇ ಐಡಿ ಕೇಳುವುದಿಲ್ಲ.",
   "signOutClears": "ಸೈನ್ ಔಟ್ ಮಾಡಿ (ಈ ಸಾಧನವನ್ನು ತೆರವುಗೊಳಿಸುತ್ತದೆ)",
   "couldNotLoadProfile": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
   "statusFiled": "ಸಲ್ಲಿಸಲಾಗಿದೆ",
@@ -242,21 +221,24 @@
   "credentialsSentTo": "ರುಜುವಾತುಗಳನ್ನು {email} ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ",
   "checkYourInbox": "ನಿಮ್ಮ ಲಾಗಿನ್ ಐಡಿ ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್‌ಗಾಗಿ ನಿಮ್ಮ ಇನ್‌ಬಾಕ್ಸ್ (ಮತ್ತು ಸ್ಪ್ಯಾಮ್ ಫೋಲ್ಡರ್) ಪರಿಶೀಲಿಸಿ.",
   "backToSignIn": "ಸೈನ್ ಇನ್‌ಗೆ ಹಿಂತಿರುಗಿ",
-  "aadhaarErrorAuthUnavailable": "ಈಗ ಸೈನ್-ಇನ್ ಲಭ್ಯವಿಲ್ಲ, ಆದ್ದರಿಂದ ರೀಡರ್ ಚಲಾಯಿಸಲಾಗಲಿಲ್ಲ. ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.",
-  "aadhaarErrorNotSignedIn": "ನಿಮ್ಮ ಸೆಷನ್ ಮುಗಿದಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.",
-  "aadhaarErrorImageTooLarge": "ಈ ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ. ಕಾರ್ಡ್‌ನ ಹತ್ತಿರದ, ಚಿಕ್ಕ ಫೋಟೋ ಪ್ರಯತ್ನಿಸಿ.",
-  "aadhaarErrorUnreadable": "ಆ ಕಾರ್ಡ್ ಓದಲಾಗಲಿಲ್ಲ. ಉತ್ತಮ ಬೆಳಕಿನಲ್ಲಿ, ಹೊಳಪಿಲ್ಲದ ನೇರ ಫೋಟೋ ತೆಗೆಯಿರಿ — ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.",
-  "aadhaarErrorModelBusy": "ನಮ್ಮ ರೀಡರ್ ಈಗ ಬ್ಯುಸಿಯಾಗಿದೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.",
-  "aadhaarErrorNetwork": "ನೆಟ್‌ವರ್ಕ್ ತಲುಪಲಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ.",
-  "aadhaarErrorUnknown": "ಕಾರ್ಡ್ ಓದುವಾಗ ಏನೋ ತಪ್ಪಾಯಿತು. ಬದಲಿಗೆ ನೀವು ಕೆಳಗೆ ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು.",
-  "aadhaarPartialExtracted": "ನಿಮ್ಮ ಕಾರ್ಡ್‌ನ ಒಂದು ಭಾಗವನ್ನು ಓದಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಬಿಟ್ಟುಹೋದದ್ದನ್ನು ಭರ್ತಿ ಮಾಡಿ.",
-  "aadhaarBackImageSkippedTooLarge": "ಹಿಂಬದಿಯ ಫೋಟೋ ತುಂಬಾ ದೊಡ್ಡದಾಗಿತ್ತು, ಹಾಗಾಗಿ ಮುಂಬದಿಯನ್ನು ಮಾತ್ರ ಓದಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ವಿಳಾಸ ಪರಿಶೀಲಿಸಿ.",
   "mapLayerFailed": "ನಕ್ಷೆಯ ಒಂದು ಭಾಗ ಲೋಡ್ ಆಗಲಿಲ್ಲ. ಕೆಲವು ವಾರ್ಡ್‌ಗಳು, ಬೂತ್‌ಗಳು ಅಥವಾ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು ಕಾಣೆಯಾಗಬಹುದು.",
   "mapRetry": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
   "hotspotsShownCount": "{count} ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು",
-  "@hotspotsShownCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsShownCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotsOffMapCount": "· {count} ನಕ್ಷೆಯ ಹೊರಗೆ",
-  "@hotspotsOffMapCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsOffMapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotClusterSheetTitle": "ಹಾಟ್‌ಸ್ಪಾಟ್",
   "publicDashboardTitle": "ಸಾರ್ವಜನಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
   "exploreYourArea": "ನಿಮ್ಮ ಪ್ರದೇಶವನ್ನು ನೋಡಿ",
@@ -313,24 +295,72 @@
   "agentResponse": "ಕಚ್ಚಾ ಪ್ರತಿಕ್ರಿಯೆ",
   "agentError": "ದೋಷ",
   "agentFellBackNote": "ಈ ಏಜೆಂಟ್‌ಗಳು ಪೂರ್ಣಗೊಳ್ಳಲಿಲ್ಲ ಮತ್ತು ಪರ್ಯಾಯ ಬಳಸಿದವು: {agents}. ಸಂಬಂಧಿತ ವಿಭಾಗಗಳನ್ನು ಸಂಶೋಧನೆಗಳಲ್ಲ, ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್‌ಗಳಾಗಿ ಪರಿಗಣಿಸಿ.",
-  "@agentFellBackNote": {"placeholders": {"agents": {"type": "String"}}},
+  "@agentFellBackNote": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      }
+    }
+  },
   "agentAttempts": "{count} ಪ್ರಯತ್ನಗಳು",
-  "@agentAttempts": {"placeholders": {"count": {"type": "int"}}},
+  "@agentAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportsFromResidents": "{residents} ನಿವಾಸಿಗಳಿಂದ {reports} ವರದಿಗಳು",
-  "@reportsFromResidents": {"placeholders": {"reports": {"type": "int"}, "residents": {"type": "int"}}},
+  "@reportsFromResidents": {
+    "placeholders": {
+      "reports": {
+        "type": "int"
+      },
+      "residents": {
+        "type": "int"
+      }
+    }
+  },
   "weeksRange": "{min}–{max} ವಾರಗಳು",
-  "@weeksRange": {"placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}},
+  "@weeksRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "householdsAddressed": "~{count} ಮನೆಗಳು",
-  "@householdsAddressed": {"placeholders": {"count": {"type": "int"}}},
+  "@householdsAddressed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "routedToDepartment": "ರವಾನಿಸಲಾಗಿದೆ",
   "yourCivicActivity": "ನಿಮ್ಮ ನಾಗರಿಕ ಚಟುವಟಿಕೆ",
   "activeWeeksStreak": "ಸಕ್ರಿಯ ವಾರಗಳು",
   "longestStreak": "ಸುದೀರ್ಘ ಸರಣಿ",
   "levelMaxReached": "ಉನ್ನತ ಮಟ್ಟ ತಲುಪಿದೆ",
   "reportsToNextLevel": "ಮುಂದಿನ ಹಂತಕ್ಕೆ {count} ಇನ್ನಷ್ಟು",
-  "@reportsToNextLevel": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsToNextLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "levelLabel": "ಹಂತ {level}",
-  "@levelLabel": {"placeholders": {"level": {"type": "int"}}},
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "badgeFirstReport": "ಮೊದಲ ವರದಿ",
   "badgeWeekStreak": "2-ವಾರದ ಸರಣಿ",
   "badgeMonthActive": "ತಿಂಗಳ ಸಕ್ರಿಯತೆ",
@@ -344,12 +374,72 @@
   "seePublicDashboard": "ನಿಮ್ಮ ಪ್ರದೇಶದ ಸಾರ್ವಜನಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ನೋಡಿ",
   "liveLabel": "ಲೈವ್",
   "reportsNearYouThisWeek": "ಈ ವಾರ ನಿಮ್ಮ ಬಳಿ {count} ವರದಿಗಳು",
-  "@reportsNearYouThisWeek": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsNearYouThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "beTheFirstThisWeek": "ಈ ವಾರ ವರದಿ ಮಾಡಿದ ಮೊದಲಿಗರಾಗಿ",
   "topHotspots": "ಪ್ರಮುಖ ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು",
   "latestSolutions": "ಇತ್ತೀಚಿನ ಪರಿಹಾರಗಳು",
   "noTrackedIssuesYet": "ಈ ಪ್ರದೇಶಕ್ಕೆ ಇನ್ನೂ ಯಾವುದೇ ಸಮಸ್ಯೆ ಟ್ರ್ಯಾಕ್ ಆಗಿಲ್ಲ.",
   "reportsCountShort": "{count} ವರದಿಗಳು",
-  "@reportsCountShort": {"placeholders": {"count": {"type": "int"}}},
-  "hasSolutionLabel": "ಪರಿಹಾರ ಸಿದ್ಧ"
+  "@reportsCountShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hasSolutionLabel": "ಪರಿಹಾರ ಸಿದ್ಧ",
+  "openInGoogleMaps": "Google Maps ನಲ್ಲಿ ದಾರಿ ನೋಡಿ",
+  "openInGoogleMapsApprox": "ಈ ಪ್ರದೇಶಕ್ಕೆ ದಾರಿ (Google Maps)",
+  "couldNotOpenMaps": "ಈ ಸಾಧನದಲ್ಲಿ Google Maps ತೆರೆಯಲಾಗಲಿಲ್ಲ.",
+  "usernameLabel": "ಬಳಕೆದಾರ ಹೆಸರು",
+  "usernameHelper": "4–20 ಅಕ್ಷರಗಳು, ಸಂಖ್ಯೆಗಳು, _ ಅಥವಾ .",
+  "usernameTooShort": "ಬಳಕೆದಾರ ಹೆಸರು ಕನಿಷ್ಠ 4 ಅಕ್ಷರಗಳಿರಬೇಕು.",
+  "usernameTooLong": "ಬಳಕೆದಾರ ಹೆಸರು ಗರಿಷ್ಠ 20 ಅಕ್ಷರಗಳಿರಬಹುದು.",
+  "usernameBadCharacters": "ಅಕ್ಷರಗಳು, ಸಂಖ್ಯೆಗಳು, _ ಮತ್ತು . ಮಾತ್ರ ಬಳಸಿ (ಸ್ಪೇಸ್ ಬೇಡ).",
+  "usernameAvailable": "ಬಳಕೆದಾರ ಹೆಸರು ಲಭ್ಯವಿದೆ",
+  "usernameTaken": "ಈ ಬಳಕೆದಾರ ಹೆಸರು ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ. ಬೇರೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "confirmPasswordLabel": "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ",
+  "newPasswordLabel": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್",
+  "currentPasswordLabel": "ಈಗಿನ ಪಾಸ್‌ವರ್ಡ್",
+  "passwordTooShort": "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು.",
+  "passwordsDontMatch": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ.",
+  "authWrongCredentials": "ಬಳಕೆದಾರ ಹೆಸರು ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.",
+  "authTooManyAttempts": "ಹಲವು ಪ್ರಯತ್ನಗಳು. ಕೆಲವು ನಿಮಿಷ ಕಾದು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "authNetworkError": "ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲ. ನೆಟ್‌ವರ್ಕ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "nameRequired": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರು ನಮೂದಿಸಿ.",
+  "createAccountTitle": "ನಿಮ್ಮ ಖಾತೆ ರಚಿಸಿ",
+  "createAccountSubtitle": "ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್ ಸಾಕು — ಫೋನ್ ಸಂಖ್ಯೆ, ಇಮೇಲ್ ಅಥವಾ ಐಡಿ ಬೇಡ.",
+  "createAccountButton": "ಖಾತೆ ರಚಿಸಿ",
+  "welcomeBackTitle": "ಮತ್ತೆ ಸ್ವಾಗತ",
+  "signInSubtitle": "ನಿಮ್ಮ ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ.",
+  "forgotPasswordLink": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ?",
+  "securityQuestionIntro": "ಒಂದು ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಆರಿಸಿ. ಪಾಸ್‌ವರ್ಡ್ ಮರೆತರೆ, ಇದಕ್ಕೆ ಉತ್ತರಿಸಿ ಹೊಸದನ್ನು ಹೊಂದಿಸಬಹುದು.",
+  "securityQuestionLabel": "ಭದ್ರತಾ ಪ್ರಶ್ನೆ",
+  "securityAnswerLabel": "ನಿಮ್ಮ ಉತ್ತರ",
+  "securityAnswerHelper": "ಈ ಉತ್ತರ ನೆನಪಿಡಿ. ದೊಡ್ಡ/ಸಣ್ಣ ಅಕ್ಷರಗಳಿಂದ ವ್ಯತ್ಯಾಸವಿಲ್ಲ.",
+  "securityAnswerRequired": "ದಯವಿಟ್ಟು ಉತ್ತರ ನಮೂದಿಸಿ.",
+  "securityQuestionFirstSchool": "ನಿಮ್ಮ ಮೊದಲ ಶಾಲೆಯ ಹೆಸರೇನು?",
+  "securityQuestionMotherBirthplace": "ನಿಮ್ಮ ತಾಯಿ ಯಾವ ಊರು ಅಥವಾ ಹಳ್ಳಿಯಲ್ಲಿ ಜನಿಸಿದರು?",
+  "securityQuestionFavouriteFood": "ನಿಮ್ಮ ನೆಚ್ಚಿನ ಆಹಾರ ಯಾವುದು?",
+  "securityQuestionChildhoodFriend": "ನಿಮ್ಮ ಬಾಲ್ಯದ ಆತ್ಮೀಯ ಸ್ನೇಹಿತರ ಹೆಸರೇನು?",
+  "securityQuestionFirstVehicle": "ನಿಮ್ಮ ಮೊದಲ ಸೈಕಲ್ ಅಥವಾ ವಾಹನ ಯಾವುದು?",
+  "forgotPasswordTitle": "ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ",
+  "forgotPasswordStep1": "ನಿಮ್ಮ ಖಾತೆ ಹುಡುಕಲು ಬಳಕೆದಾರ ಹೆಸರು ನಮೂದಿಸಿ.",
+  "forgotPasswordStep2": "ಭದ್ರತಾ ಪ್ರಶ್ನೆಗೆ ಉತ್ತರಿಸಿ ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಆರಿಸಿ.",
+  "passwordResetDone": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಗಿದೆ. ಹೊಸ ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ.",
+  "resetPasswordButton": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಿ",
+  "recoveryNotMatched": "ಉತ್ತರ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ. ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "recoveryLocked": "ಹಲವು ತಪ್ಪು ಉತ್ತರಗಳು. ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಕೆ 15 ನಿಮಿಷ ಸ್ಥಗಿತ.",
+  "recoveryNoQuestion": "ಈ ಬಳಕೆದಾರ ಹೆಸರಿಗೆ ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಸಿಗಲಿಲ್ಲ.",
+  "changePasswordTitle": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ",
+  "changeSecurityQuestionTitle": "ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಬದಲಿಸಿ",
+  "passwordChanged": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಗಿದೆ.",
+  "securityQuestionSaved": "ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಉಳಿಸಲಾಗಿದೆ.",
+  "saveLabel": "ಉಳಿಸಿ"
 }

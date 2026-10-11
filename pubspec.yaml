@@ -28,11 +28,17 @@ dependencies:
   flutter_riverpod: ^2.5.1
   shared_preferences: ^2.3.2
 
-  # Location — free/open-source mapping (OpenStreetMap tiles, no API key)
+  # Location — free/open-source mapping. Basemap is OpenFreeMap vector
+  # tiles (free, no API key, no usage cap, commercial use allowed), with
+  # OpenStreetMap raster tiles as the fallback. See app_map_tiles.dart.
   flutter_map: ^7.0.2
+  vector_map_tiles: ^8.0.0
   latlong2: ^0.9.1
   http: ^1.2.2
   geolocator: ^13.0.1
+  # Opens Google Maps directions to a reported location (no API key —
+  # it's a plain https://www.google.com/maps/dir/ deep link).
+  url_launcher: ^6.3.0
 
   # Media
   record: ^7.1.1
@@ -61,8 +67,6 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/lottie/
-    - assets/images/
     - assets/icon/
     - assets/sounds/
     # Simplified Karnataka district/taluk outlines for the statewide map.

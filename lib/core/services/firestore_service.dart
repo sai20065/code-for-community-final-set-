@@ -33,6 +33,31 @@ class FirestoreService {
       _db.collection('taluks');
   CollectionReference<Map<String, dynamic>> get _districts =>
       _db.collection('districts');
+  CollectionReference<Map<String, dynamic>> get _usernames =>
+      _db.collection('usernames');
+
+  /// Live "is this username free?" check for the Sign Up form. Reads one
+  /// doc by id — `firestore.rules` allows `get` but not `list` on
+  /// `usernames`, so nobody can download the whole roster. Firebase Auth is
+  /// the real uniqueness guarantee (two accounts can't share a username's
+  /// synthetic address); this is only so the form can warn early.
+  Future<bool> isUsernameTaken(String username) async {
+    final doc = await _usernames.doc(username).get();
+    return doc.exists;
+  }
+
+  /// Claims [username] for [uid] right after the account is created. Rules
+  /// allow `create` only (never update/delete), so a claimed name can't be
+  /// hijacked by a later writer.
+  Future<void> reserveUsername({
+    required String username,
+    required String uid,
+  }) {
+    return _usernames.doc(username).set({
+      'uid': uid,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
@@ -49,11 +74,9 @@ class FirestoreService {
         (doc) => doc.exists ? UserModel.fromMap(doc.id, doc.data()!) : null);
   }
 
-  /// Creates `users/{uid}` the moment anonymous sign-in succeeds, if it
-  /// doesn't already exist, so the document is never missing even if the
-  /// citizen quits before finishing the rest of onboarding. Any fields
-  /// already extracted from Aadhaar OCR (name/pincode/address) land in this
-  /// very first write.
+  /// Creates `users/{uid}` the moment the account is created, if it doesn't
+  /// already exist, so the document is never missing even if the citizen
+  /// quits before finishing the rest of onboarding.
   Future<UserModel> getOrCreateUser({
     required String uid,
     required String preferredLanguage,
@@ -288,9 +311,8 @@ class FirestoreService {
     });
   }
 
-  /// Every ward of one municipal corporation (`BBMP`/`GBA`), alphabetically —
-  /// the fine-grained picker layer inside Bengaluru Urban, where taluks are
-  /// too coarse to be useful.
+  /// Every ward of one GBA corporation (`Central`/`East`/`North`/`South`/
+  /// `West`), alphabetically — the 369-ward GBA layer of the picker.
   Stream<List<WardModel>> watchWardsForCorporation(String corporation) {
     return _wards
         .where('corporation', isEqualTo: corporation)
@@ -299,6 +321,24 @@ class FirestoreService {
       final list =
           snap.docs.map((d) => WardModel.fromMap(d.id, d.data())).toList();
       list.sort((a, b) => a.wardName.compareTo(b.wardName));
+      return list;
+    });
+  }
+
+  /// The BBMP wards inside one assembly constituency, by ward number — the
+  /// 198-ward BBMP layer of the picker. Filtered on `corporation` too, since
+  /// GBA ward docs carry an `assemblyConstituency` of their own. Fetched one
+  /// segment (5–10 wards) at a time because every ward doc carries its full
+  /// boundary polygon.
+  Stream<List<WardModel>> watchBbmpWardsForAssembly(String assemblyConstituency) {
+    return _wards
+        .where('corporation', isEqualTo: 'BBMP')
+        .where('assemblyConstituency', isEqualTo: assemblyConstituency)
+        .snapshots()
+        .map((snap) {
+      final list =
+          snap.docs.map((d) => WardModel.fromMap(d.id, d.data())).toList();
+      list.sort((a, b) => (a.wardNo ?? 0).compareTo(b.wardNo ?? 0));
       return list;
     });
   }

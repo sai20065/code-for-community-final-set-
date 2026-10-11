@@ -1,30 +1,46 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'app_exceptions.dart';
+/// Why a username was rejected, so the UI can say exactly what to fix.
+enum UsernameProblem { tooShort, tooLong, badCharacters }
 
-/// Citizen identity has two entry points, both landing on the same
-/// `users/{uid}` document shape: **Phone** (real Firebase Phone Auth with
-/// SMS OTP) and **Anonymous** (invisible, no credential — still available as
-/// "skip" for anyone who doesn't want to attach a number). Citizen
-/// email/password was removed: Firebase has no native email-OTP and
-/// magic-links are unreliable on a sideloaded APK, so phone OTP is the one
-/// "verify yourself" path. Whichever is chosen, the Aadhaar Upload step (see
-/// `AadhaarOcrService`) remains a one-time onboarding convenience that
-/// extracts name/address/pincode/wardNumber from self-uploaded front/back
-/// images — it is NOT verified UIDAI eKYC and makes no claim the uploader is
-/// who the document says they are.
+/// Why a citizen auth call failed, mapped from Firebase error codes so
+/// screens show a plain sentence instead of a raw `FirebaseAuthException`.
+enum CitizenAuthFailure {
+  usernameTaken,
+  wrongCredentials,
+  weakPassword,
+  tooManyAttempts,
+  network,
+  unknown,
+}
+
+class CitizenAuthException implements Exception {
+  final CitizenAuthFailure failure;
+  final String? debugMessage;
+  const CitizenAuthException(this.failure, {this.debugMessage});
+
+  @override
+  String toString() => 'CitizenAuthException(${failure.name}: $debugMessage)';
+}
+
+/// Citizens sign in with a **username and password** — no email, no phone
+/// number, no ID document. Firebase Auth's email/password provider needs an
+/// address, so the username is mapped to a synthetic one
+/// (`<username>@citizen.prajadhwani.app`) that the citizen never sees and
+/// that can never receive mail. Same trick [signInOfficial] has always used
+/// for MP logins.
 ///
-/// Sign Up and Sign In are deliberately separate flows (`SignUpScreen` /
-/// `SignInScreen`), not one combined "continue" action: Sign Up always
-/// creates a fresh credential and writes `users/{uid}.signupCompletedAt`;
-/// Sign In always authenticates an existing credential and errors out if no
-/// `users/{uid}` profile is found, rather than silently creating one.
+/// Because there is no inbox to send a reset link to, "Forgot password" is
+/// a **security question** checked server-side — see
+/// [AccountRecoveryService] and `functions/src/citizens/`.
 ///
-/// MP/official identity = Firebase email/password auth, keyed by a
-/// constituency ID rather than an email address (mapped internally — see
-/// [signInOfficial]). Officials are provisioned out-of-band (their
-/// `users/{uid}` doc's `role`/`constituencyId` is set by an admin, not
-/// self-assigned at login).
+/// Usernames are unique app-wide via a `usernames/{username}` reservation
+/// doc written in the same flow as the account (see
+/// `FirestoreService.reserveUsername`).
+///
+/// MP/official identity is unchanged: constituency ID + password, mapped to
+/// `<constituencyId>@mp.prajadhwani.app`, provisioned out-of-band.
 class AuthService {
   AuthService({FirebaseAuth? firebaseAuth})
       : _auth = firebaseAuth ?? FirebaseAuth.instance;
@@ -32,88 +48,122 @@ class AuthService {
   final FirebaseAuth _auth;
 
   static const _officialEmailSuffix = '@mp.prajadhwani.app';
+  static const _citizenEmailSuffix = '@citizen.prajadhwani.app';
+
+  static const minUsernameLength = 4;
+  static const maxUsernameLength = 20;
+
+  /// Firebase's own floor; anything shorter is rejected server-side anyway.
+  static const minPasswordLength = 6;
 
   User? get currentUser => _auth.currentUser;
 
   Stream<User?> authStateChanges() => _auth.authStateChanges();
 
-  /// Signs in anonymously if no session exists yet. Firebase Auth persists
-  /// the anonymous session across app restarts, so this only actually hits
-  /// the network the very first time a device opens the app.
-  ///
-  /// Translates "the Anonymous provider isn't enabled on this Firebase
-  /// project" into [AadhaarOcrFailure.authUnavailable] rather than letting a
-  /// raw `FirebaseAuthException` escape. That distinction matters: this is
-  /// called from the Aadhaar upload step *before* the citizen has picked a
-  /// sign-in method, so a disabled provider used to surface to them as
-  /// "we couldn't read your photo" — a project misconfiguration disguised
-  /// as an image problem, which is close to undiagnosable from the UI.
-  Future<User> ensureSignedIn() async {
-    final existing = _auth.currentUser;
-    if (existing != null) return existing;
+  /// Usernames are case-insensitive: "Ravi_K" and "ravi_k" are one account.
+  static String normalizeUsername(String raw) => raw.trim().toLowerCase();
+
+  /// Null when [raw] is a valid username, otherwise what's wrong with it.
+  /// Letters, digits, `_` and `.` only — no spaces or `@`, since the name
+  /// becomes part of a synthetic email address.
+  static UsernameProblem? validateUsername(String raw) {
+    final u = normalizeUsername(raw);
+    if (u.length < minUsernameLength) return UsernameProblem.tooShort;
+    if (u.length > maxUsernameLength) return UsernameProblem.tooLong;
+    if (!RegExp(r'^[a-z0-9_.]+$').hasMatch(u)) {
+      return UsernameProblem.badCharacters;
+    }
+    return null;
+  }
+
+  static String citizenEmailFor(String username) =>
+      '${normalizeUsername(username)}$_citizenEmailSuffix';
+
+  /// Creates a new citizen account. If this device still holds an older
+  /// anonymous or phone session (from before usernames existed), the
+  /// password credential is *linked* to it instead, so that citizen keeps
+  /// the same uid — and with it every report they already filed.
+  Future<User> signUpCitizen({
+    required String username,
+    required String password,
+  }) async {
+    final email = citizenEmailFor(username);
     try {
-      final credential = await _auth.signInAnonymously();
-      return credential.user!;
+      final existing = _auth.currentUser;
+      final canLink = existing != null &&
+          !existing.providerData.any((p) => p.providerId == 'password');
+      if (canLink) {
+        final credential =
+            EmailAuthProvider.credential(email: email, password: password);
+        final result = await existing.linkWithCredential(credential);
+        return result.user!;
+      }
+      if (existing != null) await _auth.signOut();
+      final result = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return result.user!;
     } on FirebaseAuthException catch (e) {
-      const providerDisabledCodes = {
-        'operation-not-allowed',
-        'admin-restricted-operation',
-        'configuration-not-found',
-      };
-      if (providerDisabledCodes.contains(e.code) ||
-          (e.message?.contains('CONFIGURATION_NOT_FOUND') ?? false)) {
-        throw AadhaarOcrException(
-          AadhaarOcrFailure.authUnavailable,
-          debugMessage: 'Anonymous sign-in unavailable: ${e.code} ${e.message}',
-        );
-      }
-      if (e.code == 'network-request-failed') {
-        throw AadhaarOcrException(
-          AadhaarOcrFailure.network,
-          debugMessage: e.message,
-        );
-      }
-      rethrow;
+      throw _mapAuthError(e);
     }
   }
 
-  /// Starts real Firebase Phone Auth for a citizen entering their number on
-  /// the Welcome screen. [onCodeSent] fires once the SMS has gone out, with
-  /// a `verificationId` to pass back into [confirmSmsCode]. On Android,
-  /// Play Integrity can silently auto-verify without the user ever typing a
-  /// code — [onAutoVerified] fires that completed sign-in directly, so
-  /// callers should skip the OTP field entirely in that case.
-  Future<void> startPhoneVerification({
-    required String phoneNumber,
-    required void Function(String verificationId) onCodeSent,
-    required void Function(User user) onAutoVerified,
-    required void Function(String message) onError,
+  Future<User> signInCitizen({
+    required String username,
+    required String password,
   }) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      timeout: const Duration(seconds: 60),
-      verificationCompleted: (credential) async {
-        final result = await _auth.signInWithCredential(credential);
-        onAutoVerified(result.user!);
-      },
-      verificationFailed: (e) => onError(e.message ?? 'Verification failed.'),
-      codeSent: (verificationId, _) => onCodeSent(verificationId),
-      codeAutoRetrievalTimeout: (_) {},
-    );
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: citizenEmailFor(username),
+        password: password,
+      );
+      return result.user!;
+    } on FirebaseAuthException catch (e) {
+      throw _mapAuthError(e);
+    }
   }
 
-  /// Completes phone sign-in with the 6-digit code the citizen typed in,
-  /// against the `verificationId` handed back by [startPhoneVerification].
-  Future<User> confirmSmsCode({
-    required String verificationId,
-    required String smsCode,
+  /// Change password while signed in. Firebase requires a recent login for
+  /// this, so the current password is re-checked first — which also stops
+  /// someone holding an unlocked phone from silently taking the account.
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
   }) async {
-    final credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: smsCode,
-    );
-    final result = await _auth.signInWithCredential(credential);
-    return result.user!;
+    final user = _auth.currentUser;
+    if (user == null || user.email == null) {
+      throw const CitizenAuthException(CitizenAuthFailure.wrongCredentials);
+    }
+    try {
+      await user.reauthenticateWithCredential(EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      ));
+      await user.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      throw _mapAuthError(e);
+    }
+  }
+
+  CitizenAuthException _mapAuthError(FirebaseAuthException e) {
+    final failure = switch (e.code) {
+      'email-already-in-use' ||
+      'credential-already-in-use' ||
+      'provider-already-linked' =>
+        CitizenAuthFailure.usernameTaken,
+      'wrong-password' ||
+      'user-not-found' ||
+      'invalid-credential' ||
+      'invalid-email' ||
+      'INVALID_LOGIN_CREDENTIALS' =>
+        CitizenAuthFailure.wrongCredentials,
+      'weak-password' => CitizenAuthFailure.weakPassword,
+      'too-many-requests' => CitizenAuthFailure.tooManyAttempts,
+      'network-request-failed' => CitizenAuthFailure.network,
+      _ => CitizenAuthFailure.unknown,
+    };
+    return CitizenAuthException(failure, debugMessage: '${e.code} ${e.message}');
   }
 
   /// MP office login — the constituency ID is mapped to a synthetic email
@@ -131,4 +181,99 @@ class AuthService {
   }
 
   Future<void> signOut() => _auth.signOut();
+}
+
+/// Ids of the fixed security questions. The question *text* is localized in
+/// the ARB files (`securityQuestion_<id>`); only the id is stored.
+const kSecurityQuestionIds = <String>[
+  'firstSchool',
+  'motherBirthplace',
+  'favouriteFood',
+  'childhoodFriend',
+  'firstVehicle',
+];
+
+/// Why a password reset was refused.
+enum RecoveryFailure { notMatched, locked, weakPassword, network, unknown }
+
+class RecoveryException implements Exception {
+  final RecoveryFailure failure;
+  final String? debugMessage;
+  const RecoveryException(this.failure, {this.debugMessage});
+
+  @override
+  String toString() => 'RecoveryException(${failure.name}: $debugMessage)';
+}
+
+/// "Forgot password" without email or SMS: the citizen answers the security
+/// question they chose at Sign Up. The answer is only ever compared
+/// server-side against a salted hash (`userSecrets/{uid}`, which no client
+/// can read), and the server locks the account for 15 minutes after five
+/// wrong answers so it can't be guessed by brute force. See
+/// `functions/src/citizens/securityQuestion.ts`.
+class AccountRecoveryService {
+  AccountRecoveryService({FirebaseFunctions? functions})
+      : _functions =
+            functions ?? FirebaseFunctions.instanceFor(region: 'asia-south1');
+
+  final FirebaseFunctions _functions;
+
+  /// Saves (or replaces) the signed-in citizen's question and answer.
+  Future<void> setSecurityQuestion({
+    required String questionId,
+    required String answer,
+  }) async {
+    try {
+      await _functions.httpsCallable('setSecurityQuestion').call<void>({
+        'questionId': questionId,
+        'answer': answer,
+      });
+    } on FirebaseFunctionsException catch (e) {
+      throw _map(e);
+    }
+  }
+
+  /// The question id for [username], so the reset screen can ask it. Returns
+  /// null when there's nothing to ask (unknown username, or an account that
+  /// never set a question) — deliberately indistinguishable, so this can't
+  /// be used to discover which usernames exist.
+  Future<String?> getSecurityQuestion(String username) async {
+    try {
+      final result = await _functions
+          .httpsCallable('getSecurityQuestion')
+          .call<Map<String, dynamic>>({
+        'username': AuthService.normalizeUsername(username),
+      });
+      return result.data['questionId'] as String?;
+    } on FirebaseFunctionsException catch (e) {
+      throw _map(e);
+    }
+  }
+
+  Future<void> resetPassword({
+    required String username,
+    required String answer,
+    required String newPassword,
+  }) async {
+    try {
+      await _functions.httpsCallable('resetPasswordWithSecurityQuestion').call<void>({
+        'username': AuthService.normalizeUsername(username),
+        'answer': answer,
+        'newPassword': newPassword,
+      });
+    } on FirebaseFunctionsException catch (e) {
+      throw _map(e);
+    }
+  }
+
+  RecoveryException _map(FirebaseFunctionsException e) {
+    final failure = switch (e.code) {
+      'permission-denied' || 'not-found' => RecoveryFailure.notMatched,
+      'resource-exhausted' => RecoveryFailure.locked,
+      'invalid-argument' => RecoveryFailure.weakPassword,
+      'unavailable' || 'deadline-exceeded' => RecoveryFailure.network,
+      _ => RecoveryFailure.unknown,
+    };
+    return RecoveryException(failure, debugMessage: '${e.code} ${e.message}');
+  }
 }

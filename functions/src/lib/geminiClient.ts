@@ -11,7 +11,7 @@ const MODEL = GEMINI_MODEL;
 
 /**
  * Thin wrapper over Vertex AI's Gemini models — used for every "Gemma-
- * family" AI task in this app: Aadhaar OCR extraction, transcription,
+ * family" AI task in this app: transcription,
  * photo identification, theme classification, and cluster summarization/
  * priority scoring. Authenticates via the function's own runtime service
  * account (Application Default Credentials), billed against the
@@ -36,60 +36,6 @@ export class GeminiClient {
     });
     const candidateParts = result.response.candidates?.[0]?.content?.parts ?? [];
     return candidateParts.map((p) => p.text ?? "").join("").trim();
-  }
-
-  /** Vision extraction for the Sign Up screen's Aadhaar upload. [backBase64]
-   * is optional — the back side often carries the full address the front
-   * truncates, so sending it (when captured) improves accuracy, but a
-   * front-only call still works. Never echoes a 12-digit Aadhaar-number-
-   * shaped string — the caller additionally regex-scrubs the response as
-   * defense-in-depth. */
-  async extractAadhaarFields(
-    frontBase64: string,
-    mimeType: string,
-    backBase64?: string,
-  ): Promise<{
-    name?: string;
-    address?: string;
-    pincode?: string;
-    wardNumber?: string;
-    confidence: number;
-  }> {
-    const prompt = `You are reading photos of an Indian Aadhaar card (front${
-      backBase64 ? ", and back" : ""
-    }). Extract ONLY the holder's name, their printed address, their 6-digit
-pincode, and their ward number if printed anywhere on the card (often on the
-back, may be absent). Respond with strict JSON: {"name": string|null,
-"address": string|null, "pincode": string|null, "wardNumber": string|null,
-"confidence": number between 0 and 1}.
-Never include the 12-digit Aadhaar number in your response, even partially.
-If the image(s) are unclear or not an Aadhaar card, return nulls and
-confidence 0.`;
-
-    const parts: Array<string | {inlineData: {data: string; mimeType: string}}> = [
-      prompt,
-      {inlineData: {data: frontBase64, mimeType}},
-    ];
-    if (backBase64) parts.push({inlineData: {data: backBase64, mimeType}});
-
-    const text = await this.generateText(parts);
-    const parsed = safeParseJson(text) ?? {};
-
-    // Defense-in-depth: strip anything that looks like an Aadhaar number
-    // even if the model ignored the instruction not to include one.
-    const scrub = (value: unknown) =>
-      typeof value === "string"
-        ? value.replace(/\d{4}\s?\d{4}\s?\d{4}/g, "[redacted]")
-        : undefined;
-
-    return {
-      name: scrub(parsed.name),
-      address: scrub(parsed.address),
-      pincode: typeof parsed.pincode === "string" ? parsed.pincode : undefined,
-      wardNumber:
-        typeof parsed.wardNumber === "string" ? parsed.wardNumber : undefined,
-      confidence: typeof parsed.confidence === "number" ? parsed.confidence : 0,
-    };
   }
 
   /** Transcribes voice-ticket audio verbatim in its own spoken language —

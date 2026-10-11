@@ -39,7 +39,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'മറ്റ് പൗരന്മാർക്ക് മുന്നിൽ നിങ്ങൾ അജ്ഞാതനായി തുടരുന്നു. നിങ്ങളുടെ ആധാർ നമ്പർ ഒരിക്കലും സൂക്ഷിക്കില്ല. നിങ്ങളുടെ എംപിയുടെ ഓഫീസ് നിങ്ങളുടെ ഐഡന്റിറ്റിയെയല്ല, മറിച്ച് മൊത്തം ആവശ്യത്തെയാണ് കാണുന്നത്.';
+      'മറ്റ് പൗരന്മാർക്ക് നിങ്ങൾ അജ്ഞാതനായിരിക്കും. ഫോൺ നമ്പർ, ഇമെയിൽ, ഐഡി ഒന്നും വേണ്ട — ഒരു യൂസർനെയിം മതി. നിങ്ങളുടെ എം.പി.യുടെ ഓഫീസ് മൊത്തം ആവശ്യമാണ് കാണുന്നത്, നിങ്ങളുടെ വ്യക്തിത്വമല്ല.';
 
   @override
   String get newHereSignUp => 'ഇവിടെ പുതിയ ആളാണോ? സൈൻ അപ്പ് ചെയ്യുക';
@@ -49,49 +49,14 @@ class AppLocalizationsMl extends AppLocalizations {
       'എനിക്ക് ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ട് — സൈൻ ഇൻ ചെയ്യുക';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'നിങ്ങളുടെ പേരും വിലാസവും ഞങ്ങൾക്ക് വായിക്കാൻ കഴിയുന്ന തരത്തിൽ നിങ്ങളുടെ ആധാറിന്റെ ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക. നിങ്ങളുടെ പേരും വിലാസവും പിൻകോഡും മാത്രമേ ഞങ്ങൾ സൂക്ഷിക്കുന്നുള്ളൂ - ഫോട്ടോയും നിങ്ങളുടെ ആധാർ നമ്പറും ഒരിക്കലും സേവ് ചെയ്യപ്പെടില്ല. ഇത് ഐഡി വെരിഫിക്കേഷൻ അല്ല; നിങ്ങളുടെ വിശദാംശങ്ങൾ താഴെ ടൈപ്പ് ചെയ്യാനും കഴിയും.';
-
-  @override
-  String get aadhaarUploadNote =>
-      'നിങ്ങളുടെ പേരും വിലാസവും ഞങ്ങൾക്ക് വായിക്കാൻ കഴിയുന്ന തരത്തിൽ നിങ്ങളുടെ ആധാറിന്റെ ഫോട്ടോകൾ (മുന്നിലും പിന്നിലും) അപ്‌ലോഡ് ചെയ്യുക - പിന്നിൽ പലപ്പോഴും നിങ്ങളുടെ പൂർണ്ണ വിലാസം ഉണ്ടാകും, അതിനാൽ അത് പകർത്തുന്നതും കൂടുതൽ കൃത്യമായ ഫലങ്ങൾ നൽകുന്നു. ഞങ്ങൾ നിങ്ങളുടെ പേര്, വിലാസം, പിൻകോഡ്, വാർഡ് നമ്പർ എന്നിവ മാത്രമേ സൂക്ഷിക്കുന്നുള്ളൂ - ഫോട്ടോകളും നിങ്ങളുടെ ആധാർ നമ്പറും ഒരിക്കലും സംരക്ഷിക്കില്ല. ഇത് ഐഡി വെരിഫിക്കേഷൻ അല്ല, രണ്ട് ഫോട്ടോകളും ഓപ്ഷണലാണ് - നിങ്ങൾക്ക് എല്ലായ്പ്പോഴും നിങ്ങളുടെ വിശദാംശങ്ങൾ താഴെ ടൈപ്പ് ചെയ്യാം.';
-
-  @override
-  String get slotFront => 'ഫ്രണ്ട്';
-
-  @override
-  String get slotBack => 'തിരികെ';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ടോ? സൈൻ ഇൻ ചെയ്യുക';
-
-  @override
-  String get aadhaarBackNote =>
-      'നുറുങ്ങ്: നിങ്ങളുടെ ആധാറിന്റെ പിൻഭാഗവും പകർത്തുക - പലപ്പോഴും മുൻവശത്ത് നിങ്ങളുടെ മുഴുവൻ വിലാസവും ഉണ്ടായിരിക്കും. ഇരുവശങ്ങളും ഓപ്ഷണലാണ്.';
 
   @override
   String get camera => 'ക്യാമറ';
 
   @override
   String get gallery => 'ഗാലറി';
-
-  @override
-  String get extractDetails => 'വിശദാംശങ്ങൾ എക്‌സ്‌ട്രാക്റ്റ് ചെയ്യുക';
-
-  @override
-  String get couldNotReadClearly =>
-      'അത് വ്യക്തമായി വായിക്കാൻ കഴിഞ്ഞില്ല — താഴെയുള്ള വിശദാംശങ്ങൾ പരിശോധിക്കുക അല്ലെങ്കിൽ നേരിട്ട് നൽകുക.';
-
-  @override
-  String get couldNotProcessImage =>
-      'ആ ചിത്രം ഇപ്പോൾ പ്രോസസ്സ് ചെയ്യാൻ കഴിഞ്ഞില്ല — താഴെ നിങ്ങളുടെ വിശദാംശങ്ങൾ നേരിട്ട് നൽകുക.';
-
-  @override
-  String get hideManualEntry => 'മാനുവൽ എൻട്രി മറയ്ക്കുക';
-
-  @override
-  String get skipEnterManually => 'ഒഴിവാക്കുക — ഞാൻ നേരിട്ട് നൽകാം';
 
   @override
   String get fullName => 'പൂർണ്ണമായ പേര്';
@@ -116,49 +81,12 @@ class AppLocalizationsMl extends AppLocalizations {
   String get continueLabel => 'തുടരുക';
 
   @override
-  String get verifyWithPhone =>
-      'നിങ്ങളുടെ ഫോൺ നമ്പർ ഉപയോഗിച്ച് പരിശോധിച്ചുറപ്പിക്കുക';
-
-  @override
-  String get mobileNumberHint => '10-അക്ക മൊബൈൽ നമ്പർ';
-
-  @override
-  String get sendCode => 'കോഡ് അയയ്ക്കുക';
-
-  @override
-  String get sixDigitCode => '6-അക്ക കോഡ്';
-
-  @override
-  String get verifyAndContinue => 'പരിശോധിച്ചുറപ്പിച്ച് തുടരുക';
-
-  @override
-  String get verifyAndSignIn => 'പരിശോധിച്ചുറപ്പിച്ച് സൈൻ ഇൻ ചെയ്യുക';
-
-  @override
-  String get enterValidMobile => 'സാധുവായ ഒരു 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക.';
-
-  @override
-  String get codeDidntMatch =>
-      'ആ കോഡ് പൊരുത്തപ്പെട്ടില്ല — അത് പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
-
-  @override
   String get couldNotContinue =>
       'തുടരാനായില്ല — നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
 
   @override
-  String get skipStayAnonymous => 'ഒഴിവാക്കുക — അജ്ഞാതനായി തുടരുക';
-
-  @override
   String get aggregatedDemandNote =>
       'നിങ്ങൾ ഏത് രീതിയിൽ സൈൻ ഇൻ ചെയ്താലും, നിങ്ങളുടെ എംപിയുടെ ഓഫീസ് എപ്പോഴും നിങ്ങളുടെ ഐഡന്റിറ്റി കാണുന്നില്ല, മൊത്തം ഡിമാൻഡ് മാത്രമേ കാണുന്നുള്ളൂ.';
-
-  @override
-  String get welcomeBack =>
-      'വീണ്ടും സ്വാഗതം — നിങ്ങൾ സൈൻ അപ്പ് ചെയ്ത ഫോൺ നമ്പർ ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക.';
-
-  @override
-  String get noAccountFound =>
-      'ഈ നമ്പറിന് അക്കൗണ്ടൊന്നും കണ്ടെത്തിയില്ല — ദയവായി ആദ്യം സൈൻ അപ്പ് ചെയ്യുക.';
 
   @override
   String get dontHaveAccountSignUp => 'അക്കൗണ്ട് ഇല്ലേ? സൈൻ അപ്പ് ചെയ്യുക';
@@ -407,7 +335,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'നിങ്ങളുടെ സമർപ്പണങ്ങൾ ശരിയായ എംപിയിലേക്ക് നയിക്കുന്നതിനായി ഞങ്ങൾ നിങ്ങളുടെ വിലാസം സൂക്ഷിക്കുന്നു. നിങ്ങളുടെ 12 അക്ക ആധാർ നമ്പർ ഒരിക്കലും സൂക്ഷിക്കില്ല.';
+      'നിങ്ങളുടെ പരാതികൾ ശരിയായ എം.പി.ക്ക് എത്തിക്കാൻ വീടിന്റെ സ്ഥാനം സൂക്ഷിക്കുന്നു. ഫോൺ നമ്പറോ ഇമെയിലോ ഐഡിയോ ഞങ്ങൾ ഒരിക്കലും ചോദിക്കില്ല.';
 
   @override
   String get signOutClears => 'സൈൻ ഔട്ട് ചെയ്യുക (ഈ ഉപകരണം മായ്‌ക്കുന്നു)';
@@ -866,42 +794,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get backToSignIn => 'സൈൻ ഇന്നിലേക്ക് മടങ്ങുക';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'Your session expired. Please try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'That photo is too large to process. Try a closer, smaller shot of the card.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'Our reader is busy right now. Try again in a moment, or type your details below.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'Something went wrong reading the card. You can type your details below instead.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'We read part of your card. Please check the details below and fill in anything missing.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'The back photo was too large, so we read the front only. Please check the address below.';
-
-  @override
   String get mapLayerFailed =>
       'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
@@ -1201,4 +1093,166 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'Solution ready';
+
+  @override
+  String get openInGoogleMaps => 'Google Maps-ൽ വഴി കാണുക';
+
+  @override
+  String get openInGoogleMapsApprox => 'ഈ പ്രദേശത്തേക്കുള്ള വഴി (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps => 'ഈ ഉപകരണത്തിൽ Google Maps തുറക്കാനായില്ല.';
+
+  @override
+  String get usernameLabel => 'യൂസർനെയിം';
+
+  @override
+  String get usernameHelper => '4–20 അക്ഷരങ്ങൾ, അക്കങ്ങൾ, _ അല്ലെങ്കിൽ .';
+
+  @override
+  String get usernameTooShort => 'യൂസർനെയിമിന് കുറഞ്ഞത് 4 അക്ഷരങ്ങൾ വേണം.';
+
+  @override
+  String get usernameTooLong => 'യൂസർനെയിം പരമാവധി 20 അക്ഷരങ്ങൾ.';
+
+  @override
+  String get usernameBadCharacters =>
+      'അക്ഷരങ്ങൾ, അക്കങ്ങൾ, _ , . എന്നിവ മാത്രം ഉപയോഗിക്കുക (സ്‌പേസ് വേണ്ട).';
+
+  @override
+  String get usernameAvailable => 'യൂസർനെയിം ലഭ്യമാണ്';
+
+  @override
+  String get usernameTaken =>
+      'ഈ യൂസർനെയിം ഇതിനകം എടുത്തിട്ടുണ്ട്. മറ്റൊന്ന് ശ്രമിക്കുക.';
+
+  @override
+  String get confirmPasswordLabel => 'പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക';
+
+  @override
+  String get newPasswordLabel => 'പുതിയ പാസ്‌വേഡ്';
+
+  @override
+  String get currentPasswordLabel => 'നിലവിലെ പാസ്‌വേഡ്';
+
+  @override
+  String get passwordTooShort => 'പാസ്‌വേഡിന് കുറഞ്ഞത് 6 അക്ഷരങ്ങൾ വേണം.';
+
+  @override
+  String get passwordsDontMatch => 'പാസ്‌വേഡുകൾ പൊരുത്തപ്പെടുന്നില്ല.';
+
+  @override
+  String get authWrongCredentials => 'യൂസർനെയിം അല്ലെങ്കിൽ പാസ്‌വേഡ് തെറ്റാണ്.';
+
+  @override
+  String get authTooManyAttempts =>
+      'വളരെയധികം ശ്രമങ്ങൾ. കുറച്ച് മിനിറ്റ് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get authNetworkError =>
+      'ഇന്റർനെറ്റ് കണക്ഷനില്ല. നെറ്റ്‌വർക്ക് പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get nameRequired => 'ദയവായി നിങ്ങളുടെ പേര് നൽകുക.';
+
+  @override
+  String get createAccountTitle => 'നിങ്ങളുടെ അക്കൗണ്ട് സൃഷ്ടിക്കുക';
+
+  @override
+  String get createAccountSubtitle =>
+      'യൂസർനെയിമും പാസ്‌വേഡും മതി — ഫോൺ നമ്പർ, ഇമെയിൽ, ഐഡി ഒന്നും വേണ്ട.';
+
+  @override
+  String get createAccountButton => 'അക്കൗണ്ട് സൃഷ്ടിക്കുക';
+
+  @override
+  String get welcomeBackTitle => 'വീണ്ടും സ്വാഗതം';
+
+  @override
+  String get signInSubtitle =>
+      'നിങ്ങളുടെ യൂസർനെയിമും പാസ്‌വേഡും ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക.';
+
+  @override
+  String get forgotPasswordLink => 'പാസ്‌വേഡ് മറന്നോ?';
+
+  @override
+  String get securityQuestionIntro =>
+      'ഒരു സുരക്ഷാ ചോദ്യം തിരഞ്ഞെടുക്കുക. പാസ്‌വേഡ് മറന്നാൽ ഇതിന് ഉത്തരം നൽകി പുതിയത് സജ്ജമാക്കാം.';
+
+  @override
+  String get securityQuestionLabel => 'സുരക്ഷാ ചോദ്യം';
+
+  @override
+  String get securityAnswerLabel => 'നിങ്ങളുടെ ഉത്തരം';
+
+  @override
+  String get securityAnswerHelper =>
+      'ഈ ഉത്തരം ഓർമ്മിക്കുക. വലിയ/ചെറിയ അക്ഷരങ്ങൾ പ്രശ്നമല്ല.';
+
+  @override
+  String get securityAnswerRequired => 'ദയവായി ഉത്തരം നൽകുക.';
+
+  @override
+  String get securityQuestionFirstSchool =>
+      'നിങ്ങളുടെ ആദ്യ സ്കൂളിന്റെ പേരെന്ത്?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'നിങ്ങളുടെ അമ്മ ഏത് പട്ടണത്തിലോ ഗ്രാമത്തിലോ ആണ് ജനിച്ചത്?';
+
+  @override
+  String get securityQuestionFavouriteFood =>
+      'നിങ്ങളുടെ പ്രിയപ്പെട്ട ഭക്ഷണം ഏതാണ്?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'നിങ്ങളുടെ കുട്ടിക്കാലത്തെ ഉറ്റ സുഹൃത്തിന്റെ പേരെന്ത്?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'നിങ്ങളുടെ ആദ്യ സൈക്കിൾ അല്ലെങ്കിൽ വാഹനം ഏതായിരുന്നു?';
+
+  @override
+  String get forgotPasswordTitle => 'പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യുക';
+
+  @override
+  String get forgotPasswordStep1 => 'അക്കൗണ്ട് കണ്ടെത്താൻ യൂസർനെയിം നൽകുക.';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'സുരക്ഷാ ചോദ്യത്തിന് ഉത്തരം നൽകി പുതിയ പാസ്‌വേഡ് തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get passwordResetDone =>
+      'നിങ്ങളുടെ പാസ്‌വേഡ് മാറ്റി. പുതിയ പാസ്‌വേഡ് ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക.';
+
+  @override
+  String get resetPasswordButton => 'പുതിയ പാസ്‌വേഡ് സജ്ജമാക്കുക';
+
+  @override
+  String get recoveryNotMatched =>
+      'ഉത്തരം പൊരുത്തപ്പെട്ടില്ല. പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get recoveryLocked =>
+      'വളരെയധികം തെറ്റായ ഉത്തരങ്ങൾ. പാസ്‌വേഡ് റീസെറ്റ് 15 മിനിറ്റ് ലോക്ക് ചെയ്തു.';
+
+  @override
+  String get recoveryNoQuestion =>
+      'ഈ യൂസർനെയിമിന് സുരക്ഷാ ചോദ്യം കണ്ടെത്തിയില്ല.';
+
+  @override
+  String get changePasswordTitle => 'പാസ്‌വേഡ് മാറ്റുക';
+
+  @override
+  String get changeSecurityQuestionTitle => 'സുരക്ഷാ ചോദ്യം മാറ്റുക';
+
+  @override
+  String get passwordChanged => 'പാസ്‌വേഡ് മാറ്റി.';
+
+  @override
+  String get securityQuestionSaved => 'സുരക്ഷാ ചോദ്യം സേവ് ചെയ്തു.';
+
+  @override
+  String get saveLabel => 'സേവ് ചെയ്യുക';
 }

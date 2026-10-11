@@ -1,8 +1,6 @@
 {
   "@@locale": "en",
-
   "appTagline": "Voice of the People",
-
   "tabCitizen": "Citizen",
   "tabMpOffice": "Government access",
   "signIn": "Sign In",
@@ -11,22 +9,12 @@
   "password": "Password",
   "couldNotSignInOfficial": "Could not sign in. Check your constituency ID and password.",
   "citizenIntro": "Share a development suggestion or report a civic problem — in your own language, by voice, text or photo.",
-  "welcomeAnonymityNote": "You stay anonymous to other citizens. Your Aadhaar number is never stored. Your MP's office sees aggregated demand, not your identity.",
+  "welcomeAnonymityNote": "You stay anonymous to other citizens. No phone number, email or ID is needed — just a username. Your MP's office sees aggregated demand, not your identity.",
   "newHereSignUp": "New here? Sign Up",
   "alreadyHaveAccountSignIn": "I already have an account — Sign In",
-  "aadhaarPrivacyNote": "Upload a photo of your Aadhaar so we can read your name and address. We keep only your name, address and pincode — the photo and your Aadhaar number are never saved. This is not ID verification; you can also just type your details below.",
-  "aadhaarUploadNote": "Upload photos of your Aadhaar (front and back) so we can read your name and address — the back side often has your full address, so capturing it too gives more accurate results. We keep only your name, address, pincode and ward number — the photos and your Aadhaar number are never saved. This is not ID verification, and both photos are optional — you can always just type your details below.",
-  "slotFront": "Front",
-  "slotBack": "Back",
   "alreadyHaveAccountSignInShort": "Already have an account? Sign In",
-  "aadhaarBackNote": "Tip: capture the BACK of your Aadhaar too — it often has your full address the front leaves out. Both sides are optional.",
   "camera": "Camera",
   "gallery": "Gallery",
-  "extractDetails": "Extract details",
-  "couldNotReadClearly": "Couldn't read that clearly — check the details below or enter them manually.",
-  "couldNotProcessImage": "Couldn't process that image right now — enter your details manually below.",
-  "hideManualEntry": "Hide manual entry",
-  "skipEnterManually": "Skip — I'll enter manually",
   "fullName": "Full name",
   "pincode": "Pincode",
   "wardNumberOptional": "Ward number (optional)",
@@ -34,28 +22,15 @@
   "updateMyLocation": "Update my location",
   "tapMapToAdjust": "Tap the map to adjust your exact location.",
   "continueLabel": "Continue",
-  "verifyWithPhone": "Verify with your phone number",
-  "mobileNumberHint": "10-digit mobile number",
-  "sendCode": "Send code",
-  "sixDigitCode": "6-digit code",
-  "verifyAndContinue": "Verify & continue",
-  "verifyAndSignIn": "Verify & sign in",
-  "enterValidMobile": "Enter a valid 10-digit mobile number.",
-  "codeDidntMatch": "That code didn't match — check it and try again.",
   "couldNotContinue": "Could not continue — check your connection and try again.",
-  "skipStayAnonymous": "Skip — stay anonymous",
   "aggregatedDemandNote": "Whichever way you sign in, your MP's office only ever sees aggregated demand, never your identity.",
-  "welcomeBack": "Welcome back — sign in with the phone number you signed up with.",
-  "noAccountFound": "No account found for this number — please Sign Up first.",
   "dontHaveAccountSignUp": "Don't have an account? Sign Up",
-
   "yourName": "Your name",
   "age": "Age",
   "next": "Next",
   "youAreSetUp": "You're set up",
   "setUpBody": "You can now submit development suggestions and report problems in your area.",
   "enterApp": "Enter app",
-
   "reportByVoice": "Report by Voice",
   "suggestByVoice": "Suggest by Voice",
   "reRecord": "Re-record",
@@ -67,7 +42,6 @@
   "pickCategoryOptional": "Pick a category (optional)",
   "submitReport": "Submit Report",
   "submitSuggestion": "Submit Suggestion",
-
   "newSubmission": "New submission",
   "whatWouldYouLikeToDo": "What would you like to do?",
   "reportAProblem": "Report a problem",
@@ -78,7 +52,6 @@
   "describeTheProblem": "Describe the Problem",
   "suggestionHint": "What development work would help your area? (e.g. A skilling centre near the bus stand)",
   "problemHint": "What's the problem? (e.g. Streetlight not working)",
-
   "addAPhoto": "Add a Photo",
   "captionOptional": "Add a caption (optional)",
   "receiptCopied": "Receipt number copied",
@@ -89,22 +62,69 @@
   "copyReceipt": "Copy receipt",
   "backToHome": "Back to Home",
   "routedTo": "Routed to {constituency}",
-  "@routedTo": { "placeholders": { "constituency": { "type": "String" } } },
+  "@routedTo": {
+    "placeholders": {
+      "constituency": {
+        "type": "String"
+      }
+    }
+  },
   "looksLike": "Looks like: {theme}",
-  "@looksLike": { "placeholders": { "theme": { "type": "String" } } },
+  "@looksLike": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
   "similarOpenProblems": "There are {count} similar open problems in this booth — your report will be added",
-  "@similarOpenProblems": { "placeholders": { "count": { "type": "int" } } },
+  "@similarOpenProblems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "othersAskedToo": "{count} others nearby have asked for this too",
-  "@othersAskedToo": { "placeholders": { "count": { "type": "int" } } },
-
+  "@othersAskedToo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "greetingHi": "Hi, {name}",
-  "@greetingHi": { "placeholders": { "name": { "type": "String" } } },
+  "@greetingHi": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "homeAreaLabel": "Home: {area}",
-  "@homeAreaLabel": { "placeholders": { "area": { "type": "String" } } },
+  "@homeAreaLabel": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
   "boothLabel": "Booth {name}",
-  "@boothLabel": { "placeholders": { "name": { "type": "String" } } },
+  "@boothLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "pincodeLabel": "Pincode {pincode}",
-  "@pincodeLabel": { "placeholders": { "pincode": { "type": "String" } } },
+  "@pincodeLabel": {
+    "placeholders": {
+      "pincode": {
+        "type": "String"
+      }
+    }
+  },
   "myTickets": "My tickets",
   "trendingNearYou": "Trending near you",
   "emptyAreaSuggestions": "Suggestions from your constituency will appear here once your area is confirmed.",
@@ -112,73 +132,91 @@
   "yourRecentReports": "Your recent reports",
   "noSuggestionsYet": "No suggestions yet — be the first to submit one for your area.",
   "supportersCount": "{count} supporters",
-  "@supportersCount": { "placeholders": { "count": { "type": "int" } } },
+  "@supportersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "supported": "Supported",
   "iSupportThis": "I support this",
   "suggestionUpper": "SUGGESTION",
-
   "myTicketsTitle": "My Tickets",
   "pleaseSignIn": "Please sign in",
   "noTicketsYet": "No tickets yet",
   "receiptLabel": "Receipt: {token}",
-  "@receiptLabel": { "placeholders": { "token": { "type": "String" } } },
+  "@receiptLabel": {
+    "placeholders": {
+      "token": {
+        "type": "String"
+      }
+    }
+  },
   "inDevelopmentPlan": "In development plan",
   "underReview": "Under review",
   "ticketNotFound": "Ticket not found",
   "ticketLabel": "Ticket",
   "noDescription": "No description",
   "seeDetails": "See details (transcript/translation)",
-
   "profileTitle": "Profile",
   "citizenDefault": "Citizen",
   "homeConstituency": "Home constituency",
   "notYetMatched": "Not yet matched",
   "homeBooth": "Home booth",
   "preferredLanguage": "Preferred language",
-  "privacyStoreAddress": "We store your address to route your submissions to the right MP. Your 12-digit Aadhaar number is never stored.",
+  "privacyStoreAddress": "We store your home location to route your submissions to the right MP. We never ask for your phone number, email or any ID.",
   "signOutClears": "Sign out (clears this device)",
   "couldNotLoadProfile": "Could not load your profile.",
-
   "statusFiled": "Filed",
   "statusAcknowledged": "Acknowledged",
   "statusInProgress": "In Progress",
   "statusResolved": "Resolved",
-
   "receiptWeGotThis": "We've got this",
-
   "yourAddressStreet": "Your address (street, area)",
   "tapMapToMovePin": "Tap anywhere on the map to move the pin to your exact location",
   "homeAreaWillConfirm": "Home constituency and booth will be confirmed once matched to your area.",
   "homeConstituencyBooth": "Home constituency: {constituency} · Home booth: {booth}",
-  "@homeConstituencyBooth": { "placeholders": { "constituency": { "type": "String" }, "booth": { "type": "String" } } },
+  "@homeConstituencyBooth": {
+    "placeholders": {
+      "constituency": {
+        "type": "String"
+      },
+      "booth": {
+        "type": "String"
+      }
+    }
+  },
   "looksRight": "Looks right",
   "thisIsntMe": "This isn't me",
-
   "pillCurrentLocation": "Current location",
   "pillAtMyHome": "At my home",
   "pillDropPin": "Drop a pin",
   "locationRoutedNote": "Routed to your home MP · pin only sets where this shows on the map.",
   "locationFailPickMap": "Couldn't get your location — pick a spot on the map instead.",
   "locationFailUseHome": "Couldn't get your location — using your home address instead.",
-
   "constituencyDashboard": "Constituency Dashboard",
   "notLinkedConstituency": "Your account isn't linked to a constituency yet.",
   "newThisWeek": "New this week",
   "resolvedRate": "Resolved rate",
   "avgResponseTime": "Avg response time",
   "daysValue": "{value} days",
-  "@daysValue": { "placeholders": { "value": { "type": "String" } } },
+  "@daysValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "constituencyMap": "Constituency Map",
   "openConstituencyMap": "Open constituency map",
   "rankedWorks": "Ranked Works",
   "themesOverview": "Themes Overview",
   "problemReports": "Problem Reports",
-
   "ticketsByTheme": "Tickets by theme",
   "noClusteredTickets": "No clustered tickets yet.",
   "couldNotLoadThemes": "Could not load themes.",
   "weeklyTrend": "Weekly trend",
-
   "boothDemandMap": "Booth-Level Demand Map",
   "noBoothData": "No booth reference data for this constituency yet.",
   "couldNotLoadBooths": "Could not load booths.",
@@ -188,41 +226,98 @@
   "densityLow": "Low / mostly resolved",
   "dotSizeVolume": "Dot size = submission volume",
   "hotspotFlameNote": "🔥 = urgent hotspot",
-
   "searchByTicketId": "Search by ticket ID",
   "selectedCount": "{count} selected",
-  "@selectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "markInProgress": "Mark In Progress",
   "markResolved": "Mark Resolved",
   "noProblemReports": "No problem reports yet.",
   "couldNotLoadTickets": "Could not load tickets.",
-
   "wardConstituency": "Ward · {constituency}",
-  "@wardConstituency": { "placeholders": { "constituency": { "type": "String" } } },
+  "@wardConstituency": {
+    "placeholders": {
+      "constituency": {
+        "type": "String"
+      }
+    }
+  },
   "submissionsCount": "{count} submissions",
-  "@submissionsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@submissionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "otherRecurringThemes": "Other recurring themes here",
   "noOtherThemes": "No other recurring themes clustered here yet.",
   "couldNotLoadClusters": "Could not load clusters.",
   "sampleTickets": "Sample tickets",
   "openCount": "{count} open",
-  "@openCount": { "placeholders": { "count": { "type": "int" } } },
+  "@openCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "whyItRecurs": "WHY IT RECURS",
   "whyHappeningHere": "WHY IT'S HAPPENING HERE",
   "whyRecursBody": "{count} citizens have reported this in {booth}. \"{summary}\"",
-  "@whyRecursBody": { "placeholders": { "count": { "type": "int" }, "booth": { "type": "String" }, "summary": { "type": "String" } } },
+  "@whyRecursBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "booth": {
+        "type": "String"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
   "themeIssuesReportedHere": "{theme} issues reported here",
-  "@themeIssuesReportedHere": { "placeholders": { "theme": { "type": "String" } } },
+  "@themeIssuesReportedHere": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
   "noLocalContext": "No additional local context recorded for this booth yet.",
   "suggestedWork": "Suggested work: {work}",
-  "@suggestedWork": { "placeholders": { "work": { "type": "String" } } },
+  "@suggestedWork": {
+    "placeholders": {
+      "work": {
+        "type": "String"
+      }
+    }
+  },
   "seeInRankedWorks": "See in ranked works",
   "aiGeneratedSummary": "AI-generated summary · via Gemini",
   "priorityValue": "Priority {value}",
-  "@priorityValue": { "placeholders": { "value": { "type": "String" } } },
+  "@priorityValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "ticketsInBooth": "{theme} tickets in this booth",
-  "@ticketsInBooth": { "placeholders": { "theme": { "type": "String" } } },
-
+  "@ticketsInBooth": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
   "rankedDevelopmentWorks": "Ranked Development Works",
   "compare": "Compare",
   "noRankedWorks": "No ranked works yet.",
@@ -235,27 +330,74 @@
   "whyExpand": "+ Why?",
   "hideLabel": "Hide",
   "ticketsShort": "{count} tickets",
-  "@ticketsShort": { "placeholders": { "count": { "type": "int" } } },
+  "@ticketsShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recurringDemand": "{theme} — recurring demand",
-  "@recurringDemand": { "placeholders": { "theme": { "type": "String" } } },
+  "@recurringDemand": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
   "ticketsRecordedHere": "{count} tickets recorded here",
-  "@ticketsRecordedHere": { "placeholders": { "count": { "type": "int" } } },
+  "@ticketsRecordedHere": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "fragDemand": "demand {value}",
-  "@fragDemand": { "placeholders": { "value": { "type": "String" } } },
+  "@fragDemand": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "fragDemographic": "demographic weight {value}",
-  "@fragDemographic": { "placeholders": { "value": { "type": "String" } } },
+  "@fragDemographic": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "fragInfraGap": "infra-gap {value}",
-  "@fragInfraGap": { "placeholders": { "value": { "type": "String" } } },
+  "@fragInfraGap": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "fragAffects": "affects {range}",
-  "@fragAffects": { "placeholders": { "range": { "type": "String" } } },
-
+  "@fragAffects": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
   "compareProposals": "Compare Proposals",
   "needTwoToCompare": "Need at least two ranked works to compare.",
   "couldNotLoadProposals": "Could not load proposals.",
   "proposalA": "Proposal A",
   "proposalB": "Proposal B",
   "recurringDemandShort": "{theme} recurring demand",
-  "@recurringDemandShort": { "placeholders": { "theme": { "type": "String" } } },
+  "@recurringDemandShort": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
   "statCitizenDemand": "Citizen demand",
   "statDemographicWeight": "Demographic weight",
   "statInfraGapWeight": "Infra-gap weight",
@@ -266,26 +408,122 @@
   "briefWhatDataSays": "What the data says",
   "briefWhatDefers": "What each defers",
   "benefitsWithRange": "{name} reaches {range} ({count} tickets recorded).",
-  "@benefitsWithRange": { "placeholders": { "name": { "type": "String" }, "range": { "type": "String" }, "count": { "type": "int" } } },
+  "@benefitsWithRange": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "benefitsNoRange": "{name} has {count} citizen tickets behind it constituency-wide.",
-  "@benefitsNoRange": { "placeholders": { "name": { "type": "String" }, "count": { "type": "int" } } },
+  "@benefitsNoRange": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dataHigherComposite": "{winner} has a higher overall composite score than {loser}.",
-  "@dataHigherComposite": { "placeholders": { "winner": { "type": "String" }, "loser": { "type": "String" } } },
+  "@dataHigherComposite": {
+    "placeholders": {
+      "winner": {
+        "type": "String"
+      },
+      "loser": {
+        "type": "String"
+      }
+    }
+  },
   "dataLeads": "{winner} leads {loser} on {reasons}.",
-  "@dataLeads": { "placeholders": { "winner": { "type": "String" }, "loser": { "type": "String" }, "reasons": { "type": "String" } } },
+  "@dataLeads": {
+    "placeholders": {
+      "winner": {
+        "type": "String"
+      },
+      "loser": {
+        "type": "String"
+      },
+      "reasons": {
+        "type": "String"
+      }
+    }
+  },
   "reasonTickets": "{winnerCount} citizen tickets vs. {loserCount}",
-  "@reasonTickets": { "placeholders": { "winnerCount": { "type": "int" }, "loserCount": { "type": "int" } } },
+  "@reasonTickets": {
+    "placeholders": {
+      "winnerCount": {
+        "type": "int"
+      },
+      "loserCount": {
+        "type": "int"
+      }
+    }
+  },
   "reasonDemographic": "a higher demographic-reach weight ({winner} vs. {loser})",
-  "@reasonDemographic": { "placeholders": { "winner": { "type": "String" }, "loser": { "type": "String" } } },
+  "@reasonDemographic": {
+    "placeholders": {
+      "winner": {
+        "type": "String"
+      },
+      "loser": {
+        "type": "String"
+      }
+    }
+  },
   "reasonInfra": "a larger existing infrastructure gap ({winner} vs. {loser})",
-  "@reasonInfra": { "placeholders": { "winner": { "type": "String" }, "loser": { "type": "String" } } },
+  "@reasonInfra": {
+    "placeholders": {
+      "winner": {
+        "type": "String"
+      },
+      "loser": {
+        "type": "String"
+      }
+    }
+  },
   "defersLine": "{count} tickets for {loser}{rangeSuffix} wait for a later cycle if {winner} is prioritised now.",
-  "@defersLine": { "placeholders": { "count": { "type": "int" }, "loser": { "type": "String" }, "rangeSuffix": { "type": "String" }, "winner": { "type": "String" } } },
+  "@defersLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "loser": {
+        "type": "String"
+      },
+      "rangeSuffix": {
+        "type": "String"
+      },
+      "winner": {
+        "type": "String"
+      }
+    }
+  },
   "recommendationLine": "Recommendation: prioritise {winner} this cycle.",
-  "@recommendationLine": { "placeholders": { "winner": { "type": "String" } } },
+  "@recommendationLine": {
+    "placeholders": {
+      "winner": {
+        "type": "String"
+      }
+    }
+  },
   "yourMp": "Your MP",
   "yourConstituency": "{name} constituency",
-  "@yourConstituency": { "placeholders": { "name": { "type": "String" } } },
+  "@yourConstituency": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "noMpAssignedYet": "MP details aren't available for your area yet",
   "couldNotSubmitTryAgain": "Couldn't submit — please check your connection and try again",
   "generateReport": "Generate constituency report",
@@ -299,24 +537,33 @@
   "emailAddress": "Email address",
   "sendMyCredentials": "Send my credentials",
   "credentialsSentTo": "Credentials sent to {email}",
-  "@credentialsSentTo": { "placeholders": { "email": { "type": "String" } } },
+  "@credentialsSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "checkYourInbox": "Check your inbox (and spam folder) for your login ID and password.",
   "backToSignIn": "Back to sign in",
-  "aadhaarErrorAuthUnavailable": "Sign-in isn't available right now, so we couldn't run the reader. You can still type your details below.",
-  "aadhaarErrorNotSignedIn": "Your session expired. Please try again, or type your details below.",
-  "aadhaarErrorImageTooLarge": "That photo is too large to process. Try a closer, smaller shot of the card.",
-  "aadhaarErrorUnreadable": "We couldn't read that card. Try better lighting and a flat, glare-free shot — or type your details below.",
-  "aadhaarErrorModelBusy": "Our reader is busy right now. Try again in a moment, or type your details below.",
-  "aadhaarErrorNetwork": "We couldn't reach the network. Check your connection and try again, or type your details below.",
-  "aadhaarErrorUnknown": "Something went wrong reading the card. You can type your details below instead.",
-  "aadhaarPartialExtracted": "We read part of your card. Please check the details below and fill in anything missing.",
-  "aadhaarBackImageSkippedTooLarge": "The back photo was too large, so we read the front only. Please check the address below.",
   "mapLayerFailed": "Couldn't load part of the map. Some wards, booths or hotspots may be missing.",
   "mapRetry": "Retry",
   "hotspotsShownCount": "{count} hotspots",
-  "@hotspotsShownCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsShownCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotsOffMapCount": "· {count} off-map",
-  "@hotspotsOffMapCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsOffMapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotClusterSheetTitle": "HOTSPOT",
   "publicDashboardTitle": "Public dashboard",
   "exploreYourArea": "Explore your area",
@@ -373,24 +620,72 @@
   "agentResponse": "Raw response",
   "agentError": "Error",
   "agentFellBackNote": "These agents did not complete and used a fallback: {agents}. Treat the affected sections as placeholders, not findings.",
-  "@agentFellBackNote": {"placeholders": {"agents": {"type": "String"}}},
+  "@agentFellBackNote": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      }
+    }
+  },
   "agentAttempts": "{count} attempts",
-  "@agentAttempts": {"placeholders": {"count": {"type": "int"}}},
+  "@agentAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportsFromResidents": "{reports} reports from {residents} residents",
-  "@reportsFromResidents": {"placeholders": {"reports": {"type": "int"}, "residents": {"type": "int"}}},
+  "@reportsFromResidents": {
+    "placeholders": {
+      "reports": {
+        "type": "int"
+      },
+      "residents": {
+        "type": "int"
+      }
+    }
+  },
   "weeksRange": "{min}–{max} weeks",
-  "@weeksRange": {"placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}},
+  "@weeksRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "householdsAddressed": "~{count} households",
-  "@householdsAddressed": {"placeholders": {"count": {"type": "int"}}},
+  "@householdsAddressed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "routedToDepartment": "Routed to",
   "yourCivicActivity": "Your civic activity",
   "activeWeeksStreak": "Active weeks",
   "longestStreak": "Longest streak",
   "levelMaxReached": "Top level reached",
   "reportsToNextLevel": "{count} more to next level",
-  "@reportsToNextLevel": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsToNextLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "levelLabel": "Level {level}",
-  "@levelLabel": {"placeholders": {"level": {"type": "int"}}},
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "badgeFirstReport": "First report",
   "badgeWeekStreak": "2-week streak",
   "badgeMonthActive": "Month active",
@@ -404,12 +699,72 @@
   "seePublicDashboard": "See your area's public dashboard",
   "liveLabel": "Live",
   "reportsNearYouThisWeek": "{count} reports near you this week",
-  "@reportsNearYouThisWeek": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsNearYouThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "beTheFirstThisWeek": "Be the first to report this week",
   "topHotspots": "Top hotspots",
   "latestSolutions": "Latest solutions",
   "noTrackedIssuesYet": "No issues tracked yet for this area.",
   "reportsCountShort": "{count} reports",
-  "@reportsCountShort": {"placeholders": {"count": {"type": "int"}}},
-  "hasSolutionLabel": "Solution ready"
+  "@reportsCountShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hasSolutionLabel": "Solution ready",
+  "openInGoogleMaps": "Directions in Google Maps",
+  "openInGoogleMapsApprox": "Directions to this area (Google Maps)",
+  "couldNotOpenMaps": "Couldn't open Google Maps on this device.",
+  "usernameLabel": "Username",
+  "usernameHelper": "4–20 letters, numbers, _ or .",
+  "usernameTooShort": "Username must be at least 4 characters.",
+  "usernameTooLong": "Username can be at most 20 characters.",
+  "usernameBadCharacters": "Use only letters, numbers, _ and . (no spaces).",
+  "usernameAvailable": "Username is available",
+  "usernameTaken": "That username is already taken. Try another.",
+  "confirmPasswordLabel": "Confirm password",
+  "newPasswordLabel": "New password",
+  "currentPasswordLabel": "Current password",
+  "passwordTooShort": "Password must be at least 6 characters.",
+  "passwordsDontMatch": "Passwords don't match.",
+  "authWrongCredentials": "Wrong username or password.",
+  "authTooManyAttempts": "Too many tries. Please wait a few minutes and try again.",
+  "authNetworkError": "No internet connection. Check your network and try again.",
+  "nameRequired": "Please enter your name.",
+  "createAccountTitle": "Create your account",
+  "createAccountSubtitle": "Just a username and password — no phone number, email or ID needed.",
+  "createAccountButton": "Create account",
+  "welcomeBackTitle": "Welcome back",
+  "signInSubtitle": "Sign in with your username and password.",
+  "forgotPasswordLink": "Forgot password?",
+  "securityQuestionIntro": "Pick a security question. If you ever forget your password, answering it lets you set a new one.",
+  "securityQuestionLabel": "Security question",
+  "securityAnswerLabel": "Your answer",
+  "securityAnswerHelper": "Remember this answer. Capital letters don't matter.",
+  "securityAnswerRequired": "Please enter an answer.",
+  "securityQuestionFirstSchool": "What was the name of your first school?",
+  "securityQuestionMotherBirthplace": "In which town or village was your mother born?",
+  "securityQuestionFavouriteFood": "What is your favourite food?",
+  "securityQuestionChildhoodFriend": "What is the name of your childhood best friend?",
+  "securityQuestionFirstVehicle": "What was your first bicycle or vehicle?",
+  "forgotPasswordTitle": "Reset your password",
+  "forgotPasswordStep1": "Enter your username to find your account.",
+  "forgotPasswordStep2": "Answer your security question and choose a new password.",
+  "passwordResetDone": "Your password has been changed. Sign in with the new password.",
+  "resetPasswordButton": "Set new password",
+  "recoveryNotMatched": "That answer didn't match. Check it and try again.",
+  "recoveryLocked": "Too many wrong answers. Password reset is locked for 15 minutes.",
+  "recoveryNoQuestion": "We couldn't find a security question for that username.",
+  "changePasswordTitle": "Change password",
+  "changeSecurityQuestionTitle": "Change security question",
+  "passwordChanged": "Password changed.",
+  "securityQuestionSaved": "Security question saved.",
+  "saveLabel": "Save"
 }

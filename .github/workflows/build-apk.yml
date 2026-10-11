@@ -6,7 +6,7 @@ name: Build Android APK
 # straight from Firebase, no GitHub Release/download link needed.
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/**']
   workflow_dispatch: {}
 
 permissions:
@@ -37,77 +37,11 @@ jobs:
       - name: Generate Android platform folder
         run: flutter create . --platforms=android --project-name praja_dhvani
 
-      # Forces applicationId/namespace to com.prajadhvani.app (matching
-      # firebase_options.dart) AND relocates MainActivity.kt to the
-      # matching package path — AGP requires the two to agree, and
-      # whatever org/name `flutter create` inferred from the existing
-      # pubspec.yaml won't match by default.
-      - name: Set the real application ID (com.prajadhvani.app)
-        run: |
-          python3 - <<'PY'
-          import pathlib
-          import re
-
-          target = "com.prajadhvani.app"
-
-          for name in ("build.gradle", "build.gradle.kts"):
-              path = pathlib.Path("android/app") / name
-              if not path.exists():
-                  continue
-              text = path.read_text(encoding="utf-8")
-              text = re.sub(r'applicationId\s*=?\s*"[^"]*"', f'applicationId = "{target}"', text)
-              text = re.sub(r'namespace\s*=?\s*"[^"]*"', f'namespace = "{target}"', text)
-              path.write_text(text, encoding="utf-8")
-
-          for lang, ext in (("kotlin", "kt"), ("java", "java")):
-              base = pathlib.Path("android/app/src/main") / lang
-              if not base.exists():
-                  continue
-              matches = list(base.rglob(f"MainActivity.{ext}"))
-              if not matches:
-                  continue
-              old_file = matches[0]
-              new_dir = base / pathlib.Path(*target.split("."))
-              new_dir.mkdir(parents=True, exist_ok=True)
-              new_file = new_dir / old_file.name
-              text = old_file.read_text(encoding="utf-8")
-              text = re.sub(r"^package .*$", f"package {target}", text, count=1, flags=re.MULTILINE)
-              new_file.write_text(text, encoding="utf-8")
-              if old_file != new_file:
-                  old_file.unlink()
-          PY
-
-      - name: Install the real Firebase Android config
-        run: cp firebase_config/google-services.json android/app/google-services.json
-
-      # image_picker (camera/gallery) and record (microphone) need runtime
-      # permissions declared — flutter create's default manifest doesn't
-      # include them, and this isn't committed anywhere else since android/
-      # itself isn't committed.
-      - name: Add required Android permissions
-        run: |
-          python3 - <<'PY'
-          path = "android/app/src/main/AndroidManifest.xml"
-          with open(path, "r", encoding="utf-8") as f:
-              content = f.read()
-          permissions = "\n".join(
-              f'    <uses-permission android:name="android.permission.{p}" />'
-              for p in [
-                  "INTERNET",
-                  "CAMERA",
-                  "RECORD_AUDIO",
-                  "READ_MEDIA_IMAGES",
-                  "READ_EXTERNAL_STORAGE",
-                  "ACCESS_FINE_LOCATION",
-                  "ACCESS_COARSE_LOCATION",
-              ]
-          )
-          marker = "<application"
-          if "android.permission.CAMERA" not in content:
-              content = content.replace(marker, permissions + "\n\n    " + marker, 1)
-          with open(path, "w", encoding="utf-8") as f:
-              f.write(content)
-          PY
+      # App id com.prajadhvani.app, Firebase config, runtime permissions,
+      # https <queries> (for "Open in Google Maps") and the launcher label —
+      # all in one script so local builds get exactly the same android/.
+      - name: Prepare the Android platform folder
+        run: python3 tool/prepare_android.py
 
       - name: Install dependencies
         run: flutter pub get

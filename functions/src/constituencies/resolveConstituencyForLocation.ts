@@ -2,7 +2,8 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {REGION} from "../config";
 import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {resolveTalukForPoint} from "../lib/talukGeo";
-import {resolveWardForPoint, wardDocId} from "../lib/wardGeo";
+import {resolveBbmpWardForPoint} from "../lib/bbmpWardGeo";
+import {resolveWardForPoint} from "../lib/wardGeo";
 
 interface Request {
   lat: number;
@@ -38,6 +39,7 @@ export const resolveConstituencyForLocation = onCall(
     const constituency = resolveConstituencyForPoint(data.lat, data.lng);
     const taluk = resolveTalukForPoint(data.lat, data.lng);
     const ward = resolveWardForPoint(data.lat, data.lng);
+    const bbmpWard = resolveBbmpWardForPoint(data.lat, data.lng);
 
     return {
       constituencyId: constituency?.constituencyId ?? null,
@@ -47,8 +49,10 @@ export const resolveConstituencyForLocation = onCall(
       districtName: taluk?.districtName ?? null,
       talukId: taluk?.talukId ?? null,
       talukName: taluk?.talukName ?? null,
-      wardId: ward ? wardDocId(ward.corporation, ward.wardId) : null,
+      wardId: ward?.wardId ?? null,
       wardName: ward?.wardName ?? null,
+      bbmpWardId: bbmpWard?.wardId ?? null,
+      bbmpWardName: bbmpWard?.wardName ?? null,
     };
   },
 );

@@ -5,6 +5,7 @@ import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
 import {resolveTalukForPoint} from "../lib/talukGeo";
+import {resolveBbmpWardForPoint} from "../lib/bbmpWardGeo";
 import {resolveWardForPoint} from "../lib/wardGeo";
 import {
   AggregateInput,
@@ -167,6 +168,7 @@ export const onSubmissionCreated = onDocumentCreated(
     const lng: number | undefined = submission.location?.lng;
     let wardId: string | undefined = submission.location?.wardId;
     let talukId: string | undefined = submission.location?.talukId;
+    let bbmpWardId: string | undefined = submission.location?.bbmpWardId;
     if (typeof lat === "number" && typeof lng === "number") {
       const resolved = resolveConstituencyForPoint(lat, lng);
       if (resolved && resolved.constituencyId !== constituencyId) {
@@ -184,6 +186,13 @@ export const onSubmissionCreated = onDocumentCreated(
       // just "Bengaluru North/South/etc" from the same KGIS dataset), so
       // both are stored whenever available rather than one excluding the
       // other.
+      // Second ward layer: the 198 BBMP wards, stored alongside (never
+      // instead of) the GBA `wardId` so either map layer can roll it up.
+      const resolvedBbmp = resolveBbmpWardForPoint(lat, lng);
+      if (resolvedBbmp && resolvedBbmp.wardId !== bbmpWardId) {
+        bbmpWardId = resolvedBbmp.wardId;
+        patch["location.bbmpWardId"] = resolvedBbmp.wardId;
+      }
       const resolvedTaluk = resolveTalukForPoint(lat, lng);
       if (resolvedTaluk && resolvedTaluk.talukId !== talukId) {
         talukId = resolvedTaluk.talukId;
@@ -211,6 +220,7 @@ export const onSubmissionCreated = onDocumentCreated(
           createdAtRaw.toDate() :
           new Date(),
       wardId: wardId ?? null,
+      bbmpWardId: bbmpWardId ?? null,
       talukId: talukId ?? null,
       lat: typeof lat === "number" ? lat : null,
       lng: typeof lng === "number" ? lng : null,

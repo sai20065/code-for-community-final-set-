@@ -9,22 +9,12 @@
   "password": "পাসওয়ার্ড",
   "couldNotSignInOfficial": "সাইন ইন করা যায়নি। আপনার নির্বাচনী এলাকার আইডি এবং পাসওয়ার্ড যাচাই করুন।",
   "citizenIntro": "উন্নয়নের কোনো পরামর্শ দিন অথবা নাগরিক সমস্যার কথা জানান — আপনার নিজের ভাষায়, ভয়েস, টেক্সট বা ছবির মাধ্যমে।",
-  "welcomeAnonymityNote": "অন্যান্য নাগরিকদের কাছে আপনি অজ্ঞাত থাকেন। আপনার আধার নম্বর কখনও সংরক্ষণ করা হয় না। আপনার এমপির কার্যালয় সামগ্রিক চাহিদা দেখে, আপনার পরিচয় নয়।",
+  "welcomeAnonymityNote": "অন্য নাগরিকদের কাছে আপনি বেনামী থাকবেন। ফোন নম্বর, ইমেল বা পরিচয়পত্র লাগবে না — শুধু একটি ইউজারনেম। আপনার সাংসদের দপ্তর সম্মিলিত চাহিদা দেখে, আপনার পরিচয় নয়।",
   "newHereSignUp": "এখানে নতুন? সাইন আপ করুন",
   "alreadyHaveAccountSignIn": "আমার ইতিমধ্যেই একটি অ্যাকাউন্ট আছে — সাইন ইন করুন",
-  "aadhaarPrivacyNote": "আপনার নাম ও ঠিকানা পড়ার জন্য আপনার আধার কার্ডের একটি ছবি আপলোড করুন। আমরা শুধু আপনার নাম, ঠিকানা এবং পিনকোড রাখি — ছবি এবং আপনার আধার নম্বর কখনও সংরক্ষণ করা হয় না। এটি পরিচয় যাচাইকরণ নয়; আপনি চাইলে নিচে আপনার বিবরণ টাইপও করতে পারেন।",
-  "aadhaarUploadNote": "আপনার আধার কার্ডের (সামনে ও পেছনে) ছবি আপলোড করুন যাতে আমরা আপনার নাম ও ঠিকানা পড়তে পারি — পেছনের দিকে প্রায়শই আপনার সম্পূর্ণ ঠিকানা থাকে, তাই সেটির ছবিও তুললে আরও সঠিক ফলাফল পাওয়া যায়। আমরা শুধুমাত্র আপনার নাম, ঠিকানা, পিনকোড এবং ওয়ার্ড নম্বর রাখি — ছবি এবং আপনার আধার নম্বর কখনও সংরক্ষণ করা হয় না। এটি পরিচয় যাচাইকরণ নয়, এবং দুটি ছবিই ঐচ্ছিক — আপনি চাইলে নিচে আপনার বিবরণ টাইপও করতে পারেন।",
-  "slotFront": "সামনে",
-  "slotBack": "ফিরে যান",
   "alreadyHaveAccountSignInShort": "আপনার কি আগে থেকেই অ্যাকাউন্ট আছে? সাইন ইন করুন",
-  "aadhaarBackNote": "পরামর্শ: আপনার আধার কার্ডের পিছনের দিকের ছবিও তুলে রাখুন — এতে প্রায়শই আপনার সম্পূর্ণ ঠিকানা লেখা থাকে, যা সামনের দিকে থাকে না। উভয় দিকের ছবি তোলা ঐচ্ছিক।",
   "camera": "ক্যামেরা",
   "gallery": "গ্যালারি",
-  "extractDetails": "বিস্তারিত তথ্য বের করুন",
-  "couldNotReadClearly": "বিষয়টি স্পষ্টভাবে পড়তে পারিনি — নিচের বিবরণগুলো দেখুন অথবা নিজে হাতে লিখুন।",
-  "couldNotProcessImage": "এই মুহূর্তে ছবিটি প্রসেস করা যাচ্ছে না — নিচে আপনার বিবরণ ম্যানুয়ালি প্রবেশ করান।",
-  "hideManualEntry": "ম্যানুয়াল এন্ট্রি লুকান",
-  "skipEnterManually": "এড়িয়ে যান — আমি নিজে প্রবেশ করাবো",
   "fullName": "পুরো নাম",
   "pincode": "পিনকোড",
   "wardNumberOptional": "ওয়ার্ড নম্বর (ঐচ্ছিক)",
@@ -32,19 +22,8 @@
   "updateMyLocation": "আমার অবস্থান আপডেট করুন",
   "tapMapToAdjust": "আপনার সঠিক অবস্থান ঠিক করতে মানচিত্রটিতে ট্যাপ করুন।",
   "continueLabel": "চালিয়ে যান",
-  "verifyWithPhone": "আপনার ফোন নম্বর দিয়ে যাচাই করুন",
-  "mobileNumberHint": "১০-সংখ্যার মোবাইল নম্বর",
-  "sendCode": "কোড পাঠান",
-  "sixDigitCode": "৬-সংখ্যার কোড",
-  "verifyAndContinue": "যাচাই করুন এবং চালিয়ে যান",
-  "verifyAndSignIn": "যাচাই করুন এবং সাইন ইন করুন",
-  "enterValidMobile": "একটি বৈধ ১০-সংখ্যার মোবাইল নম্বর প্রবেশ করান।",
-  "codeDidntMatch": "ওই কোডটি মেলেনি — এটি যাচাই করে আবার চেষ্টা করুন।",
   "couldNotContinue": "চালিয়ে যাওয়া সম্ভব হয়নি — আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
-  "skipStayAnonymous": "এড়িয়ে যান — পরিচয় গোপন রাখুন",
   "aggregatedDemandNote": "আপনি যেভাবেই সাইন ইন করুন না কেন, আপনার এমপির কার্যালয় শুধুমাত্র মোট চাহিদাই দেখতে পায়, আপনার পরিচয় কখনোই নয়।",
-  "welcomeBack": "পুনরায় স্বাগতম — আপনি যে ফোন নম্বরটি দিয়ে সাইন আপ করেছিলেন, সেটি দিয়ে সাইন ইন করুন।",
-  "noAccountFound": "এই নম্বরের জন্য কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি — অনুগ্রহ করে প্রথমে সাইন আপ করুন।",
   "dontHaveAccountSignUp": "অ্যাকাউন্ট নেই? সাইন আপ করুন",
   "yourName": "আপনার নাম",
   "age": "বয়স",
@@ -116,7 +95,7 @@
   "notYetMatched": "এখনো মেলানো হয়নি",
   "homeBooth": "হোম বুথ",
   "preferredLanguage": "পছন্দের ভাষা",
-  "privacyStoreAddress": "আপনার আবেদনপত্র সঠিক সাংসদের কাছে পৌঁছে দেওয়ার জন্য আমরা আপনার ঠিকানা সংরক্ষণ করি। আপনার ১২-সংখ্যার আধার নম্বর কখনোই সংরক্ষণ করা হয় না।",
+  "privacyStoreAddress": "আপনার অভিযোগ সঠিক সাংসদের কাছে পাঠাতে আমরা আপনার বাড়ির অবস্থান সংরক্ষণ করি। আমরা কখনো ফোন নম্বর, ইমেল বা কোনো পরিচয়পত্র চাই না।",
   "signOutClears": "সাইন আউট (এই ডিভাইসটি মুছে ফেলবে)",
   "couldNotLoadProfile": "আপনার প্রোফাইল লোড করা যায়নি।",
   "statusFiled": "দাখিল করা হয়েছে",
@@ -242,21 +221,24 @@
   "credentialsSentTo": "পরিচয়পত্র {email} এ পাঠানো হয়েছে",
   "checkYourInbox": "আপনার লগইন আইডি এবং পাসওয়ার্ডের জন্য আপনার ইনবক্স (এবং স্প্যাম ফোল্ডার) পরীক্ষা করুন।",
   "backToSignIn": "সাইন ইনে ফিরে যান",
-  "aadhaarErrorAuthUnavailable": "Sign-in isn't available right now, so we couldn't run the reader. You can still type your details below.",
-  "aadhaarErrorNotSignedIn": "Your session expired. Please try again, or type your details below.",
-  "aadhaarErrorImageTooLarge": "That photo is too large to process. Try a closer, smaller shot of the card.",
-  "aadhaarErrorUnreadable": "We couldn't read that card. Try better lighting and a flat, glare-free shot — or type your details below.",
-  "aadhaarErrorModelBusy": "Our reader is busy right now. Try again in a moment, or type your details below.",
-  "aadhaarErrorNetwork": "We couldn't reach the network. Check your connection and try again, or type your details below.",
-  "aadhaarErrorUnknown": "Something went wrong reading the card. You can type your details below instead.",
-  "aadhaarPartialExtracted": "We read part of your card. Please check the details below and fill in anything missing.",
-  "aadhaarBackImageSkippedTooLarge": "The back photo was too large, so we read the front only. Please check the address below.",
   "mapLayerFailed": "Couldn't load part of the map. Some wards, booths or hotspots may be missing.",
   "mapRetry": "Retry",
   "hotspotsShownCount": "{count} hotspots",
-  "@hotspotsShownCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsShownCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotsOffMapCount": "· {count} off-map",
-  "@hotspotsOffMapCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsOffMapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotClusterSheetTitle": "HOTSPOT",
   "publicDashboardTitle": "Public dashboard",
   "exploreYourArea": "Explore your area",
@@ -313,24 +295,72 @@
   "agentResponse": "Raw response",
   "agentError": "Error",
   "agentFellBackNote": "These agents did not complete and used a fallback: {agents}. Treat the affected sections as placeholders, not findings.",
-  "@agentFellBackNote": {"placeholders": {"agents": {"type": "String"}}},
+  "@agentFellBackNote": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      }
+    }
+  },
   "agentAttempts": "{count} attempts",
-  "@agentAttempts": {"placeholders": {"count": {"type": "int"}}},
+  "@agentAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportsFromResidents": "{reports} reports from {residents} residents",
-  "@reportsFromResidents": {"placeholders": {"reports": {"type": "int"}, "residents": {"type": "int"}}},
+  "@reportsFromResidents": {
+    "placeholders": {
+      "reports": {
+        "type": "int"
+      },
+      "residents": {
+        "type": "int"
+      }
+    }
+  },
   "weeksRange": "{min}–{max} weeks",
-  "@weeksRange": {"placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}},
+  "@weeksRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "householdsAddressed": "~{count} households",
-  "@householdsAddressed": {"placeholders": {"count": {"type": "int"}}},
+  "@householdsAddressed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "routedToDepartment": "Routed to",
   "yourCivicActivity": "Your civic activity",
   "activeWeeksStreak": "Active weeks",
   "longestStreak": "Longest streak",
   "levelMaxReached": "Top level reached",
   "reportsToNextLevel": "{count} more to next level",
-  "@reportsToNextLevel": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsToNextLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "levelLabel": "Level {level}",
-  "@levelLabel": {"placeholders": {"level": {"type": "int"}}},
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "badgeFirstReport": "First report",
   "badgeWeekStreak": "2-week streak",
   "badgeMonthActive": "Month active",
@@ -344,12 +374,72 @@
   "seePublicDashboard": "See your area's public dashboard",
   "liveLabel": "Live",
   "reportsNearYouThisWeek": "{count} reports near you this week",
-  "@reportsNearYouThisWeek": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsNearYouThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "beTheFirstThisWeek": "Be the first to report this week",
   "topHotspots": "Top hotspots",
   "latestSolutions": "Latest solutions",
   "noTrackedIssuesYet": "No issues tracked yet for this area.",
   "reportsCountShort": "{count} reports",
-  "@reportsCountShort": {"placeholders": {"count": {"type": "int"}}},
-  "hasSolutionLabel": "Solution ready"
+  "@reportsCountShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hasSolutionLabel": "Solution ready",
+  "openInGoogleMaps": "Google Maps-এ পথ দেখুন",
+  "openInGoogleMapsApprox": "এই এলাকার পথ (Google Maps)",
+  "couldNotOpenMaps": "এই ডিভাইসে Google Maps খোলা যায়নি।",
+  "usernameLabel": "ইউজারনেম",
+  "usernameHelper": "৪–২০টি অক্ষর, সংখ্যা, _ বা .",
+  "usernameTooShort": "ইউজারনেম কমপক্ষে ৪ অক্ষরের হতে হবে।",
+  "usernameTooLong": "ইউজারনেম সর্বোচ্চ ২০ অক্ষরের হতে পারে।",
+  "usernameBadCharacters": "শুধু অক্ষর, সংখ্যা, _ এবং . ব্যবহার করুন (স্পেস নয়)।",
+  "usernameAvailable": "ইউজারনেম পাওয়া যাচ্ছে",
+  "usernameTaken": "এই ইউজারনেম আগেই নেওয়া হয়েছে। অন্য একটি চেষ্টা করুন।",
+  "confirmPasswordLabel": "পাসওয়ার্ড নিশ্চিত করুন",
+  "newPasswordLabel": "নতুন পাসওয়ার্ড",
+  "currentPasswordLabel": "বর্তমান পাসওয়ার্ড",
+  "passwordTooShort": "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।",
+  "passwordsDontMatch": "পাসওয়ার্ড মিলছে না।",
+  "authWrongCredentials": "ইউজারনেম বা পাসওয়ার্ড ভুল।",
+  "authTooManyAttempts": "অনেকবার চেষ্টা হয়েছে। কয়েক মিনিট পরে আবার চেষ্টা করুন।",
+  "authNetworkError": "ইন্টারনেট সংযোগ নেই। নেটওয়ার্ক দেখে আবার চেষ্টা করুন।",
+  "nameRequired": "অনুগ্রহ করে আপনার নাম লিখুন।",
+  "createAccountTitle": "আপনার অ্যাকাউন্ট তৈরি করুন",
+  "createAccountSubtitle": "শুধু ইউজারনেম আর পাসওয়ার্ড — ফোন নম্বর, ইমেল বা পরিচয়পত্র লাগবে না।",
+  "createAccountButton": "অ্যাকাউন্ট তৈরি করুন",
+  "welcomeBackTitle": "আবার স্বাগতম",
+  "signInSubtitle": "আপনার ইউজারনেম ও পাসওয়ার্ড দিয়ে সাইন ইন করুন।",
+  "forgotPasswordLink": "পাসওয়ার্ড ভুলে গেছেন?",
+  "securityQuestionIntro": "একটি নিরাপত্তা প্রশ্ন বেছে নিন। পাসওয়ার্ড ভুলে গেলে এর উত্তর দিয়ে নতুন পাসওয়ার্ড সেট করতে পারবেন।",
+  "securityQuestionLabel": "নিরাপত্তা প্রশ্ন",
+  "securityAnswerLabel": "আপনার উত্তর",
+  "securityAnswerHelper": "এই উত্তর মনে রাখুন। বড়/ছোট হাতের অক্ষরে কিছু যায় আসে না।",
+  "securityAnswerRequired": "অনুগ্রহ করে উত্তর লিখুন।",
+  "securityQuestionFirstSchool": "আপনার প্রথম স্কুলের নাম কী ছিল?",
+  "securityQuestionMotherBirthplace": "আপনার মা কোন শহর বা গ্রামে জন্মেছিলেন?",
+  "securityQuestionFavouriteFood": "আপনার প্রিয় খাবার কী?",
+  "securityQuestionChildhoodFriend": "আপনার ছোটবেলার সবচেয়ে কাছের বন্ধুর নাম কী?",
+  "securityQuestionFirstVehicle": "আপনার প্রথম সাইকেল বা গাড়ি কী ছিল?",
+  "forgotPasswordTitle": "পাসওয়ার্ড রিসেট করুন",
+  "forgotPasswordStep1": "আপনার অ্যাকাউন্ট খুঁজতে ইউজারনেম লিখুন।",
+  "forgotPasswordStep2": "নিরাপত্তা প্রশ্নের উত্তর দিন এবং নতুন পাসওয়ার্ড বেছে নিন।",
+  "passwordResetDone": "আপনার পাসওয়ার্ড পরিবর্তিত হয়েছে। নতুন পাসওয়ার্ড দিয়ে সাইন ইন করুন।",
+  "resetPasswordButton": "নতুন পাসওয়ার্ড সেট করুন",
+  "recoveryNotMatched": "উত্তর মেলেনি। দেখে আবার চেষ্টা করুন।",
+  "recoveryLocked": "অনেক ভুল উত্তর। পাসওয়ার্ড রিসেট ১৫ মিনিটের জন্য বন্ধ।",
+  "recoveryNoQuestion": "এই ইউজারনেমের জন্য কোনো নিরাপত্তা প্রশ্ন পাওয়া যায়নি।",
+  "changePasswordTitle": "পাসওয়ার্ড বদলান",
+  "changeSecurityQuestionTitle": "নিরাপত্তা প্রশ্ন বদলান",
+  "passwordChanged": "পাসওয়ার্ড বদলানো হয়েছে।",
+  "securityQuestionSaved": "নিরাপত্তা প্রশ্ন সংরক্ষিত হয়েছে।",
+  "saveLabel": "সংরক্ষণ করুন"
 }

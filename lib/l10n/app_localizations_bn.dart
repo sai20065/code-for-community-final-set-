@@ -39,7 +39,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'অন্যান্য নাগরিকদের কাছে আপনি অজ্ঞাত থাকেন। আপনার আধার নম্বর কখনও সংরক্ষণ করা হয় না। আপনার এমপির কার্যালয় সামগ্রিক চাহিদা দেখে, আপনার পরিচয় নয়।';
+      'অন্য নাগরিকদের কাছে আপনি বেনামী থাকবেন। ফোন নম্বর, ইমেল বা পরিচয়পত্র লাগবে না — শুধু একটি ইউজারনেম। আপনার সাংসদের দপ্তর সম্মিলিত চাহিদা দেখে, আপনার পরিচয় নয়।';
 
   @override
   String get newHereSignUp => 'এখানে নতুন? সাইন আপ করুন';
@@ -49,49 +49,14 @@ class AppLocalizationsBn extends AppLocalizations {
       'আমার ইতিমধ্যেই একটি অ্যাকাউন্ট আছে — সাইন ইন করুন';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'আপনার নাম ও ঠিকানা পড়ার জন্য আপনার আধার কার্ডের একটি ছবি আপলোড করুন। আমরা শুধু আপনার নাম, ঠিকানা এবং পিনকোড রাখি — ছবি এবং আপনার আধার নম্বর কখনও সংরক্ষণ করা হয় না। এটি পরিচয় যাচাইকরণ নয়; আপনি চাইলে নিচে আপনার বিবরণ টাইপও করতে পারেন।';
-
-  @override
-  String get aadhaarUploadNote =>
-      'আপনার আধার কার্ডের (সামনে ও পেছনে) ছবি আপলোড করুন যাতে আমরা আপনার নাম ও ঠিকানা পড়তে পারি — পেছনের দিকে প্রায়শই আপনার সম্পূর্ণ ঠিকানা থাকে, তাই সেটির ছবিও তুললে আরও সঠিক ফলাফল পাওয়া যায়। আমরা শুধুমাত্র আপনার নাম, ঠিকানা, পিনকোড এবং ওয়ার্ড নম্বর রাখি — ছবি এবং আপনার আধার নম্বর কখনও সংরক্ষণ করা হয় না। এটি পরিচয় যাচাইকরণ নয়, এবং দুটি ছবিই ঐচ্ছিক — আপনি চাইলে নিচে আপনার বিবরণ টাইপও করতে পারেন।';
-
-  @override
-  String get slotFront => 'সামনে';
-
-  @override
-  String get slotBack => 'ফিরে যান';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'আপনার কি আগে থেকেই অ্যাকাউন্ট আছে? সাইন ইন করুন';
-
-  @override
-  String get aadhaarBackNote =>
-      'পরামর্শ: আপনার আধার কার্ডের পিছনের দিকের ছবিও তুলে রাখুন — এতে প্রায়শই আপনার সম্পূর্ণ ঠিকানা লেখা থাকে, যা সামনের দিকে থাকে না। উভয় দিকের ছবি তোলা ঐচ্ছিক।';
 
   @override
   String get camera => 'ক্যামেরা';
 
   @override
   String get gallery => 'গ্যালারি';
-
-  @override
-  String get extractDetails => 'বিস্তারিত তথ্য বের করুন';
-
-  @override
-  String get couldNotReadClearly =>
-      'বিষয়টি স্পষ্টভাবে পড়তে পারিনি — নিচের বিবরণগুলো দেখুন অথবা নিজে হাতে লিখুন।';
-
-  @override
-  String get couldNotProcessImage =>
-      'এই মুহূর্তে ছবিটি প্রসেস করা যাচ্ছে না — নিচে আপনার বিবরণ ম্যানুয়ালি প্রবেশ করান।';
-
-  @override
-  String get hideManualEntry => 'ম্যানুয়াল এন্ট্রি লুকান';
-
-  @override
-  String get skipEnterManually => 'এড়িয়ে যান — আমি নিজে প্রবেশ করাবো';
 
   @override
   String get fullName => 'পুরো নাম';
@@ -116,49 +81,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get continueLabel => 'চালিয়ে যান';
 
   @override
-  String get verifyWithPhone => 'আপনার ফোন নম্বর দিয়ে যাচাই করুন';
-
-  @override
-  String get mobileNumberHint => '১০-সংখ্যার মোবাইল নম্বর';
-
-  @override
-  String get sendCode => 'কোড পাঠান';
-
-  @override
-  String get sixDigitCode => '৬-সংখ্যার কোড';
-
-  @override
-  String get verifyAndContinue => 'যাচাই করুন এবং চালিয়ে যান';
-
-  @override
-  String get verifyAndSignIn => 'যাচাই করুন এবং সাইন ইন করুন';
-
-  @override
-  String get enterValidMobile =>
-      'একটি বৈধ ১০-সংখ্যার মোবাইল নম্বর প্রবেশ করান।';
-
-  @override
-  String get codeDidntMatch =>
-      'ওই কোডটি মেলেনি — এটি যাচাই করে আবার চেষ্টা করুন।';
-
-  @override
   String get couldNotContinue =>
       'চালিয়ে যাওয়া সম্ভব হয়নি — আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
 
   @override
-  String get skipStayAnonymous => 'এড়িয়ে যান — পরিচয় গোপন রাখুন';
-
-  @override
   String get aggregatedDemandNote =>
       'আপনি যেভাবেই সাইন ইন করুন না কেন, আপনার এমপির কার্যালয় শুধুমাত্র মোট চাহিদাই দেখতে পায়, আপনার পরিচয় কখনোই নয়।';
-
-  @override
-  String get welcomeBack =>
-      'পুনরায় স্বাগতম — আপনি যে ফোন নম্বরটি দিয়ে সাইন আপ করেছিলেন, সেটি দিয়ে সাইন ইন করুন।';
-
-  @override
-  String get noAccountFound =>
-      'এই নম্বরের জন্য কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি — অনুগ্রহ করে প্রথমে সাইন আপ করুন।';
 
   @override
   String get dontHaveAccountSignUp => 'অ্যাকাউন্ট নেই? সাইন আপ করুন';
@@ -404,7 +332,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'আপনার আবেদনপত্র সঠিক সাংসদের কাছে পৌঁছে দেওয়ার জন্য আমরা আপনার ঠিকানা সংরক্ষণ করি। আপনার ১২-সংখ্যার আধার নম্বর কখনোই সংরক্ষণ করা হয় না।';
+      'আপনার অভিযোগ সঠিক সাংসদের কাছে পাঠাতে আমরা আপনার বাড়ির অবস্থান সংরক্ষণ করি। আমরা কখনো ফোন নম্বর, ইমেল বা কোনো পরিচয়পত্র চাই না।';
 
   @override
   String get signOutClears => 'সাইন আউট (এই ডিভাইসটি মুছে ফেলবে)';
@@ -861,42 +789,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get backToSignIn => 'সাইন ইনে ফিরে যান';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'Your session expired. Please try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'That photo is too large to process. Try a closer, smaller shot of the card.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'Our reader is busy right now. Try again in a moment, or type your details below.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'Something went wrong reading the card. You can type your details below instead.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'We read part of your card. Please check the details below and fill in anything missing.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'The back photo was too large, so we read the front only. Please check the address below.';
-
-  @override
   String get mapLayerFailed =>
       'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
@@ -1196,4 +1088,163 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'Solution ready';
+
+  @override
+  String get openInGoogleMaps => 'Google Maps-এ পথ দেখুন';
+
+  @override
+  String get openInGoogleMapsApprox => 'এই এলাকার পথ (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps => 'এই ডিভাইসে Google Maps খোলা যায়নি।';
+
+  @override
+  String get usernameLabel => 'ইউজারনেম';
+
+  @override
+  String get usernameHelper => '৪–২০টি অক্ষর, সংখ্যা, _ বা .';
+
+  @override
+  String get usernameTooShort => 'ইউজারনেম কমপক্ষে ৪ অক্ষরের হতে হবে।';
+
+  @override
+  String get usernameTooLong => 'ইউজারনেম সর্বোচ্চ ২০ অক্ষরের হতে পারে।';
+
+  @override
+  String get usernameBadCharacters =>
+      'শুধু অক্ষর, সংখ্যা, _ এবং . ব্যবহার করুন (স্পেস নয়)।';
+
+  @override
+  String get usernameAvailable => 'ইউজারনেম পাওয়া যাচ্ছে';
+
+  @override
+  String get usernameTaken =>
+      'এই ইউজারনেম আগেই নেওয়া হয়েছে। অন্য একটি চেষ্টা করুন।';
+
+  @override
+  String get confirmPasswordLabel => 'পাসওয়ার্ড নিশ্চিত করুন';
+
+  @override
+  String get newPasswordLabel => 'নতুন পাসওয়ার্ড';
+
+  @override
+  String get currentPasswordLabel => 'বর্তমান পাসওয়ার্ড';
+
+  @override
+  String get passwordTooShort => 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।';
+
+  @override
+  String get passwordsDontMatch => 'পাসওয়ার্ড মিলছে না।';
+
+  @override
+  String get authWrongCredentials => 'ইউজারনেম বা পাসওয়ার্ড ভুল।';
+
+  @override
+  String get authTooManyAttempts =>
+      'অনেকবার চেষ্টা হয়েছে। কয়েক মিনিট পরে আবার চেষ্টা করুন।';
+
+  @override
+  String get authNetworkError =>
+      'ইন্টারনেট সংযোগ নেই। নেটওয়ার্ক দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get nameRequired => 'অনুগ্রহ করে আপনার নাম লিখুন।';
+
+  @override
+  String get createAccountTitle => 'আপনার অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get createAccountSubtitle =>
+      'শুধু ইউজারনেম আর পাসওয়ার্ড — ফোন নম্বর, ইমেল বা পরিচয়পত্র লাগবে না।';
+
+  @override
+  String get createAccountButton => 'অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get welcomeBackTitle => 'আবার স্বাগতম';
+
+  @override
+  String get signInSubtitle =>
+      'আপনার ইউজারনেম ও পাসওয়ার্ড দিয়ে সাইন ইন করুন।';
+
+  @override
+  String get forgotPasswordLink => 'পাসওয়ার্ড ভুলে গেছেন?';
+
+  @override
+  String get securityQuestionIntro =>
+      'একটি নিরাপত্তা প্রশ্ন বেছে নিন। পাসওয়ার্ড ভুলে গেলে এর উত্তর দিয়ে নতুন পাসওয়ার্ড সেট করতে পারবেন।';
+
+  @override
+  String get securityQuestionLabel => 'নিরাপত্তা প্রশ্ন';
+
+  @override
+  String get securityAnswerLabel => 'আপনার উত্তর';
+
+  @override
+  String get securityAnswerHelper =>
+      'এই উত্তর মনে রাখুন। বড়/ছোট হাতের অক্ষরে কিছু যায় আসে না।';
+
+  @override
+  String get securityAnswerRequired => 'অনুগ্রহ করে উত্তর লিখুন।';
+
+  @override
+  String get securityQuestionFirstSchool => 'আপনার প্রথম স্কুলের নাম কী ছিল?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'আপনার মা কোন শহর বা গ্রামে জন্মেছিলেন?';
+
+  @override
+  String get securityQuestionFavouriteFood => 'আপনার প্রিয় খাবার কী?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'আপনার ছোটবেলার সবচেয়ে কাছের বন্ধুর নাম কী?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'আপনার প্রথম সাইকেল বা গাড়ি কী ছিল?';
+
+  @override
+  String get forgotPasswordTitle => 'পাসওয়ার্ড রিসেট করুন';
+
+  @override
+  String get forgotPasswordStep1 => 'আপনার অ্যাকাউন্ট খুঁজতে ইউজারনেম লিখুন।';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'নিরাপত্তা প্রশ্নের উত্তর দিন এবং নতুন পাসওয়ার্ড বেছে নিন।';
+
+  @override
+  String get passwordResetDone =>
+      'আপনার পাসওয়ার্ড পরিবর্তিত হয়েছে। নতুন পাসওয়ার্ড দিয়ে সাইন ইন করুন।';
+
+  @override
+  String get resetPasswordButton => 'নতুন পাসওয়ার্ড সেট করুন';
+
+  @override
+  String get recoveryNotMatched => 'উত্তর মেলেনি। দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get recoveryLocked =>
+      'অনেক ভুল উত্তর। পাসওয়ার্ড রিসেট ১৫ মিনিটের জন্য বন্ধ।';
+
+  @override
+  String get recoveryNoQuestion =>
+      'এই ইউজারনেমের জন্য কোনো নিরাপত্তা প্রশ্ন পাওয়া যায়নি।';
+
+  @override
+  String get changePasswordTitle => 'পাসওয়ার্ড বদলান';
+
+  @override
+  String get changeSecurityQuestionTitle => 'নিরাপত্তা প্রশ্ন বদলান';
+
+  @override
+  String get passwordChanged => 'পাসওয়ার্ড বদলানো হয়েছে।';
+
+  @override
+  String get securityQuestionSaved => 'নিরাপত্তা প্রশ্ন সংরক্ষিত হয়েছে।';
+
+  @override
+  String get saveLabel => 'সংরক্ষণ করুন';
 }

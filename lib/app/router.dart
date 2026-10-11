@@ -16,14 +16,15 @@ import '../features/citizen/reports/report_detail_screen.dart';
 import '../features/official/report/generate_report_screen.dart';
 import '../features/official/tickets/ticket_management_screen.dart';
 import '../features/official/transcript/agent_transcript_screen.dart';
+import '../features/onboarding/auth/citizen_signin_screen.dart';
+import '../features/onboarding/auth/citizen_signup_screen.dart';
+import '../features/onboarding/auth/forgot_password_screen.dart';
 import '../features/onboarding/gov_login_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
 import '../features/onboarding/mp_credentials_request_screen.dart';
-import '../features/onboarding/signin_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
 import '../features/onboarding/signup/onboarding_done_screen.dart';
-import '../features/onboarding/signup_screen.dart';
 import '../features/onboarding/splash_screen.dart';
 import '../features/onboarding/welcome_screen.dart';
 import '../features/official/dashboard/gov_dashboard_screen.dart';
@@ -112,11 +113,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // --- Onboarding / signup ---
       GoRoute(
         path: '/signup',
-        builder: (context, state) => const SignUpScreen(),
+        builder: (context, state) => const CitizenSignUpScreen(),
       ),
       GoRoute(
         path: '/signin',
-        builder: (context, state) => const SignInScreen(),
+        builder: (context, state) => const CitizenSignInScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => ForgotPasswordScreen(
+          initialUsername: state.extra as String?,
+        ),
       ),
       GoRoute(
         path: '/gov/login',

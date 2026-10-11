@@ -1,10 +1,20 @@
-/// One of Bengaluru's 369 Greater Bengaluru Authority (GBA) municipal wards
-/// (final delimitation, notified 19 Nov 2025 — see `functions/src/scripts/
-/// seedWards.ts`). Wards roll up to a parent Lok Sabha [constituencyId] —
+/// One Bengaluru municipal ward, from either of two layers kept side by
+/// side in `wards/`:
+///  - the 369 GBA wards (2025 delimitation), id `<Corporation>-<n>`,
+///    [corporation] = `Central`/`East`/`North`/`South`/`West`
+///    (`functions/src/scripts/seedWards.ts`);
+///  - the 198 BBMP wards (2010 delimitation), id `BBMP-<wardNo>`,
+///    [corporation] = `BBMP` (`functions/src/scripts/seedBbmpWards.ts`).
+/// Wards roll up to a parent Lok Sabha [constituencyId] —
 /// there is no separate corporator login; ward data is a visual/reporting
 /// layer on top of the existing constituency-scoped MP dashboard.
 class WardModel {
   final String id;
+
+  bool get isBbmp => corporation == 'BBMP';
+
+  /// BBMP ward number, 1–198 (null for GBA wards).
+  final int? wardNo;
   final String wardName;
   final String corporation;
   final String assemblyConstituency;
@@ -25,6 +35,7 @@ class WardModel {
 
   const WardModel({
     required this.id,
+    this.wardNo,
     required this.wardName,
     required this.corporation,
     required this.assemblyConstituency,
@@ -42,6 +53,7 @@ class WardModel {
   factory WardModel.fromMap(String id, Map<String, dynamic> map) {
     return WardModel(
       id: id,
+      wardNo: (map['wardNo'] as num?)?.toInt(),
       wardName: map['wardName'] as String? ?? '',
       corporation: map['corporation'] as String? ?? '',
       assemblyConstituency: map['assemblyConstituency'] as String? ?? '',
@@ -59,6 +71,7 @@ class WardModel {
 
   Map<String, dynamic> toMap() {
     return {
+      if (wardNo != null) 'wardNo': wardNo,
       'wardName': wardName,
       'corporation': corporation,
       'assemblyConstituency': assemblyConstituency,

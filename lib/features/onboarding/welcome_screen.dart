@@ -26,9 +26,25 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 12),
-              const _WaveformLogo(),
+              const SizedBox(height: 8),
+              Center(
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    boxShadow: appCardShadow,
+                  ),
+                  child: ClipOval(
+                    child: Image.asset('assets/icon/logo.png', fit: BoxFit.cover),
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
+              const _WaveformLogo(),
+              const SizedBox(height: 6),
               Text(
                 'Prajadhwani',
                 textAlign: TextAlign.center,
@@ -69,9 +85,11 @@ class _WaveformLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const heights = [16.0, 30.0, 22.0, 34.0];
+    // The brand's 4-bar voice waveform, kept as a small accent under the
+    // logo.
+    const heights = [8.0, 15.0, 11.0, 17.0];
     return SizedBox(
-      height: 40,
+      height: 20,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,11 +98,11 @@ class _WaveformLogo extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 3),
               child: Container(
-                width: 8,
+                width: 5,
                 height: h,
                 decoration: BoxDecoration(
                   color: AppColors.saffron,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(3),
                 ),
               ),
             ),
@@ -108,9 +126,6 @@ class _CitizenEntry extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         const Spacer(),
-        const Icon(Icons.record_voice_over_rounded,
-            size: 72, color: AppColors.indigoMist),
-        const SizedBox(height: 16),
         Text(
           l10n.citizenIntro,
           textAlign: TextAlign.center,

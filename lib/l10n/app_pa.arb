@@ -9,22 +9,12 @@
   "password": "ਪਾਸਵਰਡ",
   "couldNotSignInOfficial": "ਸਾਈਨ ਇਨ ਨਹੀਂ ਕਰ ਸਕਿਆ। ਆਪਣੇ ਹਲਕੇ ਦੀ ਆਈਡੀ ਅਤੇ ਪਾਸਵਰਡ ਦੀ ਜਾਂਚ ਕਰੋ।",
   "citizenIntro": "ਵਿਕਾਸ ਸੁਝਾਅ ਸਾਂਝਾ ਕਰੋ ਜਾਂ ਕਿਸੇ ਨਾਗਰਿਕ ਸਮੱਸਿਆ ਦੀ ਰਿਪੋਰਟ ਕਰੋ — ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ, ਆਵਾਜ਼, ਟੈਕਸਟ ਜਾਂ ਫੋਟੋ ਦੁਆਰਾ।",
-  "welcomeAnonymityNote": "ਤੁਸੀਂ ਦੂਜੇ ਨਾਗਰਿਕਾਂ ਤੋਂ ਗੁਮਨਾਮ ਰਹਿੰਦੇ ਹੋ। ਤੁਹਾਡਾ ਆਧਾਰ ਨੰਬਰ ਕਦੇ ਵੀ ਸਟੋਰ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ। ਤੁਹਾਡਾ ਸੰਸਦ ਮੈਂਬਰ ਦਫ਼ਤਰ ਤੁਹਾਡੀ ਪਛਾਣ ਨੂੰ ਨਹੀਂ, ਸਗੋਂ ਇਕੱਠੀ ਕੀਤੀ ਮੰਗ ਨੂੰ ਦੇਖਦਾ ਹੈ।",
+  "welcomeAnonymityNote": "ਦੂਜੇ ਨਾਗਰਿਕਾਂ ਲਈ ਤੁਸੀਂ ਗੁਮਨਾਮ ਰਹਿੰਦੇ ਹੋ। ਫ਼ੋਨ ਨੰਬਰ, ਈਮੇਲ ਜਾਂ ਆਈਡੀ ਦੀ ਲੋੜ ਨਹੀਂ — ਬੱਸ ਇੱਕ ਯੂਜ਼ਰਨੇਮ। ਤੁਹਾਡੇ ਸੰਸਦ ਮੈਂਬਰ ਦਾ ਦਫ਼ਤਰ ਕੁੱਲ ਮੰਗ ਵੇਖਦਾ ਹੈ, ਤੁਹਾਡੀ ਪਛਾਣ ਨਹੀਂ।",
   "newHereSignUp": "ਕੀ ਇੱਥੇ ਨਵੇਂ ਹੋ? ਸਾਈਨ ਅੱਪ ਕਰੋ",
   "alreadyHaveAccountSignIn": "ਮੇਰੇ ਕੋਲ ਪਹਿਲਾਂ ਹੀ ਇੱਕ ਖਾਤਾ ਹੈ — ਸਾਈਨ ਇਨ ਕਰੋ",
-  "aadhaarPrivacyNote": "ਆਪਣੇ ਆਧਾਰ ਦੀ ਇੱਕ ਫੋਟੋ ਅਪਲੋਡ ਕਰੋ ਤਾਂ ਜੋ ਅਸੀਂ ਤੁਹਾਡਾ ਨਾਮ ਅਤੇ ਪਤਾ ਪੜ੍ਹ ਸਕੀਏ। ਅਸੀਂ ਸਿਰਫ਼ ਤੁਹਾਡਾ ਨਾਮ, ਪਤਾ ਅਤੇ ਪਿੰਨਕੋਡ ਰੱਖਦੇ ਹਾਂ — ਫੋਟੋ ਅਤੇ ਤੁਹਾਡਾ ਆਧਾਰ ਨੰਬਰ ਕਦੇ ਵੀ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ। ਇਹ ਆਈਡੀ ਵੈਰੀਫਿਕੇਸ਼ਨ ਨਹੀਂ ਹੈ; ਤੁਸੀਂ ਹੇਠਾਂ ਆਪਣੇ ਵੇਰਵੇ ਵੀ ਟਾਈਪ ਕਰ ਸਕਦੇ ਹੋ।",
-  "aadhaarUploadNote": "ਆਪਣੇ ਆਧਾਰ (ਅੱਗੇ ਅਤੇ ਪਿੱਛੇ) ਦੀਆਂ ਫੋਟੋਆਂ ਅੱਪਲੋਡ ਕਰੋ ਤਾਂ ਜੋ ਅਸੀਂ ਤੁਹਾਡਾ ਨਾਮ ਅਤੇ ਪਤਾ ਪੜ੍ਹ ਸਕੀਏ — ਪਿਛਲੇ ਪਾਸੇ ਅਕਸਰ ਤੁਹਾਡਾ ਪੂਰਾ ਪਤਾ ਹੁੰਦਾ ਹੈ, ਇਸ ਲਈ ਇਸਨੂੰ ਕੈਪਚਰ ਕਰਨ ਨਾਲ ਵੀ ਵਧੇਰੇ ਸਹੀ ਨਤੀਜੇ ਮਿਲਦੇ ਹਨ। ਅਸੀਂ ਸਿਰਫ਼ ਤੁਹਾਡਾ ਨਾਮ, ਪਤਾ, ਪਿੰਨਕੋਡ ਅਤੇ ਵਾਰਡ ਨੰਬਰ ਰੱਖਦੇ ਹਾਂ — ਫੋਟੋਆਂ ਅਤੇ ਤੁਹਾਡਾ ਆਧਾਰ ਨੰਬਰ ਕਦੇ ਵੀ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ। ਇਹ ਆਈਡੀ ਤਸਦੀਕ ਨਹੀਂ ਹੈ, ਅਤੇ ਦੋਵੇਂ ਫੋਟੋਆਂ ਵਿਕਲਪਿਕ ਹਨ — ਤੁਸੀਂ ਹਮੇਸ਼ਾ ਹੇਠਾਂ ਆਪਣੇ ਵੇਰਵੇ ਟਾਈਪ ਕਰ ਸਕਦੇ ਹੋ।",
-  "slotFront": "ਸਾਹਮਣੇ",
-  "slotBack": "ਪਿੱਛੇ",
   "alreadyHaveAccountSignInShort": "ਕੀ ਪਹਿਲਾਂ ਹੀ ਖਾਤਾ ਹੈ? ਸਾਈਨ ਇਨ ਕਰੋ",
-  "aadhaarBackNote": "ਸੁਝਾਅ: ਆਪਣੇ ਆਧਾਰ ਦੇ ਪਿਛਲੇ ਪਾਸੇ ਨੂੰ ਵੀ ਕੈਪਚਰ ਕਰੋ — ਇਸ ਵਿੱਚ ਅਕਸਰ ਤੁਹਾਡਾ ਪੂਰਾ ਪਤਾ ਸਾਹਮਣੇ ਛੱਡ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ। ਦੋਵੇਂ ਪਾਸੇ ਵਿਕਲਪਿਕ ਹਨ।",
   "camera": "ਕੈਮਰਾ",
   "gallery": "ਗੈਲਰੀ",
-  "extractDetails": "ਵੇਰਵੇ ਐਕਸਟਰੈਕਟ ਕਰੋ",
-  "couldNotReadClearly": "ਇਸਨੂੰ ਸਾਫ਼-ਸਾਫ਼ ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ — ਹੇਠਾਂ ਦਿੱਤੇ ਵੇਰਵਿਆਂ ਦੀ ਜਾਂਚ ਕਰੋ ਜਾਂ ਉਹਨਾਂ ਨੂੰ ਹੱਥੀਂ ਦਰਜ ਕਰੋ।",
-  "couldNotProcessImage": "ਉਸ ਚਿੱਤਰ ਨੂੰ ਹੁਣੇ ਪ੍ਰਕਿਰਿਆ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ — ਹੇਠਾਂ ਆਪਣੇ ਵੇਰਵੇ ਹੱਥੀਂ ਦਰਜ ਕਰੋ।",
-  "hideManualEntry": "ਮੈਨੁਅਲ ਐਂਟਰੀ ਲੁਕਾਓ",
-  "skipEnterManually": "ਛੱਡੋ — ਮੈਂ ਹੱਥੀਂ ਦਰਜ ਕਰਾਂਗਾ",
   "fullName": "ਪੂਰਾ ਨਾਂਮ",
   "pincode": "ਪਿੰਨਕੋਡ",
   "wardNumberOptional": "ਵਾਰਡ ਨੰਬਰ (ਵਿਕਲਪਿਕ)",
@@ -32,19 +22,8 @@
   "updateMyLocation": "ਮੇਰਾ ਟਿਕਾਣਾ ਅੱਪਡੇਟ ਕਰੋ",
   "tapMapToAdjust": "ਆਪਣੀ ਸਹੀ ਸਥਿਤੀ ਨੂੰ ਵਿਵਸਥਿਤ ਕਰਨ ਲਈ ਨਕਸ਼ੇ 'ਤੇ ਟੈਪ ਕਰੋ।",
   "continueLabel": "ਜਾਰੀ ਰੱਖੋ",
-  "verifyWithPhone": "ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰ ਨਾਲ ਪੁਸ਼ਟੀ ਕਰੋ",
-  "mobileNumberHint": "10-ਅੰਕਾਂ ਵਾਲਾ ਮੋਬਾਈਲ ਨੰਬਰ",
-  "sendCode": "ਕੋਡ ਭੇਜੋ",
-  "sixDigitCode": "6-ਅੰਕਾਂ ਵਾਲਾ ਕੋਡ",
-  "verifyAndContinue": "ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਜਾਰੀ ਰੱਖੋ",
-  "verifyAndSignIn": "ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਸਾਈਨ ਇਨ ਕਰੋ",
-  "enterValidMobile": "ਇੱਕ ਵੈਧ 10-ਅੰਕਾਂ ਵਾਲਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ।",
-  "codeDidntMatch": "ਉਹ ਕੋਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ — ਇਸਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
   "couldNotContinue": "ਜਾਰੀ ਨਹੀਂ ਰੱਖਿਆ ਜਾ ਸਕਿਆ — ਆਪਣੇ ਕਨੈਕਸ਼ਨ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
-  "skipStayAnonymous": "ਛੱਡੋ — ਗੁਮਨਾਮ ਰਹੋ",
   "aggregatedDemandNote": "ਤੁਸੀਂ ਜਿਸ ਵੀ ਤਰੀਕੇ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰਦੇ ਹੋ, ਤੁਹਾਡੇ ਸੰਸਦ ਮੈਂਬਰ ਦਾ ਦਫ਼ਤਰ ਸਿਰਫ਼ ਇਕੱਠੀ ਕੀਤੀ ਮੰਗ ਹੀ ਦੇਖਦਾ ਹੈ, ਤੁਹਾਡੀ ਪਛਾਣ ਕਦੇ ਨਹੀਂ।",
-  "welcomeBack": "ਦੁਬਾਰਾ ਸਵਾਗਤ ਹੈ — ਉਸ ਫ਼ੋਨ ਨੰਬਰ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ ਜਿਸ ਨਾਲ ਤੁਸੀਂ ਸਾਈਨ ਅੱਪ ਕੀਤਾ ਹੈ।",
-  "noAccountFound": "ਇਸ ਨੰਬਰ ਲਈ ਕੋਈ ਖਾਤਾ ਨਹੀਂ ਮਿਲਿਆ — ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ ਸਾਈਨ ਅੱਪ ਕਰੋ।",
   "dontHaveAccountSignUp": "ਕੀ ਤੁਹਾਡਾ ਕੋਈ ਖਾਤਾ ਨਹੀਂ ਹੈ? ਸਾਈਨ ਅੱਪ ਕਰੋ",
   "yourName": "ਤੁਹਾਡਾ ਨਾਮ",
   "age": "ਉਮਰ",
@@ -116,7 +95,7 @@
   "notYetMatched": "ਅਜੇ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ",
   "homeBooth": "ਘਰ ਬੂਥ",
   "preferredLanguage": "ਤਰਜੀਹੀ ਭਾਸ਼ਾ",
-  "privacyStoreAddress": "ਅਸੀਂ ਤੁਹਾਡੀਆਂ ਬੇਨਤੀਆਂ ਨੂੰ ਸਹੀ ਐਮਪੀ ਤੱਕ ਪਹੁੰਚਾਉਣ ਲਈ ਤੁਹਾਡਾ ਪਤਾ ਸਟੋਰ ਕਰਦੇ ਹਾਂ। ਤੁਹਾਡਾ 12-ਅੰਕਾਂ ਵਾਲਾ ਆਧਾਰ ਨੰਬਰ ਕਦੇ ਵੀ ਸਟੋਰ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ।",
+  "privacyStoreAddress": "ਤੁਹਾਡੀਆਂ ਸ਼ਿਕਾਇਤਾਂ ਸਹੀ ਸੰਸਦ ਮੈਂਬਰ ਤੱਕ ਪਹੁੰਚਾਉਣ ਲਈ ਅਸੀਂ ਤੁਹਾਡੇ ਘਰ ਦੀ ਥਾਂ ਸੰਭਾਲਦੇ ਹਾਂ। ਅਸੀਂ ਕਦੇ ਵੀ ਫ਼ੋਨ ਨੰਬਰ, ਈਮੇਲ ਜਾਂ ਕੋਈ ਆਈਡੀ ਨਹੀਂ ਮੰਗਦੇ।",
   "signOutClears": "ਸਾਈਨ ਆਊਟ ਕਰੋ (ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਕਲੀਅਰ ਕਰਦਾ ਹੈ)",
   "couldNotLoadProfile": "ਤੁਹਾਡਾ ਪ੍ਰੋਫਾਈਲ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।",
   "statusFiled": "ਦਾਇਰ ਕੀਤਾ ਗਿਆ",
@@ -242,21 +221,24 @@
   "credentialsSentTo": "ਕ੍ਰੈਡੈਂਸ਼ੀਅਲ {email} 'ਤੇ ਭੇਜੇ ਗਏ",
   "checkYourInbox": "ਆਪਣੇ ਲੌਗਇਨ ਆਈਡੀ ਅਤੇ ਪਾਸਵਰਡ ਲਈ ਆਪਣਾ ਇਨਬਾਕਸ (ਅਤੇ ਸਪੈਮ ਫੋਲਡਰ) ਜਾਂਚੋ।",
   "backToSignIn": "ਸਾਈਨ ਇਨ 'ਤੇ ਵਾਪਸ ਜਾਓ",
-  "aadhaarErrorAuthUnavailable": "Sign-in isn't available right now, so we couldn't run the reader. You can still type your details below.",
-  "aadhaarErrorNotSignedIn": "Your session expired. Please try again, or type your details below.",
-  "aadhaarErrorImageTooLarge": "That photo is too large to process. Try a closer, smaller shot of the card.",
-  "aadhaarErrorUnreadable": "We couldn't read that card. Try better lighting and a flat, glare-free shot — or type your details below.",
-  "aadhaarErrorModelBusy": "Our reader is busy right now. Try again in a moment, or type your details below.",
-  "aadhaarErrorNetwork": "We couldn't reach the network. Check your connection and try again, or type your details below.",
-  "aadhaarErrorUnknown": "Something went wrong reading the card. You can type your details below instead.",
-  "aadhaarPartialExtracted": "We read part of your card. Please check the details below and fill in anything missing.",
-  "aadhaarBackImageSkippedTooLarge": "The back photo was too large, so we read the front only. Please check the address below.",
   "mapLayerFailed": "Couldn't load part of the map. Some wards, booths or hotspots may be missing.",
   "mapRetry": "Retry",
   "hotspotsShownCount": "{count} hotspots",
-  "@hotspotsShownCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsShownCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotsOffMapCount": "· {count} off-map",
-  "@hotspotsOffMapCount": {"placeholders": {"count": {"type": "int"}}},
+  "@hotspotsOffMapCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hotspotClusterSheetTitle": "HOTSPOT",
   "publicDashboardTitle": "Public dashboard",
   "exploreYourArea": "Explore your area",
@@ -313,24 +295,72 @@
   "agentResponse": "Raw response",
   "agentError": "Error",
   "agentFellBackNote": "These agents did not complete and used a fallback: {agents}. Treat the affected sections as placeholders, not findings.",
-  "@agentFellBackNote": {"placeholders": {"agents": {"type": "String"}}},
+  "@agentFellBackNote": {
+    "placeholders": {
+      "agents": {
+        "type": "String"
+      }
+    }
+  },
   "agentAttempts": "{count} attempts",
-  "@agentAttempts": {"placeholders": {"count": {"type": "int"}}},
+  "@agentAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportsFromResidents": "{reports} reports from {residents} residents",
-  "@reportsFromResidents": {"placeholders": {"reports": {"type": "int"}, "residents": {"type": "int"}}},
+  "@reportsFromResidents": {
+    "placeholders": {
+      "reports": {
+        "type": "int"
+      },
+      "residents": {
+        "type": "int"
+      }
+    }
+  },
   "weeksRange": "{min}–{max} weeks",
-  "@weeksRange": {"placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}},
+  "@weeksRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "householdsAddressed": "~{count} households",
-  "@householdsAddressed": {"placeholders": {"count": {"type": "int"}}},
+  "@householdsAddressed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "routedToDepartment": "Routed to",
   "yourCivicActivity": "Your civic activity",
   "activeWeeksStreak": "Active weeks",
   "longestStreak": "Longest streak",
   "levelMaxReached": "Top level reached",
   "reportsToNextLevel": "{count} more to next level",
-  "@reportsToNextLevel": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsToNextLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "levelLabel": "Level {level}",
-  "@levelLabel": {"placeholders": {"level": {"type": "int"}}},
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "badgeFirstReport": "First report",
   "badgeWeekStreak": "2-week streak",
   "badgeMonthActive": "Month active",
@@ -344,12 +374,72 @@
   "seePublicDashboard": "See your area's public dashboard",
   "liveLabel": "Live",
   "reportsNearYouThisWeek": "{count} reports near you this week",
-  "@reportsNearYouThisWeek": {"placeholders": {"count": {"type": "int"}}},
+  "@reportsNearYouThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "beTheFirstThisWeek": "Be the first to report this week",
   "topHotspots": "Top hotspots",
   "latestSolutions": "Latest solutions",
   "noTrackedIssuesYet": "No issues tracked yet for this area.",
   "reportsCountShort": "{count} reports",
-  "@reportsCountShort": {"placeholders": {"count": {"type": "int"}}},
-  "hasSolutionLabel": "Solution ready"
+  "@reportsCountShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hasSolutionLabel": "Solution ready",
+  "openInGoogleMaps": "Google Maps ਵਿੱਚ ਰਸਤਾ ਵੇਖੋ",
+  "openInGoogleMapsApprox": "ਇਸ ਖੇਤਰ ਦਾ ਰਸਤਾ (Google Maps)",
+  "couldNotOpenMaps": "ਇਸ ਡਿਵਾਈਸ 'ਤੇ Google Maps ਨਹੀਂ ਖੁੱਲ੍ਹ ਸਕਿਆ।",
+  "usernameLabel": "ਯੂਜ਼ਰਨੇਮ",
+  "usernameHelper": "4–20 ਅੱਖਰ, ਅੰਕ, _ ਜਾਂ .",
+  "usernameTooShort": "ਯੂਜ਼ਰਨੇਮ ਘੱਟੋ-ਘੱਟ 4 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
+  "usernameTooLong": "ਯੂਜ਼ਰਨੇਮ ਵੱਧ ਤੋਂ ਵੱਧ 20 ਅੱਖਰਾਂ ਦਾ ਹੋ ਸਕਦਾ ਹੈ।",
+  "usernameBadCharacters": "ਸਿਰਫ਼ ਅੱਖਰ, ਅੰਕ, _ ਅਤੇ . ਵਰਤੋ (ਸਪੇਸ ਨਹੀਂ)।",
+  "usernameAvailable": "ਯੂਜ਼ਰਨੇਮ ਉਪਲਬਧ ਹੈ",
+  "usernameTaken": "ਇਹ ਯੂਜ਼ਰਨੇਮ ਪਹਿਲਾਂ ਹੀ ਲਿਆ ਜਾ ਚੁੱਕਾ ਹੈ। ਕੋਈ ਹੋਰ ਅਜ਼ਮਾਓ।",
+  "confirmPasswordLabel": "ਪਾਸਵਰਡ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+  "newPasswordLabel": "ਨਵਾਂ ਪਾਸਵਰਡ",
+  "currentPasswordLabel": "ਮੌਜੂਦਾ ਪਾਸਵਰਡ",
+  "passwordTooShort": "ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
+  "passwordsDontMatch": "ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ।",
+  "authWrongCredentials": "ਯੂਜ਼ਰਨੇਮ ਜਾਂ ਪਾਸਵਰਡ ਗਲਤ ਹੈ।",
+  "authTooManyAttempts": "ਬਹੁਤ ਵਾਰ ਕੋਸ਼ਿਸ਼ ਹੋਈ। ਕੁਝ ਮਿੰਟ ਰੁਕ ਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+  "authNetworkError": "ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਹੈ। ਨੈੱਟਵਰਕ ਜਾਂਚ ਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+  "nameRequired": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਨਾਮ ਲਿਖੋ।",
+  "createAccountTitle": "ਆਪਣਾ ਖਾਤਾ ਬਣਾਓ",
+  "createAccountSubtitle": "ਬੱਸ ਯੂਜ਼ਰਨੇਮ ਅਤੇ ਪਾਸਵਰਡ — ਫ਼ੋਨ ਨੰਬਰ, ਈਮੇਲ ਜਾਂ ਆਈਡੀ ਦੀ ਲੋੜ ਨਹੀਂ।",
+  "createAccountButton": "ਖਾਤਾ ਬਣਾਓ",
+  "welcomeBackTitle": "ਮੁੜ ਜੀ ਆਇਆਂ ਨੂੰ",
+  "signInSubtitle": "ਆਪਣੇ ਯੂਜ਼ਰਨੇਮ ਅਤੇ ਪਾਸਵਰਡ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ।",
+  "forgotPasswordLink": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?",
+  "securityQuestionIntro": "ਇੱਕ ਸੁਰੱਖਿਆ ਸਵਾਲ ਚੁਣੋ। ਪਾਸਵਰਡ ਭੁੱਲਣ 'ਤੇ ਇਸ ਦਾ ਜਵਾਬ ਦੇ ਕੇ ਨਵਾਂ ਪਾਸਵਰਡ ਸੈੱਟ ਕਰ ਸਕਦੇ ਹੋ।",
+  "securityQuestionLabel": "ਸੁਰੱਖਿਆ ਸਵਾਲ",
+  "securityAnswerLabel": "ਤੁਹਾਡਾ ਜਵਾਬ",
+  "securityAnswerHelper": "ਇਹ ਜਵਾਬ ਯਾਦ ਰੱਖੋ। ਵੱਡੇ/ਛੋਟੇ ਅੱਖਰਾਂ ਨਾਲ ਫ਼ਰਕ ਨਹੀਂ ਪੈਂਦਾ।",
+  "securityAnswerRequired": "ਕਿਰਪਾ ਕਰਕੇ ਜਵਾਬ ਲਿਖੋ।",
+  "securityQuestionFirstSchool": "ਤੁਹਾਡੇ ਪਹਿਲੇ ਸਕੂਲ ਦਾ ਨਾਮ ਕੀ ਸੀ?",
+  "securityQuestionMotherBirthplace": "ਤੁਹਾਡੀ ਮਾਂ ਦਾ ਜਨਮ ਕਿਸ ਸ਼ਹਿਰ ਜਾਂ ਪਿੰਡ ਵਿੱਚ ਹੋਇਆ?",
+  "securityQuestionFavouriteFood": "ਤੁਹਾਡਾ ਮਨਪਸੰਦ ਖਾਣਾ ਕਿਹੜਾ ਹੈ?",
+  "securityQuestionChildhoodFriend": "ਤੁਹਾਡੇ ਬਚਪਨ ਦੇ ਪੱਕੇ ਦੋਸਤ ਦਾ ਨਾਮ ਕੀ ਹੈ?",
+  "securityQuestionFirstVehicle": "ਤੁਹਾਡੀ ਪਹਿਲੀ ਸਾਈਕਲ ਜਾਂ ਗੱਡੀ ਕਿਹੜੀ ਸੀ?",
+  "forgotPasswordTitle": "ਪਾਸਵਰਡ ਰੀਸੈੱਟ ਕਰੋ",
+  "forgotPasswordStep1": "ਆਪਣਾ ਖਾਤਾ ਲੱਭਣ ਲਈ ਯੂਜ਼ਰਨੇਮ ਲਿਖੋ।",
+  "forgotPasswordStep2": "ਸੁਰੱਖਿਆ ਸਵਾਲ ਦਾ ਜਵਾਬ ਦਿਓ ਅਤੇ ਨਵਾਂ ਪਾਸਵਰਡ ਚੁਣੋ।",
+  "passwordResetDone": "ਤੁਹਾਡਾ ਪਾਸਵਰਡ ਬਦਲ ਗਿਆ ਹੈ। ਨਵੇਂ ਪਾਸਵਰਡ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ।",
+  "resetPasswordButton": "ਨਵਾਂ ਪਾਸਵਰਡ ਸੈੱਟ ਕਰੋ",
+  "recoveryNotMatched": "ਜਵਾਬ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ। ਜਾਂਚ ਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+  "recoveryLocked": "ਬਹੁਤ ਸਾਰੇ ਗਲਤ ਜਵਾਬ। ਪਾਸਵਰਡ ਰੀਸੈੱਟ 15 ਮਿੰਟ ਲਈ ਬੰਦ ਹੈ।",
+  "recoveryNoQuestion": "ਇਸ ਯੂਜ਼ਰਨੇਮ ਲਈ ਕੋਈ ਸੁਰੱਖਿਆ ਸਵਾਲ ਨਹੀਂ ਮਿਲਿਆ।",
+  "changePasswordTitle": "ਪਾਸਵਰਡ ਬਦਲੋ",
+  "changeSecurityQuestionTitle": "ਸੁਰੱਖਿਆ ਸਵਾਲ ਬਦਲੋ",
+  "passwordChanged": "ਪਾਸਵਰਡ ਬਦਲ ਗਿਆ।",
+  "securityQuestionSaved": "ਸੁਰੱਖਿਆ ਸਵਾਲ ਸੰਭਾਲਿਆ ਗਿਆ।",
+  "saveLabel": "ਸੰਭਾਲੋ"
 }

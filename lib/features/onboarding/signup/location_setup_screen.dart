@@ -16,7 +16,7 @@ import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
 /// Step 3 of 4, built as a 2-page `PageView` sharing one stepper position:
-/// sub-step A pincode entry (prefilled from Aadhaar OCR if available), sub-
+/// sub-step A pincode entry, sub-
 /// step B confirm on an OpenStreetMap view — tap anywhere to drop the pin
 /// (flutter_map has no built-in drag-marker gesture, so tap-to-move is used
 /// instead of drag).

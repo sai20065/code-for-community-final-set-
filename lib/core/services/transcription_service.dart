@@ -20,7 +20,7 @@ class TranscriptionResult {
 /// submissions/transcribeAndTranslate.ts`) so a citizen sees their spoken
 /// report turned into editable text **before** they submit — instead of the
 /// old flow where transcription only happened invisibly, server-side, after
-/// submission. Same callable pattern as `AadhaarOcrService`; requires an
+/// submission. Same callable pattern as `AccountRecoveryService`; requires an
 /// authenticated session (the citizen is already signed in by this screen).
 class TranscriptionService {
   TranscriptionService({FirebaseFunctions? functions})

@@ -8,11 +8,11 @@ import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/citizen_stats.dart';
-import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/citizen_activity_widgets.dart';
 import '../../../shared/widgets/consistency_map.dart';
 import '../../../shared/widgets/mp_constituency_card.dart';
+import '../../onboarding/auth/auth_common.dart';
 import '../../onboarding/language_select_screen.dart';
 
 final _profileSubmissionsProvider =
@@ -20,9 +20,9 @@ final _profileSubmissionsProvider =
   return ref.watch(firestoreServiceProvider).watchUserSubmissions(uid);
 });
 
-/// Profile: home constituency/booth/pincode/language at a glance, a privacy
-/// reminder (what's stored and why), and sign-out. Nothing here lets the
-/// citizen see or edit an Aadhaar number — there isn't one stored.
+/// Profile: username and account security (change password, change
+/// security question), home constituency/booth/pincode/language at a
+/// glance, a privacy reminder (what's stored and why), and sign-out.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -62,6 +62,10 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     Text(profile?.name ?? l10n.citizenDefault,
                         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                    if ((profile?.username ?? '').isNotEmpty)
+                      Text('@${profile!.username}',
+                          style: const TextStyle(
+                              fontSize: 13, color: AppColors.inkSoft)),
                     const SizedBox(height: 14),
                     _InfoRow(
                       icon: Icons.flag_rounded,
@@ -94,6 +98,8 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+              const _AccountSecurityCard(),
               if (uid != null) ...[
                 const SizedBox(height: 16),
                 _CivicActivityCard(uid: uid),
@@ -137,7 +143,7 @@ class ProfileScreen extends ConsumerWidget {
                 onPressed: () async {
                   await authService.signOut();
                   await ref.read(onboardingProgressProvider.notifier).reset();
-                  if (context.mounted) context.go('/language');
+                  if (context.mounted) context.go('/welcome');
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.vermilion,
@@ -218,6 +224,230 @@ class _CivicActivityCard extends ConsumerWidget {
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+/// Change password / change security question, from inside a signed-in
+/// session. Changing the password re-checks the current one first — see
+/// `AuthService.changePassword`.
+class _AccountSecurityCard extends StatelessWidget {
+  const _AccountSecurityCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        boxShadow: appCardShadow,
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.lock_reset_rounded, color: AppColors.indigo),
+            title: Text(l10n.changePasswordTitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => _showSheet(context, const _ChangePasswordForm()),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.shield_outlined, color: AppColors.indigo),
+            title: Text(l10n.changeSecurityQuestionTitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => _showSheet(context, const _ChangeSecurityQuestionForm()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSheet(BuildContext context, Widget child) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.paper,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.fromLTRB(
+            20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
+        child: SingleChildScrollView(child: child),
+      ),
+    );
+  }
+}
+
+class _ChangePasswordForm extends StatefulWidget {
+  const _ChangePasswordForm();
+
+  @override
+  State<_ChangePasswordForm> createState() => _ChangePasswordFormState();
+}
+
+class _ChangePasswordFormState extends State<_ChangePasswordForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _current = TextEditingController();
+  final _next = TextEditingController();
+  final _confirm = TextEditingController();
+  bool _saving = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _current.dispose();
+    _next.dispose();
+    _confirm.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _error = null);
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _saving = true);
+    try {
+      await AuthService().changePassword(
+        currentPassword: _current.text,
+        newPassword: _next.text,
+      );
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.of(context).pop();
+      messenger.showSnackBar(SnackBar(content: Text(l10n.passwordChanged)));
+    } on CitizenAuthException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _error = citizenAuthErrorText(e.failure, l10n);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l10n.changePasswordTitle,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 16),
+          PasswordField(
+            controller: _current,
+            label: l10n.currentPasswordLabel,
+            validator: (v) => (v ?? '').isEmpty ? l10n.passwordTooShort : null,
+          ),
+          const SizedBox(height: 12),
+          PasswordField(
+            controller: _next,
+            label: l10n.newPasswordLabel,
+            autofillHints: const [AutofillHints.newPassword],
+            validator: (v) => validateNewPasswordField(v, l10n),
+          ),
+          const SizedBox(height: 12),
+          PasswordField(
+            controller: _confirm,
+            label: l10n.confirmPasswordLabel,
+            textInputAction: TextInputAction.done,
+            autofillHints: const [AutofillHints.newPassword],
+            validator: (v) => v != _next.text ? l10n.passwordsDontMatch : null,
+          ),
+          const SizedBox(height: 16),
+          if (_error != null) AuthErrorBanner(_error!),
+          ElevatedButton(
+            onPressed: _saving ? null : _save,
+            child: _saving
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2.5))
+                : Text(l10n.saveLabel),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ChangeSecurityQuestionForm extends StatefulWidget {
+  const _ChangeSecurityQuestionForm();
+
+  @override
+  State<_ChangeSecurityQuestionForm> createState() =>
+      _ChangeSecurityQuestionFormState();
+}
+
+class _ChangeSecurityQuestionFormState
+    extends State<_ChangeSecurityQuestionForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _answer = TextEditingController();
+  String _questionId = kSecurityQuestionIds.first;
+  bool _saving = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _answer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _error = null);
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _saving = true);
+    try {
+      await AccountRecoveryService().setSecurityQuestion(
+        questionId: _questionId,
+        answer: _answer.text,
+      );
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.of(context).pop();
+      messenger.showSnackBar(SnackBar(content: Text(l10n.securityQuestionSaved)));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _error = l10n.couldNotContinue;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l10n.changeSecurityQuestionTitle,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 16),
+          SecurityQuestionFields(
+            questionId: _questionId,
+            onQuestionChanged: (id) => setState(() => _questionId = id),
+            answerController: _answer,
+          ),
+          const SizedBox(height: 16),
+          if (_error != null) AuthErrorBanner(_error!),
+          ElevatedButton(
+            onPressed: _saving ? null : _save,
+            child: _saving
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2.5))
+                : Text(l10n.saveLabel),
+          ),
+        ],
+      ),
     );
   }
 }

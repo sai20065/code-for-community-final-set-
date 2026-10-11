@@ -7,6 +7,7 @@ import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
+import '../../../shared/widgets/google_maps_directions_button.dart';
 
 Map<SubmissionStatus, String> _statusLabels(AppLocalizations l10n) => {
       SubmissionStatus.newSubmission: l10n.statusFiled,
@@ -160,21 +161,34 @@ class _TicketListState extends ConsumerState<_TicketList> {
                           Text(themeId),
                         ],
                       ),
-                      trailing: DropdownButton<SubmissionStatus>(
-                        value: ticket.status,
-                        items: SubmissionStatus.values
-                            .map((s) => DropdownMenuItem(
-                                  value: s,
-                                  child: Text(statusLabels[s] ?? SubmissionModel.statusToString(s)),
-                                ))
-                            .toList(),
-                        onChanged: (status) {
-                          if (status != null) {
-                            ref
-                                .read(firestoreServiceProvider)
-                                .updateSubmissionStatus(ticket.id, status);
-                          }
-                        },
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Officials see the exact pin (their own
+                          // constituency's tickets), so this routes to the
+                          // precise spot for a site visit.
+                          GoogleMapsDirectionsButton(
+                            lat: ticket.location.lat,
+                            lng: ticket.location.lng,
+                            compact: true,
+                          ),
+                          DropdownButton<SubmissionStatus>(
+                            value: ticket.status,
+                            items: SubmissionStatus.values
+                                .map((s) => DropdownMenuItem(
+                                      value: s,
+                                      child: Text(statusLabels[s] ?? SubmissionModel.statusToString(s)),
+                                    ))
+                                .toList(),
+                            onChanged: (status) {
+                              if (status != null) {
+                                ref
+                                    .read(firestoreServiceProvider)
+                                    .updateSubmissionStatus(ticket.id, status);
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   );

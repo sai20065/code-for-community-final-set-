@@ -39,7 +39,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'மற்ற குடிமக்களுக்கு நீங்கள் அடையாளம் தெரியாதவராகவே இருப்பீர்கள். உங்கள் ஆதார் எண் ஒருபோதும் சேமிக்கப்படுவதில்லை. உங்கள் நாடாளுமன்ற உறுப்பினர் அலுவலகம் ஒட்டுமொத்தத் தேவையையே பார்க்கிறது, உங்கள் அடையாளத்தை அல்ல.';
+      'மற்ற குடிமக்களுக்கு நீங்கள் அநாமதேயமாக இருப்பீர்கள். தொலைபேசி எண், மின்னஞ்சல் அல்லது அடையாள அட்டை தேவையில்லை — பயனர்பெயர் போதும். உங்கள் எம்.பி. அலுவலகம் மொத்த தேவையைப் பார்க்கிறது, உங்கள் அடையாளத்தை அல்ல.';
 
   @override
   String get newHereSignUp => 'இங்கு புதியவரா? பதிவு செய்யுங்கள்';
@@ -49,49 +49,14 @@ class AppLocalizationsTa extends AppLocalizations {
       'எனக்கு ஏற்கனவே ஒரு கணக்கு உள்ளது — உள்நுழையவும்';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'உங்கள் பெயர் மற்றும் முகவரியை நாங்கள் அறிந்துகொள்ள, உங்கள் ஆதார் புகைப்படத்தினைப் பதிவேற்றவும். நாங்கள் உங்கள் பெயர், முகவரி மற்றும் அஞ்சல் குறியீட்டை மட்டுமே வைத்துக்கொள்கிறோம் — புகைப்படமும் உங்கள் ஆதார் எண்ணும் ஒருபோதும் சேமிக்கப்படுவதில்லை. இது அடையாளச் சரிபார்ப்பு அல்ல; நீங்கள் உங்கள் விவரங்களைக் கீழே தட்டச்சு செய்தும் பெற்றுக்கொள்ளலாம்.';
-
-  @override
-  String get aadhaarUploadNote =>
-      'உங்கள் பெயர் மற்றும் முகவரியை நாங்கள் அறிந்துகொள்ள, உங்கள் ஆதார் அட்டையின் முன்பக்கம் மற்றும் பின்பக்கத்தின் புகைப்படங்களைப் பதிவேற்றவும். பின்பக்கத்தில் பெரும்பாலும் உங்கள் முழு முகவரி இருக்கும், எனவே அதையும் புகைப்படம் எடுப்பது மிகவும் துல்லியமான முடிவுகளைத் தரும். நாங்கள் உங்கள் பெயர், முகவரி, அஞ்சல் குறியீடு மற்றும் வார்டு எண்ணை மட்டுமே வைத்துக்கொள்வோம் — புகைப்படங்களும் உங்கள் ஆதார் எண்ணும் ஒருபோதும் சேமிக்கப்படுவதில்லை. இது அடையாளச் சரிபார்ப்பு அல்ல, மேலும் இரண்டு புகைப்படங்களும் கட்டாயமில்லை — நீங்கள் எப்போது வேண்டுமானாலும் கீழே உங்கள் விவரங்களைத் தட்டச்சு செய்யலாம்.';
-
-  @override
-  String get slotFront => 'முன்';
-
-  @override
-  String get slotBack => 'திரும்பி';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'ஏற்கனவே கணக்கு உள்ளதா? உள்நுழையவும்';
-
-  @override
-  String get aadhaarBackNote =>
-      'குறிப்பு: உங்கள் ஆதார் அட்டையின் பின்புறத்தையும் புகைப்படம் எடுங்கள் — முன்பக்கத்தில் விடுபட்டிருக்கும் உங்கள் முழு முகவரி பெரும்பாலும் அதில் இருக்கும். இரண்டு பக்கங்களும் கட்டாயமில்லை.';
 
   @override
   String get camera => 'கேமரா';
 
   @override
   String get gallery => 'கேலரி';
-
-  @override
-  String get extractDetails => 'விவரங்களைப் பிரித்தெடுக்கவும்';
-
-  @override
-  String get couldNotReadClearly =>
-      'அதை தெளிவாக படிக்க முடியவில்லை — கீழே உள்ள விவரங்களை சரிபார்க்கவும் அல்லது அவற்றை கைமுறையாக உள்ளிடவும்.';
-
-  @override
-  String get couldNotProcessImage =>
-      'அந்தப் படத்தை தற்சமயம் செயலாக்க முடியவில்லை — உங்கள் விவரங்களை கீழே கைமுறையாக உள்ளிடவும்.';
-
-  @override
-  String get hideManualEntry => 'கைமுறை உள்ளீட்டை மறைக்கவும்';
-
-  @override
-  String get skipEnterManually => 'தவிர்க்கவும் — நான் கைமுறையாக உள்ளிடுவேன்';
 
   @override
   String get fullName => 'முழு பெயர்';
@@ -116,49 +81,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get continueLabel => 'தொடரவும்';
 
   @override
-  String get verifyWithPhone => 'உங்கள் தொலைபேசி எண்ணைக் கொண்டு சரிபார்க்கவும்';
-
-  @override
-  String get mobileNumberHint => '10 இலக்க மொபைல் எண்';
-
-  @override
-  String get sendCode => 'குறியீட்டை அனுப்பவும்';
-
-  @override
-  String get sixDigitCode => '6-இலக்க குறியீடு';
-
-  @override
-  String get verifyAndContinue => 'சரிபார்த்துத் தொடரவும்';
-
-  @override
-  String get verifyAndSignIn => 'சரிபார்த்து உள்நுழையவும்';
-
-  @override
-  String get enterValidMobile => 'சரியான 10 இலக்க கைபேசி எண்ணை உள்ளிடவும்.';
-
-  @override
-  String get codeDidntMatch =>
-      'அந்தக் குறியீடு பொருந்தவில்லை — அதைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
-
-  @override
   String get couldNotContinue =>
       'தொடர முடியவில்லை — உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
 
   @override
-  String get skipStayAnonymous =>
-      'தவிர்க்கவும் — உங்கள் அடையாளத்தை மறைத்துக்கொள்ளுங்கள்';
-
-  @override
   String get aggregatedDemandNote =>
       'நீங்கள் எந்த வழியில் உள்நுழைந்தாலும், உங்கள் நாடாளுமன்ற உறுப்பினர் அலுவலகம் ஒட்டுமொத்தத் தேவையை மட்டுமே பார்க்கிறது, உங்கள் அடையாளத்தை ஒருபோதும் பார்ப்பதில்லை.';
-
-  @override
-  String get welcomeBack =>
-      'மீண்டும் வருக — நீங்கள் பதிவுசெய்த தொலைபேசி எண்ணைப் பயன்படுத்தி உள்நுழையவும்.';
-
-  @override
-  String get noAccountFound =>
-      'இந்த எண்ணுக்கு கணக்கு எதுவும் காணப்படவில்லை — தயவுசெய்து முதலில் பதிவு செய்யவும்.';
 
   @override
   String get dontHaveAccountSignUp =>
@@ -408,7 +336,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'உங்கள் சமர்ப்பிப்புகளைச் சரியான நாடாளுமன்ற உறுப்பினருக்கு அனுப்புவதற்காக, நாங்கள் உங்கள் முகவரியைச் சேமித்து வைக்கிறோம். உங்கள் 12 இலக்க ஆதார் எண் ஒருபோதும் சேமிக்கப்படுவதில்லை.';
+      'உங்கள் புகார்களை சரியான எம்.பி.க்கு அனுப்ப உங்கள் வீட்டு இருப்பிடத்தைச் சேமிக்கிறோம். தொலைபேசி எண், மின்னஞ்சல் அல்லது எந்த அடையாளமும் கேட்பதில்லை.';
 
   @override
   String get signOutClears =>
@@ -873,42 +801,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get backToSignIn => 'உள்நுழைவுக்குத் திரும்பு';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'Your session expired. Please try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'That photo is too large to process. Try a closer, smaller shot of the card.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'Our reader is busy right now. Try again in a moment, or type your details below.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'Something went wrong reading the card. You can type your details below instead.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'We read part of your card. Please check the details below and fill in anything missing.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'The back photo was too large, so we read the front only. Please check the address below.';
-
-  @override
   String get mapLayerFailed =>
       'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
@@ -1208,4 +1100,169 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'Solution ready';
+
+  @override
+  String get openInGoogleMaps => 'Google Maps-இல் வழி காண்க';
+
+  @override
+  String get openInGoogleMapsApprox => 'இந்தப் பகுதிக்கு வழி (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps =>
+      'இந்தச் சாதனத்தில் Google Maps திறக்க முடியவில்லை.';
+
+  @override
+  String get usernameLabel => 'பயனர்பெயர்';
+
+  @override
+  String get usernameHelper => '4–20 எழுத்துகள், எண்கள், _ அல்லது .';
+
+  @override
+  String get usernameTooShort =>
+      'பயனர்பெயர் குறைந்தது 4 எழுத்துகள் இருக்க வேண்டும்.';
+
+  @override
+  String get usernameTooLong => 'பயனர்பெயர் அதிகபட்சம் 20 எழுத்துகள்.';
+
+  @override
+  String get usernameBadCharacters =>
+      'எழுத்துகள், எண்கள், _ மற்றும் . மட்டும் பயன்படுத்தவும் (இடைவெளி வேண்டாம்).';
+
+  @override
+  String get usernameAvailable => 'பயனர்பெயர் கிடைக்கிறது';
+
+  @override
+  String get usernameTaken =>
+      'இந்தப் பயனர்பெயர் ஏற்கனவே எடுக்கப்பட்டுள்ளது. வேறொன்றை முயலவும்.';
+
+  @override
+  String get confirmPasswordLabel => 'கடவுச்சொல்லை உறுதிப்படுத்தவும்';
+
+  @override
+  String get newPasswordLabel => 'புதிய கடவுச்சொல்';
+
+  @override
+  String get currentPasswordLabel => 'தற்போதைய கடவுச்சொல்';
+
+  @override
+  String get passwordTooShort =>
+      'கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.';
+
+  @override
+  String get passwordsDontMatch => 'கடவுச்சொற்கள் பொருந்தவில்லை.';
+
+  @override
+  String get authWrongCredentials => 'பயனர்பெயர் அல்லது கடவுச்சொல் தவறு.';
+
+  @override
+  String get authTooManyAttempts =>
+      'அதிக முயற்சிகள். சில நிமிடங்கள் கழித்து மீண்டும் முயலவும்.';
+
+  @override
+  String get authNetworkError =>
+      'இணைய இணைப்பு இல்லை. நெட்வொர்க்கைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get nameRequired => 'உங்கள் பெயரை உள்ளிடவும்.';
+
+  @override
+  String get createAccountTitle => 'உங்கள் கணக்கை உருவாக்கவும்';
+
+  @override
+  String get createAccountSubtitle =>
+      'பயனர்பெயரும் கடவுச்சொல்லும் போதும் — தொலைபேசி எண், மின்னஞ்சல் அல்லது அடையாள அட்டை தேவையில்லை.';
+
+  @override
+  String get createAccountButton => 'கணக்கை உருவாக்கு';
+
+  @override
+  String get welcomeBackTitle => 'மீண்டும் வருக';
+
+  @override
+  String get signInSubtitle =>
+      'உங்கள் பயனர்பெயர் மற்றும் கடவுச்சொல்லுடன் உள்நுழையவும்.';
+
+  @override
+  String get forgotPasswordLink => 'கடவுச்சொல் மறந்துவிட்டதா?';
+
+  @override
+  String get securityQuestionIntro =>
+      'ஒரு பாதுகாப்புக் கேள்வியைத் தேர்ந்தெடுக்கவும். கடவுச்சொல் மறந்தால், இதற்கு பதிலளித்து புதியதை அமைக்கலாம்.';
+
+  @override
+  String get securityQuestionLabel => 'பாதுகாப்புக் கேள்வி';
+
+  @override
+  String get securityAnswerLabel => 'உங்கள் பதில்';
+
+  @override
+  String get securityAnswerHelper =>
+      'இந்தப் பதிலை நினைவில் கொள்ளுங்கள். பெரிய/சிறிய எழுத்து வேறுபாடு இல்லை.';
+
+  @override
+  String get securityAnswerRequired => 'பதிலை உள்ளிடவும்.';
+
+  @override
+  String get securityQuestionFirstSchool =>
+      'உங்கள் முதல் பள்ளியின் பெயர் என்ன?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'உங்கள் அம்மா எந்த ஊரில் அல்லது கிராமத்தில் பிறந்தார்?';
+
+  @override
+  String get securityQuestionFavouriteFood => 'உங்களுக்குப் பிடித்த உணவு எது?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'உங்கள் சிறுவயது நெருங்கிய நண்பரின் பெயர் என்ன?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'உங்கள் முதல் மிதிவண்டி அல்லது வாகனம் எது?';
+
+  @override
+  String get forgotPasswordTitle => 'கடவுச்சொல்லை மீட்டமைக்கவும்';
+
+  @override
+  String get forgotPasswordStep1 =>
+      'உங்கள் கணக்கைக் கண்டறிய பயனர்பெயரை உள்ளிடவும்.';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'பாதுகாப்புக் கேள்விக்கு பதிலளித்து புதிய கடவுச்சொல்லைத் தேர்ந்தெடுக்கவும்.';
+
+  @override
+  String get passwordResetDone =>
+      'உங்கள் கடவுச்சொல் மாற்றப்பட்டது. புதிய கடவுச்சொல்லுடன் உள்நுழையவும்.';
+
+  @override
+  String get resetPasswordButton => 'புதிய கடவுச்சொல் அமை';
+
+  @override
+  String get recoveryNotMatched =>
+      'பதில் பொருந்தவில்லை. சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get recoveryLocked =>
+      'பல தவறான பதில்கள். கடவுச்சொல் மீட்டமைப்பு 15 நிமிடங்களுக்கு பூட்டப்பட்டுள்ளது.';
+
+  @override
+  String get recoveryNoQuestion =>
+      'இந்தப் பயனர்பெயருக்கு பாதுகாப்புக் கேள்வி இல்லை.';
+
+  @override
+  String get changePasswordTitle => 'கடவுச்சொல்லை மாற்று';
+
+  @override
+  String get changeSecurityQuestionTitle => 'பாதுகாப்புக் கேள்வியை மாற்று';
+
+  @override
+  String get passwordChanged => 'கடவுச்சொல் மாற்றப்பட்டது.';
+
+  @override
+  String get securityQuestionSaved => 'பாதுகாப்புக் கேள்வி சேமிக்கப்பட்டது.';
+
+  @override
+  String get saveLabel => 'சேமி';
 }
