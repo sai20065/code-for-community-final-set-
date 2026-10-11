@@ -55,9 +55,16 @@ class PublicDataService {
   /// silently excludes documents missing the ordered field, and a hotspot
   /// vanishing from the public map with no error is exactly the failure
   /// this codebase already had once.
-  Stream<List<PublicClusterModel>> watchClusters(String constituencyId) {
+  ///
+  /// [field] widens this beyond constituencies for MLAs and local officers:
+  /// `assemblyId`, `bbmpWardId`, `talukId` or `districtId` (see
+  /// `OfficialScope`).
+  Stream<List<PublicClusterModel>> watchClusters(
+    String constituencyId, {
+    String field = 'constituencyId',
+  }) {
     return _clusters
-        .where('constituencyId', isEqualTo: constituencyId)
+        .where(field, isEqualTo: constituencyId)
         .snapshots()
         .map((snap) {
       final list = snap.docs
@@ -106,9 +113,10 @@ class PublicDataService {
     String constituencyId, {
     int limit = 30,
     String? theme,
+    String field = 'constituencyId',
   }) {
     Query<Map<String, dynamic>> query =
-        _tickets.where('constituencyId', isEqualTo: constituencyId);
+        _tickets.where(field, isEqualTo: constituencyId);
     if (theme != null) query = query.where('theme', isEqualTo: theme);
     return query
         .orderBy('createdDate', descending: true)

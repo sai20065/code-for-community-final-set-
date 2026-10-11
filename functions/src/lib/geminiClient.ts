@@ -173,16 +173,18 @@ Respond with strict JSON: {"summaryText": string, "priorityScore": number}.`;
    * other methods here. */
   async generateConstituencyReportSummary(input: {
     constituencyName: string;
+    /** Who the briefing is for, e.g. "Tahsildar" — defaults to the MP. */
+    audience?: string;
     stats: {open: number; resolved: number; urgent: number};
     topClusters: Array<{theme: string; summaryText: string; priorityScore: number; submissionCount: number}>;
   }): Promise<{executiveSummary: string; keyRecommendations: string[]}> {
-    const prompt = `You are writing a briefing for the Member of Parliament for
+    const prompt = `You are writing a briefing for the ${input.audience ?? "Member of Parliament"} for
 ${input.constituencyName}. Current status: ${input.stats.open} open tickets,
 ${input.stats.resolved} resolved, ${input.stats.urgent} flagged urgent.
 Top issues by priority:
 ${input.topClusters.map((c) => `- [${c.theme}] ${c.summaryText} (${c.submissionCount} reports, priority ${c.priorityScore})`).join("\n")}
 Write a short executive summary (3-4 sentences, plain professional English,
-no markdown) for the MP, and 3-5 concrete recommended actions ranked by
+no markdown) for them, and 3-5 concrete recommended actions ranked by
 impact. Respond with strict JSON: {"executiveSummary": string,
 "keyRecommendations": string[]}.`;
 
@@ -198,6 +200,60 @@ impact. Respond with strict JSON: {"executiveSummary": string,
         [],
     };
   }
+
+  /** Structured AI briefing for one official's area (or the whole state),
+   * shown as a card on the government dashboard. Input is aggregate counts
+   * and AI cluster summaries only — never a citizen's own words. */
+  async generateAreaBriefing(input: {
+    areaName: string;
+    audience: string;
+    stats: {total: number; open: number; inProgress: number; resolved: number; urgent: number; newThisWeek: number};
+    topClusters: Array<{theme: string; summaryText: string; priorityScore: number; submissionCount: number; trend: string}>;
+  }): Promise<AreaBriefingContent> {
+    const prompt = `You are a civic analyst briefing the ${input.audience} for
+${input.areaName}, India, on citizen-reported problems.
+Status: ${input.stats.total} reports in total — ${input.stats.open} open,
+${input.stats.inProgress} in progress, ${input.stats.resolved} resolved,
+${input.stats.newThisWeek} new this week, ${input.stats.urgent} urgent issue groups.
+Issue groups by priority (theme, summary, reports, priority 0-100, 4-week trend):
+${input.topClusters.map((c) => `- [${c.theme}] ${c.summaryText} | ${c.submissionCount} reports | priority ${c.priorityScore} | ${c.trend}`).join("\n") || "- none yet"}
+
+Write for a busy official: plain, specific, no jargon, no markdown, no names
+or addresses of citizens. Respond with strict JSON:
+{"headline": string (max 12 words),
+ "situation": string (2-3 sentences),
+ "topProblems": [{"title": string, "theme": string, "whyItMatters": string (1 sentence)}] (max 4, highest priority first),
+ "trends": string[] (max 3 short observations),
+ "urgent": string[] (max 3; empty if nothing is urgent),
+ "recommendedActions": [{"action": string, "owner": string (department or office), "timeframe": "this week" | "this month" | "this quarter"}] (3-5, ranked by impact)}`;
+
+    const text = await this.generateText([prompt]);
+    const p = safeParseJson(text) ?? {};
+    const str = (v: unknown, fallback = "") => typeof v === "string" ? scrubPublicText(v) : fallback;
+    const arr = (v: unknown): unknown[] => Array.isArray(v) ? v : [];
+    return {
+      headline: str(p.headline, `${input.stats.open} open issues in ${input.areaName}`),
+      situation: str(p.situation,
+        `${input.stats.total} reports so far, ${input.stats.resolved} resolved and ${input.stats.urgent} urgent issue groups.`),
+      topProblems: arr(p.topProblems).slice(0, 4).map((t: any) => ({
+        title: str(t?.title), theme: str(t?.theme, "more"), whyItMatters: str(t?.whyItMatters),
+      })).filter((t) => t.title),
+      trends: arr(p.trends).map((t) => str(t)).filter(Boolean).slice(0, 3),
+      urgent: arr(p.urgent).map((t) => str(t)).filter(Boolean).slice(0, 3),
+      recommendedActions: arr(p.recommendedActions).slice(0, 5).map((r: any) => ({
+        action: str(r?.action), owner: str(r?.owner), timeframe: str(r?.timeframe, "this month"),
+      })).filter((r) => r.action),
+    };
+  }
+}
+
+export interface AreaBriefingContent {
+  headline: string;
+  situation: string;
+  topProblems: Array<{title: string; theme: string; whyItMatters: string}>;
+  trends: string[];
+  urgent: string[];
+  recommendedActions: Array<{action: string; owner: string; timeframe: string}>;
 }
 
 /**

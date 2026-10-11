@@ -181,6 +181,24 @@ class FirestoreService {
     return _submissions.doc(id).update(data);
   }
 
+  /// Every ticket in an official's area — `location.<field> == id`, where
+  /// field is constituencyId / assemblyId / bbmpWardId / talukId /
+  /// districtId (see `OfficialScope`). Sorted in Dart so no composite index
+  /// per scope field is needed; firestore.rules (`isOfficialForArea`) only
+  /// lets the matching official run it.
+  Stream<List<SubmissionModel>> watchScopeSubmissions(String field, String id) {
+    return _submissions
+        .where('location.$field', isEqualTo: id)
+        .snapshots()
+        .map((snap) {
+      final list = snap.docs
+          .map((d) => SubmissionModel.fromMap(d.id, d.data()))
+          .toList();
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return list;
+    });
+  }
+
   Stream<List<SubmissionModel>> watchConstituencySubmissions(
       String constituencyId) {
     return _submissions

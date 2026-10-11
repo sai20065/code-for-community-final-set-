@@ -1434,4 +1434,32 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get stepExploreMapBody =>
       'ചുറ്റും എന്താണ് റിപ്പോർട്ട് ചെയ്യപ്പെടുന്നതെന്ന് കാണുക.';
+
+  @override
+  String get welcomeCitizenTitle => 'പൗരന്മാർ';
+
+  @override
+  String get welcomeCitizenBody =>
+      'നിങ്ങളുടെ പ്രദേശത്തെ പ്രശ്നങ്ങൾ റിപ്പോർട്ട് ചെയ്യൂ, വികസന പ്രവർത്തനങ്ങൾ നിർദ്ദേശിക്കൂ — ശബ്ദം, ടെക്സ്റ്റ് അല്ലെങ്കിൽ ഫോട്ടോ വഴി, നിങ്ങളുടെ ഭാഷയിൽ.';
+
+  @override
+  String get welcomeGovTitle => 'എം.പി., എം.എൽ.എ. & ഉദ്യോഗസ്ഥർ';
+
+  @override
+  String get welcomeGovBody =>
+      'നിങ്ങളുടെ പ്രദേശത്തെ സർക്കാർ ഡാഷ്ബോർഡ്: പരാതികൾ, ഹോട്ട്‌സ്‌പോട്ടുകൾ, AI ബ്രീഫിംഗ്, ഡൗൺലോഡ് ചെയ്യാവുന്ന റിപ്പോർട്ടുകൾ.';
+
+  @override
+  String get welcomeGovRegister =>
+      'പുതിയ എം.എൽ.എ. അല്ലെങ്കിൽ ഉദ്യോഗസ്ഥനാണോ? രജിസ്റ്റർ ചെയ്യൂ';
+
+  @override
+  String get welcomeAdminTitle => 'പ്രജാധ്വനി അഡ്മിൻ';
+
+  @override
+  String get welcomeAdminBody => 'പ്ലാറ്റ്‌ഫോം ഭരണവും ഉദ്യോഗസ്ഥരുടെ അംഗീകാരവും';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'വെറുതെ നോക്കുകയാണോ? നിങ്ങളുടെ പ്രദേശത്തിന്റെ പൊതു ഡാഷ്ബോർഡ് കാണൂ';
 }

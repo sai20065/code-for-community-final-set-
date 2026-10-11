@@ -1428,4 +1428,31 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'ನಿಮ್ಮ ಸುತ್ತಮುತ್ತ ಏನು ವರದಿಯಾಗುತ್ತಿದೆ ನೋಡಿ.';
+
+  @override
+  String get welcomeCitizenTitle => 'ನಾಗರಿಕರು';
+
+  @override
+  String get welcomeCitizenBody =>
+      'ನಿಮ್ಮ ಪ್ರದೇಶದ ಸಮಸ್ಯೆಗಳನ್ನು ವರದಿ ಮಾಡಿ, ಅಭಿವೃದ್ಧಿ ಕಾರ್ಯ ಸೂಚಿಸಿ — ಧ್ವನಿ, ಪಠ್ಯ ಅಥವಾ ಫೋಟೋ ಮೂಲಕ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.';
+
+  @override
+  String get welcomeGovTitle => 'ಸಂಸದರು, ಶಾಸಕರು ಮತ್ತು ಅಧಿಕಾರಿಗಳು';
+
+  @override
+  String get welcomeGovBody =>
+      'ನಿಮ್ಮ ಪ್ರದೇಶದ ಸರ್ಕಾರಿ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್: ವರದಿಗಳು, ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗಳು, AI ಸಂಕ್ಷಿಪ್ತ ವರದಿ ಮತ್ತು ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದಾದ ವರದಿಗಳು.';
+
+  @override
+  String get welcomeGovRegister => 'ಹೊಸ ಶಾಸಕರು ಅಥವಾ ಅಧಿಕಾರಿಯೇ? ನೋಂದಾಯಿಸಿ';
+
+  @override
+  String get welcomeAdminTitle => 'ಪ್ರಜಾಧ್ವನಿ ಆಡ್ಮಿನ್';
+
+  @override
+  String get welcomeAdminBody => 'ವೇದಿಕೆ ಆಡಳಿತ ಮತ್ತು ಅಧಿಕಾರಿಗಳ ಅನುಮೋದನೆ';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'ಸುಮ್ಮನೆ ನೋಡುತ್ತಿದ್ದೀರಾ? ನಿಮ್ಮ ಪ್ರದೇಶದ ಸಾರ್ವಜನಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ನೋಡಿ';
 }

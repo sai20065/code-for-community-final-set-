@@ -23,6 +23,23 @@ add or rename a field, update the model file first, then this table.
 | `createdAt` | timestamp | When `users/{uid}` was first written |
 | `signupCompletedAt` | timestamp? | Set once Sign Up finishes — the authoritative "this is a real, saved profile" marker; Sign In and Splash routing trust this over any local per-device state |
 
+## Officials and admins on `users/{uid}`
+| Field | Type | Meaning |
+|---|---|---|
+| `role` | string | `official` or `admin`. Set only by the review function / provisioning scripts |
+| `officialType` | string | `mp` / `mla` / `wardOfficer` / `tahsildar` / `districtOfficer` (absent on legacy MPs = `mp`) |
+| `jurisdiction` | map | `{type: constituency/assembly/bbmpWard/taluk/district, id, name}`. The data scope; officials can't edit it |
+| `designation` / `officialEmail` / `approvedAt` | mixed | Profile details |
+
+## `officialApplications/{uid}`
+A self-registration: name, designation, `officialType`, `jurisdiction`, `officialEmail`, `proofPath` (private Storage file), `status` (pending/approved/rejected), `rejectionReason`, timestamps. The applicant creates it; only admins approve it, through `reviewOfficialApplication`.
+
+## `assemblies/{KA-AC-n}`
+Karnataka's 224 assembly constituencies: `acNo`, `name`, `districtName`, parent `constituencyId`, `centroid`, `boundaryGeoJson`. Tickets and clusters carry `assemblyId` and `districtId` for MLA and DC scope.
+
+## `briefings/{scopeKey}`
+Cached AI briefing per area, e.g. `talukId_2102`. Written by `getAreaBriefing`; directly readable by admins only.
+
 ## `usernames/{username}`
 
 | Field | Type | Meaning |

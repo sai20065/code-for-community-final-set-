@@ -5,6 +5,7 @@ import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
 import {resolveTalukForPoint} from "../lib/talukGeo";
+import {resolveAssemblyForPoint} from "../lib/assemblyGeo";
 import {resolveBbmpWardForPoint} from "../lib/bbmpWardGeo";
 import {resolveWardForPoint} from "../lib/wardGeo";
 import {
@@ -169,6 +170,8 @@ export const onSubmissionCreated = onDocumentCreated(
     let wardId: string | undefined = submission.location?.wardId;
     let talukId: string | undefined = submission.location?.talukId;
     let bbmpWardId: string | undefined = submission.location?.bbmpWardId;
+    let assemblyId: string | undefined = submission.location?.assemblyId;
+    let districtId: string | undefined = submission.location?.districtId;
     if (typeof lat === "number" && typeof lng === "number") {
       const resolved = resolveConstituencyForPoint(lat, lng);
       if (resolved && resolved.constituencyId !== constituencyId) {
@@ -198,6 +201,18 @@ export const onSubmissionCreated = onDocumentCreated(
         talukId = resolvedTaluk.talukId;
         patch["location.talukId"] = resolvedTaluk.talukId;
       }
+      // District (DC scope) and assembly constituency (MLA scope), so every
+      // official type's dashboard and security rules can match the ticket.
+      if (resolvedTaluk && resolvedTaluk.districtId !== districtId) {
+        districtId = resolvedTaluk.districtId;
+        patch["location.districtId"] = resolvedTaluk.districtId;
+      }
+      const resolvedAssembly = resolveAssemblyForPoint(lat, lng);
+      if (resolvedAssembly && resolvedAssembly.assemblyId !== assemblyId) {
+        assemblyId = resolvedAssembly.assemblyId;
+        patch["location.assemblyId"] = resolvedAssembly.assemblyId;
+        patch["location.assemblyName"] = resolvedAssembly.assemblyName;
+      }
     }
     const boothId: string | undefined = submission.location?.boothId;
     if (!constituencyId) {
@@ -221,6 +236,8 @@ export const onSubmissionCreated = onDocumentCreated(
           new Date(),
       wardId: wardId ?? null,
       bbmpWardId: bbmpWardId ?? null,
+      assemblyId: assemblyId ?? null,
+      districtId: districtId ?? null,
       talukId: talukId ?? null,
       lat: typeof lat === "number" ? lat : null,
       lng: typeof lng === "number" ? lng : null,

@@ -1,58 +1,67 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/official_service.dart';
 import '../../shared/widgets/primary_button.dart';
+import 'auth/auth_common.dart';
 
-/// Government sign-in — its own screen rather than a tab on Welcome.
-///
-/// Officials are provisioned out-of-band (see
-/// `functions/src/scripts/seedKarnatakaOfficials.ts`), so this is a two-field
-/// form: the constituency ID printed on their onboarding letter, and a
-/// password mailed to their official address. `AuthService.signInOfficial`
-/// turns the ID into the synthetic `{id}@mp.prajadhwani.app` credential — an
-/// official never sees or types an email address.
-class GovLoginScreen extends StatefulWidget {
+/// Where a just-signed-in government / admin account should land:
+/// admin console, the scoped dashboard, or (for a self-registered official
+/// not yet approved) the application status screen. Accounts with none of
+/// these are signed back out — a citizen password must not open the
+/// government side. Returns an error message, or null after navigating.
+Future<String?> routeGovAccount(BuildContext context, String uid) async {
+  final db = FirebaseFirestore.instance;
+  final user = (await db.collection('users').doc(uid).get()).data();
+  if (!context.mounted) return null;
+  switch (user?['role']) {
+    case 'admin':
+      context.go('/admin');
+      return null;
+    case 'official':
+      context.go('/gov/dashboard');
+      return null;
+  }
+  final app = await db.collection('officialApplications').doc(uid).get();
+  if (!context.mounted) return null;
+  if (app.exists) {
+    context.go('/gov/pending');
+    return null;
+  }
+  await AuthService().signOut();
+  return 'This is not a government account. Citizens sign in from the '
+      'Citizen section; new officials can register below.';
+}
+
+enum _Mode { mp, official }
+
+/// Government sign-in, same look as the citizen screens. Two kinds of
+/// account:
+///  - **MP office**: admin-provisioned; constituency ID + password, with the
+///    existing setup-code + email recovery (`mpFirstTimeSetup` /
+///    `mpForgotCredentials`).
+///  - **MLA / Officer** (BBMP ward officer, Tahsildar, District officer):
+///    self-registered with an official email; Firebase's reset email for
+///    "Forgot password". Access starts only after admin approval.
+class GovLoginScreen extends ConsumerStatefulWidget {
   const GovLoginScreen({super.key});
 
   @override
-  State<GovLoginScreen> createState() => _GovLoginScreenState();
+  ConsumerState<GovLoginScreen> createState() => _GovLoginScreenState();
 }
 
-class _GovLoginScreenState extends State<GovLoginScreen> {
+class _GovLoginScreenState extends ConsumerState<GovLoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _idController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authService = AuthService();
+  _Mode _mode = _Mode.mp;
   bool _loading = false;
-  bool _obscure = true;
   String? _error;
-
-  bool get _canSubmit =>
-      _idController.text.trim().isNotEmpty &&
-      _passwordController.text.isNotEmpty;
-
-  Future<void> _login() async {
-    if (!_canSubmit || _loading) return;
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-    try {
-      await _authService.signInOfficial(
-        constituencyId: _idController.text.trim().toLowerCase(),
-        password: _passwordController.text,
-      );
-      if (mounted) context.go('/gov/dashboard');
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _loading = false;
-        _error = 'Could not sign in. Check your ID and password, or use '
-            '"First-time setup" below to get a fresh password by email.';
-      });
-    }
-  }
+  String? _info;
 
   @override
   void dispose() {
@@ -61,206 +70,166 @@ class _GovLoginScreenState extends State<GovLoginScreen> {
     super.dispose();
   }
 
+  Future<void> _submit() async {
+    setState(() {
+      _error = null;
+      _info = null;
+    });
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _loading = true);
+    try {
+      final uid = _mode == _Mode.mp
+          ? (await AuthService().signInOfficial(
+              constituencyId: _idController.text.trim().toLowerCase(),
+              password: _passwordController.text,
+            ))
+              .uid
+          : (await OfficialService().signInWithEmail(
+              _idController.text, _passwordController.text))
+              .uid;
+      if (!mounted) return;
+      final error = await routeGovAccount(context, uid);
+      if (error != null && mounted) {
+        setState(() {
+          _loading = false;
+          _error = error;
+        });
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = _mode == _Mode.mp
+            ? 'Could not sign in. Check your constituency ID and password.'
+            : 'Could not sign in. Check your official email and password.';
+      });
+    }
+  }
+
+  Future<void> _forgot() async {
+    if (_mode == _Mode.mp) {
+      context.go('/mp/forgot-credentials');
+      return;
+    }
+    final email = _idController.text.trim();
+    if (!email.contains('@')) {
+      setState(() => _error = 'Enter your official email above first.');
+      return;
+    }
+    try {
+      await OfficialService().sendPasswordReset(email);
+      setState(() {
+        _error = null;
+        _info = 'If $email has an account, a reset link is on its way.';
+      });
+    } catch (_) {
+      setState(() => _error = 'Could not send the reset email. Try again.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.indigoDeep,
-      body: SafeArea(
+    final isMp = _mode == _Mode.mp;
+    return AuthScaffold(
+      title: 'Government sign-in',
+      subtitle: 'For MPs, MLAs, BBMP ward officers, Tahsildars and '
+          'District officers.',
+      footer: Column(
+        children: [
+          TextButton.icon(
+            onPressed: () => context.go('/gov/register'),
+            icon: const Icon(Icons.how_to_reg_rounded),
+            label: const Text('New MLA or officer? Register for access'),
+          ),
+          if (isMp)
+            TextButton(
+              onPressed: () => context.go('/mp/first-time-setup'),
+              child: const Text('MP first-time setup'),
+            ),
+        ],
+      ),
+      child: Form(
+        key: _formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SegmentedButton<_Mode>(
+              segments: const [
+                ButtonSegment(
+                  value: _Mode.mp,
+                  label: Text('MP office'),
+                  icon: Icon(Icons.account_balance_rounded),
+                ),
+                ButtonSegment(
+                  value: _Mode.official,
+                  label: Text('MLA / Officer'),
+                  icon: Icon(Icons.badge_rounded),
+                ),
+              ],
+              selected: {_mode},
+              onSelectionChanged: (s) => setState(() {
+                _mode = s.first;
+                _error = null;
+                _info = null;
+                _idController.clear();
+              }),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              key: ValueKey(_mode),
+              controller: _idController,
+              autocorrect: false,
+              keyboardType:
+                  isMp ? TextInputType.text : TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                labelText: isMp ? 'Constituency ID' : 'Official email',
+                hintText: isMp ? 'e.g. 2927' : 'name@karnataka.gov.in',
+                prefixIcon: Icon(isMp
+                    ? Icons.confirmation_number_outlined
+                    : Icons.alternate_email_rounded),
+              ),
+              validator: (v) {
+                final t = (v ?? '').trim();
+                if (t.isEmpty) return 'Required';
+                if (!isMp && !t.contains('@')) return 'Enter a valid email';
+                return null;
+              },
+            ),
+            const SizedBox(height: 12),
+            PasswordField(
+              controller: _passwordController,
+              label: 'Password',
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+              validator: (v) => (v ?? '').isEmpty ? 'Required' : null,
+            ),
             Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                onPressed: () =>
-                    context.canPop() ? context.pop() : context.go('/welcome'),
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: _forgot,
+                child: Text(isMp ? 'Forgot credentials?' : 'Forgot password?'),
               ),
             ),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(Icons.account_balance_rounded,
-                        color: Colors.white, size: 30),
-                  ),
-                  const SizedBox(height: 18),
-                  const Text(
-                    'Government access',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Sign in with the constituency ID and password issued to '
-                    'your office.',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.72),
-                      fontSize: 13.5,
-                      height: 1.45,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(AppRadii.lg),
-                      boxShadow: appCardShadow,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const _FieldLabel('Constituency ID'),
-                        TextField(
-                          controller: _idController,
-                          autocorrect: false,
-                          textCapitalization: TextCapitalization.none,
-                          textInputAction: TextInputAction.next,
-                          onChanged: (_) => setState(() {}),
-                          decoration: const InputDecoration(
-                            hintText: 'e.g. blr-north',
-                            prefixIcon: Icon(Icons.badge_outlined, size: 20),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const _FieldLabel('Password'),
-                        TextField(
-                          controller: _passwordController,
-                          obscureText: _obscure,
-                          textInputAction: TextInputAction.done,
-                          onChanged: (_) => setState(() {}),
-                          onSubmitted: (_) => _login(),
-                          decoration: InputDecoration(
-                            hintText: 'Password from your setup email',
-                            prefixIcon: const Icon(Icons.lock_outline, size: 20),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscure
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                size: 20,
-                              ),
-                              onPressed: () =>
-                                  setState(() => _obscure = !_obscure),
-                            ),
-                          ),
-                        ),
-                        if (_error != null) ...[
-                          const SizedBox(height: 14),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: AppColors.vermilion.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(AppRadii.sm),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(Icons.error_outline,
-                                    size: 16, color: AppColors.vermilion),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    _error!,
-                                    style: const TextStyle(
-                                      color: AppColors.vermilion,
-                                      fontSize: 12,
-                                      height: 1.4,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 20),
-                        PrimaryButton(
-                          label: 'Sign in',
-                          icon: Icons.login_rounded,
-                          loading: _loading,
-                          onPressed: _canSubmit ? _login : null,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () => context.go('/mp/first-time-setup'),
-                        style: TextButton.styleFrom(
-                            foregroundColor: AppColors.saffron),
-                        child: const Text('First-time setup',
-                            style: TextStyle(fontSize: 12.5)),
-                      ),
-                      TextButton(
-                        onPressed: () => context.go('/mp/forgot-credentials'),
-                        style: TextButton.styleFrom(
-                            foregroundColor: AppColors.saffron),
-                        child: const Text('Forgot password',
-                            style: TextStyle(fontSize: 12.5)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.shield_outlined,
-                          size: 15,
-                          color: Colors.white.withValues(alpha: 0.55)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Officials see anonymised tickets only — token '
-                          'number, the reported problem, and its area. Never '
-                          'a name, phone number or address.',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.55),
-                            fontSize: 11.5,
-                            height: 1.45,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            if (_info != null)
+              Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.tealMist,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(_info!,
+                    style: const TextStyle(color: AppColors.tealDeep)),
               ),
+            if (_error != null) AuthErrorBanner(_error!),
+            PrimaryButton(
+              label: 'Sign in',
+              icon: Icons.login_rounded,
+              loading: _loading,
+              onPressed: _submit,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FieldLabel extends StatelessWidget {
-  const _FieldLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 11.5,
-          fontWeight: FontWeight.w700,
-          color: AppColors.inkSoft,
-          letterSpacing: 0.3,
         ),
       ),
     );

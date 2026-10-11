@@ -1418,4 +1418,31 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'તમારી આસપાસ શું નોંધાઈ રહ્યું છે તે જુઓ.';
+
+  @override
+  String get welcomeCitizenTitle => 'નાગરિકો';
+
+  @override
+  String get welcomeCitizenBody =>
+      'તમારા વિસ્તારની સમસ્યાઓ જણાવો અને વિકાસકાર્ય સૂચવો — અવાજ, લખાણ કે ફોટો દ્વારા, તમારી ભાષામાં.';
+
+  @override
+  String get welcomeGovTitle => 'સાંસદ, ધારાસભ્ય અને અધિકારીઓ';
+
+  @override
+  String get welcomeGovBody =>
+      'તમારા વિસ્તારનું સરકારી ડૅશબોર્ડ: ફરિયાદો, હૉટસ્પૉટ, AI બ્રીફિંગ અને ડાઉનલોડ થઈ શકે તેવા અહેવાલો.';
+
+  @override
+  String get welcomeGovRegister => 'નવા ધારાસભ્ય કે અધિકારી? નોંધણી કરો';
+
+  @override
+  String get welcomeAdminTitle => 'પ્રજાધ્વનિ એડમિન';
+
+  @override
+  String get welcomeAdminBody => 'પ્લેટફોર્મ વહીવટ અને અધિકારીઓની મંજૂરી';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'ફક્ત જોઈ રહ્યા છો? તમારા વિસ્તારનું જાહેર ડૅશબોર્ડ જુઓ';
 }

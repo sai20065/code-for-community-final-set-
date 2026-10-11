@@ -19,6 +19,11 @@ import '../features/official/transcript/agent_transcript_screen.dart';
 import '../features/onboarding/auth/citizen_signin_screen.dart';
 import '../features/onboarding/auth/citizen_signup_screen.dart';
 import '../features/onboarding/auth/forgot_password_screen.dart';
+import '../features/admin/admin_console_screen.dart';
+import '../features/admin/admin_login_screen.dart';
+import '../features/official/profile/official_profile_screen.dart';
+import '../features/official/register/application_status_screen.dart';
+import '../features/official/register/official_register_screen.dart';
 import '../features/onboarding/gov_login_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
 import '../features/onboarding/mp_credentials_request_screen.dart';
@@ -59,6 +64,7 @@ const _officialOnlyPrefixes = <String>[
   '/official/report',
   '/official/transcript',
   '/gov/dashboard',
+  '/gov/profile',
 ];
 
 /// The app's router.
@@ -93,6 +99,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         // screen on every cold start.
         if (profileAsync.isLoading) return null;
         final profile = profileAsync.valueOrNull;
+        // Admins have their own console; anyone else goes public.
+        if (profile?.role == UserRole.admin) return '/admin';
         if (profile?.role != UserRole.official) return '/public/dashboard';
       }
 
@@ -132,6 +140,29 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/gov/dashboard',
         builder: (context, state) => const GovDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/gov/profile',
+        builder: (context, state) => const OfficialProfileScreen(),
+      ),
+      // Self-registration for MLAs / local officers; `extra: true` =
+      // re-apply after a rejection.
+      GoRoute(
+        path: '/gov/register',
+        builder: (context, state) =>
+            OfficialRegisterScreen(resubmit: state.extra == true),
+      ),
+      GoRoute(
+        path: '/gov/pending',
+        builder: (context, state) => const ApplicationStatusScreen(),
+      ),
+      GoRoute(
+        path: '/admin/login',
+        builder: (context, state) => const AdminLoginScreen(),
+      ),
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => const AdminConsoleScreen(),
       ),
       GoRoute(
         path: '/mp/first-time-setup',

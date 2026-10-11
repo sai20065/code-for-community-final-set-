@@ -2591,6 +2591,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See what\'s being reported around you.'**
   String get stepExploreMapBody;
+
+  /// No description provided for @welcomeCitizenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Citizens'**
+  String get welcomeCitizenTitle;
+
+  /// No description provided for @welcomeCitizenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Report problems and suggest development work for your area — by voice, text or photo, in your language.'**
+  String get welcomeCitizenBody;
+
+  /// No description provided for @welcomeGovTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MPs, MLAs & Officers'**
+  String get welcomeGovTitle;
+
+  /// No description provided for @welcomeGovBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Government dashboard for your area: reports, hotspots, AI briefings and downloadable reports.'**
+  String get welcomeGovBody;
+
+  /// No description provided for @welcomeGovRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'New MLA or officer? Register'**
+  String get welcomeGovRegister;
+
+  /// No description provided for @welcomeAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prajadhwani Admin'**
+  String get welcomeAdminTitle;
+
+  /// No description provided for @welcomeAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform administration and official approvals'**
+  String get welcomeAdminBody;
+
+  /// No description provided for @welcomeJustBrowsing.
+  ///
+  /// In en, this message translates to:
+  /// **'Just browsing? See your area\'s public dashboard'**
+  String get welcomeJustBrowsing;
 }
 
 class _AppLocalizationsDelegate

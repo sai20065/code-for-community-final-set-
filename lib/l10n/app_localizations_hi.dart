@@ -1430,4 +1430,32 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'देखें आपके आसपास क्या रिपोर्ट हो रहा है।';
+
+  @override
+  String get welcomeCitizenTitle => 'नागरिक';
+
+  @override
+  String get welcomeCitizenBody =>
+      'अपने क्षेत्र की समस्याएँ बताएँ और विकास कार्य सुझाएँ — आवाज़, टेक्स्ट या फ़ोटो से, अपनी भाषा में।';
+
+  @override
+  String get welcomeGovTitle => 'सांसद, विधायक और अधिकारी';
+
+  @override
+  String get welcomeGovBody =>
+      'आपके क्षेत्र का सरकारी डैशबोर्ड: रिपोर्ट, हॉटस्पॉट, AI ब्रीफ़िंग और डाउनलोड करने योग्य रिपोर्ट।';
+
+  @override
+  String get welcomeGovRegister => 'नए विधायक या अधिकारी? पंजीकरण करें';
+
+  @override
+  String get welcomeAdminTitle => 'प्रजाध्वनि एडमिन';
+
+  @override
+  String get welcomeAdminBody =>
+      'प्लेटफ़ॉर्म प्रशासन और अधिकारियों की स्वीकृति';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'बस देख रहे हैं? अपने क्षेत्र का सार्वजनिक डैशबोर्ड देखें';
 }

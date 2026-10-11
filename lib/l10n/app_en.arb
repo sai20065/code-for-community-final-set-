@@ -868,5 +868,13 @@
   "stepSupport": "Support a suggestion near you",
   "stepSupportBody": "Back what your neighbours are asking for.",
   "stepExploreMap": "Explore your area's map",
-  "stepExploreMapBody": "See what's being reported around you."
+  "stepExploreMapBody": "See what's being reported around you.",
+  "welcomeCitizenTitle": "Citizens",
+  "welcomeCitizenBody": "Report problems and suggest development work for your area — by voice, text or photo, in your language.",
+  "welcomeGovTitle": "MPs, MLAs & Officers",
+  "welcomeGovBody": "Government dashboard for your area: reports, hotspots, AI briefings and downloadable reports.",
+  "welcomeGovRegister": "New MLA or officer? Register",
+  "welcomeAdminTitle": "Prajadhwani Admin",
+  "welcomeAdminBody": "Platform administration and official approvals",
+  "welcomeJustBrowsing": "Just browsing? See your area's public dashboard"
 }

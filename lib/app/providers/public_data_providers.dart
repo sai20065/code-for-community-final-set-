@@ -72,11 +72,18 @@ final publicDataServiceProvider = Provider<PublicDataService>(
   (ref) => PublicDataService(),
 );
 
+/// Splits a scope key: `"2927"` (a constituency id, the public dashboard)
+/// or `"bbmpWardId:BBMP-151"` (an official's area — see `scopeKeyFor`).
+(String field, String id) parseScopeKey(String key) {
+  final i = key.indexOf(':');
+  return i < 0 ? ('constituencyId', key) : (key.substring(0, i), key.substring(i + 1));
+}
+
 final publicClustersProvider =
-    StreamProvider.family<List<PublicClusterModel>, String>(
-  (ref, constituencyId) =>
-      ref.watch(publicDataServiceProvider).watchClusters(constituencyId),
-);
+    StreamProvider.family<List<PublicClusterModel>, String>((ref, key) {
+  final (field, id) = parseScopeKey(key);
+  return ref.watch(publicDataServiceProvider).watchClusters(id, field: field);
+});
 
 final publicConstituencyStatsProvider =
     StreamProvider.family<PublicConstituencyStats, String>(
@@ -125,11 +132,12 @@ final allPublicClustersProvider =
 /// Reports tab. Capped at 300 — a triage queue nobody scrolls past is not
 /// worth the reads, and the search box narrows it anyway.
 final publicAllTicketsProvider =
-    StreamProvider.family<List<PublicTicketModel>, String>(
-  (ref, constituencyId) => ref
+    StreamProvider.family<List<PublicTicketModel>, String>((ref, key) {
+  final (field, id) = parseScopeKey(key);
+  return ref
       .watch(publicDataServiceProvider)
-      .watchRecentTickets(constituencyId, limit: 300),
-);
+      .watchRecentTickets(id, limit: 300, field: field);
+});
 
 final publicClustersForBoothProvider =
     StreamProvider.family<List<PublicClusterModel>, String>(

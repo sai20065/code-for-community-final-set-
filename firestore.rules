@@ -11,13 +11,39 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(uid)).data;
     }
 
-    // Officials are always scoped to their own constituencyId — see
-    // isOfficialForConstituency below, used wherever a ticket's
-    // constituencyId is known.
-    function isOfficialForConstituency(constituencyId) {
-      return isSignedIn() &&
-        userDoc(request.auth.uid).role == 'official' &&
-        userDoc(request.auth.uid).constituencyId == constituencyId;
+    function isAdmin() {
+      return isSignedIn() && userDoc(request.auth.uid).role == 'admin';
+    }
+
+    // The ticket/cluster field each official jurisdiction is matched on —
+    // the same mapping as functions/src/officials/scope.ts (SCOPE_FIELD).
+    function scopeFieldFor(jurisdictionType) {
+      return {
+        'constituency': 'constituencyId',
+        'assembly': 'assemblyId',
+        'bbmpWard': 'bbmpWardId',
+        'taluk': 'talukId',
+        'district': 'districtId'
+      }[jurisdictionType];
+    }
+
+    // Is the caller an approved official responsible for this area?
+    // `area` is a ticket's `location` map or a cluster doc — both carry
+    // constituencyId / assemblyId / bbmpWardId / talukId / districtId.
+    //   MP → constituency, MLA → assembly seat, BBMP ward officer → ward,
+    //   Tahsildar → taluk, District officer → district.
+    // Officials only ever get role 'official' through the admin-only
+    // reviewOfficialApplication function (or MP provisioning), never from a
+    // client write. Legacy MP accounts without `jurisdiction` match on
+    // their constituencyId.
+    function isOfficialForArea(area) {
+      let me = userDoc(request.auth.uid);
+      return isSignedIn() && me.role == 'official' && (
+        (me.get('jurisdiction', null) != null &&
+          area.get(scopeFieldFor(me.jurisdiction.type), null) == me.jurisdiction.id) ||
+        (me.get('jurisdiction', null) == null &&
+          me.get('constituencyId', null) != null &&
+          area.get('constituencyId', null) == me.constituencyId));
     }
 
     // Citizens sign in with username + password (Firebase Auth, synthetic
@@ -30,8 +56,14 @@ service cloud.firestore {
       allow read: if isSignedIn() && request.auth.uid == uid;
       allow create: if isSignedIn() && request.auth.uid == uid &&
         request.resource.data.role == 'citizen';
+      // An official's area is set only by the admin review function / MP
+      // provisioning: they may edit their name, designation, photo etc.,
+      // but never the fields their data access is scoped by.
       allow update: if isSignedIn() && request.auth.uid == uid &&
-        request.resource.data.role == resource.data.role;
+        request.resource.data.role == resource.data.role &&
+        (resource.data.role != 'official' ||
+          !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['jurisdiction', 'officialType', 'constituencyId', 'approvedAt']));
       allow delete: if false;
     }
 
@@ -76,12 +108,12 @@ service cloud.firestore {
          userDoc(request.auth.uid).constituencyId == request.resource.data.location.constituencyId);
       allow read: if isSignedIn() &&
         (resource.data.userId == request.auth.uid ||
-         isOfficialForConstituency(resource.data.location.constituencyId) ||
+         isOfficialForArea(resource.data.location) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId));
       allow update: if isSignedIn() &&
         (resource.data.userId == request.auth.uid ||
-         isOfficialForConstituency(resource.data.location.constituencyId) ||
+         isOfficialForArea(resource.data.location) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId &&
           request.resource.data.diff(resource.data).affectedKeys()
@@ -138,7 +170,7 @@ service cloud.firestore {
     }
     match /clusters/{clusterId} {
       allow read: if isSignedIn() &&
-        (isOfficialForConstituency(resource.data.constituencyId) ||
+        (isOfficialForArea(resource.data) || isAdmin() ||
          userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
       allow write: if false;
     }
@@ -196,7 +228,7 @@ service cloud.firestore {
       // unfiltered reasoning. Officials only.
       match /agentTranscripts/{runId} {
         allow read: if isSignedIn() &&
-          userDoc(request.auth.uid).role == 'official';
+          (userDoc(request.auth.uid).role == 'official' || isAdmin());
         allow write: if false;
       }
     }
@@ -216,6 +248,37 @@ service cloud.firestore {
     // of `uniqueId` is that it's a shared secret the Cloud Functions verify
     // server-side (via Admin SDK, which bypasses these rules entirely);
     // exposing it through a client read would defeat that.
+    // Self-registration by MLAs and local officers (BBMP ward officer,
+    // Tahsildar, District officer). The applicant creates their own
+    // application as 'pending' and can re-submit after a rejection; only a
+    // Prajadhwani admin (via the reviewOfficialApplication function) ever
+    // approves one. Readable by the applicant and admins only.
+    match /officialApplications/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.officialType in ['mla', 'wardOfficer', 'tahsildar', 'districtOfficer'];
+      allow update: if isSignedIn() && request.auth.uid == uid &&
+        resource.data.status == 'rejected' &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.officialType in ['mla', 'wardOfficer', 'tahsildar', 'districtOfficer'];
+      allow delete: if false;
+    }
+
+    // AI briefings per area, written only by getAreaBriefing (which also
+    // serves them to the right official). Direct reads: admins only.
+    match /briefings/{scopeKey} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Karnataka's 224 assembly constituencies (DataMeet, CC BY 2.5 India):
+    // public boundary/reference data, like wards and taluks.
+    match /assemblies/{assemblyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /mpCredentials/{constituencyId} {
       allow read, write: if false;
     }

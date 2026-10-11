@@ -1424,4 +1424,31 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'আপনার আশেপাশে কী জানানো হচ্ছে দেখুন।';
+
+  @override
+  String get welcomeCitizenTitle => 'নাগরিক';
+
+  @override
+  String get welcomeCitizenBody =>
+      'আপনার এলাকার সমস্যা জানান ও উন্নয়ন কাজের পরামর্শ দিন — কণ্ঠ, লেখা বা ছবিতে, আপনার ভাষায়।';
+
+  @override
+  String get welcomeGovTitle => 'সাংসদ, বিধায়ক ও আধিকারিক';
+
+  @override
+  String get welcomeGovBody =>
+      'আপনার এলাকার সরকারি ড্যাশবোর্ড: অভিযোগ, হটস্পট, AI ব্রিফিং ও ডাউনলোডযোগ্য রিপোর্ট।';
+
+  @override
+  String get welcomeGovRegister => 'নতুন বিধায়ক বা আধিকারিক? নিবন্ধন করুন';
+
+  @override
+  String get welcomeAdminTitle => 'প্রজাধ্বনি অ্যাডমিন';
+
+  @override
+  String get welcomeAdminBody => 'প্ল্যাটফর্ম প্রশাসন ও আধিকারিক অনুমোদন';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'শুধু দেখছেন? আপনার এলাকার পাবলিক ড্যাশবোর্ড দেখুন';
 }

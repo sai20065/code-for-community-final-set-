@@ -49,6 +49,8 @@ export interface PublicTicketDoc {
   wardId: string | null;
   /** BBMP (198-ward) layer id, alongside the GBA [wardId]. */
   bbmpWardId: string | null;
+  assemblyId: string | null;
+  districtId: string | null;
   talukId: string | null;
   boothId: string | null;
   clusterId: string | null;
@@ -76,6 +78,8 @@ export interface PublicClusterDoc {
   boothId: string | null;
   wardId: string | null;
   bbmpWardId: string | null;
+  assemblyId: string | null;
+  districtId: string | null;
   talukId: string | null;
   submissionCount: number;
   uniqueReporterCount: number;
@@ -187,6 +191,8 @@ export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
     constituencyName: submission.location?.constituencyName ?? null,
     wardId: submission.location?.wardId ?? null,
     bbmpWardId: submission.location?.bbmpWardId ?? null,
+    assemblyId: submission.location?.assemblyId ?? null,
+    districtId: submission.location?.districtId ?? null,
     talukId: submission.location?.talukId ?? null,
     boothId: submission.location?.boothId ?? null,
     clusterId: typeof submission.clusterId === "string" ? submission.clusterId : null,
@@ -229,6 +235,8 @@ export function projectCluster(
     boothId: cluster.boothId ?? null,
     wardId: cluster.wardId ?? null,
     bbmpWardId: cluster.bbmpWardId ?? null,
+    assemblyId: cluster.assemblyId ?? null,
+    districtId: cluster.districtId ?? null,
     talukId: cluster.talukId ?? null,
     submissionCount,
     uniqueReporterCount: cluster.uniqueReporterCount ?? submissionCount,

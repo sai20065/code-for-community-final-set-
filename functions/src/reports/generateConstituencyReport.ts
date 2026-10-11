@@ -3,6 +3,8 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import PDFDocument from "pdfkit";
 import {REGION} from "../config";
 import {GeminiClient} from "../lib/geminiClient";
+import {scopeForCaller} from "../officials/scope";
+import {URGENT_THRESHOLD, loadAreaData} from "./areaData";
 
 interface ClusterData {
   theme: string;
@@ -13,11 +15,6 @@ interface ClusterData {
   infraGapScore?: number;
   submissionCount?: number;
 }
-
-/** priorityScore threshold above which a cluster is flagged "urgent" in the
- * report — matches the 0-100 scale `classifyTicket`/`summarizeCluster`
- * already score on. */
-const URGENT_THRESHOLD = 70;
 
 /**
  * Generates an AI-authored, printable PDF briefing for an MP's own
@@ -30,42 +27,22 @@ const URGENT_THRESHOLD = 70;
  * trust boundary as every constituency-scoped Firestore rule elsewhere in
  * this app).
  */
-export const generateConstituencyReport = onCall(
+export const generateAreaReport = onCall(
   {region: REGION},
   async (request) => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "Sign in required.");
-    }
+    // The area comes from the caller's own profile (MP constituency, MLA
+    // assembly, ward / taluk / district for officers, or the whole state for
+    // an admin) — never from a request parameter.
+    const scope = await scopeForCaller(request.auth?.uid);
     const db = admin.firestore();
-    const userDoc = await db.collection("users").doc(request.auth.uid).get();
-    const user = userDoc.data();
-    if (!user || user.role !== "official" || !user.constituencyId) {
-      throw new HttpsError(
-        "permission-denied",
-        "Only an official with a linked constituency can generate a report.",
-      );
-    }
-    const constituencyId = user.constituencyId as string;
+    const user = (await db.collection("users").doc(request.auth!.uid).get()).data() ?? {};
+    const constituencyName = scope.name;
+    const preparedFor = `${scope.typeLabel}: ${(user.name as string | undefined) ?? "—"}`;
 
-    const constituencyDoc = await db.collection("constituencies").doc(constituencyId).get();
-    const constituencyName = (constituencyDoc.data()?.name as string | undefined) ?? constituencyId;
-    const mpName = (constituencyDoc.data()?.mpName as string | undefined) ?? "Not yet assigned";
-
-    const [clustersSnap, submissionsSnap] = await Promise.all([
-      db.collection("clusters")
-        .where("constituencyId", "==", constituencyId)
-        .orderBy("priorityScore", "desc")
-        .get(),
-      db.collection("submissions")
-        .where("location.constituencyId", "==", constituencyId)
-        .get(),
-    ]);
-
-    const clusters = clustersSnap.docs.map(
-      (d) => ({...(d.data() as ClusterData), id: d.id}),
-    );
-    const submissions = submissionsSnap.docs.map((d) => d.data());
-    const resolvedCount = submissions.filter((s) => s.status === "resolved").length;
+    const area = await loadAreaData(scope);
+    const clusters: Array<ClusterData & {id: string}> = area.clusters;
+    const submissions = area.submissions;
+    const resolvedCount = area.stats.resolved;
     const urgentClusters = clusters.filter((c) => (c.priorityScore ?? 0) >= URGENT_THRESHOLD);
     const topClusters = clusters.slice(0, 8);
 
@@ -141,7 +118,13 @@ export const generateConstituencyReport = onCall(
     try {
       aiSummary = await gemini.generateConstituencyReportSummary({
         constituencyName,
-        stats: {open: submissions.length, resolved: resolvedCount, urgent: urgentClusters.length},
+        audience: scope.typeLabel,
+        // Open = not yet resolved (new, reviewed or in progress).
+        stats: {
+          open: area.stats.open + area.stats.inProgress,
+          resolved: resolvedCount,
+          urgent: urgentClusters.length,
+        },
         topClusters: topClusters.map((c) => ({
           theme: c.theme,
           summaryText: c.summaryText,
@@ -155,7 +138,7 @@ export const generateConstituencyReport = onCall(
 
     const pdfBuffer = await renderPdf({
       constituencyName,
-      mpName,
+      preparedFor,
       officerDesignation,
       officerDepartment: officerDepartment ?? null,
       stats: {total: submissions.length, resolved: resolvedCount, urgent: urgentClusters.length},
@@ -165,7 +148,7 @@ export const generateConstituencyReport = onCall(
     });
 
     const bucket = admin.storage().bucket();
-    const fileName = `reports/${constituencyId}/${Date.now()}.pdf`;
+    const fileName = `reports/${scope.key}/${Date.now()}.pdf`;
     const file = bucket.file(fileName);
     await file.save(pdfBuffer, {contentType: "application/pdf"});
     const [downloadUrl] = await file.getSignedUrl({
@@ -288,7 +271,7 @@ function defaultOfficerDesignation(level: string | null): string {
 
 function renderPdf(data: {
   constituencyName: string;
-  mpName: string;
+  preparedFor: string;
   officerDesignation: string;
   officerDepartment: string | null;
   stats: {total: number; resolved: number; urgent: number};
@@ -316,11 +299,11 @@ function renderPdf(data: {
     doc.fillColor(BRAND.white).font("Helvetica-Bold").fontSize(22)
       .text("PRAJADHWANI", MARGIN, 32, {characterSpacing: 1, lineBreak: false});
     doc.font("Helvetica").fontSize(10).fillColor(BRAND.indigoMist)
-      .text("Constituency Briefing", MARGIN, 58, {lineBreak: false});
+      .text("Area Briefing", MARGIN, 58, {lineBreak: false});
     doc.font("Helvetica-Bold").fontSize(18).fillColor(BRAND.white)
       .text(data.constituencyName, MARGIN, 76, {lineBreak: false});
     doc.font("Helvetica").fontSize(11).fillColor(BRAND.indigoMist)
-      .text(`MP: ${data.mpName}`, MARGIN, 98, {lineBreak: false});
+      .text(data.preparedFor, MARGIN, 98, {lineBreak: false});
     doc.font("Helvetica").fontSize(9).fillColor(BRAND.indigoMist)
       .text(
         `Prepared for: ${data.officerDesignation}` +
@@ -460,3 +443,6 @@ function renderPdf(data: {
     doc.end();
   });
 }
+
+/** Old name, kept so app builds from before the rename still work. */
+export const generateConstituencyReport = generateAreaReport;

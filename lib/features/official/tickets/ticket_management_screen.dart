@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/theme.dart';
+import '../../../core/models/official_scope.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
@@ -19,7 +20,8 @@ Map<SubmissionStatus, String> _statusLabels(AppLocalizations l10n) => {
 /// Problem-reports queue: a standard triage list for citizen-reported civic
 /// problems, separate from the development-suggestion ranking (see
 /// `RankedWorksScreen`) — searchable, status update dropdown per report,
-/// bulk status update. Scoped to the signed-in official's own constituency.
+/// bulk status update. Scoped to the signed-in official's own area (MP
+/// constituency, MLA seat, ward, taluk or district — see `OfficialScope`).
 class TicketManagementScreen extends ConsumerWidget {
   const TicketManagementScreen({super.key});
 
@@ -37,8 +39,8 @@ class TicketManagementScreen extends ConsumerWidget {
       ),
       body: profileAsync.when(
         data: (profile) {
-          final constituencyId = profile?.constituencyId;
-          if (constituencyId == null) {
+          final scope = profile == null ? null : OfficialScope.fromUser(profile);
+          if (scope == null) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -49,7 +51,7 @@ class TicketManagementScreen extends ConsumerWidget {
               ),
             );
           }
-          return _TicketList(constituencyId: constituencyId);
+          return _TicketList(scope: scope);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => Center(child: Text(l10n.couldNotLoadProfile)),
@@ -59,9 +61,9 @@ class TicketManagementScreen extends ConsumerWidget {
 }
 
 class _TicketList extends ConsumerStatefulWidget {
-  const _TicketList({required this.constituencyId});
+  const _TicketList({required this.scope});
 
-  final String constituencyId;
+  final OfficialScope scope;
 
   @override
   ConsumerState<_TicketList> createState() => _TicketListState();
@@ -82,7 +84,7 @@ class _TicketListState extends ConsumerState<_TicketList> {
     final l10n = AppLocalizations.of(context);
     final statusLabels = _statusLabels(l10n);
     final ticketsAsync =
-        ref.watch(_constituencyTicketsProvider(widget.constituencyId));
+        ref.watch(_scopeTicketsProvider(widget.scope));
 
     return Column(
       children: [
@@ -204,9 +206,9 @@ class _TicketListState extends ConsumerState<_TicketList> {
   }
 }
 
-final _constituencyTicketsProvider =
-    StreamProvider.family<List<SubmissionModel>, String>((ref, constituencyId) {
+final _scopeTicketsProvider =
+    StreamProvider.family<List<SubmissionModel>, OfficialScope>((ref, scope) {
   return ref
       .watch(firestoreServiceProvider)
-      .watchConstituencySubmissions(constituencyId);
+      .watchScopeSubmissions(scope.field, scope.id);
 });

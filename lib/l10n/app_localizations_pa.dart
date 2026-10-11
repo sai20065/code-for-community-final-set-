@@ -1425,4 +1425,31 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'ਵੇਖੋ ਤੁਹਾਡੇ ਆਲੇ-ਦੁਆਲੇ ਕੀ ਦਰਜ ਹੋ ਰਿਹਾ ਹੈ।';
+
+  @override
+  String get welcomeCitizenTitle => 'ਨਾਗਰਿਕ';
+
+  @override
+  String get welcomeCitizenBody =>
+      'ਆਪਣੇ ਇਲਾਕੇ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਦੱਸੋ ਅਤੇ ਵਿਕਾਸ ਕਾਰਜ ਸੁਝਾਓ — ਆਵਾਜ਼, ਲਿਖਤ ਜਾਂ ਫ਼ੋਟੋ ਨਾਲ, ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ।';
+
+  @override
+  String get welcomeGovTitle => 'ਸੰਸਦ ਮੈਂਬਰ, ਵਿਧਾਇਕ ਅਤੇ ਅਧਿਕਾਰੀ';
+
+  @override
+  String get welcomeGovBody =>
+      'ਤੁਹਾਡੇ ਇਲਾਕੇ ਦਾ ਸਰਕਾਰੀ ਡੈਸ਼ਬੋਰਡ: ਸ਼ਿਕਾਇਤਾਂ, ਹੌਟਸਪੌਟ, AI ਬ੍ਰੀਫ਼ਿੰਗ ਅਤੇ ਡਾਊਨਲੋਡ ਯੋਗ ਰਿਪੋਰਟਾਂ।';
+
+  @override
+  String get welcomeGovRegister => 'ਨਵੇਂ ਵਿਧਾਇਕ ਜਾਂ ਅਧਿਕਾਰੀ? ਰਜਿਸਟਰ ਕਰੋ';
+
+  @override
+  String get welcomeAdminTitle => 'ਪ੍ਰਜਾਧਵਨੀ ਐਡਮਿਨ';
+
+  @override
+  String get welcomeAdminBody => 'ਪਲੇਟਫ਼ਾਰਮ ਪ੍ਰਸ਼ਾਸਨ ਅਤੇ ਅਧਿਕਾਰੀਆਂ ਦੀ ਮਨਜ਼ੂਰੀ';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'ਬੱਸ ਵੇਖ ਰਹੇ ਹੋ? ਆਪਣੇ ਇਲਾਕੇ ਦਾ ਜਨਤਕ ਡੈਸ਼ਬੋਰਡ ਵੇਖੋ';
 }

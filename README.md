@@ -43,6 +43,23 @@ An AI platform for constituency development planning. Citizens suggest developme
   - Suggestions show supporter count and an outcome badge.
   - Reports show a Filed → Acknowledged → In Progress → Resolved tracker.
 
+## Three ways in
+The welcome screen has three sections:
+- **Citizens:** username sign-up / sign-in.
+- **Government:** MPs, MLAs, BBMP ward officers, Tahsildars and District officers.
+- **Prajadhwani Admin:** approves officials and sees statewide numbers.
+
+## Government accounts
+- **MPs** are admin-provisioned. They log in with constituency ID + password and recover credentials with the setup code + registered email.
+- **MLAs and local officers** self-register at `/gov/register`:
+  - they provide role, area, official email + password, and an ID / appointment-letter photo;
+  - they stay *pending* until a Prajadhwani admin approves them on the Admin console;
+  - "Forgot password" sends Firebase's reset email.
+- **Scope:** each official sees and manages only their own area. MP = Lok Sabha seat, MLA = assembly seat (224, DataMeet boundaries), ward officer = BBMP ward, Tahsildar = taluk, DC = district. `firestore.rules` (`isOfficialForArea`) enforces it.
+- **AI briefing:** headline, situation, top problems, trends, urgent items, recommended actions with owners. Cached for 6 hours. Plus a **downloadable PDF report** titled for the official's area.
+- **Official profile:** performance (resolution rate, average days to resolve, weekly trend), responsiveness badges, jurisdiction map, top issues.
+- **Admin setup:** `cd functions && npx ts-node src/scripts/makeAdmin.ts <email>`.
+
 ## MP / official features
 - **Login:** constituency ID + password. Accounts are provisioned out-of-band.
 - **Dashboard:** live stats, with links to Ranked Works, Themes and Problem Reports.

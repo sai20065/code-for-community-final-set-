@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -85,9 +86,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     if (user != null) {
       final profile = await ref.read(firestoreServiceProvider).getUser(user.uid);
+      if (!mounted) return;
+      if (profile?.role == UserRole.admin) {
+        context.go('/admin');
+        return;
+      }
       if (profile?.role == UserRole.official) {
         context.go('/gov/dashboard');
         return;
+      }
+      // A self-registered MLA / officer has no profile until approved —
+      // send them back to their application, not citizen onboarding.
+      if (profile == null) {
+        final app = await FirebaseFirestore.instance
+            .collection('officialApplications')
+            .doc(user.uid)
+            .get();
+        if (!mounted) return;
+        if (app.exists) {
+          context.go('/gov/pending');
+          return;
+        }
       }
       // `signupCompletedAt` on the Firestore profile is the authoritative
       // "this citizen has a real, saved profile" signal — it survives a

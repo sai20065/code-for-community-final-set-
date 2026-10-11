@@ -1447,4 +1447,32 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get stepExploreMapBody =>
       'உங்களைச் சுற்றி என்ன புகாரளிக்கப்படுகிறது எனப் பாருங்கள்.';
+
+  @override
+  String get welcomeCitizenTitle => 'குடிமக்கள்';
+
+  @override
+  String get welcomeCitizenBody =>
+      'உங்கள் பகுதியின் பிரச்சினைகளைப் புகாரளித்து வளர்ச்சிப் பணிகளைப் பரிந்துரையுங்கள் — குரல், உரை அல்லது படம் மூலம், உங்கள் மொழியில்.';
+
+  @override
+  String get welcomeGovTitle => 'எம்.பி., எம்.எல்.ஏ. & அதிகாரிகள்';
+
+  @override
+  String get welcomeGovBody =>
+      'உங்கள் பகுதிக்கான அரசு டாஷ்போர்டு: புகார்கள், ஹாட்ஸ்பாட்கள், AI சுருக்கம், பதிவிறக்கக்கூடிய அறிக்கைகள்.';
+
+  @override
+  String get welcomeGovRegister =>
+      'புதிய எம்.எல்.ஏ. அல்லது அதிகாரியா? பதிவு செய்யுங்கள்';
+
+  @override
+  String get welcomeAdminTitle => 'பிரஜாத்வனி நிர்வாகி';
+
+  @override
+  String get welcomeAdminBody => 'தள நிர்வாகம் மற்றும் அதிகாரிகள் ஒப்புதல்';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'சும்மா பார்க்கிறீர்களா? உங்கள் பகுதியின் பொது டாஷ்போர்டைப் பாருங்கள்';
 }

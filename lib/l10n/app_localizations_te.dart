@@ -1422,4 +1422,32 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'మీ చుట్టూ ఏమి నివేదించబడుతోందో చూడండి.';
+
+  @override
+  String get welcomeCitizenTitle => 'పౌరులు';
+
+  @override
+  String get welcomeCitizenBody =>
+      'మీ ప్రాంత సమస్యలను నివేదించండి, అభివృద్ధి పనులు సూచించండి — వాయిస్, టెక్స్ట్ లేదా ఫోటోతో, మీ భాషలో.';
+
+  @override
+  String get welcomeGovTitle => 'ఎంపీలు, ఎమ్మెల్యేలు & అధికారులు';
+
+  @override
+  String get welcomeGovBody =>
+      'మీ ప్రాంత ప్రభుత్వ డ్యాష్‌బోర్డ్: ఫిర్యాదులు, హాట్‌స్పాట్‌లు, AI బ్రీఫింగ్, డౌన్‌లోడ్ చేయగల నివేదికలు.';
+
+  @override
+  String get welcomeGovRegister =>
+      'కొత్త ఎమ్మెల్యే లేదా అధికారా? నమోదు చేసుకోండి';
+
+  @override
+  String get welcomeAdminTitle => 'ప్రజాధ్వని అడ్మిన్';
+
+  @override
+  String get welcomeAdminBody => 'ప్లాట్‌ఫామ్ నిర్వహణ మరియు అధికారుల ఆమోదం';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'ఊరికే చూస్తున్నారా? మీ ప్రాంత పబ్లిక్ డ్యాష్‌బోర్డ్ చూడండి';
 }

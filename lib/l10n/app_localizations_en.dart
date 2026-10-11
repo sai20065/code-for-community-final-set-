@@ -1418,4 +1418,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stepExploreMapBody => 'See what\'s being reported around you.';
+
+  @override
+  String get welcomeCitizenTitle => 'Citizens';
+
+  @override
+  String get welcomeCitizenBody =>
+      'Report problems and suggest development work for your area — by voice, text or photo, in your language.';
+
+  @override
+  String get welcomeGovTitle => 'MPs, MLAs & Officers';
+
+  @override
+  String get welcomeGovBody =>
+      'Government dashboard for your area: reports, hotspots, AI briefings and downloadable reports.';
+
+  @override
+  String get welcomeGovRegister => 'New MLA or officer? Register';
+
+  @override
+  String get welcomeAdminTitle => 'Prajadhwani Admin';
+
+  @override
+  String get welcomeAdminBody =>
+      'Platform administration and official approvals';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'Just browsing? See your area\'s public dashboard';
 }

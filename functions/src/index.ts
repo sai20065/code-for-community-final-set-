@@ -16,7 +16,13 @@ export {runClusterAgents} from "./agents/runClusterAgentsCallable";
 export {resolveConstituencyForLocation} from "./constituencies/resolveConstituencyForLocation";
 export {mpFirstTimeSetup} from "./officials/mpFirstTimeSetup";
 export {mpForgotCredentials} from "./officials/mpForgotCredentials";
-export {generateConstituencyReport} from "./reports/generateConstituencyReport";
+// Area-scoped AI briefing + PDF report for every official type (and the
+// statewide view for admins). generateConstituencyReport is the old name.
+export {generateAreaReport, generateConstituencyReport} from "./reports/generateConstituencyReport";
+export {getAreaBriefing} from "./reports/areaBriefing";
+// Self-registered MLAs / officers are approved by a Prajadhwani admin.
+export {reviewOfficialApplication} from "./officials/reviewOfficialApplication";
+export {getAdminOverview} from "./officials/adminOverview";
 export {onSubmissionCreated} from "./submissions/onSubmissionCreated";
 // Anonymised projections behind the public dashboard. Deliberately separate
 // functions from the AI pipeline so the two have independent failure

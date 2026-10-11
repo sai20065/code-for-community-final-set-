@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum UserRole { citizen, official }
+/// `admin` = Prajadhwani platform admin (approves officials). Granted only
+/// by `functions/src/scripts/makeAdmin.ts`; rules forbid any client write.
+enum UserRole { citizen, official, admin }
 
 /// How a citizen authenticated — persisted so there's a stored record of it,
 /// rather than only being derivable transiently from the current Firebase
@@ -64,6 +66,19 @@ class UserModel {
   /// Set by the `setSecurityQuestion` function, so the profile can show
   /// whether password recovery is set up without reading `userSecrets`.
   final bool hasSecurityQuestion;
+
+  // ---- Officials (server-written; see reviewOfficialApplication.ts) -------
+  /// `mp` | `mla` | `wardOfficer` | `tahsildar` | `districtOfficer`. Null on
+  /// legacy MP accounts, which are treated as `mp`.
+  final String? officialType;
+
+  /// `constituency` | `assembly` | `bbmpWard` | `taluk` | `district`.
+  final String? jurisdictionType;
+  final String? jurisdictionId;
+  final String? jurisdictionName;
+  final String? designation;
+  final String? officialEmail;
+  final DateTime? approvedAt;
   final String preferredLanguage;
   final SignInMethod? signInMethod;
   final DateTime createdAt;
@@ -95,6 +110,13 @@ class UserModel {
     this.homeBbmpWardName,
     this.photoPath,
     this.hasSecurityQuestion = false,
+    this.officialType,
+    this.jurisdictionType,
+    this.jurisdictionId,
+    this.jurisdictionName,
+    this.designation,
+    this.officialEmail,
+    this.approvedAt,
     this.preferredLanguage = 'en',
     this.signInMethod,
     this.signupCompletedAt,
@@ -126,9 +148,11 @@ class UserModel {
       wardNumber: map['wardNumber'] as String?,
       lat: (map['location']?['lat'] as num?)?.toDouble(),
       lng: (map['location']?['lng'] as num?)?.toDouble(),
-      role: (map['role'] as String? ?? 'citizen') == 'official'
-          ? UserRole.official
-          : UserRole.citizen,
+      role: switch (map['role']) {
+        'official' => UserRole.official,
+        'admin' => UserRole.admin,
+        _ => UserRole.citizen,
+      },
       constituencyId: map['constituencyId'] as String?,
       constituencyName: map['constituencyName'] as String?,
       homeBoothId: map['homeBoothId'] as String?,
@@ -143,6 +167,13 @@ class UserModel {
       homeBbmpWardName: map['homeBbmpWardName'] as String?,
       photoPath: map['photoPath'] as String?,
       hasSecurityQuestion: map['hasSecurityQuestion'] == true,
+      officialType: map['officialType'] as String?,
+      jurisdictionType: map['jurisdiction']?['type'] as String?,
+      jurisdictionId: map['jurisdiction']?['id'] as String?,
+      jurisdictionName: map['jurisdiction']?['name'] as String?,
+      designation: map['designation'] as String?,
+      officialEmail: map['officialEmail'] as String?,
+      approvedAt: (map['approvedAt'] as Timestamp?)?.toDate(),
       preferredLanguage: map['preferredLanguage'] as String? ?? 'en',
       signInMethod: _signInMethodFromString(map['signInMethod'] as String?),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
@@ -161,6 +192,7 @@ class UserModel {
       if (wardNumber != null) 'wardNumber': wardNumber,
       if (lat != null && lng != null) 'location': {'lat': lat, 'lng': lng},
       'role': role.name,
+      if (designation != null) 'designation': designation,
       if (constituencyId != null) 'constituencyId': constituencyId,
       if (constituencyName != null) 'constituencyName': constituencyName,
       if (homeBoothId != null) 'homeBoothId': homeBoothId,
@@ -204,6 +236,7 @@ class UserModel {
     String? homeBbmpWardId,
     String? homeBbmpWardName,
     String? photoPath,
+    String? designation,
     String? preferredLanguage,
     SignInMethod? signInMethod,
     DateTime? signupCompletedAt,
@@ -234,6 +267,13 @@ class UserModel {
       homeBbmpWardName: homeBbmpWardName ?? this.homeBbmpWardName,
       photoPath: photoPath ?? this.photoPath,
       hasSecurityQuestion: hasSecurityQuestion,
+      officialType: officialType,
+      jurisdictionType: jurisdictionType,
+      jurisdictionId: jurisdictionId,
+      jurisdictionName: jurisdictionName,
+      designation: designation ?? this.designation,
+      officialEmail: officialEmail,
+      approvedAt: approvedAt,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       signInMethod: signInMethod ?? this.signInMethod,
       signupCompletedAt: signupCompletedAt ?? this.signupCompletedAt,
