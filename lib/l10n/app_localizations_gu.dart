@@ -1241,4 +1241,181 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get saveLabel => 'સાચવો';
+
+  @override
+  String get statReportsFiled => 'નોંધાયેલી ફરિયાદો';
+
+  @override
+  String get statResolved => 'ઉકેલાયેલી';
+
+  @override
+  String get statSupporters => 'સમર્થકો';
+
+  @override
+  String get badgesTitle => 'બેજ';
+
+  @override
+  String get photoUpdated => 'પ્રોફાઇલ ફોટો અપડેટ થયો.';
+
+  @override
+  String get photoFailed => 'ફોટો અપલોડ ન થયો. નાનો ફોટો અજમાવો.';
+
+  @override
+  String memberSince(String date) {
+    return '$date થી સભ્ય';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'પ્રોફાઇલ $percent% પૂર્ણ';
+  }
+
+  @override
+  String get completeAddPhoto => 'પ્રોફાઇલ ફોટો ઉમેરો';
+
+  @override
+  String get completeAddAge => 'તમારી ઉંમર ઉમેરો';
+
+  @override
+  String get completeSetHome => 'ઘરનું સ્થાન સેટ કરો';
+
+  @override
+  String get completeSecurityQuestion => 'સુરક્ષા પ્રશ્ન સેટ કરો';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'ફોટો ઉમેરવા તમારા ચિત્ર પરના કૅમેરા પર ટૅપ કરો.';
+
+  @override
+  String get nudgeFirstReport =>
+      'તમારી પહેલી ફરિયાદ નોંધાવો અને પહેલો બેજ તથા લેવલ 1 મેળવો.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return 'લેવલ $level · $title સુધી પહોંચવા વધુ $count ફરિયાદો';
+  }
+
+  @override
+  String get yourCivicJourney => 'તમારી નાગરિક યાત્રા';
+
+  @override
+  String get fileAReport => 'ફરિયાદ નોંધાવો';
+
+  @override
+  String get myPlaceTitle => 'મારું સ્થાન';
+
+  @override
+  String get placeAddress => 'સરનામું';
+
+  @override
+  String get placeBbmpWard => 'BBMP વૉર્ડ';
+
+  @override
+  String get placeGbaWard => 'GBA વૉર્ડ';
+
+  @override
+  String get placeTaluk => 'તાલુકો';
+
+  @override
+  String get placeDistrict => 'જિલ્લો';
+
+  @override
+  String get placeConstituency => 'લોકસભા બેઠક';
+
+  @override
+  String get changeLabel => 'બદલો';
+
+  @override
+  String get noHomeLocation => 'ઘરનું સ્થાન હજુ સેટ નથી.';
+
+  @override
+  String get myRepresentativesTitle => 'મારા જનપ્રતિનિધિ';
+
+  @override
+  String get mlaNotListed => 'ધારાસભ્યની વિગતો ટૂંક સમયમાં';
+
+  @override
+  String assemblySegment(String name) {
+    return 'વિધાનસભા: $name';
+  }
+
+  @override
+  String get seeAll => 'બધું જુઓ';
+
+  @override
+  String get accountSettingsTitle => 'ખાતું અને સેટિંગ્સ';
+
+  @override
+  String get editNameAge => 'નામ અને ઉંમર બદલો';
+
+  @override
+  String get recoveryIsSetUp => 'પાસવર્ડ રિકવરી સેટ છે';
+
+  @override
+  String get recoveryNotSetUp => 'સેટ નથી — પાસવર્ડ પાછો મેળવી શકાશે નહીં';
+
+  @override
+  String get enterValidAge => 'યોગ્ય ઉંમર લખો (10–120).';
+
+  @override
+  String get levelTitle1 => 'નવો અવાજ';
+
+  @override
+  String get levelTitle2 => 'સક્રિય નાગરિક';
+
+  @override
+  String get levelTitle3 => 'સમુદાયનો અવાજ';
+
+  @override
+  String get levelTitle4 => 'પડોશનો ચૅમ્પિયન';
+
+  @override
+  String get levelTitle5 => 'નાગરિક નેતા';
+
+  @override
+  String get goToHome => 'હોમ પર જાઓ';
+
+  @override
+  String get viewMyProfile => 'મારી પ્રોફાઇલ જુઓ';
+
+  @override
+  String revealWelcome(String name) {
+    return 'સ્વાગત છે, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'તમારી નાગરિક પ્રોફાઇલ તૈયાર છે.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name લોકસભા';
+  }
+
+  @override
+  String get yourAreaTitle => 'તમારો વિસ્તાર';
+
+  @override
+  String get yourAreaNote =>
+      'તમે આપેલી દરેક ફરિયાદ કે સૂચન આ જ વિસ્તાર માટે ગણાય છે.';
+
+  @override
+  String get firstStepsTitle => 'તમારાં પહેલાં 3 પગલાં';
+
+  @override
+  String get stepFirstReport => 'તમારી પહેલી ફરિયાદ નોંધાવો';
+
+  @override
+  String get stepFirstReportBody => 'અવાજ, લખાણ કે ફોટો — ફક્ત 20 સેકન્ડ.';
+
+  @override
+  String get stepSupport => 'નજીકના સૂચનને ટેકો આપો';
+
+  @override
+  String get stepSupportBody => 'તમારા પડોશીઓની માંગણીનો સાથ આપો.';
+
+  @override
+  String get stepExploreMap => 'તમારા વિસ્તારનો નકશો જુઓ';
+
+  @override
+  String get stepExploreMapBody => 'તમારી આસપાસ શું નોંધાઈ રહ્યું છે તે જુઓ.';
 }

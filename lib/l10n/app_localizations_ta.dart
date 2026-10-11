@@ -1265,4 +1265,186 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get saveLabel => 'சேமி';
+
+  @override
+  String get statReportsFiled => 'பதிவான புகார்கள்';
+
+  @override
+  String get statResolved => 'தீர்க்கப்பட்டவை';
+
+  @override
+  String get statSupporters => 'ஆதரவாளர்கள்';
+
+  @override
+  String get badgesTitle => 'பதக்கங்கள்';
+
+  @override
+  String get photoUpdated => 'சுயவிவரப் படம் புதுப்பிக்கப்பட்டது.';
+
+  @override
+  String get photoFailed =>
+      'படத்தைப் பதிவேற்ற முடியவில்லை. சிறிய படத்தை முயலவும்.';
+
+  @override
+  String memberSince(String date) {
+    return '$date முதல் உறுப்பினர்';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'சுயவிவரம் $percent% நிறைவு';
+  }
+
+  @override
+  String get completeAddPhoto => 'சுயவிவரப் படம் சேர்க்கவும்';
+
+  @override
+  String get completeAddAge => 'உங்கள் வயதைச் சேர்க்கவும்';
+
+  @override
+  String get completeSetHome => 'உங்கள் வீட்டு இருப்பிடத்தை அமைக்கவும்';
+
+  @override
+  String get completeSecurityQuestion => 'பாதுகாப்புக் கேள்வியை அமைக்கவும்';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'படம் சேர்க்க உங்கள் படத்தில் உள்ள கேமராவைத் தட்டவும்.';
+
+  @override
+  String get nudgeFirstReport =>
+      'உங்கள் முதல் புகாரைப் பதிவு செய்து முதல் பதக்கத்தையும் நிலை 1-ஐயும் பெறுங்கள்.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return 'நிலை $level · $title அடைய இன்னும் $count புகார்கள்';
+  }
+
+  @override
+  String get yourCivicJourney => 'உங்கள் குடிமைப் பயணம்';
+
+  @override
+  String get fileAReport => 'புகார் பதிவு செய்';
+
+  @override
+  String get myPlaceTitle => 'என் இடம்';
+
+  @override
+  String get placeAddress => 'முகவரி';
+
+  @override
+  String get placeBbmpWard => 'BBMP வார்டு';
+
+  @override
+  String get placeGbaWard => 'GBA வார்டு';
+
+  @override
+  String get placeTaluk => 'தாலுகா';
+
+  @override
+  String get placeDistrict => 'மாவட்டம்';
+
+  @override
+  String get placeConstituency => 'மக்களவைத் தொகுதி';
+
+  @override
+  String get changeLabel => 'மாற்று';
+
+  @override
+  String get noHomeLocation => 'வீட்டு இருப்பிடம் இன்னும் அமைக்கப்படவில்லை.';
+
+  @override
+  String get myRepresentativesTitle => 'என் பிரதிநிதிகள்';
+
+  @override
+  String get mlaNotListed => 'எம்.எல்.ஏ. விவரம் விரைவில்';
+
+  @override
+  String assemblySegment(String name) {
+    return 'சட்டமன்றம்: $name';
+  }
+
+  @override
+  String get seeAll => 'அனைத்தும் காண்க';
+
+  @override
+  String get accountSettingsTitle => 'கணக்கு & அமைப்புகள்';
+
+  @override
+  String get editNameAge => 'பெயர் & வயதைத் திருத்து';
+
+  @override
+  String get recoveryIsSetUp => 'கடவுச்சொல் மீட்பு அமைக்கப்பட்டுள்ளது';
+
+  @override
+  String get recoveryNotSetUp =>
+      'அமைக்கப்படவில்லை — கடவுச்சொல்லை மீட்க முடியாது';
+
+  @override
+  String get enterValidAge => 'சரியான வயதை உள்ளிடவும் (10–120).';
+
+  @override
+  String get levelTitle1 => 'புதிய குரல்';
+
+  @override
+  String get levelTitle2 => 'செயல்படும் குடிமகன்';
+
+  @override
+  String get levelTitle3 => 'சமூகக் குரல்';
+
+  @override
+  String get levelTitle4 => 'அக்கம்பக்கச் சாம்பியன்';
+
+  @override
+  String get levelTitle5 => 'குடிமைத் தலைவர்';
+
+  @override
+  String get goToHome => 'முகப்புக்குச் செல்';
+
+  @override
+  String get viewMyProfile => 'என் சுயவிவரத்தைக் காண்க';
+
+  @override
+  String revealWelcome(String name) {
+    return 'வருக, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'உங்கள் குடிமைச் சுயவிவரம் தயார்.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name மக்களவை';
+  }
+
+  @override
+  String get yourAreaTitle => 'உங்கள் பகுதி';
+
+  @override
+  String get yourAreaNote =>
+      'நீங்கள் அளிக்கும் ஒவ்வொரு புகாரும் பரிந்துரையும் இந்தப் பகுதிக்கே கணக்கிடப்படும்.';
+
+  @override
+  String get firstStepsTitle => 'உங்கள் முதல் 3 படிகள்';
+
+  @override
+  String get stepFirstReport => 'உங்கள் முதல் புகாரைப் பதிவு செய்யுங்கள்';
+
+  @override
+  String get stepFirstReportBody =>
+      'குரல், உரை அல்லது படம் — 20 விநாடிகள் போதும்.';
+
+  @override
+  String get stepSupport => 'அருகிலுள்ள பரிந்துரையை ஆதரியுங்கள்';
+
+  @override
+  String get stepSupportBody =>
+      'உங்கள் அண்டை வீட்டாரின் கோரிக்கைக்குத் துணை நில்லுங்கள்.';
+
+  @override
+  String get stepExploreMap => 'உங்கள் பகுதியின் வரைபடத்தைப் பாருங்கள்';
+
+  @override
+  String get stepExploreMapBody =>
+      'உங்களைச் சுற்றி என்ன புகாரளிக்கப்படுகிறது எனப் பாருங்கள்.';
 }

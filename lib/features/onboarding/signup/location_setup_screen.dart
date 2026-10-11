@@ -21,7 +21,11 @@ import '../../../shared/widgets/primary_button.dart';
 /// (flutter_map has no built-in drag-marker gesture, so tap-to-move is used
 /// instead of drag).
 class LocationSetupScreen extends ConsumerStatefulWidget {
-  const LocationSetupScreen({super.key});
+  const LocationSetupScreen({super.key, this.fromProfile = false});
+
+  /// Opened from Profile's "Change home location": saves and returns to
+  /// Profile instead of continuing onboarding.
+  final bool fromProfile;
 
   @override
   ConsumerState<LocationSetupScreen> createState() =>
@@ -143,6 +147,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       lat: _pin!.latitude,
       lng: _pin!.longitude,
       constituencyId: constituencyId,
+      constituencyName: resolved?.constituencyName,
       homeBoothId: match?.boothId,
       homeBoothName: match?.boothName,
       // The layers that actually place this citizen on a map. Pincode is
@@ -155,8 +160,14 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       talukName: resolved?.talukName,
       homeWardId: resolved?.wardId,
       homeWardName: resolved?.wardName,
+      homeBbmpWardId: resolved?.bbmpWardId,
+      homeBbmpWardName: resolved?.bbmpWardName,
     );
     await _firestoreService.upsertUser(updated);
+    if (widget.fromProfile) {
+      if (mounted) context.go('/profile');
+      return;
+    }
     await ref
         .read(onboardingProgressProvider.notifier)
         .advanceTo(OnboardingStep.done);
@@ -179,14 +190,16 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/signup/basic-info'),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(widget.fromProfile ? '/profile' : '/signup/basic-info'),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            const OnboardingProgressStepper(currentStep: 3),
+            if (!widget.fromProfile)
+              const OnboardingProgressStepper(currentStep: 3),
             const SizedBox(height: 12),
             Expanded(
               child: PageView(

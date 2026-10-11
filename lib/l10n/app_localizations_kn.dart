@@ -1250,4 +1250,182 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get saveLabel => 'ಉಳಿಸಿ';
+
+  @override
+  String get statReportsFiled => 'ಸಲ್ಲಿಸಿದ ವರದಿಗಳು';
+
+  @override
+  String get statResolved => 'ಪರಿಹಾರವಾದವು';
+
+  @override
+  String get statSupporters => 'ಬೆಂಬಲಿಗರು';
+
+  @override
+  String get badgesTitle => 'ಬ್ಯಾಡ್ಜ್‌ಗಳು';
+
+  @override
+  String get photoUpdated => 'ಪ್ರೊಫೈಲ್ ಫೋಟೋ ನವೀಕರಿಸಲಾಗಿದೆ.';
+
+  @override
+  String get photoFailed => 'ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಆಗಲಿಲ್ಲ. ಚಿಕ್ಕ ಚಿತ್ರ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String memberSince(String date) {
+    return '$date ರಿಂದ ಸದಸ್ಯರು';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'ಪ್ರೊಫೈಲ್ $percent% ಪೂರ್ಣ';
+  }
+
+  @override
+  String get completeAddPhoto => 'ಪ್ರೊಫೈಲ್ ಫೋಟೋ ಸೇರಿಸಿ';
+
+  @override
+  String get completeAddAge => 'ನಿಮ್ಮ ವಯಸ್ಸು ಸೇರಿಸಿ';
+
+  @override
+  String get completeSetHome => 'ನಿಮ್ಮ ಮನೆಯ ಸ್ಥಳ ಹೊಂದಿಸಿ';
+
+  @override
+  String get completeSecurityQuestion => 'ಭದ್ರತಾ ಪ್ರಶ್ನೆ ಹೊಂದಿಸಿ';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'ಫೋಟೋ ಸೇರಿಸಲು ನಿಮ್ಮ ಚಿತ್ರದ ಮೇಲಿನ ಕ್ಯಾಮೆರಾ ಒತ್ತಿ.';
+
+  @override
+  String get nudgeFirstReport =>
+      'ನಿಮ್ಮ ಮೊದಲ ವರದಿ ಸಲ್ಲಿಸಿ, ಮೊದಲ ಬ್ಯಾಡ್ಜ್ ಮತ್ತು ಹಂತ 1 ಪಡೆಯಿರಿ.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return 'ಹಂತ $level · $title ತಲುಪಲು ಇನ್ನೂ $count ವರದಿಗಳು';
+  }
+
+  @override
+  String get yourCivicJourney => 'ನಿಮ್ಮ ನಾಗರಿಕ ಪಯಣ';
+
+  @override
+  String get fileAReport => 'ವರದಿ ಸಲ್ಲಿಸಿ';
+
+  @override
+  String get myPlaceTitle => 'ನನ್ನ ಸ್ಥಳ';
+
+  @override
+  String get placeAddress => 'ವಿಳಾಸ';
+
+  @override
+  String get placeBbmpWard => 'BBMP ವಾರ್ಡ್';
+
+  @override
+  String get placeGbaWard => 'GBA ವಾರ್ಡ್';
+
+  @override
+  String get placeTaluk => 'ತಾಲ್ಲೂಕು';
+
+  @override
+  String get placeDistrict => 'ಜಿಲ್ಲೆ';
+
+  @override
+  String get placeConstituency => 'ಲೋಕಸಭಾ ಕ್ಷೇತ್ರ';
+
+  @override
+  String get changeLabel => 'ಬದಲಿಸಿ';
+
+  @override
+  String get noHomeLocation => 'ಮನೆಯ ಸ್ಥಳ ಇನ್ನೂ ಹೊಂದಿಸಿಲ್ಲ.';
+
+  @override
+  String get myRepresentativesTitle => 'ನನ್ನ ಜನಪ್ರತಿನಿಧಿಗಳು';
+
+  @override
+  String get mlaNotListed => 'ಶಾಸಕರ ವಿವರ ಶೀಘ್ರದಲ್ಲೇ';
+
+  @override
+  String assemblySegment(String name) {
+    return 'ವಿಧಾನಸಭೆ: $name';
+  }
+
+  @override
+  String get seeAll => 'ಎಲ್ಲಾ ನೋಡಿ';
+
+  @override
+  String get accountSettingsTitle => 'ಖಾತೆ ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳು';
+
+  @override
+  String get editNameAge => 'ಹೆಸರು ಮತ್ತು ವಯಸ್ಸು ಬದಲಿಸಿ';
+
+  @override
+  String get recoveryIsSetUp => 'ಪಾಸ್‌ವರ್ಡ್ ಮರುಪಡೆಯುವಿಕೆ ಸಿದ್ಧವಿದೆ';
+
+  @override
+  String get recoveryNotSetUp => 'ಹೊಂದಿಸಿಲ್ಲ — ಪಾಸ್‌ವರ್ಡ್ ಮರುಪಡೆಯಲು ಆಗುವುದಿಲ್ಲ';
+
+  @override
+  String get enterValidAge => 'ಸರಿಯಾದ ವಯಸ್ಸು ನಮೂದಿಸಿ (10–120).';
+
+  @override
+  String get levelTitle1 => 'ಹೊಸ ಧ್ವನಿ';
+
+  @override
+  String get levelTitle2 => 'ಸಕ್ರಿಯ ನಾಗರಿಕ';
+
+  @override
+  String get levelTitle3 => 'ಸಮುದಾಯದ ಧ್ವನಿ';
+
+  @override
+  String get levelTitle4 => 'ನೆರೆಹೊರೆಯ ಚಾಂಪಿಯನ್';
+
+  @override
+  String get levelTitle5 => 'ನಾಗರಿಕ ನಾಯಕ';
+
+  @override
+  String get goToHome => 'ಮುಖಪುಟಕ್ಕೆ ಹೋಗಿ';
+
+  @override
+  String get viewMyProfile => 'ನನ್ನ ಪ್ರೊಫೈಲ್ ನೋಡಿ';
+
+  @override
+  String revealWelcome(String name) {
+    return 'ಸ್ವಾಗತ, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'ನಿಮ್ಮ ನಾಗರಿಕ ಪ್ರೊಫೈಲ್ ಸಿದ್ಧವಾಗಿದೆ.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name ಲೋಕಸಭೆ';
+  }
+
+  @override
+  String get yourAreaTitle => 'ನಿಮ್ಮ ಪ್ರದೇಶ';
+
+  @override
+  String get yourAreaNote =>
+      'ನೀವು ನೀಡುವ ಪ್ರತಿಯೊಂದು ವರದಿ ಅಥವಾ ಸಲಹೆ ಈ ಪ್ರದೇಶಕ್ಕೆ ಎಣಿಕೆಯಾಗುತ್ತದೆ.';
+
+  @override
+  String get firstStepsTitle => 'ನಿಮ್ಮ ಮೊದಲ 3 ಹೆಜ್ಜೆಗಳು';
+
+  @override
+  String get stepFirstReport => 'ನಿಮ್ಮ ಮೊದಲ ವರದಿ ಸಲ್ಲಿಸಿ';
+
+  @override
+  String get stepFirstReportBody =>
+      'ಧ್ವನಿ, ಪಠ್ಯ ಅಥವಾ ಫೋಟೋ — ಕೇವಲ 20 ಸೆಕೆಂಡುಗಳು.';
+
+  @override
+  String get stepSupport => 'ಹತ್ತಿರದ ಸಲಹೆಯನ್ನು ಬೆಂಬಲಿಸಿ';
+
+  @override
+  String get stepSupportBody => 'ನಿಮ್ಮ ನೆರೆಹೊರೆಯವರ ಬೇಡಿಕೆಗೆ ಬೆಂಬಲ ನೀಡಿ.';
+
+  @override
+  String get stepExploreMap => 'ನಿಮ್ಮ ಪ್ರದೇಶದ ನಕ್ಷೆ ನೋಡಿ';
+
+  @override
+  String get stepExploreMapBody => 'ನಿಮ್ಮ ಸುತ್ತಮುತ್ತ ಏನು ವರದಿಯಾಗುತ್ತಿದೆ ನೋಡಿ.';
 }

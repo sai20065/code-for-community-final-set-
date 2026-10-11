@@ -20,6 +20,10 @@ class ResolvedConstituency {
   final String? wardId;
   final String? wardName;
 
+  /// Same point in the 198-ward BBMP layer (the [wardId] above is GBA).
+  final String? bbmpWardId;
+  final String? bbmpWardName;
+
   const ResolvedConstituency({
     required this.constituencyId,
     required this.constituencyName,
@@ -30,6 +34,8 @@ class ResolvedConstituency {
     this.talukName,
     this.wardId,
     this.wardName,
+    this.bbmpWardId,
+    this.bbmpWardName,
   });
 }
 
@@ -73,6 +79,8 @@ class ConstituencyResolutionService {
       talukName: data['talukName'] as String?,
       wardId: data['wardId'] as String?,
       wardName: data['wardName'] as String?,
+      bbmpWardId: data['bbmpWardId'] as String?,
+      bbmpWardName: data['bbmpWardName'] as String?,
     );
   }
 }

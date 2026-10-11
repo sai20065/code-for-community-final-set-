@@ -13,6 +13,17 @@ service firebase.storage {
          firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'official');
     }
 
+    // Optional citizen profile photo. Private to its owner: only they can
+    // write it (an image under 1 MB) or read it — the app loads it through
+    // the SDK, never via a public download URL.
+    match /avatars/{userId}/{fileName} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId &&
+        request.resource.size < 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
     // AI-generated constituency PDF reports (see generateConstituencyReport
     // Cloud Function) — written only by the function's Admin SDK identity;
     // readable only by the official who represents that exact constituency.

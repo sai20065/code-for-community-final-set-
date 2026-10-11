@@ -75,10 +75,6 @@ flutter:
     # Display only — see lib/core/services/karnataka_geo_service.dart.
     - assets/geo/
 
-# Icon generation uses two separate config files (flutter_launcher_icons-
-# android.yaml, flutter_launcher_icons-web.yaml), NOT this shared section
-# — each CI job (build-apk.yml, build-web.yml) only scaffolds ONE platform
-# folder, and flutter_launcher_icons errors out if told to write icons
-# into a platform folder (android/ or ios/) that doesn't exist on that
-# runner. See those files for the actual config; there is no ios/ folder
-# anywhere in this repo (no iOS build pipeline exists).
+# App icons: see flutter_launcher_icons.yaml (Android + web, no iOS — there
+# is no ios/ folder or iOS pipeline). Only build-apk.yml runs the generator,
+# after `flutter create` has made android/.

@@ -1244,4 +1244,182 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get saveLabel => 'సేవ్ చేయండి';
+
+  @override
+  String get statReportsFiled => 'నమోదైన ఫిర్యాదులు';
+
+  @override
+  String get statResolved => 'పరిష్కారమైనవి';
+
+  @override
+  String get statSupporters => 'మద్దతుదారులు';
+
+  @override
+  String get badgesTitle => 'బ్యాడ్జ్‌లు';
+
+  @override
+  String get photoUpdated => 'ప్రొఫైల్ ఫోటో అప్‌డేట్ అయింది.';
+
+  @override
+  String get photoFailed => 'ఫోటో అప్‌లోడ్ కాలేదు. చిన్న చిత్రం ప్రయత్నించండి.';
+
+  @override
+  String memberSince(String date) {
+    return '$date నుండి సభ్యులు';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'ప్రొఫైల్ $percent% పూర్తి';
+  }
+
+  @override
+  String get completeAddPhoto => 'ప్రొఫైల్ ఫోటో జోడించండి';
+
+  @override
+  String get completeAddAge => 'మీ వయస్సు జోడించండి';
+
+  @override
+  String get completeSetHome => 'మీ ఇంటి స్థానం సెట్ చేయండి';
+
+  @override
+  String get completeSecurityQuestion => 'భద్రతా ప్రశ్న సెట్ చేయండి';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'ఫోటో జోడించడానికి మీ చిత్రంపై కెమెరా నొక్కండి.';
+
+  @override
+  String get nudgeFirstReport =>
+      'మీ మొదటి ఫిర్యాదు నమోదు చేసి మొదటి బ్యాడ్జ్, లెవెల్ 1 పొందండి.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return 'లెవెల్ $level · $title చేరడానికి ఇంకా $count ఫిర్యాదులు';
+  }
+
+  @override
+  String get yourCivicJourney => 'మీ పౌర ప్రయాణం';
+
+  @override
+  String get fileAReport => 'ఫిర్యాదు నమోదు చేయండి';
+
+  @override
+  String get myPlaceTitle => 'నా ప్రాంతం';
+
+  @override
+  String get placeAddress => 'చిరునామా';
+
+  @override
+  String get placeBbmpWard => 'BBMP వార్డు';
+
+  @override
+  String get placeGbaWard => 'GBA వార్డు';
+
+  @override
+  String get placeTaluk => 'తాలూకా';
+
+  @override
+  String get placeDistrict => 'జిల్లా';
+
+  @override
+  String get placeConstituency => 'లోక్‌సభ స్థానం';
+
+  @override
+  String get changeLabel => 'మార్చండి';
+
+  @override
+  String get noHomeLocation => 'ఇంటి స్థానం ఇంకా సెట్ కాలేదు.';
+
+  @override
+  String get myRepresentativesTitle => 'నా ప్రతినిధులు';
+
+  @override
+  String get mlaNotListed => 'ఎమ్మెల్యే వివరాలు త్వరలో';
+
+  @override
+  String assemblySegment(String name) {
+    return 'అసెంబ్లీ: $name';
+  }
+
+  @override
+  String get seeAll => 'అన్నీ చూడండి';
+
+  @override
+  String get accountSettingsTitle => 'ఖాతా & సెట్టింగ్‌లు';
+
+  @override
+  String get editNameAge => 'పేరు & వయస్సు మార్చండి';
+
+  @override
+  String get recoveryIsSetUp => 'పాస్‌వర్డ్ రికవరీ సెట్ అయింది';
+
+  @override
+  String get recoveryNotSetUp => 'సెట్ కాలేదు — పాస్‌వర్డ్ రికవర్ చేయలేరు';
+
+  @override
+  String get enterValidAge => 'సరైన వయస్సు నమోదు చేయండి (10–120).';
+
+  @override
+  String get levelTitle1 => 'కొత్త గొంతు';
+
+  @override
+  String get levelTitle2 => 'చురుకైన పౌరుడు';
+
+  @override
+  String get levelTitle3 => 'సమాజపు గొంతు';
+
+  @override
+  String get levelTitle4 => 'పరిసరాల ఛాంపియన్';
+
+  @override
+  String get levelTitle5 => 'పౌర నాయకుడు';
+
+  @override
+  String get goToHome => 'హోమ్‌కు వెళ్ళండి';
+
+  @override
+  String get viewMyProfile => 'నా ప్రొఫైల్ చూడండి';
+
+  @override
+  String revealWelcome(String name) {
+    return 'స్వాగతం, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'మీ పౌర ప్రొఫైల్ సిద్ధంగా ఉంది.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name లోక్‌సభ';
+  }
+
+  @override
+  String get yourAreaTitle => 'మీ ప్రాంతం';
+
+  @override
+  String get yourAreaNote =>
+      'మీరు ఇచ్చే ప్రతి ఫిర్యాదు, సూచన ఈ ప్రాంతానికే లెక్కించబడుతుంది.';
+
+  @override
+  String get firstStepsTitle => 'మీ మొదటి 3 అడుగులు';
+
+  @override
+  String get stepFirstReport => 'మీ మొదటి ఫిర్యాదు నమోదు చేయండి';
+
+  @override
+  String get stepFirstReportBody =>
+      'వాయిస్, టెక్స్ట్ లేదా ఫోటో — 20 సెకన్లు చాలు.';
+
+  @override
+  String get stepSupport => 'దగ్గరలోని సూచనకు మద్దతివ్వండి';
+
+  @override
+  String get stepSupportBody => 'మీ పొరుగువారి అభ్యర్థనకు తోడుగా నిలవండి.';
+
+  @override
+  String get stepExploreMap => 'మీ ప్రాంత మ్యాప్ చూడండి';
+
+  @override
+  String get stepExploreMapBody => 'మీ చుట్టూ ఏమి నివేదించబడుతోందో చూడండి.';
 }

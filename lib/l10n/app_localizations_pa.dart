@@ -1249,4 +1249,180 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get saveLabel => 'ਸੰਭਾਲੋ';
+
+  @override
+  String get statReportsFiled => 'ਦਰਜ ਸ਼ਿਕਾਇਤਾਂ';
+
+  @override
+  String get statResolved => 'ਹੱਲ ਹੋਈਆਂ';
+
+  @override
+  String get statSupporters => 'ਸਮਰਥਕ';
+
+  @override
+  String get badgesTitle => 'ਬੈਜ';
+
+  @override
+  String get photoUpdated => 'ਪ੍ਰੋਫ਼ਾਈਲ ਫ਼ੋਟੋ ਅੱਪਡੇਟ ਹੋ ਗਈ।';
+
+  @override
+  String get photoFailed => 'ਫ਼ੋਟੋ ਅੱਪਲੋਡ ਨਹੀਂ ਹੋਈ। ਛੋਟੀ ਤਸਵੀਰ ਅਜ਼ਮਾਓ।';
+
+  @override
+  String memberSince(String date) {
+    return '$date ਤੋਂ ਮੈਂਬਰ';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'ਪ੍ਰੋਫ਼ਾਈਲ $percent% ਪੂਰੀ';
+  }
+
+  @override
+  String get completeAddPhoto => 'ਪ੍ਰੋਫ਼ਾਈਲ ਫ਼ੋਟੋ ਜੋੜੋ';
+
+  @override
+  String get completeAddAge => 'ਆਪਣੀ ਉਮਰ ਜੋੜੋ';
+
+  @override
+  String get completeSetHome => 'ਘਰ ਦੀ ਥਾਂ ਸੈੱਟ ਕਰੋ';
+
+  @override
+  String get completeSecurityQuestion => 'ਸੁਰੱਖਿਆ ਸਵਾਲ ਸੈੱਟ ਕਰੋ';
+
+  @override
+  String get tapCameraToAddPhoto => 'ਫ਼ੋਟੋ ਜੋੜਨ ਲਈ ਆਪਣੀ ਤਸਵੀਰ \'ਤੇ ਕੈਮਰਾ ਦਬਾਓ।';
+
+  @override
+  String get nudgeFirstReport =>
+      'ਆਪਣੀ ਪਹਿਲੀ ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰੋ ਅਤੇ ਪਹਿਲਾ ਬੈਜ ਤੇ ਲੈਵਲ 1 ਪਾਓ।';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return 'ਲੈਵਲ $level · $title ਤੱਕ ਪਹੁੰਚਣ ਲਈ $count ਹੋਰ ਸ਼ਿਕਾਇਤਾਂ';
+  }
+
+  @override
+  String get yourCivicJourney => 'ਤੁਹਾਡਾ ਨਾਗਰਿਕ ਸਫ਼ਰ';
+
+  @override
+  String get fileAReport => 'ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰੋ';
+
+  @override
+  String get myPlaceTitle => 'ਮੇਰੀ ਥਾਂ';
+
+  @override
+  String get placeAddress => 'ਪਤਾ';
+
+  @override
+  String get placeBbmpWard => 'BBMP ਵਾਰਡ';
+
+  @override
+  String get placeGbaWard => 'GBA ਵਾਰਡ';
+
+  @override
+  String get placeTaluk => 'ਤਹਿਸੀਲ';
+
+  @override
+  String get placeDistrict => 'ਜ਼ਿਲ੍ਹਾ';
+
+  @override
+  String get placeConstituency => 'ਲੋਕ ਸਭਾ ਸੀਟ';
+
+  @override
+  String get changeLabel => 'ਬਦਲੋ';
+
+  @override
+  String get noHomeLocation => 'ਘਰ ਦੀ ਥਾਂ ਹਾਲੇ ਸੈੱਟ ਨਹੀਂ।';
+
+  @override
+  String get myRepresentativesTitle => 'ਮੇਰੇ ਨੁਮਾਇੰਦੇ';
+
+  @override
+  String get mlaNotListed => 'ਵਿਧਾਇਕ ਦੀ ਜਾਣਕਾਰੀ ਜਲਦੀ';
+
+  @override
+  String assemblySegment(String name) {
+    return 'ਵਿਧਾਨ ਸਭਾ: $name';
+  }
+
+  @override
+  String get seeAll => 'ਸਭ ਵੇਖੋ';
+
+  @override
+  String get accountSettingsTitle => 'ਖਾਤਾ ਅਤੇ ਸੈਟਿੰਗਾਂ';
+
+  @override
+  String get editNameAge => 'ਨਾਮ ਅਤੇ ਉਮਰ ਬਦਲੋ';
+
+  @override
+  String get recoveryIsSetUp => 'ਪਾਸਵਰਡ ਰਿਕਵਰੀ ਸੈੱਟ ਹੈ';
+
+  @override
+  String get recoveryNotSetUp => 'ਸੈੱਟ ਨਹੀਂ — ਪਾਸਵਰਡ ਵਾਪਸ ਨਹੀਂ ਲੈ ਸਕੋਗੇ';
+
+  @override
+  String get enterValidAge => 'ਸਹੀ ਉਮਰ ਲਿਖੋ (10–120)।';
+
+  @override
+  String get levelTitle1 => 'ਨਵੀਂ ਆਵਾਜ਼';
+
+  @override
+  String get levelTitle2 => 'ਸਰਗਰਮ ਨਾਗਰਿਕ';
+
+  @override
+  String get levelTitle3 => 'ਭਾਈਚਾਰੇ ਦੀ ਆਵਾਜ਼';
+
+  @override
+  String get levelTitle4 => 'ਮੁਹੱਲੇ ਦਾ ਚੈਂਪੀਅਨ';
+
+  @override
+  String get levelTitle5 => 'ਨਾਗਰਿਕ ਆਗੂ';
+
+  @override
+  String get goToHome => 'ਹੋਮ \'ਤੇ ਜਾਓ';
+
+  @override
+  String get viewMyProfile => 'ਮੇਰੀ ਪ੍ਰੋਫ਼ਾਈਲ ਵੇਖੋ';
+
+  @override
+  String revealWelcome(String name) {
+    return 'ਜੀ ਆਇਆਂ ਨੂੰ, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'ਤੁਹਾਡੀ ਨਾਗਰਿਕ ਪ੍ਰੋਫ਼ਾਈਲ ਤਿਆਰ ਹੈ।';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name ਲੋਕ ਸਭਾ';
+  }
+
+  @override
+  String get yourAreaTitle => 'ਤੁਹਾਡਾ ਇਲਾਕਾ';
+
+  @override
+  String get yourAreaNote =>
+      'ਤੁਹਾਡੀ ਹਰ ਸ਼ਿਕਾਇਤ ਜਾਂ ਸੁਝਾਅ ਇਸੇ ਇਲਾਕੇ ਲਈ ਗਿਣਿਆ ਜਾਂਦਾ ਹੈ।';
+
+  @override
+  String get firstStepsTitle => 'ਤੁਹਾਡੇ ਪਹਿਲੇ 3 ਕਦਮ';
+
+  @override
+  String get stepFirstReport => 'ਆਪਣੀ ਪਹਿਲੀ ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰੋ';
+
+  @override
+  String get stepFirstReportBody => 'ਆਵਾਜ਼, ਲਿਖਤ ਜਾਂ ਫ਼ੋਟੋ — ਬੱਸ 20 ਸਕਿੰਟ।';
+
+  @override
+  String get stepSupport => 'ਨੇੜਲੇ ਸੁਝਾਅ ਦਾ ਸਮਰਥਨ ਕਰੋ';
+
+  @override
+  String get stepSupportBody => 'ਆਪਣੇ ਗੁਆਂਢੀਆਂ ਦੀ ਮੰਗ ਦਾ ਸਾਥ ਦਿਓ।';
+
+  @override
+  String get stepExploreMap => 'ਆਪਣੇ ਇਲਾਕੇ ਦਾ ਨਕਸ਼ਾ ਵੇਖੋ';
+
+  @override
+  String get stepExploreMapBody => 'ਵੇਖੋ ਤੁਹਾਡੇ ਆਲੇ-ਦੁਆਲੇ ਕੀ ਦਰਜ ਹੋ ਰਿਹਾ ਹੈ।';
 }

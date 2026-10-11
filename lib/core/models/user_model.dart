@@ -29,6 +29,10 @@ class UserModel {
   final double? lng;
   final UserRole role;
   final String? constituencyId;
+
+  /// Display name for [constituencyId] (e.g. "Chikballapur"), saved at
+  /// Location Setup so the profile never has to show a bare id.
+  final String? constituencyName;
   final String? homeBoothId;
   final String? homeBoothName;
 
@@ -47,6 +51,19 @@ class UserModel {
   final String? talukName;
   final String? homeWardId;
   final String? homeWardName;
+
+  /// Home ward in the 198-ward BBMP layer (alongside the GBA [homeWardId]).
+  final String? homeBbmpWardId;
+  final String? homeBbmpWardName;
+
+  /// Storage path of the citizen's optional profile photo
+  /// (`avatars/{uid}/avatar.jpg`). Read through Storage rules, never a
+  /// public URL.
+  final String? photoPath;
+
+  /// Set by the `setSecurityQuestion` function, so the profile can show
+  /// whether password recovery is set up without reading `userSecrets`.
+  final bool hasSecurityQuestion;
   final String preferredLanguage;
   final SignInMethod? signInMethod;
   final DateTime createdAt;
@@ -65,6 +82,7 @@ class UserModel {
     this.lat,
     this.lng,
     this.constituencyId,
+    this.constituencyName,
     this.homeBoothId,
     this.homeBoothName,
     this.districtId,
@@ -73,6 +91,10 @@ class UserModel {
     this.talukName,
     this.homeWardId,
     this.homeWardName,
+    this.homeBbmpWardId,
+    this.homeBbmpWardName,
+    this.photoPath,
+    this.hasSecurityQuestion = false,
     this.preferredLanguage = 'en',
     this.signInMethod,
     this.signupCompletedAt,
@@ -108,6 +130,7 @@ class UserModel {
           ? UserRole.official
           : UserRole.citizen,
       constituencyId: map['constituencyId'] as String?,
+      constituencyName: map['constituencyName'] as String?,
       homeBoothId: map['homeBoothId'] as String?,
       homeBoothName: map['homeBoothName'] as String?,
       districtId: map['districtId'] as String?,
@@ -116,6 +139,10 @@ class UserModel {
       talukName: map['talukName'] as String?,
       homeWardId: map['homeWardId'] as String?,
       homeWardName: map['homeWardName'] as String?,
+      homeBbmpWardId: map['homeBbmpWardId'] as String?,
+      homeBbmpWardName: map['homeBbmpWardName'] as String?,
+      photoPath: map['photoPath'] as String?,
+      hasSecurityQuestion: map['hasSecurityQuestion'] == true,
       preferredLanguage: map['preferredLanguage'] as String? ?? 'en',
       signInMethod: _signInMethodFromString(map['signInMethod'] as String?),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
@@ -135,6 +162,7 @@ class UserModel {
       if (lat != null && lng != null) 'location': {'lat': lat, 'lng': lng},
       'role': role.name,
       if (constituencyId != null) 'constituencyId': constituencyId,
+      if (constituencyName != null) 'constituencyName': constituencyName,
       if (homeBoothId != null) 'homeBoothId': homeBoothId,
       if (homeBoothName != null) 'homeBoothName': homeBoothName,
       if (districtId != null) 'districtId': districtId,
@@ -143,6 +171,9 @@ class UserModel {
       if (talukName != null) 'talukName': talukName,
       if (homeWardId != null) 'homeWardId': homeWardId,
       if (homeWardName != null) 'homeWardName': homeWardName,
+      if (homeBbmpWardId != null) 'homeBbmpWardId': homeBbmpWardId,
+      if (homeBbmpWardName != null) 'homeBbmpWardName': homeBbmpWardName,
+      if (photoPath != null) 'photoPath': photoPath,
       'preferredLanguage': preferredLanguage,
       if (signInMethod != null) 'signInMethod': signInMethod!.name,
       'createdAt': Timestamp.fromDate(createdAt),
@@ -161,6 +192,7 @@ class UserModel {
     double? lat,
     double? lng,
     String? constituencyId,
+    String? constituencyName,
     String? homeBoothId,
     String? homeBoothName,
     String? districtId,
@@ -169,6 +201,9 @@ class UserModel {
     String? talukName,
     String? homeWardId,
     String? homeWardName,
+    String? homeBbmpWardId,
+    String? homeBbmpWardName,
+    String? photoPath,
     String? preferredLanguage,
     SignInMethod? signInMethod,
     DateTime? signupCompletedAt,
@@ -186,6 +221,7 @@ class UserModel {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       constituencyId: constituencyId ?? this.constituencyId,
+      constituencyName: constituencyName ?? this.constituencyName,
       homeBoothId: homeBoothId ?? this.homeBoothId,
       homeBoothName: homeBoothName ?? this.homeBoothName,
       districtId: districtId ?? this.districtId,
@@ -194,6 +230,10 @@ class UserModel {
       talukName: talukName ?? this.talukName,
       homeWardId: homeWardId ?? this.homeWardId,
       homeWardName: homeWardName ?? this.homeWardName,
+      homeBbmpWardId: homeBbmpWardId ?? this.homeBbmpWardId,
+      homeBbmpWardName: homeBbmpWardName ?? this.homeBbmpWardName,
+      photoPath: photoPath ?? this.photoPath,
+      hasSecurityQuestion: hasSecurityQuestion,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       signInMethod: signInMethod ?? this.signInMethod,
       signupCompletedAt: signupCompletedAt ?? this.signupCompletedAt,

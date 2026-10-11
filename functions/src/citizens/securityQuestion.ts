@@ -79,7 +79,12 @@ export const setSecurityQuestion = onCall({region: REGION}, async (request) => {
   }
   const answer = normaliseAnswer(request.data?.answer);
   const salt = randomBytes(16);
-  await admin.firestore().collection("userSecrets").doc(uid).set({
+  const db = admin.firestore();
+  // Public-to-its-owner flag so the profile can show "password recovery is
+  // set up" without anyone ever reading userSecrets.
+  await db.collection("users").doc(uid)
+    .set({hasSecurityQuestion: true}, {merge: true});
+  await db.collection("userSecrets").doc(uid).set({
     questionId,
     answerHash: hashAnswer(answer, salt).toString("base64"),
     answerSalt: salt.toString("base64"),

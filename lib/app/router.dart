@@ -147,7 +147,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/signup/location',
-        builder: (context, state) => const LocationSetupScreen(),
+        builder: (context, state) =>
+            LocationSetupScreen(fromProfile: state.extra == true),
       ),
       GoRoute(
         path: '/signup/done',

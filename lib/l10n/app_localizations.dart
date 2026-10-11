@@ -2267,6 +2267,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get saveLabel;
+
+  /// No description provided for @statReportsFiled.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports filed'**
+  String get statReportsFiled;
+
+  /// No description provided for @statResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get statResolved;
+
+  /// No description provided for @statSupporters.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporters'**
+  String get statSupporters;
+
+  /// No description provided for @badgesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Badges'**
+  String get badgesTitle;
+
+  /// No description provided for @photoUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo updated.'**
+  String get photoUpdated;
+
+  /// No description provided for @photoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t upload the photo. Try a smaller picture.'**
+  String get photoFailed;
+
+  /// No description provided for @memberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since {date}'**
+  String memberSince(String date);
+
+  /// No description provided for @profileCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile {percent}% complete'**
+  String profileCompleteTitle(int percent);
+
+  /// No description provided for @completeAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a profile photo'**
+  String get completeAddPhoto;
+
+  /// No description provided for @completeAddAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your age'**
+  String get completeAddAge;
+
+  /// No description provided for @completeSetHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your home location'**
+  String get completeSetHome;
+
+  /// No description provided for @completeSecurityQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a security question'**
+  String get completeSecurityQuestion;
+
+  /// No description provided for @tapCameraToAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the camera on your picture to add a photo.'**
+  String get tapCameraToAddPhoto;
+
+  /// No description provided for @nudgeFirstReport.
+  ///
+  /// In en, this message translates to:
+  /// **'File your first report to earn your first badge and reach Level 1.'**
+  String get nudgeFirstReport;
+
+  /// No description provided for @nudgeNextLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more reports to reach Level {level} · {title}'**
+  String nudgeNextLevel(int count, int level, String title);
+
+  /// No description provided for @yourCivicJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Your civic journey'**
+  String get yourCivicJourney;
+
+  /// No description provided for @fileAReport.
+  ///
+  /// In en, this message translates to:
+  /// **'File a report'**
+  String get fileAReport;
+
+  /// No description provided for @myPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My place'**
+  String get myPlaceTitle;
+
+  /// No description provided for @placeAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get placeAddress;
+
+  /// No description provided for @placeBbmpWard.
+  ///
+  /// In en, this message translates to:
+  /// **'BBMP ward'**
+  String get placeBbmpWard;
+
+  /// No description provided for @placeGbaWard.
+  ///
+  /// In en, this message translates to:
+  /// **'GBA ward'**
+  String get placeGbaWard;
+
+  /// No description provided for @placeTaluk.
+  ///
+  /// In en, this message translates to:
+  /// **'Taluk'**
+  String get placeTaluk;
+
+  /// No description provided for @placeDistrict.
+  ///
+  /// In en, this message translates to:
+  /// **'District'**
+  String get placeDistrict;
+
+  /// No description provided for @placeConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Lok Sabha seat'**
+  String get placeConstituency;
+
+  /// No description provided for @changeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get changeLabel;
+
+  /// No description provided for @noHomeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Home location not set yet.'**
+  String get noHomeLocation;
+
+  /// No description provided for @myRepresentativesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My representatives'**
+  String get myRepresentativesTitle;
+
+  /// No description provided for @mlaNotListed.
+  ///
+  /// In en, this message translates to:
+  /// **'MLA details coming soon'**
+  String get mlaNotListed;
+
+  /// No description provided for @assemblySegment.
+  ///
+  /// In en, this message translates to:
+  /// **'Assembly: {name}'**
+  String assemblySegment(String name);
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @accountSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & settings'**
+  String get accountSettingsTitle;
+
+  /// No description provided for @editNameAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit name & age'**
+  String get editNameAge;
+
+  /// No description provided for @recoveryIsSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Password recovery is set up'**
+  String get recoveryIsSetUp;
+
+  /// No description provided for @recoveryNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set — you can\'t recover your password'**
+  String get recoveryNotSetUp;
+
+  /// No description provided for @enterValidAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid age (10–120).'**
+  String get enterValidAge;
+
+  /// No description provided for @levelTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'New Voice'**
+  String get levelTitle1;
+
+  /// No description provided for @levelTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Citizen'**
+  String get levelTitle2;
+
+  /// No description provided for @levelTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Voice'**
+  String get levelTitle3;
+
+  /// No description provided for @levelTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighbourhood Champion'**
+  String get levelTitle4;
+
+  /// No description provided for @levelTitle5.
+  ///
+  /// In en, this message translates to:
+  /// **'Civic Leader'**
+  String get levelTitle5;
+
+  /// No description provided for @goToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Home'**
+  String get goToHome;
+
+  /// No description provided for @viewMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'View my profile'**
+  String get viewMyProfile;
+
+  /// No description provided for @revealWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name}!'**
+  String revealWelcome(String name);
+
+  /// No description provided for @revealSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your civic profile is ready.'**
+  String get revealSubtitle;
+
+  /// No description provided for @placeConstituencyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} Lok Sabha'**
+  String placeConstituencyShort(String name);
+
+  /// No description provided for @yourAreaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your area'**
+  String get yourAreaTitle;
+
+  /// No description provided for @yourAreaNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you report or suggest is counted for this area.'**
+  String get yourAreaNote;
+
+  /// No description provided for @firstStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first 3 steps'**
+  String get firstStepsTitle;
+
+  /// No description provided for @stepFirstReport.
+  ///
+  /// In en, this message translates to:
+  /// **'File your first report'**
+  String get stepFirstReport;
+
+  /// No description provided for @stepFirstReportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice, text or photo — it takes 20 seconds.'**
+  String get stepFirstReportBody;
+
+  /// No description provided for @stepSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support a suggestion near you'**
+  String get stepSupport;
+
+  /// No description provided for @stepSupportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Back what your neighbours are asking for.'**
+  String get stepSupportBody;
+
+  /// No description provided for @stepExploreMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore your area\'s map'**
+  String get stepExploreMap;
+
+  /// No description provided for @stepExploreMapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See what\'s being reported around you.'**
+  String get stepExploreMapBody;
 }
 
 class _AppLocalizationsDelegate

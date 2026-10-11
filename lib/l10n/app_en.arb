@@ -766,5 +766,107 @@
   "changeSecurityQuestionTitle": "Change security question",
   "passwordChanged": "Password changed.",
   "securityQuestionSaved": "Security question saved.",
-  "saveLabel": "Save"
+  "saveLabel": "Save",
+  "statReportsFiled": "Reports filed",
+  "statResolved": "Resolved",
+  "statSupporters": "Supporters",
+  "badgesTitle": "Badges",
+  "photoUpdated": "Profile photo updated.",
+  "photoFailed": "Couldn't upload the photo. Try a smaller picture.",
+  "memberSince": "Member since {date}",
+  "@memberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "profileCompleteTitle": "Profile {percent}% complete",
+  "@profileCompleteTitle": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "completeAddPhoto": "Add a profile photo",
+  "completeAddAge": "Add your age",
+  "completeSetHome": "Set your home location",
+  "completeSecurityQuestion": "Set a security question",
+  "tapCameraToAddPhoto": "Tap the camera on your picture to add a photo.",
+  "nudgeFirstReport": "File your first report to earn your first badge and reach Level 1.",
+  "nudgeNextLevel": "{count} more reports to reach Level {level} · {title}",
+  "@nudgeNextLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "yourCivicJourney": "Your civic journey",
+  "fileAReport": "File a report",
+  "myPlaceTitle": "My place",
+  "placeAddress": "Address",
+  "placeBbmpWard": "BBMP ward",
+  "placeGbaWard": "GBA ward",
+  "placeTaluk": "Taluk",
+  "placeDistrict": "District",
+  "placeConstituency": "Lok Sabha seat",
+  "changeLabel": "Change",
+  "noHomeLocation": "Home location not set yet.",
+  "myRepresentativesTitle": "My representatives",
+  "mlaNotListed": "MLA details coming soon",
+  "assemblySegment": "Assembly: {name}",
+  "@assemblySegment": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "seeAll": "See all",
+  "accountSettingsTitle": "Account & settings",
+  "editNameAge": "Edit name & age",
+  "recoveryIsSetUp": "Password recovery is set up",
+  "recoveryNotSetUp": "Not set — you can't recover your password",
+  "enterValidAge": "Enter a valid age (10–120).",
+  "levelTitle1": "New Voice",
+  "levelTitle2": "Active Citizen",
+  "levelTitle3": "Community Voice",
+  "levelTitle4": "Neighbourhood Champion",
+  "levelTitle5": "Civic Leader",
+  "goToHome": "Go to Home",
+  "viewMyProfile": "View my profile",
+  "revealWelcome": "Welcome, {name}!",
+  "@revealWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "revealSubtitle": "Your civic profile is ready.",
+  "placeConstituencyShort": "{name} Lok Sabha",
+  "@placeConstituencyShort": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "yourAreaTitle": "Your area",
+  "yourAreaNote": "Everything you report or suggest is counted for this area.",
+  "firstStepsTitle": "Your first 3 steps",
+  "stepFirstReport": "File your first report",
+  "stepFirstReportBody": "Voice, text or photo — it takes 20 seconds.",
+  "stepSupport": "Support a suggestion near you",
+  "stepSupportBody": "Back what your neighbours are asking for.",
+  "stepExploreMap": "Explore your area's map",
+  "stepExploreMapBody": "See what's being reported around you."
 }

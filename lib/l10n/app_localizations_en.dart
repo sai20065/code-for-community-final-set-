@@ -1239,4 +1239,183 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveLabel => 'Save';
+
+  @override
+  String get statReportsFiled => 'Reports filed';
+
+  @override
+  String get statResolved => 'Resolved';
+
+  @override
+  String get statSupporters => 'Supporters';
+
+  @override
+  String get badgesTitle => 'Badges';
+
+  @override
+  String get photoUpdated => 'Profile photo updated.';
+
+  @override
+  String get photoFailed =>
+      'Couldn\'t upload the photo. Try a smaller picture.';
+
+  @override
+  String memberSince(String date) {
+    return 'Member since $date';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'Profile $percent% complete';
+  }
+
+  @override
+  String get completeAddPhoto => 'Add a profile photo';
+
+  @override
+  String get completeAddAge => 'Add your age';
+
+  @override
+  String get completeSetHome => 'Set your home location';
+
+  @override
+  String get completeSecurityQuestion => 'Set a security question';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'Tap the camera on your picture to add a photo.';
+
+  @override
+  String get nudgeFirstReport =>
+      'File your first report to earn your first badge and reach Level 1.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return '$count more reports to reach Level $level · $title';
+  }
+
+  @override
+  String get yourCivicJourney => 'Your civic journey';
+
+  @override
+  String get fileAReport => 'File a report';
+
+  @override
+  String get myPlaceTitle => 'My place';
+
+  @override
+  String get placeAddress => 'Address';
+
+  @override
+  String get placeBbmpWard => 'BBMP ward';
+
+  @override
+  String get placeGbaWard => 'GBA ward';
+
+  @override
+  String get placeTaluk => 'Taluk';
+
+  @override
+  String get placeDistrict => 'District';
+
+  @override
+  String get placeConstituency => 'Lok Sabha seat';
+
+  @override
+  String get changeLabel => 'Change';
+
+  @override
+  String get noHomeLocation => 'Home location not set yet.';
+
+  @override
+  String get myRepresentativesTitle => 'My representatives';
+
+  @override
+  String get mlaNotListed => 'MLA details coming soon';
+
+  @override
+  String assemblySegment(String name) {
+    return 'Assembly: $name';
+  }
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get accountSettingsTitle => 'Account & settings';
+
+  @override
+  String get editNameAge => 'Edit name & age';
+
+  @override
+  String get recoveryIsSetUp => 'Password recovery is set up';
+
+  @override
+  String get recoveryNotSetUp => 'Not set — you can\'t recover your password';
+
+  @override
+  String get enterValidAge => 'Enter a valid age (10–120).';
+
+  @override
+  String get levelTitle1 => 'New Voice';
+
+  @override
+  String get levelTitle2 => 'Active Citizen';
+
+  @override
+  String get levelTitle3 => 'Community Voice';
+
+  @override
+  String get levelTitle4 => 'Neighbourhood Champion';
+
+  @override
+  String get levelTitle5 => 'Civic Leader';
+
+  @override
+  String get goToHome => 'Go to Home';
+
+  @override
+  String get viewMyProfile => 'View my profile';
+
+  @override
+  String revealWelcome(String name) {
+    return 'Welcome, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'Your civic profile is ready.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name Lok Sabha';
+  }
+
+  @override
+  String get yourAreaTitle => 'Your area';
+
+  @override
+  String get yourAreaNote =>
+      'Everything you report or suggest is counted for this area.';
+
+  @override
+  String get firstStepsTitle => 'Your first 3 steps';
+
+  @override
+  String get stepFirstReport => 'File your first report';
+
+  @override
+  String get stepFirstReportBody =>
+      'Voice, text or photo — it takes 20 seconds.';
+
+  @override
+  String get stepSupport => 'Support a suggestion near you';
+
+  @override
+  String get stepSupportBody => 'Back what your neighbours are asking for.';
+
+  @override
+  String get stepExploreMap => 'Explore your area\'s map';
+
+  @override
+  String get stepExploreMapBody => 'See what\'s being reported around you.';
 }

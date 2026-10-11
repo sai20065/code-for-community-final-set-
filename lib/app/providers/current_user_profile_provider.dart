@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/models/constituency_model.dart';
 import '../../core/models/user_model.dart';
-import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
+import 'auth_state_provider.dart';
 
 final firestoreServiceProvider = Provider<FirestoreService>((ref) => FirestoreService());
 
@@ -19,8 +19,14 @@ final constituencyProvider =
 /// screens (location autofill), onboarding prefill, and every official
 /// screen (which needs the signed-in official's own `constituencyId` to
 /// scope their view to just their constituency).
+///
+/// Watches [authStateProvider] rather than reading `currentUser` once: this
+/// provider is first read on Splash/Welcome, *before* sign-in, and a
+/// one-time read cached "no user" for the whole session — so a citizen who
+/// signed up saw an empty profile (no name, no place) until they restarted
+/// the app.
 final currentUserProfileProvider = StreamProvider<UserModel?>((ref) {
-  final uid = AuthService().currentUser?.uid;
-  if (uid == null) return Stream.value(null);
-  return ref.watch(firestoreServiceProvider).watchUser(uid);
+  final user = ref.watch(authStateProvider).valueOrNull;
+  if (user == null) return Stream.value(null);
+  return ref.watch(firestoreServiceProvider).watchUser(user.uid);
 });
