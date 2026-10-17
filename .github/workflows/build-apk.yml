@@ -89,6 +89,6 @@ jobs:
         with:
           appId: '1:830098066112:android:3f605559297211dfcf7b25'
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_APPDISTRO_SA_KEY }}
-          testers: saikavitha1975@gmail.com
+          testers: saikavitha1975@gmail.com, manas.naguru@gmail.com
           file: prajadhwani-${{ github.run_number }}.apk
           releaseNotes: "Auto-built from commit ${{ github.sha }}"
