@@ -5,9 +5,7 @@ import '../core/models/booth_model.dart';
 import '../core/models/submission_model.dart';
 import '../core/models/user_model.dart';
 import '../features/citizen/compose/category_picker_screen.dart';
-import '../features/citizen/compose/photo_video_screen.dart';
-import '../features/citizen/compose/text_compose_screen.dart';
-import '../features/citizen/compose/voice_record_screen.dart';
+import '../features/citizen/compose/report_compose_screen.dart';
 import '../features/citizen/confirmation/submission_confirmation_screen.dart';
 import '../features/citizen/home/home_screen.dart';
 import '../features/citizen/profile/profile_screen.dart';
@@ -192,24 +190,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/compose',
         builder: (context, state) => const CategoryPickerScreen(),
       ),
-      GoRoute(
-        path: '/compose/voice',
-        builder: (context, state) => VoiceRecordScreen(
-          initialCategory: state.extra as SubmissionCategory?,
+      // One unified compose screen for text + voice + photo. The old
+      // per-mode paths stay as aliases so existing links keep working;
+      // they just pre-open the mic or camera.
+      for (final mode in const ['report', 'voice', 'text', 'photo'])
+        GoRoute(
+          path: '/compose/$mode',
+          builder: (context, state) => ReportComposeScreen(
+            initialCategory: state.extra as SubmissionCategory?,
+            initialFocus: mode == 'report' ? null : mode,
+          ),
         ),
-      ),
-      GoRoute(
-        path: '/compose/text',
-        builder: (context, state) => TextComposeScreen(
-          initialCategory: state.extra as SubmissionCategory?,
-        ),
-      ),
-      GoRoute(
-        path: '/compose/photo',
-        builder: (context, state) => PhotoVideoScreen(
-          initialCategory: state.extra as SubmissionCategory?,
-        ),
-      ),
       GoRoute(
         path: '/confirmation',
         builder: (context, state) => SubmissionConfirmationScreen(

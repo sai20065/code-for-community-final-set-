@@ -876,5 +876,31 @@
   "welcomeGovRegister": "New MLA or officer? Register",
   "welcomeAdminTitle": "Prajadhwani Admin",
   "welcomeAdminBody": "Platform administration and official approvals",
-  "welcomeJustBrowsing": "Just browsing? See your area's public dashboard"
+  "welcomeJustBrowsing": "Just browsing? See your area's public dashboard",
+  "composeSubtitleProblem": "Speak, type or snap a photo — it reaches the officials for your area.",
+  "composeSubtitleSuggestion": "Share your idea by voice, text or photo — it goes to your representative.",
+  "stepWhatsTheIssue": "What's the issue?",
+  "stepYourIdea": "What's your idea?",
+  "tapMicToSpeak": "Tap the mic to speak instead of typing",
+  "listeningTapToStop": "Listening… tap to stop",
+  "voiceNoteAdded": "Voice note added",
+  "stepAddPhoto": "Add a photo (optional)",
+  "photoHelpsOfficials": "A photo helps officials see the problem quickly",
+  "removePhoto": "Remove photo",
+  "stepCategory": "Category",
+  "stepWhere": "Where is it?",
+  "includedText": "Text",
+  "includedVoice": "Voice",
+  "includedPhoto": "Photo",
+  "addTextOrPhotoToSubmit": "Type, speak or add a photo to submit",
+  "officerFixMessage": "Your problem is registered! Our officers will get it fixed.",
+  "officerSuggestionMessage": "Thank you! Your idea goes straight to your representative.",
+  "yourTicketIs": "Your ticket: {tokenId}",
+  "@yourTicketIs": {
+    "placeholders": {
+      "tokenId": {
+        "type": "String"
+      }
+    }
+  }
 }

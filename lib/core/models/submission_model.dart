@@ -69,6 +69,9 @@ class SubmissionModel {
   final String inputMode;
   final String? rawText;
   final String? mediaUrl;
+  /// Optional voice note recorded alongside a photo/text report. The
+  /// transcript already lives in [rawText]; this is the original audio.
+  final String? audioUrl;
   final String? transcript;
   final String? translatedText;
   final String language;
@@ -97,6 +100,7 @@ class SubmissionModel {
     this.category = SubmissionCategory.problem,
     this.rawText,
     this.mediaUrl,
+    this.audioUrl,
     this.transcript,
     this.translatedText,
     this.theme,
@@ -153,6 +157,7 @@ class SubmissionModel {
       inputMode: map['inputMode'] as String? ?? 'text',
       rawText: map['rawText'] as String?,
       mediaUrl: map['mediaUrl'] as String?,
+      audioUrl: map['audioUrl'] as String?,
       transcript: map['transcript'] as String?,
       translatedText: map['translatedText'] as String?,
       language: map['language'] as String? ?? 'en',
@@ -182,6 +187,7 @@ class SubmissionModel {
       'inputMode': inputMode,
       'rawText': rawText,
       'mediaUrl': mediaUrl,
+      if (audioUrl != null) 'audioUrl': audioUrl,
       'transcript': transcript,
       'translatedText': translatedText,
       'language': language,

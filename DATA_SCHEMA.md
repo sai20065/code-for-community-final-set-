@@ -66,11 +66,12 @@ No client access at all; written only by `functions/src/citizens/securityQuestio
 | Field | Type | Meaning |
 |---|---|---|
 | `userId` | string | Author's uid |
-| `type` | string | `voice` \| `text` \| `photo` \| `video` |
+| `type` | string | `voice` \| `text` \| `photo` \| `video` — `photo` whenever a photo is attached, else `voice` if a voice note was recorded, else `text` |
 | `submissionCategory` | string | `problem` (civic issue) or `feedback` (development suggestion) |
-| `inputMode` | string | How it was composed (mirrors `type` today) |
+| `inputMode` | string | Every input used, joined with `+` (e.g. `text+voice+photo`) |
 | `rawText` | string? | Typed text, or Gemini's audio transcript |
-| `mediaUrl` | string? | Cloud Storage download URL for voice/photo/video |
+| `mediaUrl` | string? | Cloud Storage download URL of the photo (older voice-only tickets: the audio) |
+| `audioUrl` | string? | Cloud Storage download URL of the voice note; its transcript is already in `rawText`. Private — never projected |
 | `transcript` | string? | Gemini transcription of voice media, original language |
 | `translatedText` | string? | Cloud Translate output, English |
 | `language` | string | Citizen's language for this ticket |

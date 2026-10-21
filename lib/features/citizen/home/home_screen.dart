@@ -215,7 +215,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: l10n.reportAProblem,
                     color: AppColors.vermilion,
                     onTap: () => context.go(
-                      '/compose/text',
+                      '/compose/report',
                       extra: SubmissionCategory.problem,
                     ),
                   ),
@@ -227,7 +227,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: l10n.suggestDevelopmentWork,
                     color: AppColors.saffronDeep,
                     onTap: () => context.go(
-                      '/compose/text',
+                      '/compose/report',
                       extra: SubmissionCategory.feedback,
                     ),
                   ),

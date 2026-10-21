@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/officer_mascot_3d.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 import '../../../shared/widgets/ticket_receipt_card.dart';
@@ -43,11 +44,20 @@ class SubmissionConfirmationScreen extends StatelessWidget {
         title: Text(isSuggestion ? l10n.badgeSuggestion : l10n.badgeReport),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              OfficerMascot3D(
+                message: isSuggestion
+                    ? l10n.officerSuggestionMessage
+                    : l10n.officerFixMessage,
+                ticketLabel: submission.tokenId.isEmpty
+                    ? null
+                    : l10n.yourTicketIs(submission.tokenId),
+                size: 150,
+              ),
+              const SizedBox(height: 20),
               TicketReceiptCard(
                 tokenId: submission.tokenId,
                 createdAt: submission.createdAt,

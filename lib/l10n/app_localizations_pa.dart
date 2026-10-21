@@ -1452,4 +1452,68 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String get welcomeJustBrowsing =>
       'ਬੱਸ ਵੇਖ ਰਹੇ ਹੋ? ਆਪਣੇ ਇਲਾਕੇ ਦਾ ਜਨਤਕ ਡੈਸ਼ਬੋਰਡ ਵੇਖੋ';
+
+  @override
+  String get composeSubtitleProblem =>
+      'ਬੋਲੋ, ਟਾਈਪ ਕਰੋ ਜਾਂ ਫ਼ੋਟੋ ਖਿੱਚੋ — ਇਹ ਤੁਹਾਡੇ ਇਲਾਕੇ ਦੇ ਅਧਿਕਾਰੀਆਂ ਤੱਕ ਪਹੁੰਚੇਗਾ।';
+
+  @override
+  String get composeSubtitleSuggestion =>
+      'ਆਪਣਾ ਸੁਝਾਅ ਆਵਾਜ਼, ਲਿਖਤ ਜਾਂ ਫ਼ੋਟੋ ਰਾਹੀਂ ਦਿਓ — ਇਹ ਤੁਹਾਡੇ ਨੁਮਾਇੰਦੇ ਤੱਕ ਜਾਵੇਗਾ।';
+
+  @override
+  String get stepWhatsTheIssue => 'ਸਮੱਸਿਆ ਕੀ ਹੈ?';
+
+  @override
+  String get stepYourIdea => 'ਤੁਹਾਡਾ ਸੁਝਾਅ ਕੀ ਹੈ?';
+
+  @override
+  String get tapMicToSpeak => 'ਟਾਈਪ ਕਰਨ ਦੀ ਬਜਾਏ ਬੋਲਣ ਲਈ ਮਾਈਕ ਦਬਾਓ';
+
+  @override
+  String get listeningTapToStop => 'ਸੁਣ ਰਹੇ ਹਾਂ… ਰੋਕਣ ਲਈ ਦਬਾਓ';
+
+  @override
+  String get voiceNoteAdded => 'ਵੌਇਸ ਨੋਟ ਜੋੜਿਆ ਗਿਆ';
+
+  @override
+  String get stepAddPhoto => 'ਫ਼ੋਟੋ ਜੋੜੋ (ਵਿਕਲਪਿਕ)';
+
+  @override
+  String get photoHelpsOfficials => 'ਫ਼ੋਟੋ ਨਾਲ ਅਧਿਕਾਰੀ ਸਮੱਸਿਆ ਜਲਦੀ ਦੇਖ ਸਕਦੇ ਹਨ';
+
+  @override
+  String get removePhoto => 'ਫ਼ੋਟੋ ਹਟਾਓ';
+
+  @override
+  String get stepCategory => 'ਸ਼੍ਰੇਣੀ';
+
+  @override
+  String get stepWhere => 'ਇਹ ਕਿੱਥੇ ਹੈ?';
+
+  @override
+  String get includedText => 'ਲਿਖਤ';
+
+  @override
+  String get includedVoice => 'ਆਵਾਜ਼';
+
+  @override
+  String get includedPhoto => 'ਫ਼ੋਟੋ';
+
+  @override
+  String get addTextOrPhotoToSubmit =>
+      'ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਟਾਈਪ ਕਰੋ, ਬੋਲੋ ਜਾਂ ਫ਼ੋਟੋ ਜੋੜੋ';
+
+  @override
+  String get officerFixMessage =>
+      'ਤੁਹਾਡੀ ਸਮੱਸਿਆ ਦਰਜ ਹੋ ਗਈ ਹੈ! ਸਾਡੇ ਅਧਿਕਾਰੀ ਇਸਨੂੰ ਠੀਕ ਕਰਵਾਉਣਗੇ।';
+
+  @override
+  String get officerSuggestionMessage =>
+      'ਧੰਨਵਾਦ! ਤੁਹਾਡਾ ਸੁਝਾਅ ਸਿੱਧਾ ਤੁਹਾਡੇ ਨੁਮਾਇੰਦੇ ਤੱਕ ਜਾਂਦਾ ਹੈ।';
+
+  @override
+  String yourTicketIs(String tokenId) {
+    return 'ਤੁਹਾਡੀ ਟਿਕਟ: $tokenId';
+  }
 }

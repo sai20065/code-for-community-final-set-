@@ -1458,4 +1458,69 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get welcomeJustBrowsing =>
       'बस देख रहे हैं? अपने क्षेत्र का सार्वजनिक डैशबोर्ड देखें';
+
+  @override
+  String get composeSubtitleProblem =>
+      'बोलें, लिखें या फ़ोटो लें — यह आपके क्षेत्र के अधिकारियों तक पहुँचेगा।';
+
+  @override
+  String get composeSubtitleSuggestion =>
+      'अपना सुझाव आवाज़, टेक्स्ट या फ़ोटो से दें — यह आपके प्रतिनिधि तक जाएगा।';
+
+  @override
+  String get stepWhatsTheIssue => 'समस्या क्या है?';
+
+  @override
+  String get stepYourIdea => 'आपका सुझाव क्या है?';
+
+  @override
+  String get tapMicToSpeak => 'लिखने के बजाय बोलने के लिए माइक दबाएँ';
+
+  @override
+  String get listeningTapToStop => 'सुन रहे हैं… रोकने के लिए दबाएँ';
+
+  @override
+  String get voiceNoteAdded => 'वॉइस नोट जोड़ा गया';
+
+  @override
+  String get stepAddPhoto => 'फ़ोटो जोड़ें (वैकल्पिक)';
+
+  @override
+  String get photoHelpsOfficials =>
+      'फ़ोटो से अधिकारी समस्या जल्दी समझ पाते हैं';
+
+  @override
+  String get removePhoto => 'फ़ोटो हटाएँ';
+
+  @override
+  String get stepCategory => 'श्रेणी';
+
+  @override
+  String get stepWhere => 'यह कहाँ है?';
+
+  @override
+  String get includedText => 'टेक्स्ट';
+
+  @override
+  String get includedVoice => 'आवाज़';
+
+  @override
+  String get includedPhoto => 'फ़ोटो';
+
+  @override
+  String get addTextOrPhotoToSubmit =>
+      'जमा करने के लिए लिखें, बोलें या फ़ोटो जोड़ें';
+
+  @override
+  String get officerFixMessage =>
+      'आपकी समस्या दर्ज हो गई है! हमारे अधिकारी इसे ठीक करवाएँगे।';
+
+  @override
+  String get officerSuggestionMessage =>
+      'धन्यवाद! आपका सुझाव सीधे आपके प्रतिनिधि तक जाता है।';
+
+  @override
+  String yourTicketIs(String tokenId) {
+    return 'आपका टिकट: $tokenId';
+  }
 }

@@ -1446,4 +1446,68 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get welcomeJustBrowsing =>
       'Just browsing? See your area\'s public dashboard';
+
+  @override
+  String get composeSubtitleProblem =>
+      'Speak, type or snap a photo — it reaches the officials for your area.';
+
+  @override
+  String get composeSubtitleSuggestion =>
+      'Share your idea by voice, text or photo — it goes to your representative.';
+
+  @override
+  String get stepWhatsTheIssue => 'What\'s the issue?';
+
+  @override
+  String get stepYourIdea => 'What\'s your idea?';
+
+  @override
+  String get tapMicToSpeak => 'Tap the mic to speak instead of typing';
+
+  @override
+  String get listeningTapToStop => 'Listening… tap to stop';
+
+  @override
+  String get voiceNoteAdded => 'Voice note added';
+
+  @override
+  String get stepAddPhoto => 'Add a photo (optional)';
+
+  @override
+  String get photoHelpsOfficials =>
+      'A photo helps officials see the problem quickly';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get stepCategory => 'Category';
+
+  @override
+  String get stepWhere => 'Where is it?';
+
+  @override
+  String get includedText => 'Text';
+
+  @override
+  String get includedVoice => 'Voice';
+
+  @override
+  String get includedPhoto => 'Photo';
+
+  @override
+  String get addTextOrPhotoToSubmit => 'Type, speak or add a photo to submit';
+
+  @override
+  String get officerFixMessage =>
+      'Your problem is registered! Our officers will get it fixed.';
+
+  @override
+  String get officerSuggestionMessage =>
+      'Thank you! Your idea goes straight to your representative.';
+
+  @override
+  String yourTicketIs(String tokenId) {
+    return 'Your ticket: $tokenId';
+  }
 }

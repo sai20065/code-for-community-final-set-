@@ -2639,6 +2639,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Just browsing? See your area\'s public dashboard'**
   String get welcomeJustBrowsing;
+
+  /// No description provided for @composeSubtitleProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak, type or snap a photo — it reaches the officials for your area.'**
+  String get composeSubtitleProblem;
+
+  /// No description provided for @composeSubtitleSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your idea by voice, text or photo — it goes to your representative.'**
+  String get composeSubtitleSuggestion;
+
+  /// No description provided for @stepWhatsTheIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the issue?'**
+  String get stepWhatsTheIssue;
+
+  /// No description provided for @stepYourIdea.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your idea?'**
+  String get stepYourIdea;
+
+  /// No description provided for @tapMicToSpeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the mic to speak instead of typing'**
+  String get tapMicToSpeak;
+
+  /// No description provided for @listeningTapToStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening… tap to stop'**
+  String get listeningTapToStop;
+
+  /// No description provided for @voiceNoteAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note added'**
+  String get voiceNoteAdded;
+
+  /// No description provided for @stepAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo (optional)'**
+  String get stepAddPhoto;
+
+  /// No description provided for @photoHelpsOfficials.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo helps officials see the problem quickly'**
+  String get photoHelpsOfficials;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @stepCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get stepCategory;
+
+  /// No description provided for @stepWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where is it?'**
+  String get stepWhere;
+
+  /// No description provided for @includedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get includedText;
+
+  /// No description provided for @includedVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get includedVoice;
+
+  /// No description provided for @includedPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get includedPhoto;
+
+  /// No description provided for @addTextOrPhotoToSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Type, speak or add a photo to submit'**
+  String get addTextOrPhotoToSubmit;
+
+  /// No description provided for @officerFixMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your problem is registered! Our officers will get it fixed.'**
+  String get officerFixMessage;
+
+  /// No description provided for @officerSuggestionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! Your idea goes straight to your representative.'**
+  String get officerSuggestionMessage;
+
+  /// No description provided for @yourTicketIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ticket: {tokenId}'**
+  String yourTicketIs(String tokenId);
 }
 
 class _AppLocalizationsDelegate

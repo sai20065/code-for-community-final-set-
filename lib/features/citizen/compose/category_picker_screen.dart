@@ -53,7 +53,7 @@ class CategoryPickerScreen extends StatelessWidget {
                         title: l10n.reportAProblem,
                         subtitle: l10n.reportProblemSubtitle,
                         onTap: () => context.go(
-                          '/compose/text',
+                          '/compose/report',
                           extra: SubmissionCategory.problem,
                         ),
                       ),
@@ -67,7 +67,7 @@ class CategoryPickerScreen extends StatelessWidget {
                         title: l10n.suggestDevelopmentWork,
                         subtitle: l10n.suggestSubtitle,
                         onTap: () => context.go(
-                          '/compose/text',
+                          '/compose/report',
                           extra: SubmissionCategory.feedback,
                         ),
                       ),

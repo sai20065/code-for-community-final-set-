@@ -62,16 +62,18 @@ export const onSubmissionCreated = onDocumentCreated(
     // citizen sees/edits the text), arriving here as `rawText`. Only fall
     // back to server-side transcription when that didn't happen — avoids
     // paying for Gemini transcription twice.
+    // The unified compose screen stores a voice note in `audioUrl` (so a
+    // ticket can carry a photo in `mediaUrl` too); older voice tickets kept
+    // the audio in `mediaUrl`.
+    const audioUrl: string | undefined =
+      submission.audioUrl ??
+      (submission.type === "voice" ? submission.mediaUrl : undefined);
     let transcript: string | undefined = submission.rawText;
     let transcriptionSource: string | null = submission.rawText ? "client" : null;
-    if (
-      submission.type === "voice" &&
-      submission.mediaUrl &&
-      !submission.rawText
-    ) {
+    if (audioUrl && !submission.rawText) {
       try {
         transcript = await gemini.transcribeAudioUrl(
-          submission.mediaUrl,
+          audioUrl,
           submission.language ?? "hi",
         );
         transcriptionSource = "server";
@@ -109,8 +111,14 @@ export const onSubmissionCreated = onDocumentCreated(
       }
     }
 
+    // A ticket can now carry words *and* a photo — classify on both so the
+    // photo's evidence isn't dropped whenever the citizen also typed/spoke.
+    const words = translatedText || transcript || submission.rawText || "";
     const classificationInput =
-      translatedText || transcript || photoCaption || submission.rawText || "";
+      words && photoCaption
+        ? `${words}
+(Photo shows: ${photoCaption})`
+        : words || photoCaption || "";
     if (!classificationInput) {
       if (Object.keys(patch).length) await submissionRef.update(patch);
       return;
