@@ -23,12 +23,19 @@ class OnboardingProgressNotifier extends StateNotifier<OnboardingStep> {
   Future<void> get ready => _readyCompleter.future;
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt(_kOnboardingStepKey);
-    if (index != null && index < OnboardingStep.values.length) {
-      state = OnboardingStep.values[index];
+    // Always release `ready`, even if the disk read fails — otherwise the
+    // splash screen waits on it forever.
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final index = prefs.get(_kOnboardingStepKey);
+      if (index is int && index >= 0 && index < OnboardingStep.values.length) {
+        state = OnboardingStep.values[index];
+      }
+    } catch (_) {
+      // Keep the default step.
+    } finally {
+      if (!_readyCompleter.isCompleted) _readyCompleter.complete();
     }
-    if (!_readyCompleter.isCompleted) _readyCompleter.complete();
   }
 
   Future<void> advanceTo(OnboardingStep step) async {
