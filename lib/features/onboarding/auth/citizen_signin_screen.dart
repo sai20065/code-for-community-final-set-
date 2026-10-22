@@ -54,11 +54,13 @@ class _CitizenSignInScreenState extends ConsumerState<CitizenSignInScreen> {
         context.go('/gov/dashboard');
         return;
       }
-      if (profile?.signupCompletedAt == null) {
-        await ref
-            .read(onboardingProgressProvider.notifier)
-            .advanceTo(OnboardingStep.basicInfo);
-        if (mounted) context.go('/signup/basic-info');
+      if (profile == null || !profile.isProfileComplete) {
+        final resume = profile?.resumeOnboardingRoute ?? '/signup/basic-info';
+        await ref.read(onboardingProgressProvider.notifier).advanceTo(
+            resume == '/signup/location'
+                ? OnboardingStep.location
+                : OnboardingStep.basicInfo);
+        if (mounted) context.go(resume);
         return;
       }
       await ref

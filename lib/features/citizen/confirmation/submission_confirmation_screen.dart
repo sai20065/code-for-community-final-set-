@@ -142,6 +142,12 @@ class SubmissionConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
+                onPressed: () => context.go('/public/karnataka'),
+                icon: const Icon(Icons.public_rounded, size: 18),
+                label: Text(l10n.seeOnLiveMap),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
                 onPressed: () => _copyReceipt(context),
                 icon: const Icon(Icons.copy_rounded, size: 18),
                 label: Text(l10n.copyReceipt),

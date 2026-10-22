@@ -52,11 +52,13 @@ class _LanguageSelectScreenState extends ConsumerState<LanguageSelectScreen> {
     // doc (created with a default 'en'), so sync the real choice onto it.
     final uid = _authService.currentUser?.uid;
     if (uid != null) {
-      final existing = await _firestoreService.getUser(uid);
-      if (existing != null) {
-        await _firestoreService.upsertUser(
-          existing.copyWith(preferredLanguage: code),
-        );
+      try {
+        await _firestoreService.getOrCreateUser(uid: uid, preferredLanguage: code);
+        await _firestoreService.updateUserFields(uid, {'preferredLanguage': code});
+      } catch (e) {
+        // The choice still applies on this device; it is saved to the
+        // profile the next time the language is changed.
+        debugPrint('Saving preferred language failed: $e');
       }
     }
     await Future.delayed(const Duration(milliseconds: 300));

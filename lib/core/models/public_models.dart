@@ -30,6 +30,8 @@ class PublicTicketModel {
   /// BBMP (198-ward) layer id, alongside the GBA [wardId].
   final String? bbmpWardId;
   final String? talukId;
+  final String? districtId;
+  final String? assemblyId;
   final String? boothId;
   final String? clusterId;
   final int supporterCount;
@@ -42,7 +44,7 @@ class PublicTicketModel {
 
   final LatLngLite? geo;
 
-  /// `approx-300m`, `ward`, or `none`. Rendered honestly rather than
+  /// `approx-300m`, `ward`, `taluk`, `district` or `none`. Rendered honestly rather than
   /// implying a precision the point doesn't have.
   final String geoPrecision;
 
@@ -60,6 +62,8 @@ class PublicTicketModel {
     this.wardId,
     this.bbmpWardId,
     this.talukId,
+    this.districtId,
+    this.assemblyId,
     this.boothId,
     this.clusterId,
     this.supporterCount = 0,
@@ -81,6 +85,8 @@ class PublicTicketModel {
       wardId: map['wardId'] as String?,
       bbmpWardId: map['bbmpWardId'] as String?,
       talukId: map['talukId'] as String?,
+      districtId: map['districtId'] as String?,
+      assemblyId: map['assemblyId'] as String?,
       boothId: map['boothId'] as String?,
       clusterId: map['clusterId'] as String?,
       supporterCount: (map['supporterCount'] as num?)?.toInt() ?? 0,
@@ -93,6 +99,8 @@ class PublicTicketModel {
   }
 
   bool get isApproximateLocation => geoPrecision != 'none';
+
+  bool get isOpen => status != 'resolved';
 }
 
 /// An aggregated issue group — the unit the map, the hotspot leaderboard

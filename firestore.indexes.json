@@ -539,6 +539,66 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "submissions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "location.constituencyId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "submissionCategory",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "supporterCount",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publicTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdDate",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publicTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "theme",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdDate",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "publicTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "submissionCategory",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdDate",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

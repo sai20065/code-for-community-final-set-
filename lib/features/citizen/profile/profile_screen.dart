@@ -911,10 +911,23 @@ class _EditProfileFormState extends ConsumerState<_EditProfileForm> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
-    await ref.read(firestoreServiceProvider).upsertUser(widget.profile.copyWith(
-          name: _name.text.trim(),
-          age: int.tryParse(_age.text.trim()),
-        ));
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final age = int.tryParse(_age.text.trim());
+    try {
+      // Only the edited fields — writing back the whole profile this sheet
+      // was opened with could undo changes saved elsewhere since.
+      await ref.read(firestoreServiceProvider).updateUserFields(
+        widget.profile.uid,
+        {'name': _name.text.trim(), if (age != null) 'age': age},
+      );
+    } catch (e) {
+      debugPrint('Saving profile edit failed: $e');
+      if (!mounted) return;
+      setState(() => _saving = false);
+      messenger.showSnackBar(SnackBar(content: Text(l10n.profileSaveFailed)));
+      return;
+    }
     if (mounted) Navigator.of(context).pop();
   }
 

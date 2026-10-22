@@ -1515,4 +1515,21 @@ class AppLocalizationsBn extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'আপনার টিকিট: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'সংরক্ষণ করা যায়নি — সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get areaNotMatchedYet =>
+      'এখন আপনার সঠিক এলাকা মেলানো যায়নি। পরে প্রোফাইল থেকে আপডেট করতে পারবেন।';
+
+  @override
+  String get liveReportMap => 'কর্ণাটক লাইভ রিপোর্ট মানচিত্র';
+
+  @override
+  String get liveReportMapSubtitle => 'সারা রাজ্যের প্রতিটি রিপোর্ট, লাইভ';
+
+  @override
+  String get seeOnLiveMap => 'লাইভ মানচিত্রে দেখুন';
 }

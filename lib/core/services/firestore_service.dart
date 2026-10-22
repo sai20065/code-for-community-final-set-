@@ -63,6 +63,12 @@ class FirestoreService {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
   }
 
+  /// Writes only [fields] — for edits, so a screen holding an older copy of
+  /// the profile can't roll back fields saved elsewhere in the meantime.
+  Future<void> updateUserFields(String uid, Map<String, dynamic> fields) {
+    return _users.doc(uid).set(fields, SetOptions(merge: true));
+  }
+
   Future<UserModel?> getUser(String uid) async {
     final doc = await _users.doc(uid).get();
     if (!doc.exists) return null;

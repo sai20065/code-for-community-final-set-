@@ -136,6 +136,27 @@ class PublicDataService {
   /// Firestore's `orderBy` drops documents missing the ordered field, and a
   /// report silently disappearing from an area list is the exact failure
   /// mode this codebase has already hit once.
+  /// Every published report in Karnataka filed on or after [sinceDate]
+  /// (`YYYY-MM-DD`; null = all time), newest first — the live statewide
+  /// map. Status / theme / category filtering happens on the device, so
+  /// switching filters is instant and needs no extra indexes.
+  Stream<List<PublicTicketModel>> watchStatewideTickets({
+    String? sinceDate,
+    int limit = 1500,
+  }) {
+    Query<Map<String, dynamic>> q = _tickets;
+    if (sinceDate != null) {
+      q = q.where('createdDate', isGreaterThanOrEqualTo: sinceDate);
+    }
+    return q
+        .orderBy('createdDate', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => PublicTicketModel.fromMap(d.id, d.data()))
+            .toList());
+  }
+
   Stream<List<PublicTicketModel>> watchTicketsForArea({
     required String field,
     required String areaId,

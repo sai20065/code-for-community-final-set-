@@ -1516,4 +1516,21 @@ class AppLocalizationsPa extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'ਤੁਹਾਡੀ ਟਿਕਟ: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'ਸੇਵ ਨਹੀਂ ਹੋ ਸਕਿਆ — ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।';
+
+  @override
+  String get areaNotMatchedYet =>
+      'ਹੁਣੇ ਤੁਹਾਡਾ ਸਹੀ ਇਲਾਕਾ ਮੇਲ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਬਾਅਦ ਵਿੱਚ ਪ੍ਰੋਫ਼ਾਈਲ ਤੋਂ ਅੱਪਡੇਟ ਕਰ ਸਕਦੇ ਹੋ।';
+
+  @override
+  String get liveReportMap => 'ਕਰਨਾਟਕ ਲਾਈਵ ਰਿਪੋਰਟ ਨਕਸ਼ਾ';
+
+  @override
+  String get liveReportMapSubtitle => 'ਪੂਰੇ ਰਾਜ ਦੀ ਹਰ ਰਿਪੋਰਟ, ਲਾਈਵ';
+
+  @override
+  String get seeOnLiveMap => 'ਲਾਈਵ ਨਕਸ਼ੇ \'ਤੇ ਦੇਖੋ';
 }

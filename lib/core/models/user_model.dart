@@ -58,6 +58,10 @@ class UserModel {
   final String? homeBbmpWardId;
   final String? homeBbmpWardName;
 
+  /// Home assembly constituency (MLA seat), e.g. `KA-AC-150`.
+  final String? assemblyId;
+  final String? assemblyName;
+
   /// Storage path of the citizen's optional profile photo
   /// (`avatars/{uid}/avatar.jpg`). Read through Storage rules, never a
   /// public URL.
@@ -108,6 +112,8 @@ class UserModel {
     this.homeWardName,
     this.homeBbmpWardId,
     this.homeBbmpWardName,
+    this.assemblyId,
+    this.assemblyName,
     this.photoPath,
     this.hasSecurityQuestion = false,
     this.officialType,
@@ -121,6 +127,26 @@ class UserModel {
     this.signInMethod,
     this.signupCompletedAt,
   });
+
+  /// Whether a citizen has finished onboarding — i.e. their home location is
+  /// actually saved. Deliberately not `signupCompletedAt` alone: accounts
+  /// created before that flag moved to the Location step had it set at
+  /// account creation, with no location behind it.
+  bool get isProfileComplete =>
+      lat != null && lng != null && (pincodeHome?.isNotEmpty ?? false);
+
+  /// Where an incomplete citizen should resume onboarding.
+  String get resumeOnboardingRoute =>
+      age == null ? '/signup/basic-info' : '/signup/location';
+
+  /// Readable home area for headers: ward, then constituency name, with the
+  /// raw constituency id only as a last resort.
+  String? get homeAreaLabel {
+    final ward = homeBbmpWardName ?? homeWardName;
+    final seat = constituencyName ?? assemblyName ?? talukName ?? constituencyId;
+    if (ward != null && seat != null && ward != seat) return '$ward · $seat';
+    return ward ?? seat;
+  }
 
   static SignInMethod? _signInMethodFromString(String? value) {
     switch (value) {
@@ -165,6 +191,8 @@ class UserModel {
       homeWardName: map['homeWardName'] as String?,
       homeBbmpWardId: map['homeBbmpWardId'] as String?,
       homeBbmpWardName: map['homeBbmpWardName'] as String?,
+      assemblyId: map['assemblyId'] as String?,
+      assemblyName: map['assemblyName'] as String?,
       photoPath: map['photoPath'] as String?,
       hasSecurityQuestion: map['hasSecurityQuestion'] == true,
       officialType: map['officialType'] as String?,
@@ -205,6 +233,8 @@ class UserModel {
       if (homeWardName != null) 'homeWardName': homeWardName,
       if (homeBbmpWardId != null) 'homeBbmpWardId': homeBbmpWardId,
       if (homeBbmpWardName != null) 'homeBbmpWardName': homeBbmpWardName,
+      if (assemblyId != null) 'assemblyId': assemblyId,
+      if (assemblyName != null) 'assemblyName': assemblyName,
       if (photoPath != null) 'photoPath': photoPath,
       'preferredLanguage': preferredLanguage,
       if (signInMethod != null) 'signInMethod': signInMethod!.name,
@@ -235,6 +265,8 @@ class UserModel {
     String? homeWardName,
     String? homeBbmpWardId,
     String? homeBbmpWardName,
+    String? assemblyId,
+    String? assemblyName,
     String? photoPath,
     String? designation,
     String? preferredLanguage,
@@ -265,6 +297,8 @@ class UserModel {
       homeWardName: homeWardName ?? this.homeWardName,
       homeBbmpWardId: homeBbmpWardId ?? this.homeBbmpWardId,
       homeBbmpWardName: homeBbmpWardName ?? this.homeBbmpWardName,
+      assemblyId: assemblyId ?? this.assemblyId,
+      assemblyName: assemblyName ?? this.assemblyName,
       photoPath: photoPath ?? this.photoPath,
       hasSecurityQuestion: hasSecurityQuestion,
       officialType: officialType,

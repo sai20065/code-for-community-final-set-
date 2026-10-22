@@ -1516,4 +1516,21 @@ class AppLocalizationsTe extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'మీ టికెట్: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'సేవ్ చేయలేకపోయాం — మీ కనెక్షన్ చూసి మళ్లీ ప్రయత్నించండి.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'ఇప్పుడు మీ ఖచ్చితమైన ప్రాంతాన్ని గుర్తించలేకపోయాం. తర్వాత ప్రొఫైల్ నుండి అప్‌డేట్ చేయవచ్చు.';
+
+  @override
+  String get liveReportMap => 'కర్ణాటక లైవ్ రిపోర్ట్ మ్యాప్';
+
+  @override
+  String get liveReportMapSubtitle => 'రాష్ట్రమంతటా ప్రతి రిపోర్ట్, లైవ్‌గా';
+
+  @override
+  String get seeOnLiveMap => 'లైవ్ మ్యాప్‌లో చూడండి';
 }

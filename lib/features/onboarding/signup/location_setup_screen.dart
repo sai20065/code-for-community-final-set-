@@ -119,51 +119,71 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     if (uid == null || _pin == null) return;
 
     setState(() => _saving = true);
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final pincode = _pincodeController.text.trim();
     final match = _boothMatch ?? await _locationService.resolveHomeBooth(pincode);
 
     // Authoritative point-in-polygon lookup against real constituency
-    // boundaries — falls back to the booth/pincode heuristic's guess (if
-    // any) only if the network call itself fails, rather than leaving the
-    // citizen permanently unmapped just because this one lookup hiccuped.
+    // boundaries — retried once, then falls back to the booth/pincode
+    // heuristic's guess (if any) rather than leaving the citizen stuck. The
+    // citizen is told, so a half-mapped profile is never saved silently.
     String? constituencyId = match?.constituencyId;
     ResolvedConstituency? resolved;
+    for (var attempt = 0; attempt < 2 && resolved == null; attempt++) {
+      try {
+        resolved = await _constituencyResolutionService.resolve(
+          lat: _pin!.latitude,
+          lng: _pin!.longitude,
+        );
+        break;
+      } catch (e) {
+        debugPrint('resolveConstituencyForLocation failed: $e');
+      }
+    }
+    if (resolved != null) constituencyId = resolved.constituencyId;
+
     try {
-      resolved = await _constituencyResolutionService.resolve(
+      final existing = await _firestoreService.getUser(uid) ??
+          await _firestoreService.getOrCreateUser(
+              uid: uid, preferredLanguage: 'en');
+      final updated = existing.copyWith(
+        pincodeHome: pincode,
+        addressHome: _addressController.text.trim(),
         lat: _pin!.latitude,
         lng: _pin!.longitude,
+        constituencyId: constituencyId,
+        constituencyName: resolved?.constituencyName,
+        homeBoothId: match?.boothId,
+        homeBoothName: match?.boothName,
+        // The layers that actually place this citizen on a map. Pincode is
+        // kept above for contact/display only — postal areas straddle taluk
+        // and ward boundaries, so an area query keyed on one would put people
+        // in the wrong place.
+        districtId: resolved?.districtId,
+        districtName: resolved?.districtName,
+        talukId: resolved?.talukId,
+        talukName: resolved?.talukName,
+        homeWardId: resolved?.wardId,
+        homeWardName: resolved?.wardName,
+        homeBbmpWardId: resolved?.bbmpWardId,
+        homeBbmpWardName: resolved?.bbmpWardName,
+        assemblyId: resolved?.assemblyId,
+        assemblyName: resolved?.assemblyName,
+        // Onboarding is only complete once the home location is saved.
+        signupCompletedAt: existing.signupCompletedAt ?? DateTime.now(),
       );
-      if (resolved != null) constituencyId = resolved.constituencyId;
-    } catch (_) {
-      // keep the booth/pincode fallback above
+      await _firestoreService.upsertUser(updated);
+    } catch (e) {
+      debugPrint('Saving home location failed: $e');
+      if (!mounted) return;
+      setState(() => _saving = false);
+      messenger.showSnackBar(SnackBar(content: Text(l10n.profileSaveFailed)));
+      return;
     }
-
-    final existing = await _firestoreService.getUser(uid);
-    final updated = (existing ??
-            (throw StateError('User document missing after sign-in')))
-        .copyWith(
-      pincodeHome: pincode,
-      addressHome: _addressController.text.trim(),
-      lat: _pin!.latitude,
-      lng: _pin!.longitude,
-      constituencyId: constituencyId,
-      constituencyName: resolved?.constituencyName,
-      homeBoothId: match?.boothId,
-      homeBoothName: match?.boothName,
-      // The layers that actually place this citizen on a map. Pincode is
-      // kept above for contact/display only — postal areas straddle taluk
-      // and ward boundaries, so an area query keyed on one would put people
-      // in the wrong place.
-      districtId: resolved?.districtId,
-      districtName: resolved?.districtName,
-      talukId: resolved?.talukId,
-      talukName: resolved?.talukName,
-      homeWardId: resolved?.wardId,
-      homeWardName: resolved?.wardName,
-      homeBbmpWardId: resolved?.bbmpWardId,
-      homeBbmpWardName: resolved?.bbmpWardName,
-    );
-    await _firestoreService.upsertUser(updated);
+    if (resolved == null) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.areaNotMatchedYet)));
+    }
     if (widget.fromProfile) {
       if (mounted) context.go('/profile');
       return;

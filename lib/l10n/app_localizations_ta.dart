@@ -1540,4 +1540,22 @@ class AppLocalizationsTa extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'உங்கள் டிக்கெட்: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'சேமிக்க முடியவில்லை — இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'இப்போது உங்கள் சரியான பகுதியைக் கண்டறிய முடியவில்லை. பின்னர் சுயவிவரத்திலிருந்து புதுப்பிக்கலாம்.';
+
+  @override
+  String get liveReportMap => 'கர்நாடகா நேரடி அறிக்கை வரைபடம்';
+
+  @override
+  String get liveReportMapSubtitle =>
+      'மாநிலம் முழுவதும் ஒவ்வொரு அறிக்கையும், நேரடியாக';
+
+  @override
+  String get seeOnLiveMap => 'நேரடி வரைபடத்தில் பார்க்கவும்';
 }

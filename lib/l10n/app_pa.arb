@@ -522,5 +522,10 @@
   "addTextOrPhotoToSubmit": "ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਟਾਈਪ ਕਰੋ, ਬੋਲੋ ਜਾਂ ਫ਼ੋਟੋ ਜੋੜੋ",
   "officerFixMessage": "ਤੁਹਾਡੀ ਸਮੱਸਿਆ ਦਰਜ ਹੋ ਗਈ ਹੈ! ਸਾਡੇ ਅਧਿਕਾਰੀ ਇਸਨੂੰ ਠੀਕ ਕਰਵਾਉਣਗੇ।",
   "officerSuggestionMessage": "ਧੰਨਵਾਦ! ਤੁਹਾਡਾ ਸੁਝਾਅ ਸਿੱਧਾ ਤੁਹਾਡੇ ਨੁਮਾਇੰਦੇ ਤੱਕ ਜਾਂਦਾ ਹੈ।",
-  "yourTicketIs": "ਤੁਹਾਡੀ ਟਿਕਟ: {tokenId}"
+  "yourTicketIs": "ਤੁਹਾਡੀ ਟਿਕਟ: {tokenId}",
+  "profileSaveFailed": "ਸੇਵ ਨਹੀਂ ਹੋ ਸਕਿਆ — ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+  "areaNotMatchedYet": "ਹੁਣੇ ਤੁਹਾਡਾ ਸਹੀ ਇਲਾਕਾ ਮੇਲ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਬਾਅਦ ਵਿੱਚ ਪ੍ਰੋਫ਼ਾਈਲ ਤੋਂ ਅੱਪਡੇਟ ਕਰ ਸਕਦੇ ਹੋ।",
+  "liveReportMap": "ਕਰਨਾਟਕ ਲਾਈਵ ਰਿਪੋਰਟ ਨਕਸ਼ਾ",
+  "liveReportMapSubtitle": "ਪੂਰੇ ਰਾਜ ਦੀ ਹਰ ਰਿਪੋਰਟ, ਲਾਈਵ",
+  "seeOnLiveMap": "ਲਾਈਵ ਨਕਸ਼ੇ 'ਤੇ ਦੇਖੋ"
 }

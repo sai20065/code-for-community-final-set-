@@ -522,5 +522,10 @@
   "addTextOrPhotoToSubmit": "સબમિટ કરવા ટાઇપ કરો, બોલો અથવા ફોટો ઉમેરો",
   "officerFixMessage": "તમારી સમસ્યા નોંધાઈ ગઈ છે! અમારા અધિકારીઓ તેને ઠીક કરાવશે.",
   "officerSuggestionMessage": "આભાર! તમારું સૂચન સીધું તમારા પ્રતિનિધિ સુધી જાય છે.",
-  "yourTicketIs": "તમારી ટિકિટ: {tokenId}"
+  "yourTicketIs": "તમારી ટિકિટ: {tokenId}",
+  "profileSaveFailed": "સાચવી શકાયું નહીં — કનેક્શન તપાસીને ફરી પ્રયાસ કરો.",
+  "areaNotMatchedYet": "હમણાં તમારો ચોક્કસ વિસ્તાર મેળવી શકાયો નહીં. પછી પ્રોફાઇલમાંથી અપડેટ કરી શકો છો.",
+  "liveReportMap": "કર્ણાટક લાઇવ રિપોર્ટ નકશો",
+  "liveReportMapSubtitle": "આખા રાજ્યનો દરેક રિપોર્ટ, લાઇવ",
+  "seeOnLiveMap": "લાઇવ નકશા પર જુઓ"
 }

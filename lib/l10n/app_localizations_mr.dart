@@ -1513,4 +1513,21 @@ class AppLocalizationsMr extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'तुमचे तिकीट: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'जतन करता आले नाही — कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'आत्ता तुमचा नेमका भाग जुळवता आला नाही. नंतर प्रोफाइलमधून अपडेट करू शकता.';
+
+  @override
+  String get liveReportMap => 'कर्नाटक लाइव्ह रिपोर्ट नकाशा';
+
+  @override
+  String get liveReportMapSubtitle => 'राज्यभरातील प्रत्येक तक्रार, लाइव्ह';
+
+  @override
+  String get seeOnLiveMap => 'लाइव्ह नकाशावर पहा';
 }

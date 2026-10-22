@@ -2753,6 +2753,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your ticket: {tokenId}'**
   String yourTicketIs(String tokenId);
+
+  /// No description provided for @profileSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save — check your connection and try again.'**
+  String get profileSaveFailed;
+
+  /// No description provided for @areaNotMatchedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t match your exact area right now. You can update it later from Profile.'**
+  String get areaNotMatchedYet;
+
+  /// No description provided for @liveReportMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Karnataka live report map'**
+  String get liveReportMap;
+
+  /// No description provided for @liveReportMapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every report across the state, updated live'**
+  String get liveReportMapSubtitle;
+
+  /// No description provided for @seeOnLiveMap.
+  ///
+  /// In en, this message translates to:
+  /// **'See it on the live map'**
+  String get seeOnLiveMap;
 }
 
 class _AppLocalizationsDelegate

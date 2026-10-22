@@ -19,10 +19,10 @@ enum _Availability { unknown, checking, available, taken }
 /// New-citizen Sign Up: name, username, password, and a security question
 /// for password recovery. Nothing else — no email, phone, OTP or ID upload.
 ///
-/// On success the account and `users/{uid}` profile (with
-/// `signupCompletedAt`) exist immediately, so a citizen who quits halfway
-/// through the remaining onboarding (language → age → home location) can
-/// still sign back in. The security question is saved through a Cloud
+/// On success the account and `users/{uid}` profile exist immediately, so a
+/// citizen who quits halfway through the remaining onboarding (language →
+/// age → home location) can sign back in and resume where they left off.
+/// `signupCompletedAt` is only set once the home location is saved. The security question is saved through a Cloud
 /// Function because its answer must only ever exist as a server-side hash.
 class CitizenSignUpScreen extends ConsumerStatefulWidget {
   const CitizenSignUpScreen({super.key});
@@ -120,7 +120,6 @@ class _CitizenSignUpScreenState extends ConsumerState<CitizenSignUpScreen> {
         name: _nameController.text.trim(),
         username: username,
         signInMethod: SignInMethod.password,
-        signupCompletedAt: DateTime.now(),
       ));
       // Best effort: the account is already usable without it, and the
       // citizen can set it again later from Profile.

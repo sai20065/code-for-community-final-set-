@@ -15,6 +15,7 @@
  * takes, and the failure is silent.
  */
 import * as admin from "firebase-admin";
+import {areaCentroidFor} from "../public/areaCentroid";
 import {
   PublicClusterDoc,
   PublicTicketDoc,
@@ -34,19 +35,24 @@ const BATCH_SIZE = 400;
  * the audit — which is the point. */
 const TICKET_ALLOWLIST: Array<keyof PublicTicketDoc> = [
   "tokenId", "theme", "submissionCategory", "status", "publicSummary",
-  "constituencyId", "constituencyName", "wardId", "talukId", "boothId",
+  "constituencyId", "constituencyName", "wardId", "bbmpWardId", "assemblyId",
+  "districtId", "talukId", "boothId",
   "clusterId", "supporterCount", "createdDate", "createdWeek", "updatedDate",
   "resolvedDate", "geo", "geoPrecision",
 ];
 
 const CLUSTER_ALLOWLIST: Array<keyof PublicClusterDoc> = [
   "clusterId", "constituencyId", "constituencyName", "theme", "boothId",
-  "wardId", "talukId", "submissionCount", "uniqueReporterCount",
+  "wardId", "bbmpWardId", "assemblyId", "districtId", "talukId", "submissionCount", "uniqueReporterCount",
   "priorityScore", "demandScore", "demographicScore", "infraGapScore",
   "summaryText", "title", "affectedBoothRange", "localContext",
   "centroid", "firstReportedDate", "lastReportedDate",
   "weeklyCounts", "statusCounts", "hasSolutionCard", "solutionCardVersion",
 ];
+
+/** Marker on demo records written by `seedTrialMapData.ts` — not citizen
+ * data, so it is expected rather than a leak. */
+const SEED_MARKERS = new Set(["isTrialData"]);
 
 /** Identifier shapes that must never appear in a public value. */
 const LEAK_PATTERNS: Array<{name: string; pattern: RegExp}> = [
@@ -73,21 +79,11 @@ async function rebuild(): Promise<void> {
 
   for (const doc of submissions.docs) {
     const data = doc.data();
-    const wardId = data.location?.wardId;
-    let wardCentroid: {lat: number; lng: number} | null = null;
-    if (wardId) {
-      const ward = await db.collection("wards").doc(wardId).get();
-      const w = ward.data();
-      if (typeof w?.centroidLat === "number" && typeof w?.centroidLng === "number") {
-        wardCentroid = {lat: w.centroidLat, lng: w.centroidLng};
-      }
-    }
-
     const projected = projectTicket({
       submissionId: doc.id,
       submission: data,
       clusterSubmissionCount: clusterCounts.get(data.clusterId ?? "") ?? 0,
-      wardCentroid,
+      areaCentroid: areaCentroidFor(data.location),
     });
 
     if (!projected) {
@@ -162,7 +158,7 @@ async function audit(): Promise<number> {
     ["publicClusters", CLUSTER_ALLOWLIST as string[]],
   ] as const) {
     const snap = await db.collection(collection).get();
-    const allowed = new Set<string>(allowlist);
+    const allowed = new Set<string>([...allowlist, ...SEED_MARKERS]);
     const seen = new Set<string>();
 
     for (const doc of snap.docs) {
@@ -182,6 +178,9 @@ async function audit(): Promise<number> {
       for (const [key, value] of Object.entries(data)) {
         if (typeof value !== "string") continue;
         for (const {name, pattern} of LEAK_PATTERNS) {
+          // A ticket id embeds its filing date (…-PRB-YYMMDD-0001), which
+          // is public by design and only looks like a pincode.
+          if (key === "tokenId" && name.startsWith("6-digit")) continue;
           if (pattern.test(value)) {
             problems++;
             console.error(

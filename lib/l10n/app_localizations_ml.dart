@@ -1528,4 +1528,22 @@ class AppLocalizationsMl extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'നിങ്ങളുടെ ടിക്കറ്റ്: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'സേവ് ചെയ്യാനായില്ല — കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'ഇപ്പോൾ നിങ്ങളുടെ കൃത്യമായ പ്രദേശം കണ്ടെത്താനായില്ല. പിന്നീട് പ്രൊഫൈലിൽ നിന്ന് പുതുക്കാം.';
+
+  @override
+  String get liveReportMap => 'കർണാടക ലൈവ് റിപ്പോർട്ട് മാപ്പ്';
+
+  @override
+  String get liveReportMapSubtitle =>
+      'സംസ്ഥാനത്തുടനീളമുള്ള എല്ലാ റിപ്പോർട്ടുകളും, തത്സമയം';
+
+  @override
+  String get seeOnLiveMap => 'ലൈവ് മാപ്പിൽ കാണുക';
 }

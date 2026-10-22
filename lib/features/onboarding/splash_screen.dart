@@ -125,8 +125,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       // reinstall/new device, unlike `onboardingProgressProvider`, which is
       // only local `shared_preferences` and would otherwise wrongly restart
       // onboarding for a citizen who signs back in on a fresh install.
-      if (profile?.signupCompletedAt != null) {
+      if (profile != null && profile.isProfileComplete) {
         return '/home';
+      }
+      // A profile that exists but was never finished (e.g. the app was
+      // closed after creating the account) resumes onboarding at the first
+      // missing step, whatever this device's local progress says.
+      if (profile != null && profile.role == UserRole.citizen) {
+        return profile.resumeOnboardingRoute;
       }
       switch (ref.read(onboardingProgressProvider)) {
         case OnboardingStep.identity:

@@ -230,3 +230,18 @@ final reportsThisWeekProvider =
       .watch(publicDataServiceProvider)
       .countTicketsSince(constituencyId, since);
 });
+
+/// Live statewide reports for the Karnataka map, keyed by look-back window
+/// in days (0 = all time).
+final statewideTicketsProvider =
+    StreamProvider.family<List<PublicTicketModel>, int>((ref, days) {
+  final since = days <= 0
+      ? null
+      : DateTime.now()
+          .subtract(Duration(days: days))
+          .toIso8601String()
+          .substring(0, 10);
+  return ref
+      .watch(publicDataServiceProvider)
+      .watchStatewideTickets(sinceDate: since);
+});

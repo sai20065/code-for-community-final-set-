@@ -59,10 +59,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 data: (profile) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
-                    profile?.constituencyId != null
-                        ? l10n.homeAreaLabel(
-                            '${profile!.constituencyId}'
-                            '${profile.homeBoothName != null ? " · ${l10n.boothLabel(profile.homeBoothName!)}" : ""}')
+                    profile?.homeAreaLabel != null
+                        ? l10n.homeAreaLabel(profile!.homeAreaLabel!)
                         : l10n.pincodeLabel(profile?.pincodeHome ?? "—"),
                     style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
@@ -162,6 +160,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             label: l10n.exploreYourArea,
                             subtitle: 'District, taluk and ward maps',
                             onTap: () => context.go('/public/area'),
+                          ),
+                          const SizedBox(height: 10),
+                          _HomeLinkCard(
+                            icon: Icons.public_rounded,
+                            tint: AppColors.vermilion,
+                            label: l10n.liveReportMap,
+                            subtitle: l10n.liveReportMapSubtitle,
+                            onTap: () => context.go('/public/karnataka'),
                           ),
                         ],
                       ),
@@ -663,7 +669,10 @@ class _TrendingFeed extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => _EmptyState(message: AppLocalizations.of(context).couldNotLoadSuggestions),
+      error: (e, _) {
+        debugPrint('Trending suggestions failed: $e');
+        return _EmptyState(message: AppLocalizations.of(context).couldNotLoadSuggestions);
+      },
     );
   }
 }

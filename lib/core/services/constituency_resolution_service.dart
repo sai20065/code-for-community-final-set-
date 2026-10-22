@@ -24,6 +24,10 @@ class ResolvedConstituency {
   final String? bbmpWardId;
   final String? bbmpWardName;
 
+  /// Assembly constituency (MLA seat) containing the point.
+  final String? assemblyId;
+  final String? assemblyName;
+
   const ResolvedConstituency({
     required this.constituencyId,
     required this.constituencyName,
@@ -36,6 +40,8 @@ class ResolvedConstituency {
     this.wardName,
     this.bbmpWardId,
     this.bbmpWardName,
+    this.assemblyId,
+    this.assemblyName,
   });
 }
 
@@ -81,6 +87,8 @@ class ConstituencyResolutionService {
       wardName: data['wardName'] as String?,
       bbmpWardId: data['bbmpWardId'] as String?,
       bbmpWardName: data['bbmpWardName'] as String?,
+      assemblyId: data['assemblyId'] as String?,
+      assemblyName: data['assemblyName'] as String?,
     );
   }
 }

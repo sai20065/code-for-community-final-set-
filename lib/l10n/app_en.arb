@@ -902,5 +902,10 @@
         "type": "String"
       }
     }
-  }
+  },
+  "profileSaveFailed": "Couldn't save — check your connection and try again.",
+  "areaNotMatchedYet": "We couldn't match your exact area right now. You can update it later from Profile.",
+  "liveReportMap": "Karnataka live report map",
+  "liveReportMapSubtitle": "Every report across the state, updated live",
+  "seeOnLiveMap": "See it on the live map"
 }

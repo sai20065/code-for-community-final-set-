@@ -1510,4 +1510,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'Your ticket: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'Couldn\'t save — check your connection and try again.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'We couldn\'t match your exact area right now. You can update it later from Profile.';
+
+  @override
+  String get liveReportMap => 'Karnataka live report map';
+
+  @override
+  String get liveReportMapSubtitle =>
+      'Every report across the state, updated live';
+
+  @override
+  String get seeOnLiveMap => 'See it on the live map';
 }

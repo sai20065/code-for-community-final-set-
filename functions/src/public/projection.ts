@@ -1,4 +1,5 @@
 import {PUBLIC_GEO_MIN_TICKETS} from "../config";
+import type {AreaCentroid} from "./areaCentroid";
 import {snapCoordinate} from "./geoPrivacy";
 
 /**
@@ -44,7 +45,7 @@ export interface PublicTicketDoc {
   /** AI-generated under an explicit no-PII instruction and regex-scrubbed
    * afterwards. Never the citizen's own words. */
   publicSummary: string;
-  constituencyId: string;
+  constituencyId: string | null;
   constituencyName: string | null;
   wardId: string | null;
   /** BBMP (198-ward) layer id, alongside the GBA [wardId]. */
@@ -67,7 +68,7 @@ export interface PublicTicketDoc {
 
   /** Snapped and jittered, or null. See `geoPrecision`. */
   geo: {lat: number; lng: number} | null;
-  geoPrecision: "approx-300m" | "ward" | "none";
+  geoPrecision: "approx-300m" | "ward" | "taluk" | "district" | "none";
 }
 
 export interface PublicClusterDoc {
@@ -128,8 +129,9 @@ export interface ProjectTicketArgs {
   submission: FirebaseFirestore.DocumentData;
   /** The parent cluster's ticket count, for the k-anonymity gate. */
   clusterSubmissionCount: number;
-  /** Ward centroid, used as the coarse fallback location. */
-  wardCentroid: {lat: number; lng: number} | null;
+  /** Centre of the ticket's ward / taluk / district — the coarse fallback
+   * location (see `areaCentroidFor`). */
+  areaCentroid: AreaCentroid | null;
 }
 
 /**
@@ -139,19 +141,27 @@ export interface ProjectTicketArgs {
  * report in a sparse ward **is somebody's house**, no matter how far it has
  * been snapped, because there is nothing else nearby to confuse it with.
  * Below [PUBLIC_GEO_MIN_TICKETS] reports in the enclosing cluster, the
- * ticket gets the ward centroid or no location at all — and `geoPrecision`
- * says which, so the map can render it honestly instead of implying a
- * precision it doesn't have.
+ * ticket is placed at the centre of its ward, taluk or district instead —
+ * and `geoPrecision` says which, so the map can render it honestly instead
+ * of implying a precision it doesn't have.
  */
 export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
-  const {submission, clusterSubmissionCount, wardCentroid} = args;
+  const {submission, clusterSubmissionCount, areaCentroid} = args;
 
   const tokenId = submission.tokenId;
-  const constituencyId = submission.location?.constituencyId;
-  // No token means nothing citable; no constituency means it belongs to no
-  // dashboard yet. Either way there is nothing useful to publish.
+  const loc = submission.location ?? {};
+  const constituencyId: string | null =
+    typeof loc.constituencyId === "string" && loc.constituencyId ? loc.constituencyId : null;
+  // No token means nothing citable. Every report with *some* known place —
+  // any area id or a location — is published, so the statewide map shows
+  // all of them, not only those already matched to a Lok Sabha seat.
   if (typeof tokenId !== "string" || !tokenId) return null;
-  if (typeof constituencyId !== "string" || !constituencyId) return null;
+  const hasPlace =
+    constituencyId != null ||
+    [loc.assemblyId, loc.districtId, loc.talukId, loc.wardId, loc.bbmpWardId]
+      .some((v) => typeof v === "string" && v) ||
+    (typeof loc.lat === "number" && typeof loc.lng === "number");
+  if (!hasPlace) return null;
 
   const createdDate = toDateString(submission.createdAt);
   if (!createdDate) return null;
@@ -168,9 +178,9 @@ export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
   ) {
     geo = snapCoordinate(lat, lng, args.submissionId);
     geoPrecision = "approx-300m";
-  } else if (wardCentroid) {
-    geo = wardCentroid;
-    geoPrecision = "ward";
+  } else if (areaCentroid) {
+    geo = {lat: areaCentroid.lat, lng: areaCentroid.lng};
+    geoPrecision = areaCentroid.precision;
   }
 
   return {

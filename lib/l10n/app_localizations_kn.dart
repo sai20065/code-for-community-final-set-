@@ -1520,4 +1520,21 @@ class AppLocalizationsKn extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'ನಿಮ್ಮ ಟಿಕೆಟ್: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ನಿಮ್ಮ ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'ಈಗ ನಿಮ್ಮ ನಿಖರ ಪ್ರದೇಶವನ್ನು ಹೊಂದಿಸಲಾಗಲಿಲ್ಲ. ನಂತರ ಪ್ರೊಫೈಲ್‌ನಿಂದ ನವೀಕರಿಸಬಹುದು.';
+
+  @override
+  String get liveReportMap => 'ಕರ್ನಾಟಕ ಲೈವ್ ವರದಿ ನಕ್ಷೆ';
+
+  @override
+  String get liveReportMapSubtitle => 'ರಾಜ್ಯದಾದ್ಯಂತದ ಪ್ರತಿಯೊಂದು ವರದಿ, ಲೈವ್ ಆಗಿ';
+
+  @override
+  String get seeOnLiveMap => 'ಲೈವ್ ನಕ್ಷೆಯಲ್ಲಿ ನೋಡಿ';
 }

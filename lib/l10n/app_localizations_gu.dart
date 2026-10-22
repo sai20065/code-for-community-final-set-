@@ -1509,4 +1509,21 @@ class AppLocalizationsGu extends AppLocalizations {
   String yourTicketIs(String tokenId) {
     return 'તમારી ટિકિટ: $tokenId';
   }
+
+  @override
+  String get profileSaveFailed =>
+      'સાચવી શકાયું નહીં — કનેક્શન તપાસીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'હમણાં તમારો ચોક્કસ વિસ્તાર મેળવી શકાયો નહીં. પછી પ્રોફાઇલમાંથી અપડેટ કરી શકો છો.';
+
+  @override
+  String get liveReportMap => 'કર્ણાટક લાઇવ રિપોર્ટ નકશો';
+
+  @override
+  String get liveReportMapSubtitle => 'આખા રાજ્યનો દરેક રિપોર્ટ, લાઇવ';
+
+  @override
+  String get seeOnLiveMap => 'લાઇવ નકશા પર જુઓ';
 }
