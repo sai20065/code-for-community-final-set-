@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"><style>:root{--w:1100px;--h:1600px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Calibri,Arial,sans-serif;color:#14131F;background:#fff;
+  width:var(--w);height:var(--h);overflow:hidden;padding:28px 34px}
+h1{font-size:30px;font-weight:700;color:#1C1259;margin-bottom:4px}
+.sub{font-size:17px;color:#57547A;margin-bottom:18px}
+.src{margin-top:18px;font-size:13px;color:#8C89AB}
+.tri{position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,#FF9933 0 33.3%,#fff 33.3% 66.6%,#138808 66.6%)}
+.grid{display:grid;gap:14px}
+.card{border:1px solid #E3E1EF;border-radius:14px;padding:16px 18px;background:#FAFAFD}
+.big{font-size:40px;font-weight:800;line-height:1.05}
+.lab{font-size:16px;color:#57547A;margin-top:4px;line-height:1.3}
+.ind{color:#2E1F8F}.saf{color:#C97914}.tea{color:#0B8A6C}.ver{color:#E0384A}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.step{border-radius:14px;padding:14px;color:#fff;position:relative}
+.step b{display:block;font-size:18px;margin-bottom:6px}
+.step span{font-size:15.5px;line-height:1.35;opacity:.95}
+.num{position:absolute;top:-12px;left:-10px;width:32px;height:32px;border-radius:50%;
+  background:#FFA630;color:#1C1259;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #fff}
+.arrow{display:none;align-items:center;justify-content:center;color:#8C89AB;font-size:26px}
+.box{border-radius:12px;padding:12px 14px;font-size:16px;line-height:1.3}
+.box b{display:block;font-size:17px;margin-bottom:3px}
+</style></head><body><div class="tri"></div>
+<h1>Proposed: Fine-tuned Gemma 4 "Responsible-Officer Router"</h1>
+<div class="sub">Every report is routed to the exact office and officer accountable for it — with a District Collector safety net</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch">
+ <div class="box" style="background:#EEF;border:1.5px solid #2E1F8F"><b style="color:#2E1F8F">① Report in</b>
+   Translated text, photo caption, theme, priority<br><br><b style="color:#2E1F8F">Area context</b>GBA/BBMP ward or rural taluk, district, assembly seat</div>
+ <div class="arrow">➜</div>
+ <div class="box" style="background:#FFF4E2;border:1.5px solid #C97914"><b style="color:#C97914">② Gemma 4 router (fine-tuned)</b>
+   Runs on Google Cloud in India (data stays in-country)<br><br>
+   <span style="font-family:Consolas,monospace;font-size:15px;background:#fff;display:block;padding:8px;border-radius:8px;border:1px solid #F0D9B0">
+   { "departmentId": "bescom",<br>&nbsp;&nbsp;"officerRole": "deptOfficer",<br>&nbsp;&nbsp;"level": "ward",<br>&nbsp;&nbsp;"confidence": 0.91,<br>&nbsp;&nbsp;"reason": "Streetlight outage — BESCOM O&amp;M sub-division" }</span>
+   <div style="margin-top:6px">Output is validated against the official department list and role list.</div></div>
+ <div class="arrow">➜</div>
+ <div class="box" style="background:#E8F6F1;border:1.5px solid #0B8A6C"><b style="color:#0B8A6C">③ Deterministic officer lookup</b>
+   Finds the <u>approved</u> officer account covering the ticket's GPS area, in priority order:<br>
+   1. Department officer for that ward → taluk → district<br>
+   2. Area officer (Ward officer / Tahsildar)<br>
+   3. District officer<br><br>
+   <b style="color:#E0384A">Fallback:</b> confidence &lt; 0.5 or no account ⇒ tag <b>"District Collector, &lt;district&gt;"</b></div>
+ <div class="arrow">➜</div>
+ <div class="box" style="background:#FDECEE;border:1.5px solid #E0384A"><b style="color:#E0384A">④ Notify &amp; track</b>
+   Email + push notification to the officer<br><br>"Assigned to me" queue on the dashboard<br><br>Citizen sees the responsible designation<br><br>SLA clock and escalation</div>
+</div>
+<div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:16px">
+ <div class="card"><b>Model size</b><div class="lab">Gemma 4 <b>E4B</b> (≈4B effective parameters) for low-cost serving; <b>26B A4B MoE</b> (≈3.8B active) as the high-accuracy tier.</div></div>
+ <div class="card"><b>Why fine-tune?</b><div class="lab">General LLMs do not know Karnataka's allocation of business: who fixes a pothole on a PWD road vs a GBA road.</div></div>
+ <div class="card"><b>Human in the loop</b><div class="lab">Officers can reassign; every correction becomes new training data. Full audit log of each decision.</div></div>
+ <div class="card"><b>Open weights</b><div class="lab">Gemma is open-weight: the State can host, audit and own the model — no vendor lock-in.</div></div>
+</div>
+</body></html>

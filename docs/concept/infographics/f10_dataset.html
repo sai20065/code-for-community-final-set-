@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><style>:root{--w:1100px;--h:1600px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Calibri,Arial,sans-serif;color:#14131F;background:#fff;
+  width:var(--w);height:var(--h);overflow:hidden;padding:28px 34px}
+h1{font-size:30px;font-weight:700;color:#1C1259;margin-bottom:4px}
+.sub{font-size:17px;color:#57547A;margin-bottom:18px}
+.src{margin-top:18px;font-size:13px;color:#8C89AB}
+.tri{position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,#FF9933 0 33.3%,#fff 33.3% 66.6%,#138808 66.6%)}
+.grid{display:grid;gap:14px}
+.card{border:1px solid #E3E1EF;border-radius:14px;padding:16px 18px;background:#FAFAFD}
+.big{font-size:40px;font-weight:800;line-height:1.05}
+.lab{font-size:16px;color:#57547A;margin-top:4px;line-height:1.3}
+.ind{color:#2E1F8F}.saf{color:#C97914}.tea{color:#0B8A6C}.ver{color:#E0384A}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.step{border-radius:14px;padding:14px;color:#fff;position:relative}
+.step b{display:block;font-size:18px;margin-bottom:6px}
+.step span{font-size:15.5px;line-height:1.35;opacity:.95}
+.num{position:absolute;top:-12px;left:-10px;width:32px;height:32px;border-radius:50%;
+  background:#FFA630;color:#1C1259;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #fff}
+.arrow{display:none;align-items:center;justify-content:center;color:#8C89AB;font-size:26px}
+.box{border-radius:12px;padding:12px 14px;font-size:16px;line-height:1.3}
+.box b{display:block;font-size:17px;margin-bottom:3px}
+</style></head><body><div class="tri"></div>
+<h1>Prototype data snapshot (live Firestore, 22 Oct 2026)</h1>
+<div class="sub">868 tickets in the system — predominantly seeded test data used to validate the pipeline (TRL 5)</div>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+ <div class="card"><div style="font-weight:700;margin-bottom:10px">Tickets by theme</div><svg width="470" height="272" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,Arial" font-size="16"><text x="95" y="16.32" text-anchor="end" fill="#14131F">Sanitation</text><rect x="105" y="0" width="295.0" height="24" rx="6" fill="#27AE60"/><text x="408.0" y="16.32" fill="#14131F" font-weight="700">145</text><text x="95" y="50.32" text-anchor="end" fill="#14131F">Skilling</text><rect x="105" y="34" width="286.9" height="24" rx="6" fill="#C97914"/><text x="399.9" y="50.32" fill="#14131F" font-weight="700">141</text><text x="95" y="84.32" text-anchor="end" fill="#14131F">Education</text><rect x="105" y="68" width="270.6" height="24" rx="6" fill="#2E1F8F"/><text x="383.6" y="84.32" fill="#14131F" font-weight="700">133</text><text x="95" y="118.32" text-anchor="end" fill="#14131F">Electricity</text><rect x="105" y="102" width="266.5" height="24" rx="6" fill="#E1B000"/><text x="379.5" y="118.32" fill="#14131F" font-weight="700">131</text><text x="95" y="152.32" text-anchor="end" fill="#14131F">Roads</text><rect x="105" y="136" width="236.0" height="24" rx="6" fill="#E0384A"/><text x="349.0" y="152.32" fill="#14131F" font-weight="700">116</text><text x="95" y="186.32" text-anchor="end" fill="#14131F">Health</text><rect x="105" y="170" width="211.6" height="24" rx="6" fill="#E84393"/><text x="324.6" y="186.32" fill="#14131F" font-weight="700">104</text><text x="95" y="220.32" text-anchor="end" fill="#14131F">Water</text><rect x="105" y="204" width="181.1" height="24" rx="6" fill="#0B8A6C"/><text x="294.1" y="220.32" fill="#14131F" font-weight="700">89</text><text x="95" y="254.32" text-anchor="end" fill="#14131F">Other</text><rect x="105" y="238" width="18.3" height="24" rx="6" fill="#57547A"/><text x="131.3" y="254.32" fill="#14131F" font-weight="700">9</text></svg></div>
+ <div class="card"><div style="font-weight:700;margin-bottom:10px">Tickets by status</div><svg width="450" height="184" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,Arial" font-size="16"><text x="100" y="20.400000000000002" text-anchor="end" fill="#14131F">New</text><rect x="110" y="0" width="270.0" height="30" rx="6" fill="#E0384A"/><text x="388.0" y="20.400000000000002" fill="#14131F" font-weight="700">237</text><text x="100" y="66.4" text-anchor="end" fill="#14131F">Reviewed</text><rect x="110" y="46" width="244.9" height="30" rx="6" fill="#2E1F8F"/><text x="362.9" y="66.4" fill="#14131F" font-weight="700">215</text><text x="100" y="112.4" text-anchor="end" fill="#14131F">In progress</text><rect x="110" y="92" width="214.2" height="30" rx="6" fill="#C97914"/><text x="332.2" y="112.4" fill="#14131F" font-weight="700">188</text><text x="100" y="158.4" text-anchor="end" fill="#14131F">Resolved</text><rect x="110" y="138" width="259.7" height="30" rx="6" fill="#0B8A6C"/><text x="377.7" y="158.4" fill="#14131F" font-weight="700">228</text></svg>
+   <div class="lab" style="margin-top:12px">Also live: 9 AI issue-clusters, 16-department routing directory, 198 BBMP + 369 GBA ward boundaries, 224 assembly constituencies.</div></div>
+</div>
+</body></html>
