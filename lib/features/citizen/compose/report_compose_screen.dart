@@ -117,6 +117,10 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
   // Photo
   File? _photo;
 
+  /// Consent to show a blurred copy of the photo in the public feed. Off by
+  /// default, and reset whenever the photo is removed.
+  bool _photoPublic = false;
+
   // Location / submit
   LatLng? _pin;
   bool _submitting = false;
@@ -353,6 +357,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
       translatedText: text == _lastTranscript ? _translatedText : null,
       mediaUrl: mediaUrl,
       audioUrl: audioUrl,
+      photoPublic: _photoPublic && mediaUrl != null,
       language: profile?.preferredLanguage ?? 'en',
       theme: _theme,
       location: SubmissionLocation(
@@ -580,6 +585,24 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
   }
 
   Widget _buildPhoto(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildPhotoPreview(l10n),
+        if (_photo != null)
+          SwitchListTile.adaptive(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+            value: _photoPublic,
+            onChanged: (v) => setState(() => _photoPublic = v),
+            title: Text(l10n.showPhotoInFeed,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.showPhotoInFeedNote, style: const TextStyle(fontSize: 12)),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPhotoPreview(AppLocalizations l10n) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: _photo != null
@@ -596,7 +619,10 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
                     child: _RoundIconButton(
                       icon: Icons.close_rounded,
                       tooltip: l10n.removePhoto,
-                      onTap: () => setState(() => _photo = null),
+                      onTap: () => setState(() {
+                        _photo = null;
+                        _photoPublic = false;
+                      }),
                     ),
                   ),
                   Positioned(

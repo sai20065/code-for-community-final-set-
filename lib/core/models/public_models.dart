@@ -41,6 +41,13 @@ class PublicTicketModel {
   final String? suggestedOfficeName;
   final String? suggestedOfficeUrl;
 
+  /// The blurred, metadata-free public copy of the report photo — only
+  /// when the citizen opted in. Never the original upload.
+  final String? photoUrl;
+  final int? photoWidth;
+  final int? photoHeight;
+  final int commentCount;
+
   /// Day granularity, never a timestamp — a precise filing time next to
   /// even a blurred location would be a re-identification vector.
   final String createdDate;
@@ -74,6 +81,10 @@ class PublicTicketModel {
     this.supporterCount = 0,
     this.suggestedOfficeName,
     this.suggestedOfficeUrl,
+    this.photoUrl,
+    this.photoWidth,
+    this.photoHeight,
+    this.commentCount = 0,
     this.resolvedDate,
     this.geo,
     this.geoPrecision = 'none',
@@ -99,6 +110,10 @@ class PublicTicketModel {
       supporterCount: (map['supporterCount'] as num?)?.toInt() ?? 0,
       suggestedOfficeName: map['suggestedOfficeName'] as String?,
       suggestedOfficeUrl: map['suggestedOfficeUrl'] as String?,
+      photoUrl: map['photoUrl'] as String?,
+      photoWidth: (map['photoWidth'] as num?)?.toInt(),
+      photoHeight: (map['photoHeight'] as num?)?.toInt(),
+      commentCount: (map['commentCount'] as num?)?.toInt() ?? 0,
       createdDate: map['createdDate'] as String? ?? '',
       createdWeek: map['createdWeek'] as String? ?? '',
       resolvedDate: map['resolvedDate'] as String?,
@@ -110,6 +125,8 @@ class PublicTicketModel {
   bool get isApproximateLocation => geoPrecision != 'none';
 
   bool get isOpen => status != 'resolved';
+
+  bool get hasPhoto => photoUrl != null && photoUrl!.isNotEmpty;
 
   /// Days since filing, or from filing to fix once resolved. Day-level, like
   /// the dates themselves.

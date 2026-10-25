@@ -64,6 +64,18 @@ export interface PublicTicketDoc {
   suggestedOfficeName: string | null;
   suggestedOfficeUrl: string | null;
 
+  /** The blurred, EXIF-free public copy of the report photo — present only
+   * when the citizen opted in and `publishPhoto.ts` published it. Never the
+   * original upload. */
+  photoUrl: string | null;
+  photoWidth: number | null;
+  photoHeight: number | null;
+  hasPhoto: boolean;
+  commentCount: number;
+  /** Real reports only — the feed's query key. Seeded trial tickets never
+   * carry it, so they never appear in the feed. */
+  feedEligible: boolean;
+
   /** Date, never a timestamp. A precise submission time next to even a
    * blurred location is a re-identification vector — "who was filing a
    * complaint from that street at 11:42pm" — and no dashboard feature needs
@@ -166,6 +178,21 @@ function publicOffice(office: unknown): Pick<
   };
 }
 
+function publicPhoto(photo: unknown): Pick<
+  PublicTicketDoc, "photoUrl" | "photoWidth" | "photoHeight" | "hasPhoto"
+> {
+  const p = (photo ?? {}) as Record<string, unknown>;
+  const published = p.status === "published" && typeof p.url === "string" &&
+    // Only the server-written public copy, never a private upload URL.
+    p.url.includes("/o/public%2Ffeed%2F");
+  return {
+    photoUrl: published ? p.url as string : null,
+    photoWidth: published && typeof p.width === "number" ? p.width : null,
+    photoHeight: published && typeof p.height === "number" ? p.height : null,
+    hasPhoto: published,
+  };
+}
+
 export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
   const {submission, clusterSubmissionCount, areaCentroid} = args;
 
@@ -231,6 +258,10 @@ export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
       typeof submission.supporterCount === "number" ? submission.supporterCount : 0,
 
     ...publicOffice(submission.suggestedOffice),
+    ...publicPhoto(submission.publicPhoto),
+    commentCount:
+      typeof submission.commentCount === "number" ? Math.max(0, submission.commentCount) : 0,
+    feedEligible: true,
 
     createdDate,
     createdWeek: isoWeek(createdDate),

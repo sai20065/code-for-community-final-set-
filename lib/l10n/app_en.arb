@@ -926,13 +926,11 @@
   "seePublicCard": "See public report card",
   "openForDays": "Open {days} days",
   "fixedInDays": "Fixed in {days} days",
-  "whosResponsible": "Who's responsible",
   "mlaLabel": "MLA",
   "mpLabel": "MP",
   "seatVacant": "Seat vacant",
   "repNotRecorded": "Not yet recorded",
   "rosterAsOf": "Representatives as of {date}",
-  "peopleReportedSame": "{count} people reported this",
   "seeAreaSolution": "See the area's solution card",
   "shareButton": "Share",
   "postOnSocial": "Post on social media",
@@ -973,13 +971,6 @@
     "placeholders": {
       "date": {
         "type": "String"
-      }
-    }
-  },
-  "@peopleReportedSame": {
-    "placeholders": {
-      "count": {
-        "type": "int"
       }
     }
   },
@@ -1086,6 +1077,66 @@
         "type": "int"
       },
       "open": {
+        "type": "int"
+      }
+    }
+  },
+  "feedTitle": "Reports feed",
+  "reportsNearYou": "Reports near you",
+  "feedNearMe": "Near me",
+  "feedAllKarnataka": "All Karnataka",
+  "feedWithPhotos": "With photos",
+  "feedEmpty": "No reports here yet. Be the first to report a problem.",
+  "meToo": "Me too",
+  "meTooCount": "{count, plural, =1{1 person said Me too} other{{count} people said Me too}}",
+  "signInForMeToo": "Sign in to say Me too",
+  "ownReportNoMeToo": "This is your own report",
+  "commentsTitle": "Comments",
+  "viewAllComments": "View all {count} comments",
+  "addComment": "Add a comment…",
+  "commentPublicNote": "Your username is shown with your comment",
+  "signInToComment": "Sign in to comment",
+  "needUsernameToComment": "Set a username in your profile to comment",
+  "reportComment": "Report comment",
+  "deleteComment": "Delete comment",
+  "commentReported": "Thanks — we'll review it",
+  "noCommentsYet": "No comments yet — start the conversation",
+  "showPhotoInFeed": "Show my photo in the public feed",
+  "showPhotoInFeedNote": "Faces and number plates are blurred automatically before anyone sees it",
+  "photoStatusProcessing": "Preparing the public photo…",
+  "photoStatusPublished": "Shown in the feed, with faces and plates blurred",
+  "photoStatusRejected": "This photo can't be shown publicly",
+  "photoStatusError": "Couldn't publish the photo — switch it off and on to retry",
+  "moreNearby": "More reports nearby",
+  "visitWebsite": "Visit website",
+  "openCard": "Open card",
+  "postedDaysAgo": "{days, plural, =0{Today} =1{Yesterday} other{{days} days ago}}",
+  "openDaysShort": "{days}d open",
+  "postShort": "Post",
+  "@meTooCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@viewAllComments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@postedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@openDaysShort": {
+    "placeholders": {
+      "days": {
         "type": "int"
       }
     }

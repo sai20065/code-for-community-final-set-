@@ -2850,12 +2850,6 @@ abstract class AppLocalizations {
   /// **'Fixed in {days} days'**
   String fixedInDays(int days);
 
-  /// No description provided for @whosResponsible.
-  ///
-  /// In en, this message translates to:
-  /// **'Who\'s responsible'**
-  String get whosResponsible;
-
   /// No description provided for @mlaLabel.
   ///
   /// In en, this message translates to:
@@ -2885,12 +2879,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Representatives as of {date}'**
   String rosterAsOf(String date);
-
-  /// No description provided for @peopleReportedSame.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} people reported this'**
-  String peopleReportedSame(int count);
 
   /// No description provided for @seeAreaSolution.
   ///
@@ -3026,6 +3014,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See reports in this area'**
   String get seeReportsInArea;
+
+  /// No description provided for @feedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports feed'**
+  String get feedTitle;
+
+  /// No description provided for @reportsNearYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports near you'**
+  String get reportsNearYou;
+
+  /// No description provided for @feedNearMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Near me'**
+  String get feedNearMe;
+
+  /// No description provided for @feedAllKarnataka.
+  ///
+  /// In en, this message translates to:
+  /// **'All Karnataka'**
+  String get feedAllKarnataka;
+
+  /// No description provided for @feedWithPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'With photos'**
+  String get feedWithPhotos;
+
+  /// No description provided for @feedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No reports here yet. Be the first to report a problem.'**
+  String get feedEmpty;
+
+  /// No description provided for @meToo.
+  ///
+  /// In en, this message translates to:
+  /// **'Me too'**
+  String get meToo;
+
+  /// No description provided for @meTooCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person said Me too} other{{count} people said Me too}}'**
+  String meTooCount(int count);
+
+  /// No description provided for @signInForMeToo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to say Me too'**
+  String get signInForMeToo;
+
+  /// No description provided for @ownReportNoMeToo.
+  ///
+  /// In en, this message translates to:
+  /// **'This is your own report'**
+  String get ownReportNoMeToo;
+
+  /// No description provided for @commentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get commentsTitle;
+
+  /// No description provided for @viewAllComments.
+  ///
+  /// In en, this message translates to:
+  /// **'View all {count} comments'**
+  String viewAllComments(int count);
+
+  /// No description provided for @addComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment…'**
+  String get addComment;
+
+  /// No description provided for @commentPublicNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your username is shown with your comment'**
+  String get commentPublicNote;
+
+  /// No description provided for @signInToComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to comment'**
+  String get signInToComment;
+
+  /// No description provided for @needUsernameToComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a username in your profile to comment'**
+  String get needUsernameToComment;
+
+  /// No description provided for @reportComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Report comment'**
+  String get reportComment;
+
+  /// No description provided for @deleteComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment'**
+  String get deleteComment;
+
+  /// No description provided for @commentReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks — we\'ll review it'**
+  String get commentReported;
+
+  /// No description provided for @noCommentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet — start the conversation'**
+  String get noCommentsYet;
+
+  /// No description provided for @showPhotoInFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my photo in the public feed'**
+  String get showPhotoInFeed;
+
+  /// No description provided for @showPhotoInFeedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Faces and number plates are blurred automatically before anyone sees it'**
+  String get showPhotoInFeedNote;
+
+  /// No description provided for @photoStatusProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the public photo…'**
+  String get photoStatusProcessing;
+
+  /// No description provided for @photoStatusPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the feed, with faces and plates blurred'**
+  String get photoStatusPublished;
+
+  /// No description provided for @photoStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo can\'t be shown publicly'**
+  String get photoStatusRejected;
+
+  /// No description provided for @photoStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t publish the photo — switch it off and on to retry'**
+  String get photoStatusError;
+
+  /// No description provided for @moreNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'More reports nearby'**
+  String get moreNearby;
+
+  /// No description provided for @visitWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit website'**
+  String get visitWebsite;
+
+  /// No description provided for @openCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open card'**
+  String get openCard;
+
+  /// No description provided for @postedDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Today} =1{Yesterday} other{{days} days ago}}'**
+  String postedDaysAgo(int days);
+
+  /// No description provided for @openDaysShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d open'**
+  String openDaysShort(int days);
+
+  /// No description provided for @postShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get postShort;
 }
 
 class _AppLocalizationsDelegate

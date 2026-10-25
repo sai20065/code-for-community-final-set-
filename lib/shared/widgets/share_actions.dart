@@ -36,88 +36,94 @@ class SharePost {
       Uri.parse('https://www.facebook.com/sharer/sharer.php?${_q({'u': url, 'quote': text})}');
 }
 
-/// "Share" (the phone's share sheet, with an image of the card when
-/// [imageKey] wraps a [RepaintBoundary]) and "Post on social media" (X,
-/// WhatsApp, Facebook, or copy the text for anywhere else).
+Future<Uint8List?> _capture(GlobalKey? key) async {
+  final boundary = key?.currentContext?.findRenderObject();
+  if (boundary is! RenderRepaintBoundary) return null;
+  final image = await boundary.toImage(pixelRatio: 3);
+  final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+  return bytes?.buffer.asUint8List();
+}
+
+/// The phone's share sheet, with a picture of [imageKey]'s
+/// [RepaintBoundary] when there is one.
+Future<void> shareWithImage(
+  BuildContext context,
+  SharePost post, {
+  GlobalKey? imageKey,
+  String? subject,
+}) async {
+  final box = context.findRenderObject() as RenderBox?;
+  Uint8List? png;
+  try {
+    png = await _capture(imageKey);
+  } catch (_) {
+    png = null; // the text alone still shares fine
+  }
+  await SharePlus.instance.share(ShareParams(
+    text: post.full,
+    subject: subject,
+    files: png == null ? null : [XFile.fromData(png, mimeType: 'image/png')],
+    fileNameOverrides: png == null ? null : ['prajadhwani-report.png'],
+    sharePositionOrigin: box == null || !box.hasSize ? null : box.localToGlobal(Offset.zero) & box.size,
+  ));
+}
+
+Future<void> _copy(BuildContext context, SharePost post) async {
+  await Clipboard.setData(ClipboardData(text: post.full));
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context).postCopied)),
+    );
+  }
+}
+
+Future<void> _open(BuildContext context, SharePost post, Uri uri) async {
+  final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!ok && context.mounted) await _copy(context, post);
+}
+
+/// X, WhatsApp, Facebook, or copy the text for anywhere else.
+void showSocialPostSheet(BuildContext context, SharePost post) {
+  final l10n = AppLocalizations.of(context);
+  showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    builder: (sheetContext) {
+      Widget tile(Widget leading, String label, Future<void> Function() onTap) => ListTile(
+            leading: leading,
+            title: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              onTap();
+            },
+          );
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            tile(const _Badge(text: 'X', color: Colors.black), l10n.shareOnX,
+                () => _open(context, post, post.xUri)),
+            tile(const _Badge(icon: Icons.chat_rounded, color: Color(0xFF25D366)), l10n.shareOnWhatsApp,
+                () => _open(context, post, post.whatsAppUri)),
+            tile(const _Badge(icon: Icons.facebook_rounded, color: Color(0xFF1877F2)), l10n.shareOnFacebook,
+                () => _open(context, post, post.facebookUri)),
+            tile(const _Badge(icon: Icons.copy_rounded, color: AppColors.inkSoft), l10n.copyPostText,
+                () => _copy(context, post)),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// "Share" and "Post on social media" as a pair of full-width buttons.
 class ShareActions extends StatelessWidget {
   const ShareActions({super.key, required this.post, this.imageKey, this.subject});
 
   final SharePost post;
   final GlobalKey? imageKey;
   final String? subject;
-
-  Future<Uint8List?> _captureCard() async {
-    final boundary = imageKey?.currentContext?.findRenderObject();
-    if (boundary is! RenderRepaintBoundary) return null;
-    final image = await boundary.toImage(pixelRatio: 3);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    return bytes?.buffer.asUint8List();
-  }
-
-  Future<void> _share(BuildContext context) async {
-    final box = context.findRenderObject() as RenderBox?;
-    Uint8List? png;
-    try {
-      png = await _captureCard();
-    } catch (_) {
-      png = null; // the text alone still shares fine
-    }
-    await SharePlus.instance.share(ShareParams(
-      text: post.full,
-      subject: subject,
-      files: png == null ? null : [XFile.fromData(png, mimeType: 'image/png')],
-      fileNameOverrides: png == null ? null : ['prajadhwani-report.png'],
-      sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
-    ));
-  }
-
-  Future<void> _open(BuildContext context, Uri uri) async {
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!ok && context.mounted) await _copy(context);
-  }
-
-  Future<void> _copy(BuildContext context) async {
-    await Clipboard.setData(ClipboardData(text: post.full));
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).postCopied)),
-      );
-    }
-  }
-
-  void _openSocialSheet(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        Widget tile(Widget leading, String label, Future<void> Function() onTap) => ListTile(
-              leading: leading,
-              title: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-              onTap: () {
-                Navigator.of(sheetContext).pop();
-                onTap();
-              },
-            );
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              tile(const _Badge(text: 'X', color: Colors.black), l10n.shareOnX,
-                  () => _open(context, post.xUri)),
-              tile(const _Badge(icon: Icons.chat_rounded, color: Color(0xFF25D366)), l10n.shareOnWhatsApp,
-                  () => _open(context, post.whatsAppUri)),
-              tile(const _Badge(icon: Icons.facebook_rounded, color: Color(0xFF1877F2)), l10n.shareOnFacebook,
-                  () => _open(context, post.facebookUri)),
-              tile(const _Badge(icon: Icons.copy_rounded, color: AppColors.inkSoft), l10n.copyPostText,
-                  () => _copy(context)),
-              const SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +133,7 @@ class ShareActions extends StatelessWidget {
         Expanded(
           child: Builder(
             builder: (buttonContext) => FilledButton.icon(
-              onPressed: () => _share(buttonContext),
+              onPressed: () => shareWithImage(buttonContext, post, imageKey: imageKey, subject: subject),
               icon: const Icon(Icons.share_rounded, size: 18),
               label: Text(l10n.shareButton),
             ),
@@ -136,7 +142,7 @@ class ShareActions extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () => _openSocialSheet(context),
+            onPressed: () => showSocialPostSheet(context, post),
             icon: const Icon(Icons.campaign_rounded, size: 18),
             label: Text(l10n.postOnSocial, overflow: TextOverflow.ellipsis),
           ),

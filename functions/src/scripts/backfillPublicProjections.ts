@@ -38,7 +38,8 @@ const TICKET_ALLOWLIST: Array<keyof PublicTicketDoc> = [
   "constituencyId", "constituencyName", "wardId", "bbmpWardId", "assemblyId",
   "districtId", "talukId", "boothId",
   "clusterId", "supporterCount", "suggestedOfficeId", "suggestedOfficeName",
-  "suggestedOfficeUrl", "createdDate", "createdWeek", "updatedDate",
+  "suggestedOfficeUrl", "photoUrl", "photoWidth", "photoHeight", "hasPhoto",
+  "commentCount", "feedEligible", "createdDate", "createdWeek", "updatedDate",
   "resolvedDate", "geo", "geoPrecision",
 ];
 

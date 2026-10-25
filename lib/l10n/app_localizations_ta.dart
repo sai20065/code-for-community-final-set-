@@ -1602,9 +1602,6 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get whosResponsible => 'யார் பொறுப்பு';
-
-  @override
   String get mlaLabel => 'சட்டமன்ற உறுப்பினர்';
 
   @override
@@ -1619,11 +1616,6 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String rosterAsOf(String date) {
     return '$date நிலவரப்படி பிரதிநிதிகள்';
-  }
-
-  @override
-  String peopleReportedSame(int count) {
-    return '$count பேர் இதைத் தெரிவித்துள்ளனர்';
   }
 
   @override
@@ -1711,4 +1703,129 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get seeReportsInArea => 'இந்தப் பகுதியின் அறிக்கைகளைப் பார்க்கவும்';
+
+  @override
+  String get feedTitle => 'அறிக்கை ஊட்டம்';
+
+  @override
+  String get reportsNearYou => 'உங்கள் அருகிலுள்ள அறிக்கைகள்';
+
+  @override
+  String get feedNearMe => 'என் அருகில்';
+
+  @override
+  String get feedAllKarnataka => 'முழு கர்நாடகா';
+
+  @override
+  String get feedWithPhotos => 'புகைப்படத்துடன்';
+
+  @override
+  String get feedEmpty =>
+      'இங்கு இன்னும் அறிக்கைகள் இல்லை. முதலில் சிக்கலைத் தெரிவியுங்கள்.';
+
+  @override
+  String get meToo => 'எனக்கும்';
+
+  @override
+  String meTooCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count பேர் எனக்கும் என்றனர்',
+      one: '1 நபர் எனக்கும் என்றார்',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signInForMeToo => 'எனக்கும் என்று சொல்ல உள்நுழையவும்';
+
+  @override
+  String get ownReportNoMeToo => 'இது உங்கள் சொந்த அறிக்கை';
+
+  @override
+  String get commentsTitle => 'கருத்துகள்';
+
+  @override
+  String viewAllComments(int count) {
+    return 'அனைத்து $count கருத்துகளையும் பார்க்கவும்';
+  }
+
+  @override
+  String get addComment => 'கருத்து சேர்க்கவும்…';
+
+  @override
+  String get commentPublicNote =>
+      'உங்கள் கருத்துடன் உங்கள் பயனர்பெயர் காட்டப்படும்';
+
+  @override
+  String get signInToComment => 'கருத்து தெரிவிக்க உள்நுழையவும்';
+
+  @override
+  String get needUsernameToComment =>
+      'கருத்து தெரிவிக்க சுயவிவரத்தில் பயனர்பெயரை அமைக்கவும்';
+
+  @override
+  String get reportComment => 'கருத்தைப் புகாரளி';
+
+  @override
+  String get deleteComment => 'கருத்தை நீக்கு';
+
+  @override
+  String get commentReported => 'நன்றி — நாங்கள் பரிசீலிப்போம்';
+
+  @override
+  String get noCommentsYet =>
+      'இன்னும் கருத்துகள் இல்லை — உரையாடலைத் தொடங்குங்கள்';
+
+  @override
+  String get showPhotoInFeed => 'என் புகைப்படத்தைப் பொது ஊட்டத்தில் காட்டு';
+
+  @override
+  String get showPhotoInFeedNote =>
+      'யாரும் பார்க்கும் முன் முகங்களும் வாகன எண் பலகைகளும் தானாக மங்கலாக்கப்படும்';
+
+  @override
+  String get photoStatusProcessing => 'பொது புகைப்படம் தயாராகிறது…';
+
+  @override
+  String get photoStatusPublished =>
+      'ஊட்டத்தில் காட்டப்படுகிறது, முகங்களும் பலகைகளும் மங்கலாக';
+
+  @override
+  String get photoStatusRejected =>
+      'இந்தப் புகைப்படத்தைப் பொதுவில் காட்ட முடியாது';
+
+  @override
+  String get photoStatusError =>
+      'புகைப்படத்தை வெளியிட முடியவில்லை — மீண்டும் முயல அணைத்து இயக்கவும்';
+
+  @override
+  String get moreNearby => 'அருகிலுள்ள மேலும் அறிக்கைகள்';
+
+  @override
+  String get visitWebsite => 'இணையதளத்தைப் பார்';
+
+  @override
+  String get openCard => 'அட்டையைத் திற';
+
+  @override
+  String postedDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days நாட்களுக்கு முன்',
+      one: 'நேற்று',
+      zero: 'இன்று',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openDaysShort(int days) {
+    return '$days நா. திறந்துள்ளது';
+  }
+
+  @override
+  String get postShort => 'பதிவிடு';
 }

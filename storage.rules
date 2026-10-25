@@ -56,5 +56,13 @@ service firebase.storage {
       allow write: if false;
       allow read: if true;
     }
+
+    // Blurred, EXIF-free public copies of report photos for the citizen
+    // feed — written only by the publishPhoto function after the citizen
+    // opted in, never by a client.
+    match /public/feed/{fileName} {
+      allow write: if false;
+      allow read: if true;
+    }
   }
 }

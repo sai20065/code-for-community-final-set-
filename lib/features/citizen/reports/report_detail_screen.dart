@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/submission_model.dart';
+import '../../../core/services/feed_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/google_maps_directions_button.dart';
@@ -92,6 +93,10 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           padding: const EdgeInsets.all(20),
           children: [
             StatusStepper(status: s.status),
+            if (s.category == SubmissionCategory.problem && s.mediaUrl != null) ...[
+              const SizedBox(height: 12),
+              _PhotoConsent(submissionId: s.id, initial: s),
+            ],
             if (s.category == SubmissionCategory.problem) ...[
               const SizedBox(height: 16),
               SuggestedOfficeCard(
@@ -128,6 +133,42 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The reporter's switch for showing a blurred copy of their photo in the
+/// public feed, with what the server did about it. Follows the ticket doc,
+/// because publishing takes a few seconds.
+class _PhotoConsent extends StatelessWidget {
+  const _PhotoConsent({required this.submissionId, required this.initial});
+
+  final String submissionId;
+  final SubmissionModel initial;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return StreamBuilder<SubmissionModel?>(
+      stream: FirestoreService().watchSubmission(submissionId),
+      initialData: initial,
+      builder: (context, snap) {
+        final s = snap.data ?? initial;
+        final status = switch (s.photoPublic ? s.publicPhotoStatus : null) {
+          'processing' => l10n.photoStatusProcessing,
+          'published' => l10n.photoStatusPublished,
+          'rejected' => l10n.photoStatusRejected,
+          'error' => l10n.photoStatusError,
+          _ => l10n.showPhotoInFeedNote,
+        };
+        return SwitchListTile.adaptive(
+          contentPadding: EdgeInsets.zero,
+          value: s.photoPublic,
+          onChanged: (v) => FeedService().setPhotoPublic(submissionId, v),
+          title: Text(l10n.showPhotoInFeed, style: const TextStyle(fontWeight: FontWeight.w600)),
+          subtitle: Text(status),
+        );
+      },
     );
   }
 }

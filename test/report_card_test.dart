@@ -1,14 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:praja_dhvani/app/providers/auth_state_provider.dart';
+import 'package:praja_dhvani/app/providers/current_user_profile_provider.dart';
+import 'package:praja_dhvani/app/providers/feed_providers.dart';
 import 'package:praja_dhvani/app/providers/public_data_providers.dart';
+import 'package:praja_dhvani/core/models/feed_comment_model.dart';
 import 'package:praja_dhvani/core/models/public_models.dart';
 import 'package:praja_dhvani/core/models/representative_models.dart';
 import 'package:praja_dhvani/features/public/leaderboard/representative_leaderboard_screen.dart';
 import 'package:praja_dhvani/features/public/report/public_report_card_screen.dart';
+import 'package:praja_dhvani/shared/widgets/report_post_text.dart';
 import 'package:praja_dhvani/l10n/app_localizations.dart';
+import 'package:praja_dhvani/core/services/feed_service.dart';
 import 'package:praja_dhvani/l10n/app_localizations_en.dart';
+import 'package:praja_dhvani/shared/widgets/comments_sheet.dart';
+import 'package:praja_dhvani/shared/widgets/feed_post_card.dart';
 import 'package:praja_dhvani/shared/widgets/share_actions.dart';
 
 Widget _app(Widget child, {List<Override> overrides = const []}) => ProviderScope(
@@ -96,14 +106,70 @@ void main() {
     });
   });
 
-  testWidgets('the card shows MLA, MP and days open, and no photo', (tester) async {
-    await tester.pumpWidget(_app(PublicReportCard(ticket: _ticket(), reps: _reps, place: 'Yelahanka New Town')));
-    expect(find.text('S. R. Vishwanath'), findsNothing); // inside a Text.rich
-    expect(find.textContaining('S. R. Vishwanath', findRichText: true), findsOneWidget);
-    expect(find.textContaining('Shobha Karandlaje', findRichText: true), findsOneWidget);
-    expect(find.textContaining('Open ', findRichText: true), findsOneWidget);
-    expect(find.text('4 people reported this'), findsOneWidget);
-    expect(find.byType(Image), findsNothing);
+  final feedOverrides = <Override>[
+    mySupportsProvider.overrideWith((ref) => Stream.value(const <String>{})),
+    feedCommentsProvider.overrideWith((ref, id) => Stream.value(const <FeedComment>[])),
+    authStateProvider.overrideWith((ref) => Stream.value(null)),
+    currentUserProfileProvider.overrideWith((ref) => Stream.value(null)),
+  ];
+
+  testWidgets('the card names the MLA and MP, without calling them responsible', (tester) async {
+    tester.view.physicalSize = const Size(1080, 4000);
+    tester.view.devicePixelRatio = 2.6;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_app(
+      ReportCardBody(ticket: _ticket(), reps: _reps, place: 'Yelahanka New Town', showNearby: false),
+      overrides: feedOverrides,
+    ));
+    await tester.pump();
+    expect(find.textContaining('S. R. Vishwanath', findRichText: true), findsWidgets);
+    expect(find.textContaining('Shobha Karandlaje', findRichText: true), findsWidgets);
+    expect(find.textContaining(RegExp('responsib', caseSensitive: false), findRichText: true), findsNothing);
+    expect(find.textContaining(RegExp(r'^Open \d+ days$'), findRichText: true), findsOneWidget);
+    expect(find.text('3 people said Me too'), findsOneWidget);
+    expect(find.text('Greater Bengaluru Authority (BBMP)'), findsOneWidget);
+    // No public photo on this ticket: a themed cover, never an image.
+    expect(find.byType(CachedNetworkImage), findsNothing);
+  });
+
+  testWidgets('a post with a published photo shows it', (tester) async {
+    final withPhoto = PublicTicketModel.fromMap('p1', {
+      'tokenId': 'PD-1', 'theme': 'water', 'status': 'new', 'publicSummary': 'Pipe burst',
+      'createdDate': '2026-10-20',
+      'photoUrl': 'https://firebasestorage.googleapis.com/v0/b/x/o/public%2Ffeed%2Fp1.jpg?alt=media',
+      'photoWidth': 1080, 'photoHeight': 810,
+    });
+    await tester.pumpWidget(_app(
+      SingleChildScrollView(child: FeedPostCard(ticket: withPhoto, reps: _reps, place: 'Hebbal')),
+      overrides: feedOverrides,
+    ));
+    expect(find.byType(CachedNetworkImage), findsOneWidget);
+    expect(find.text('Me too'), findsNothing); // icon button with tooltip
+    expect(find.byTooltip('Me too'), findsOneWidget);
+    expect(find.text('Open card'), findsOneWidget);
+  });
+
+  testWidgets('signed-out visitors can read comments but are asked to sign in', (tester) async {
+    await tester.pumpWidget(_app(
+      const CommentsSheet(ticketId: 'sub1'),
+      overrides: feedOverrides,
+    ));
+    await tester.pump();
+    expect(find.text('No comments yet — start the conversation'), findsOneWidget);
+    expect(find.text('Sign in to comment'), findsOneWidget);
+    expect(find.byType(TextField), findsNothing);
+  });
+
+  test('the feed appends pages and stops at the end', () async {
+    final fake = _FakeFeed();
+    final notifier = FeedNotifier(fake, const FeedFilter());
+    await Future<void>.delayed(Duration.zero);
+    expect(notifier.state.posts.length, 15);
+    await notifier.loadMore();
+    expect(notifier.state.posts.length, 20);
+    expect(notifier.state.hasMore, isFalse);
+    await notifier.loadMore();
+    expect(fake.calls, 2);
   });
 
   testWidgets('Post on social media offers X, WhatsApp, Facebook and copy', (tester) async {
@@ -151,4 +217,27 @@ void main() {
         'Dheeraj Muniraj (Doddaballapur): 16.7% of 6 reported problems fixed in the last 90 days, 5 still open. #Prajadhwani');
     expect(post.url, endsWith('/#/public/leaderboard'));
   });
+}
+
+/// Two pages: 15 posts, then 5 and the end.
+class _FakeFeed implements FeedService {
+  int calls = 0;
+
+  @override
+  Future<FeedPage> page({
+    String? districtId,
+    bool withPhotos = false,
+    DocumentSnapshot<Map<String, dynamic>>? after,
+    int limit = FeedService.pageSize,
+  }) async {
+    calls++;
+    final n = calls == 1 ? 15 : 5;
+    final posts = List.generate(n, (i) => PublicTicketModel.fromMap('t$calls-$i', {
+          'tokenId': 'PD-$i', 'status': 'new', 'publicSummary': 's', 'createdDate': '2026-10-20',
+        }));
+    return FeedPage(posts, null, hasMore: n == limit);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

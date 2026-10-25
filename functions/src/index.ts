@@ -31,4 +31,12 @@ export {onSubmissionWrittenPublicProjection} from "./public/onSubmissionWritten"
 export {onClusterWrittenPublicProjection} from "./public/onClusterWritten";
 // MLA / MP leaderboard over public tickets, rebuilt every 6 hours.
 export {refreshLeaderboards} from "./public/leaderboard";
+// Citizen feed: opt-in blurred photos, "Me too", moderated comments.
+export {onSubmissionPhotoConsent} from "./public/publishPhoto";
+export {toggleReportSupport} from "./public/toggleSupport";
+export {
+  onFeedCommentCreated,
+  onFeedCommentDeleted,
+  reportFeedComment,
+} from "./public/feedComments";
 export {transcribeAndTranslate} from "./submissions/transcribeAndTranslate";

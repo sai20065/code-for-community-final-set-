@@ -145,6 +145,14 @@ class SubmissionModel {
   /// Read-only on the client, so deliberately absent from [toMap].
   final SuggestedOffice? suggestedOffice;
 
+  /// The citizen's consent to show a blurred copy of the photo in the public
+  /// feed. Off unless they switch it on.
+  final bool photoPublic;
+
+  /// Server-written state of that public copy: processing, published,
+  /// rejected, error or withdrawn. Read-only on the client.
+  final String? publicPhotoStatus;
+
   const SubmissionModel({
     required this.id,
     required this.userId,
@@ -169,6 +177,8 @@ class SubmissionModel {
     this.supporterCount = 0,
     this.supporterIds = const [],
     this.suggestedOffice,
+    this.photoPublic = false,
+    this.publicPhotoStatus,
   });
 
   static SubmissionStatus statusFromString(String value) {
@@ -236,6 +246,8 @@ class SubmissionModel {
       suggestedOffice: SuggestedOffice.fromMap(
         (map['suggestedOffice'] as Map?)?.cast<String, dynamic>(),
       ),
+      photoPublic: map['photoPublic'] == true,
+      publicPhotoStatus: (map['publicPhoto'] as Map?)?['status'] as String?,
     );
   }
 
@@ -250,6 +262,7 @@ class SubmissionModel {
       'rawText': rawText,
       'mediaUrl': mediaUrl,
       if (audioUrl != null) 'audioUrl': audioUrl,
+      if (photoPublic) 'photoPublic': true,
       'transcript': transcript,
       'translatedText': translatedText,
       'language': language,

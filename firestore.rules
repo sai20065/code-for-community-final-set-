@@ -154,6 +154,36 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Public feed comments. Created by signed-in citizens under their own
+    // uid and username, born visible; screened server-side
+    // (functions/src/public/feedComments.ts), which may hide them. Only
+    // visible comments are readable; nobody but the server edits them.
+    match /feedComments/{commentId} {
+      allow read: if resource.data.hidden == false;
+      allow create: if isSignedIn() &&
+        request.resource.data.keys().hasOnly(
+          ['ticketId', 'uid', 'username', 'text', 'createdAt', 'hidden', 'reportCount']) &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.username == userDoc(request.auth.uid).username &&
+        request.resource.data.ticketId is string &&
+        request.resource.data.text is string &&
+        request.resource.data.text.size() >= 1 &&
+        request.resource.data.text.size() <= 280 &&
+        request.resource.data.hidden == false &&
+        request.resource.data.reportCount == 0 &&
+        request.resource.data.createdAt == request.time;
+      allow delete: if isSignedIn() &&
+        (resource.data.uid == request.auth.uid || isAdmin());
+      allow update: if false;
+    }
+
+    // Which reports a citizen said "Me too" to — written only by the
+    // toggleReportSupport function, readable only by that citizen.
+    match /users/{userId}/supports/{ticketId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+
     // MLA/MP/ward-name index for public report cards (seedMlaRoster.ts).
     match /publicReps/{state} {
       allow read: if true;

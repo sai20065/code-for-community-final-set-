@@ -36,6 +36,7 @@ import '../features/public/booth/booth_detail_sheet.dart';
 import '../features/public/constituency_picker/constituency_picker_screen.dart';
 import '../features/public/dashboard/dashboard_home_screen.dart';
 import '../features/public/map/constituency_map_screen.dart';
+import '../features/public/feed/report_feed_screen.dart';
 import '../features/public/leaderboard/representative_leaderboard_screen.dart';
 import '../features/public/map/karnataka_map_screen.dart';
 import '../features/public/report/public_report_card_screen.dart';
@@ -277,6 +278,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/public/report/:id',
         builder: (context, state) =>
             PublicReportCardScreen(ticketId: state.pathParameters['id']!),
+      ),
+      // Citizen feed of real reports, Instagram-style (public data only).
+      GoRoute(
+        path: '/feed',
+        builder: (context, state) => const ReportFeedScreen(),
       ),
       GoRoute(
         path: '/public/leaderboard',

@@ -14,6 +14,7 @@ import '../../../shared/widgets/hotspot_leaderboard.dart';
 import '../../../shared/widgets/mp_constituency_card.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
+import '../../public/feed/report_feed_screen.dart';
 
 const _kFilterCategories = ['education', 'roads', 'water', 'skilling', 'health'];
 
@@ -142,6 +143,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           // Their own reports are only half the picture; the
                           // constituency-wide view is what shows their report
                           // sitting alongside forty neighbours' identical ones.
+                          const HomeFeedStrip(),
+                          const SizedBox(height: 14),
                           _HomeLinkCard(
                             icon: Icons.dashboard_rounded,
                             tint: AppColors.indigo,

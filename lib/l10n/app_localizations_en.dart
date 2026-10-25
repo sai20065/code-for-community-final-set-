@@ -1570,9 +1570,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get whosResponsible => 'Who\'s responsible';
-
-  @override
   String get mlaLabel => 'MLA';
 
   @override
@@ -1587,11 +1584,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String rosterAsOf(String date) {
     return 'Representatives as of $date';
-  }
-
-  @override
-  String peopleReportedSame(int count) {
-    return '$count people reported this';
   }
 
   @override
@@ -1679,4 +1671,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seeReportsInArea => 'See reports in this area';
+
+  @override
+  String get feedTitle => 'Reports feed';
+
+  @override
+  String get reportsNearYou => 'Reports near you';
+
+  @override
+  String get feedNearMe => 'Near me';
+
+  @override
+  String get feedAllKarnataka => 'All Karnataka';
+
+  @override
+  String get feedWithPhotos => 'With photos';
+
+  @override
+  String get feedEmpty =>
+      'No reports here yet. Be the first to report a problem.';
+
+  @override
+  String get meToo => 'Me too';
+
+  @override
+  String meTooCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people said Me too',
+      one: '1 person said Me too',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signInForMeToo => 'Sign in to say Me too';
+
+  @override
+  String get ownReportNoMeToo => 'This is your own report';
+
+  @override
+  String get commentsTitle => 'Comments';
+
+  @override
+  String viewAllComments(int count) {
+    return 'View all $count comments';
+  }
+
+  @override
+  String get addComment => 'Add a comment…';
+
+  @override
+  String get commentPublicNote => 'Your username is shown with your comment';
+
+  @override
+  String get signInToComment => 'Sign in to comment';
+
+  @override
+  String get needUsernameToComment =>
+      'Set a username in your profile to comment';
+
+  @override
+  String get reportComment => 'Report comment';
+
+  @override
+  String get deleteComment => 'Delete comment';
+
+  @override
+  String get commentReported => 'Thanks — we\'ll review it';
+
+  @override
+  String get noCommentsYet => 'No comments yet — start the conversation';
+
+  @override
+  String get showPhotoInFeed => 'Show my photo in the public feed';
+
+  @override
+  String get showPhotoInFeedNote =>
+      'Faces and number plates are blurred automatically before anyone sees it';
+
+  @override
+  String get photoStatusProcessing => 'Preparing the public photo…';
+
+  @override
+  String get photoStatusPublished =>
+      'Shown in the feed, with faces and plates blurred';
+
+  @override
+  String get photoStatusRejected => 'This photo can\'t be shown publicly';
+
+  @override
+  String get photoStatusError =>
+      'Couldn\'t publish the photo — switch it off and on to retry';
+
+  @override
+  String get moreNearby => 'More reports nearby';
+
+  @override
+  String get visitWebsite => 'Visit website';
+
+  @override
+  String get openCard => 'Open card';
+
+  @override
+  String postedDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days ago',
+      one: 'Yesterday',
+      zero: 'Today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openDaysShort(int days) {
+    return '${days}d open';
+  }
+
+  @override
+  String get postShort => 'Post';
 }

@@ -1575,9 +1575,6 @@ class AppLocalizationsPa extends AppLocalizations {
   }
 
   @override
-  String get whosResponsible => 'ਕੌਣ ਜ਼ਿੰਮੇਵਾਰ ਹੈ';
-
-  @override
   String get mlaLabel => 'ਵਿਧਾਇਕ';
 
   @override
@@ -1592,11 +1589,6 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String rosterAsOf(String date) {
     return '$date ਤੱਕ ਦੇ ਨੁਮਾਇੰਦੇ';
-  }
-
-  @override
-  String peopleReportedSame(int count) {
-    return '$count ਲੋਕਾਂ ਨੇ ਇਹ ਦੱਸਿਆ';
   }
 
   @override
@@ -1684,4 +1676,126 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get seeReportsInArea => 'ਇਸ ਇਲਾਕੇ ਦੀਆਂ ਰਿਪੋਰਟਾਂ ਵੇਖੋ';
+
+  @override
+  String get feedTitle => 'ਰਿਪੋਰਟ ਫੀਡ';
+
+  @override
+  String get reportsNearYou => 'ਤੁਹਾਡੇ ਨੇੜੇ ਦੀਆਂ ਰਿਪੋਰਟਾਂ';
+
+  @override
+  String get feedNearMe => 'ਮੇਰੇ ਨੇੜੇ';
+
+  @override
+  String get feedAllKarnataka => 'ਪੂਰਾ ਕਰਨਾਟਕ';
+
+  @override
+  String get feedWithPhotos => 'ਫੋਟੋ ਵਾਲੀਆਂ';
+
+  @override
+  String get feedEmpty =>
+      'ਇੱਥੇ ਅਜੇ ਕੋਈ ਰਿਪੋਰਟ ਨਹੀਂ। ਸਮੱਸਿਆ ਦੱਸਣ ਵਾਲੇ ਪਹਿਲੇ ਬਣੋ।';
+
+  @override
+  String get meToo => 'ਮੈਨੂੰ ਵੀ';
+
+  @override
+  String meTooCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ਲੋਕਾਂ ਨੇ ਕਿਹਾ ਮੈਨੂੰ ਵੀ',
+      one: '1 ਵਿਅਕਤੀ ਨੇ ਕਿਹਾ ਮੈਨੂੰ ਵੀ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signInForMeToo => 'ਮੈਨੂੰ ਵੀ ਕਹਿਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ';
+
+  @override
+  String get ownReportNoMeToo => 'ਇਹ ਤੁਹਾਡੀ ਆਪਣੀ ਰਿਪੋਰਟ ਹੈ';
+
+  @override
+  String get commentsTitle => 'ਟਿੱਪਣੀਆਂ';
+
+  @override
+  String viewAllComments(int count) {
+    return 'ਸਾਰੀਆਂ $count ਟਿੱਪਣੀਆਂ ਵੇਖੋ';
+  }
+
+  @override
+  String get addComment => 'ਟਿੱਪਣੀ ਲਿਖੋ…';
+
+  @override
+  String get commentPublicNote => 'ਤੁਹਾਡੀ ਟਿੱਪਣੀ ਨਾਲ ਤੁਹਾਡਾ ਯੂਜ਼ਰਨੇਮ ਦਿਖੇਗਾ';
+
+  @override
+  String get signInToComment => 'ਟਿੱਪਣੀ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ';
+
+  @override
+  String get needUsernameToComment =>
+      'ਟਿੱਪਣੀ ਕਰਨ ਲਈ ਪ੍ਰੋਫ਼ਾਈਲ ਵਿੱਚ ਯੂਜ਼ਰਨੇਮ ਸੈੱਟ ਕਰੋ';
+
+  @override
+  String get reportComment => 'ਟਿੱਪਣੀ ਦੀ ਸ਼ਿਕਾਇਤ ਕਰੋ';
+
+  @override
+  String get deleteComment => 'ਟਿੱਪਣੀ ਮਿਟਾਓ';
+
+  @override
+  String get commentReported => 'ਧੰਨਵਾਦ — ਅਸੀਂ ਜਾਂਚ ਕਰਾਂਗੇ';
+
+  @override
+  String get noCommentsYet => 'ਅਜੇ ਕੋਈ ਟਿੱਪਣੀ ਨਹੀਂ — ਗੱਲਬਾਤ ਸ਼ੁਰੂ ਕਰੋ';
+
+  @override
+  String get showPhotoInFeed => 'ਮੇਰੀ ਫੋਟੋ ਜਨਤਕ ਫੀਡ ਵਿੱਚ ਦਿਖਾਓ';
+
+  @override
+  String get showPhotoInFeedNote =>
+      'ਕਿਸੇ ਦੇ ਵੇਖਣ ਤੋਂ ਪਹਿਲਾਂ ਚਿਹਰੇ ਅਤੇ ਨੰਬਰ ਪਲੇਟਾਂ ਆਪਣੇ ਆਪ ਧੁੰਦਲੀਆਂ ਕੀਤੀਆਂ ਜਾਂਦੀਆਂ ਹਨ';
+
+  @override
+  String get photoStatusProcessing => 'ਜਨਤਕ ਫੋਟੋ ਤਿਆਰ ਹੋ ਰਹੀ ਹੈ…';
+
+  @override
+  String get photoStatusPublished =>
+      'ਫੀਡ ਵਿੱਚ ਦਿਖ ਰਹੀ ਹੈ, ਚਿਹਰੇ ਅਤੇ ਪਲੇਟਾਂ ਧੁੰਦਲੀਆਂ';
+
+  @override
+  String get photoStatusRejected => 'ਇਹ ਫੋਟੋ ਜਨਤਕ ਤੌਰ \'ਤੇ ਨਹੀਂ ਦਿਖਾਈ ਜਾ ਸਕਦੀ';
+
+  @override
+  String get photoStatusError =>
+      'ਫੋਟੋ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੋ ਸਕੀ — ਮੁੜ ਕੋਸ਼ਿਸ਼ ਲਈ ਬੰਦ ਕਰਕੇ ਚਾਲੂ ਕਰੋ';
+
+  @override
+  String get moreNearby => 'ਨੇੜੇ ਦੀਆਂ ਹੋਰ ਰਿਪੋਰਟਾਂ';
+
+  @override
+  String get visitWebsite => 'ਵੈੱਬਸਾਈਟ ਵੇਖੋ';
+
+  @override
+  String get openCard => 'ਕਾਰਡ ਖੋਲ੍ਹੋ';
+
+  @override
+  String postedDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days ਦਿਨ ਪਹਿਲਾਂ',
+      one: 'ਕੱਲ੍ਹ',
+      zero: 'ਅੱਜ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openDaysShort(int days) {
+    return '$days ਦਿਨ ਖੁੱਲ੍ਹਾ';
+  }
+
+  @override
+  String get postShort => 'ਪੋਸਟ';
 }
