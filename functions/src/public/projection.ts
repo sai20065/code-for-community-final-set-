@@ -57,6 +57,13 @@ export interface PublicTicketDoc {
   clusterId: string | null;
   supporterCount: number;
 
+  /** The office the citizen was pointed to (see assignment/). Directory
+   * data only — the same for everyone filing this theme in this place — so
+   * it says nothing about who filed. */
+  suggestedOfficeId: string | null;
+  suggestedOfficeName: string | null;
+  suggestedOfficeUrl: string | null;
+
   /** Date, never a timestamp. A precise submission time next to even a
    * blurred location is a re-identification vector — "who was filing a
    * complaint from that street at 11:42pm" — and no dashboard feature needs
@@ -145,6 +152,20 @@ export interface ProjectTicketArgs {
  * and `geoPrecision` says which, so the map can render it honestly instead
  * of implying a precision it doesn't have.
  */
+function publicOffice(office: unknown): Pick<
+  PublicTicketDoc, "suggestedOfficeId" | "suggestedOfficeName" | "suggestedOfficeUrl"
+> {
+  const o = (office ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" && v ? v : null);
+  // Explicit fields only — never a spread of the stored object, which also
+  // carries the model's free-text `reason`.
+  return {
+    suggestedOfficeId: str(o.departmentId),
+    suggestedOfficeName: str(o.name),
+    suggestedOfficeUrl: str(o.websiteUrl),
+  };
+}
+
 export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
   const {submission, clusterSubmissionCount, areaCentroid} = args;
 
@@ -208,6 +229,8 @@ export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
     clusterId: typeof submission.clusterId === "string" ? submission.clusterId : null,
     supporterCount:
       typeof submission.supporterCount === "number" ? submission.supporterCount : 0,
+
+    ...publicOffice(submission.suggestedOffice),
 
     createdDate,
     createdWeek: isoWeek(createdDate),

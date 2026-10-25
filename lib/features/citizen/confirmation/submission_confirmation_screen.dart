@@ -162,6 +162,12 @@ class SubmissionConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
+                onPressed: () => context.push('/public/report/${submission.id}'),
+                icon: const Icon(Icons.badge_rounded, size: 18),
+                label: Text(l10n.seePublicCard),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
                 onPressed: () => _copyReceipt(context),
                 icon: const Icon(Icons.copy_rounded, size: 18),
                 label: Text(l10n.copyReceipt),

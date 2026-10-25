@@ -920,5 +920,174 @@
         "type": "String"
       }
     }
+  },
+  "reportCardTitle": "Report card",
+  "openReportCard": "Open report card",
+  "seePublicCard": "See public report card",
+  "openForDays": "Open {days} days",
+  "fixedInDays": "Fixed in {days} days",
+  "whosResponsible": "Who's responsible",
+  "mlaLabel": "MLA",
+  "mpLabel": "MP",
+  "seatVacant": "Seat vacant",
+  "repNotRecorded": "Not yet recorded",
+  "rosterAsOf": "Representatives as of {date}",
+  "peopleReportedSame": "{count} people reported this",
+  "seeAreaSolution": "See the area's solution card",
+  "shareButton": "Share",
+  "postOnSocial": "Post on social media",
+  "shareOnX": "Post on X",
+  "shareOnWhatsApp": "Send on WhatsApp",
+  "shareOnFacebook": "Share on Facebook",
+  "copyPostText": "Copy post text",
+  "postCopied": "Post copied — paste it anywhere",
+  "shareReportOpen": "{summary} — {place}. Open for {days} days. MLA: {mla} · MP: {mp}. Ticket {token} #Prajadhwani",
+  "shareReportFixed": "{summary} — {place}. Fixed in {days} days. MLA: {mla} · MP: {mp}. Ticket {token} #Prajadhwani",
+  "leaderboardTitle": "Representatives leaderboard",
+  "leaderboardSubtitle": "Which MLAs and MPs get reported problems fixed",
+  "leaderboardMlaTab": "MLAs",
+  "leaderboardMpTab": "MPs",
+  "leaderboardFairness": "Ranked by the share of reports in their area that were fixed in the last {days} days — not by how many problems the area has. At least {min} reports needed. Party is not shown.",
+  "fixedPctLabel": "{pct}% fixed",
+  "leaderboardStats": "{reports} reports · {open} open",
+  "medianFixDays": "Usually fixed in {days} days",
+  "notEnoughReports": "Not enough reports yet",
+  "leaderboardEmpty": "No real reports in the last {days} days yet.",
+  "shareLeaderboardRow": "{name} ({seat}): {pct}% of {reports} reported problems fixed in the last {days} days, {open} still open. #Prajadhwani",
+  "seeReportsInArea": "See reports in this area",
+  "@openForDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@fixedInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@rosterAsOf": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@peopleReportedSame": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@shareReportOpen": {
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      },
+      "mla": {
+        "type": "String"
+      },
+      "mp": {
+        "type": "String"
+      },
+      "token": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareReportFixed": {
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      },
+      "mla": {
+        "type": "String"
+      },
+      "mp": {
+        "type": "String"
+      },
+      "token": {
+        "type": "String"
+      }
+    }
+  },
+  "@leaderboardFairness": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "@fixedPctLabel": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "@leaderboardStats": {
+    "placeholders": {
+      "reports": {
+        "type": "int"
+      },
+      "open": {
+        "type": "int"
+      }
+    }
+  },
+  "@medianFixDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@leaderboardEmpty": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@shareLeaderboardRow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "seat": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      },
+      "reports": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "open": {
+        "type": "int"
+      }
+    }
   }
 }

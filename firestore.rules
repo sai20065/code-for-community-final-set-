@@ -146,6 +146,19 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+
+    // Representative leaderboard — built server-side from publicTickets
+    // only (see functions/src/public/leaderboard.ts).
+    match /publicLeaderboards/{board} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // MLA/MP/ward-name index for public report cards (seedMlaRoster.ts).
+    match /publicReps/{state} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /publicClusters/{clusterId} {
       allow read: if true;
       allow write: if false;

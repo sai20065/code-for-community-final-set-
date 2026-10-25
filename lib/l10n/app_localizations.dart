@@ -2819,6 +2819,213 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contacts are from official government sources. Office suggested by AI — please check before you file.'**
   String get suggestedOfficeNote;
+
+  /// No description provided for @reportCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report card'**
+  String get reportCardTitle;
+
+  /// No description provided for @openReportCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open report card'**
+  String get openReportCard;
+
+  /// No description provided for @seePublicCard.
+  ///
+  /// In en, this message translates to:
+  /// **'See public report card'**
+  String get seePublicCard;
+
+  /// No description provided for @openForDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {days} days'**
+  String openForDays(int days);
+
+  /// No description provided for @fixedInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed in {days} days'**
+  String fixedInDays(int days);
+
+  /// No description provided for @whosResponsible.
+  ///
+  /// In en, this message translates to:
+  /// **'Who\'s responsible'**
+  String get whosResponsible;
+
+  /// No description provided for @mlaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MLA'**
+  String get mlaLabel;
+
+  /// No description provided for @mpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MP'**
+  String get mpLabel;
+
+  /// No description provided for @seatVacant.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat vacant'**
+  String get seatVacant;
+
+  /// No description provided for @repNotRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet recorded'**
+  String get repNotRecorded;
+
+  /// No description provided for @rosterAsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Representatives as of {date}'**
+  String rosterAsOf(String date);
+
+  /// No description provided for @peopleReportedSame.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} people reported this'**
+  String peopleReportedSame(int count);
+
+  /// No description provided for @seeAreaSolution.
+  ///
+  /// In en, this message translates to:
+  /// **'See the area\'s solution card'**
+  String get seeAreaSolution;
+
+  /// No description provided for @shareButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareButton;
+
+  /// No description provided for @postOnSocial.
+  ///
+  /// In en, this message translates to:
+  /// **'Post on social media'**
+  String get postOnSocial;
+
+  /// No description provided for @shareOnX.
+  ///
+  /// In en, this message translates to:
+  /// **'Post on X'**
+  String get shareOnX;
+
+  /// No description provided for @shareOnWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send on WhatsApp'**
+  String get shareOnWhatsApp;
+
+  /// No description provided for @shareOnFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Share on Facebook'**
+  String get shareOnFacebook;
+
+  /// No description provided for @copyPostText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy post text'**
+  String get copyPostText;
+
+  /// No description provided for @postCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Post copied — paste it anywhere'**
+  String get postCopied;
+
+  /// No description provided for @shareReportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'{summary} — {place}. Open for {days} days. MLA: {mla} · MP: {mp}. Ticket {token} #Prajadhwani'**
+  String shareReportOpen(String summary, String place, int days, String mla,
+      String mp, String token);
+
+  /// No description provided for @shareReportFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'{summary} — {place}. Fixed in {days} days. MLA: {mla} · MP: {mp}. Ticket {token} #Prajadhwani'**
+  String shareReportFixed(String summary, String place, int days, String mla,
+      String mp, String token);
+
+  /// No description provided for @leaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Representatives leaderboard'**
+  String get leaderboardTitle;
+
+  /// No description provided for @leaderboardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which MLAs and MPs get reported problems fixed'**
+  String get leaderboardSubtitle;
+
+  /// No description provided for @leaderboardMlaTab.
+  ///
+  /// In en, this message translates to:
+  /// **'MLAs'**
+  String get leaderboardMlaTab;
+
+  /// No description provided for @leaderboardMpTab.
+  ///
+  /// In en, this message translates to:
+  /// **'MPs'**
+  String get leaderboardMpTab;
+
+  /// No description provided for @leaderboardFairness.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked by the share of reports in their area that were fixed in the last {days} days — not by how many problems the area has. At least {min} reports needed. Party is not shown.'**
+  String leaderboardFairness(int days, int min);
+
+  /// No description provided for @fixedPctLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% fixed'**
+  String fixedPctLabel(String pct);
+
+  /// No description provided for @leaderboardStats.
+  ///
+  /// In en, this message translates to:
+  /// **'{reports} reports · {open} open'**
+  String leaderboardStats(int reports, int open);
+
+  /// No description provided for @medianFixDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Usually fixed in {days} days'**
+  String medianFixDays(int days);
+
+  /// No description provided for @notEnoughReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough reports yet'**
+  String get notEnoughReports;
+
+  /// No description provided for @leaderboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No real reports in the last {days} days yet.'**
+  String leaderboardEmpty(int days);
+
+  /// No description provided for @shareLeaderboardRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({seat}): {pct}% of {reports} reported problems fixed in the last {days} days, {open} still open. #Prajadhwani'**
+  String shareLeaderboardRow(
+      String name, String seat, String pct, int reports, int days, int open);
+
+  /// No description provided for @seeReportsInArea.
+  ///
+  /// In en, this message translates to:
+  /// **'See reports in this area'**
+  String get seeReportsInArea;
 }
 
 class _AppLocalizationsDelegate

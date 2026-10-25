@@ -114,6 +114,12 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                 children: [Text(s.translatedText!)],
               ),
             ],
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: () => context.push('/public/report/${s.id}'),
+              icon: const Icon(Icons.badge_rounded, size: 18),
+              label: Text(l10n.seePublicCard),
+            ),
             const SizedBox(height: 24),
             GoogleMapsDirectionsButton(
               lat: s.location.lat,

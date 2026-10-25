@@ -12,6 +12,7 @@ import '../../../app/theme.dart';
 import '../../../core/models/public_models.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/karnataka_geo_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/app_map_tiles.dart';
 import '../../../shared/widgets/map_area_palette.dart';
 import '../../../shared/widgets/status_stepper.dart';
@@ -171,6 +172,11 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
         ),
         title: Text(_districtId == null ? 'Karnataka Live Report Map' : _districtName),
         actions: [
+          IconButton(
+            tooltip: AppLocalizations.of(context).leaderboardTitle,
+            onPressed: () => context.push('/public/leaderboard'),
+            icon: const Icon(Icons.leaderboard_rounded, color: Colors.white),
+          ),
           if (_districtId != null)
             IconButton(
               tooltip: 'Whole state',
@@ -904,6 +910,19 @@ class _TicketSheet extends StatelessWidget {
             const SizedBox(width: 6),
             Text(_precisionNote, style: const TextStyle(fontSize: 11.5, color: AppColors.inkFaint)),
           ]),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () {
+                final router = GoRouter.of(context);
+                Navigator.of(context).pop();
+                router.push('/public/report/${t.id}');
+              },
+              icon: const Icon(Icons.badge_rounded, size: 18),
+              label: Text(AppLocalizations.of(context).openReportCard),
+            ),
+          ),
           if (taluk != null) ...[
             const SizedBox(height: 12),
             SizedBox(

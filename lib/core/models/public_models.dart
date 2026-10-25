@@ -36,6 +36,11 @@ class PublicTicketModel {
   final String? clusterId;
   final int supporterCount;
 
+  /// The office the citizen was pointed to — directory data, the same for
+  /// anyone filing this theme here.
+  final String? suggestedOfficeName;
+  final String? suggestedOfficeUrl;
+
   /// Day granularity, never a timestamp — a precise filing time next to
   /// even a blurred location would be a re-identification vector.
   final String createdDate;
@@ -67,6 +72,8 @@ class PublicTicketModel {
     this.boothId,
     this.clusterId,
     this.supporterCount = 0,
+    this.suggestedOfficeName,
+    this.suggestedOfficeUrl,
     this.resolvedDate,
     this.geo,
     this.geoPrecision = 'none',
@@ -90,6 +97,8 @@ class PublicTicketModel {
       boothId: map['boothId'] as String?,
       clusterId: map['clusterId'] as String?,
       supporterCount: (map['supporterCount'] as num?)?.toInt() ?? 0,
+      suggestedOfficeName: map['suggestedOfficeName'] as String?,
+      suggestedOfficeUrl: map['suggestedOfficeUrl'] as String?,
       createdDate: map['createdDate'] as String? ?? '',
       createdWeek: map['createdWeek'] as String? ?? '',
       resolvedDate: map['resolvedDate'] as String?,
@@ -101,6 +110,17 @@ class PublicTicketModel {
   bool get isApproximateLocation => geoPrecision != 'none';
 
   bool get isOpen => status != 'resolved';
+
+  /// Days since filing, or from filing to fix once resolved. Day-level, like
+  /// the dates themselves.
+  int daysOpen(DateTime today) {
+    final created = DateTime.tryParse(createdDate);
+    if (created == null) return 0;
+    final end = (resolvedDate != null ? DateTime.tryParse(resolvedDate!) : null) ??
+        DateTime(today.year, today.month, today.day);
+    final d = end.difference(created).inDays;
+    return d < 0 ? 0 : d;
+  }
 }
 
 /// An aggregated issue group — the unit the map, the hotspot leaderboard

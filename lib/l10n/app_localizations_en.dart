@@ -1549,4 +1549,134 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get suggestedOfficeNote =>
       'Contacts are from official government sources. Office suggested by AI — please check before you file.';
+
+  @override
+  String get reportCardTitle => 'Report card';
+
+  @override
+  String get openReportCard => 'Open report card';
+
+  @override
+  String get seePublicCard => 'See public report card';
+
+  @override
+  String openForDays(int days) {
+    return 'Open $days days';
+  }
+
+  @override
+  String fixedInDays(int days) {
+    return 'Fixed in $days days';
+  }
+
+  @override
+  String get whosResponsible => 'Who\'s responsible';
+
+  @override
+  String get mlaLabel => 'MLA';
+
+  @override
+  String get mpLabel => 'MP';
+
+  @override
+  String get seatVacant => 'Seat vacant';
+
+  @override
+  String get repNotRecorded => 'Not yet recorded';
+
+  @override
+  String rosterAsOf(String date) {
+    return 'Representatives as of $date';
+  }
+
+  @override
+  String peopleReportedSame(int count) {
+    return '$count people reported this';
+  }
+
+  @override
+  String get seeAreaSolution => 'See the area\'s solution card';
+
+  @override
+  String get shareButton => 'Share';
+
+  @override
+  String get postOnSocial => 'Post on social media';
+
+  @override
+  String get shareOnX => 'Post on X';
+
+  @override
+  String get shareOnWhatsApp => 'Send on WhatsApp';
+
+  @override
+  String get shareOnFacebook => 'Share on Facebook';
+
+  @override
+  String get copyPostText => 'Copy post text';
+
+  @override
+  String get postCopied => 'Post copied — paste it anywhere';
+
+  @override
+  String shareReportOpen(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. Open for $days days. MLA: $mla · MP: $mp. Ticket $token #Prajadhwani';
+  }
+
+  @override
+  String shareReportFixed(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. Fixed in $days days. MLA: $mla · MP: $mp. Ticket $token #Prajadhwani';
+  }
+
+  @override
+  String get leaderboardTitle => 'Representatives leaderboard';
+
+  @override
+  String get leaderboardSubtitle =>
+      'Which MLAs and MPs get reported problems fixed';
+
+  @override
+  String get leaderboardMlaTab => 'MLAs';
+
+  @override
+  String get leaderboardMpTab => 'MPs';
+
+  @override
+  String leaderboardFairness(int days, int min) {
+    return 'Ranked by the share of reports in their area that were fixed in the last $days days — not by how many problems the area has. At least $min reports needed. Party is not shown.';
+  }
+
+  @override
+  String fixedPctLabel(String pct) {
+    return '$pct% fixed';
+  }
+
+  @override
+  String leaderboardStats(int reports, int open) {
+    return '$reports reports · $open open';
+  }
+
+  @override
+  String medianFixDays(int days) {
+    return 'Usually fixed in $days days';
+  }
+
+  @override
+  String get notEnoughReports => 'Not enough reports yet';
+
+  @override
+  String leaderboardEmpty(int days) {
+    return 'No real reports in the last $days days yet.';
+  }
+
+  @override
+  String shareLeaderboardRow(
+      String name, String seat, String pct, int reports, int days, int open) {
+    return '$name ($seat): $pct% of $reports reported problems fixed in the last $days days, $open still open. #Prajadhwani';
+  }
+
+  @override
+  String get seeReportsInArea => 'See reports in this area';
 }

@@ -1551,4 +1551,134 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get suggestedOfficeNote =>
       'संपर्क तपशील अधिकृत सरकारी स्रोतांमधून. कार्यालय AI ने सुचवले आहे — नोंदवण्यापूर्वी तपासा.';
+
+  @override
+  String get reportCardTitle => 'अहवाल कार्ड';
+
+  @override
+  String get openReportCard => 'अहवाल कार्ड उघडा';
+
+  @override
+  String get seePublicCard => 'सार्वजनिक अहवाल कार्ड पहा';
+
+  @override
+  String openForDays(int days) {
+    return '$days दिवसांपासून उघडे';
+  }
+
+  @override
+  String fixedInDays(int days) {
+    return '$days दिवसांत दुरुस्त';
+  }
+
+  @override
+  String get whosResponsible => 'कोण जबाबदार आहे';
+
+  @override
+  String get mlaLabel => 'आमदार';
+
+  @override
+  String get mpLabel => 'खासदार';
+
+  @override
+  String get seatVacant => 'जागा रिक्त';
+
+  @override
+  String get repNotRecorded => 'अद्याप नोंद नाही';
+
+  @override
+  String rosterAsOf(String date) {
+    return '$date नुसार प्रतिनिधी';
+  }
+
+  @override
+  String peopleReportedSame(int count) {
+    return '$count लोकांनी हे कळवले';
+  }
+
+  @override
+  String get seeAreaSolution => 'भागाचे उपाय कार्ड पहा';
+
+  @override
+  String get shareButton => 'शेअर करा';
+
+  @override
+  String get postOnSocial => 'सोशल मीडियावर पोस्ट करा';
+
+  @override
+  String get shareOnX => 'X वर पोस्ट करा';
+
+  @override
+  String get shareOnWhatsApp => 'WhatsApp वर पाठवा';
+
+  @override
+  String get shareOnFacebook => 'Facebook वर शेअर करा';
+
+  @override
+  String get copyPostText => 'पोस्टचा मजकूर कॉपी करा';
+
+  @override
+  String get postCopied => 'पोस्ट कॉपी झाली — कुठेही पेस्ट करा';
+
+  @override
+  String shareReportOpen(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. $days दिवसांपासून उघडे. आमदार: $mla · खासदार: $mp. तिकीट $token #Prajadhwani';
+  }
+
+  @override
+  String shareReportFixed(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. $days दिवसांत दुरुस्त. आमदार: $mla · खासदार: $mp. तिकीट $token #Prajadhwani';
+  }
+
+  @override
+  String get leaderboardTitle => 'प्रतिनिधी लीडरबोर्ड';
+
+  @override
+  String get leaderboardSubtitle =>
+      'कोणते आमदार आणि खासदार नोंदवलेल्या समस्या सोडवतात';
+
+  @override
+  String get leaderboardMlaTab => 'आमदार';
+
+  @override
+  String get leaderboardMpTab => 'खासदार';
+
+  @override
+  String leaderboardFairness(int days, int min) {
+    return 'मागील $days दिवसांत त्यांच्या भागातील किती अहवाल दुरुस्त झाले या प्रमाणावर क्रमवारी — भागात किती समस्या आहेत यावर नाही. किमान $min अहवाल आवश्यक. पक्ष दाखवला जात नाही.';
+  }
+
+  @override
+  String fixedPctLabel(String pct) {
+    return '$pct% दुरुस्त';
+  }
+
+  @override
+  String leaderboardStats(int reports, int open) {
+    return '$reports अहवाल · $open उघडे';
+  }
+
+  @override
+  String medianFixDays(int days) {
+    return 'साधारणपणे $days दिवसांत दुरुस्त';
+  }
+
+  @override
+  String get notEnoughReports => 'अद्याप पुरेसे अहवाल नाहीत';
+
+  @override
+  String leaderboardEmpty(int days) {
+    return 'मागील $days दिवसांत अद्याप कोणतेही खरे अहवाल नाहीत.';
+  }
+
+  @override
+  String shareLeaderboardRow(
+      String name, String seat, String pct, int reports, int days, int open) {
+    return '$name ($seat): मागील $days दिवसांत $reports पैकी $pct% समस्या दुरुस्त, $open अजून उघड्या. #Prajadhwani';
+  }
+
+  @override
+  String get seeReportsInArea => 'या भागातील अहवाल पहा';
 }

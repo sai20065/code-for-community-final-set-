@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/agent_transcript_model.dart';
 import '../models/constituency_model.dart';
 import '../models/public_models.dart';
+import '../models/representative_models.dart';
 import '../models/solution_card_model.dart';
 
 /// Dashboard-header stats, derived from `publicClusters` only.
@@ -266,6 +267,29 @@ class PublicDataService {
     return _constituencies.orderBy('name').snapshots().map((snap) => snap.docs
         .map((d) => ConstituencyModel.fromMap(d.id, d.data()))
         .toList());
+  }
+
+  /// One public ticket — the report card's source.
+  Stream<PublicTicketModel?> watchPublicTicket(String id) {
+    return _tickets.doc(id).snapshots().map((doc) {
+      final data = doc.data();
+      return doc.exists && data != null ? PublicTicketModel.fromMap(doc.id, data) : null;
+    });
+  }
+
+  /// MLA / MP / ward-name index (`publicReps/karnataka`).
+  Future<PublicReps> getPublicReps() async {
+    final doc = await _db.collection('publicReps').doc('karnataka').get();
+    final data = doc.data();
+    return data == null ? PublicReps.empty : PublicReps.fromMap(data);
+  }
+
+  /// `board` is `mla` or `mp`.
+  Stream<RepresentativeLeaderboard?> watchLeaderboard(String board) {
+    return _db.collection('publicLeaderboards').doc(board).snapshots().map((doc) {
+      final data = doc.data();
+      return data == null ? null : RepresentativeLeaderboard.fromMap(data);
+    });
   }
 
   Future<ConstituencyModel?> getConstituency(String constituencyId) async {

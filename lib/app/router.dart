@@ -36,7 +36,9 @@ import '../features/public/booth/booth_detail_sheet.dart';
 import '../features/public/constituency_picker/constituency_picker_screen.dart';
 import '../features/public/dashboard/dashboard_home_screen.dart';
 import '../features/public/map/constituency_map_screen.dart';
+import '../features/public/leaderboard/representative_leaderboard_screen.dart';
 import '../features/public/map/karnataka_map_screen.dart';
+import '../features/public/report/public_report_card_screen.dart';
 import '../features/public/solution/solution_card_screen.dart';
 import '../features/public/themes/themes_overview_screen.dart';
 import '../features/public/works/compare_proposals_screen.dart';
@@ -267,6 +269,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/public/compare',
         builder: (context, state) => const CompareProposalsScreen(),
+      ),
+      // One report's shareable card (ward, MLA, MP, days open) and the
+      // representative leaderboard — both readable signed-out, since they
+      // are what shared links open.
+      GoRoute(
+        path: '/public/report/:id',
+        builder: (context, state) =>
+            PublicReportCardScreen(ticketId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/public/leaderboard',
+        builder: (context, state) => const RepresentativeLeaderboardScreen(),
       ),
       GoRoute(
         path: '/public/cluster/:clusterId',

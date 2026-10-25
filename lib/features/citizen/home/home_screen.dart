@@ -169,6 +169,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             subtitle: l10n.liveReportMapSubtitle,
                             onTap: () => context.go('/public/karnataka'),
                           ),
+                          const SizedBox(height: 10),
+                          _HomeLinkCard(
+                            icon: Icons.leaderboard_rounded,
+                            tint: AppColors.saffronDeep,
+                            label: l10n.leaderboardTitle,
+                            subtitle: l10n.leaderboardSubtitle,
+                            onTap: () => context.push('/public/leaderboard'),
+                          ),
                         ],
                       ),
                     );

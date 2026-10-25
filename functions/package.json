@@ -21,6 +21,8 @@
     "verify:routing": "ts-node src/scripts/verifyRouting.ts",
     "verify:offices": "ts-node src/scripts/verifyOfficeSuggestions.ts",
     "build:router-dataset": "ts-node src/scripts/buildRouterDataset.ts",
+    "verify:leaderboard": "ts-node src/scripts/verifyLeaderboard.ts",
+    "leaderboard:now": "ts-node src/scripts/rebuildLeaderboardsNow.ts",
     "backfill:cluster-geo": "ts-node src/scripts/backfillClusterGeo.ts",
     "backfill:public": "ts-node src/scripts/backfillPublicProjections.ts"
   },

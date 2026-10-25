@@ -29,4 +29,6 @@ export {onSubmissionCreated} from "./submissions/onSubmissionCreated";
 // domains — see functions/src/public/projection.ts for the field allowlist.
 export {onSubmissionWrittenPublicProjection} from "./public/onSubmissionWritten";
 export {onClusterWrittenPublicProjection} from "./public/onClusterWritten";
+// MLA / MP leaderboard over public tickets, rebuilt every 6 hours.
+export {refreshLeaderboards} from "./public/leaderboard";
 export {transcribeAndTranslate} from "./submissions/transcribeAndTranslate";

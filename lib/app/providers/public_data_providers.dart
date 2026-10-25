@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/models/constituency_model.dart';
 import '../../core/models/district_model.dart';
 import '../../core/models/public_models.dart';
+import '../../core/models/representative_models.dart';
 import '../../core/models/solution_card_model.dart';
 import '../../core/models/taluk_model.dart';
 import '../../core/models/ward_model.dart';
@@ -245,3 +246,21 @@ final statewideTicketsProvider =
       .watch(publicDataServiceProvider)
       .watchStatewideTickets(sinceDate: since);
 });
+
+/// One public ticket, for its shareable report card.
+final publicTicketProvider = StreamProvider.family<PublicTicketModel?, String>(
+  (ref, id) => ref.watch(publicDataServiceProvider).watchPublicTicket(id),
+);
+
+/// Who represents every Karnataka seat. Read once and kept for the session
+/// — the roster changes with by-elections, not by the minute.
+final publicRepsProvider = FutureProvider<PublicReps>((ref) {
+  ref.keepAlive();
+  return ref.watch(publicDataServiceProvider).getPublicReps();
+});
+
+/// `mla` or `mp`.
+final leaderboardProvider =
+    StreamProvider.family<RepresentativeLeaderboard?, String>(
+  (ref, board) => ref.watch(publicDataServiceProvider).watchLeaderboard(board),
+);
