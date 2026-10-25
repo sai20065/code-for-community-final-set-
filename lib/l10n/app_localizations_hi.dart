@@ -1540,4 +1540,26 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'लाइव मानचित्र पर देखें';
+
+  @override
+  String get suggestedOfficeTitle =>
+      'समस्या दर्ज करने के लिए सुझाया गया कार्यालय';
+
+  @override
+  String get findingOffice => 'आपकी समस्या के लिए सही कार्यालय खोजा जा रहा है…';
+
+  @override
+  String get officialWebsite => 'आधिकारिक वेबसाइट';
+
+  @override
+  String get emailOffice => 'कार्यालय को ईमेल करें';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone पर कॉल करें';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'संपर्क आधिकारिक सरकारी स्रोतों से हैं। कार्यालय AI द्वारा सुझाया गया है — दर्ज करने से पहले जांच लें।';
 }

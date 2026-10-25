@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
+import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/officer_mascot_3d.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/suggested_office_card.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 import '../../../shared/widgets/ticket_receipt_card.dart';
 
@@ -18,9 +20,17 @@ import '../../../shared/widgets/ticket_receipt_card.dart';
 /// processed yet — the classification/clustering pipeline
 /// (`onSubmissionCreated`) runs asynchronously after this screen shows.
 class SubmissionConfirmationScreen extends StatelessWidget {
-  const SubmissionConfirmationScreen({super.key, required this.submission});
+  const SubmissionConfirmationScreen({
+    super.key,
+    required this.submission,
+    this.updates,
+  });
 
   final SubmissionModel submission;
+
+  /// Live copies of [submission], so the suggested office appears once the
+  /// backend writes it. Defaults to Firestore; injectable for tests.
+  final Stream<SubmissionModel?>? updates;
 
   Future<void> _copyReceipt(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: submission.tokenId));
@@ -62,6 +72,10 @@ class SubmissionConfirmationScreen extends StatelessWidget {
                 tokenId: submission.tokenId,
                 createdAt: submission.createdAt,
               ),
+              if (!isSuggestion) ...[
+                const SizedBox(height: 12),
+                _LiveSuggestedOffice(submission: submission, updates: updates),
+              ],
               const SizedBox(height: 16),
               Wrap(
                 alignment: WrapAlignment.center,
@@ -161,6 +175,42 @@ class SubmissionConfirmationScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The suggested-office card under the receipt, following the ticket doc
+/// until the backend has written `suggestedOffice`.
+class _LiveSuggestedOffice extends StatefulWidget {
+  const _LiveSuggestedOffice({required this.submission, this.updates});
+
+  final SubmissionModel submission;
+  final Stream<SubmissionModel?>? updates;
+
+  @override
+  State<_LiveSuggestedOffice> createState() => _LiveSuggestedOfficeState();
+}
+
+class _LiveSuggestedOfficeState extends State<_LiveSuggestedOffice> {
+  // Created once: a new stream on every rebuild would resubscribe and
+  // flash the placeholder.
+  late final Stream<SubmissionModel?> _updates = widget.updates ??
+      FirestoreService().watchSubmission(widget.submission.id);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<SubmissionModel?>(
+      stream: _updates,
+      builder: (context, snap) {
+        final s = snap.data ?? widget.submission;
+        return SuggestedOfficeCard(
+          office: s.suggestedOffice,
+          tokenId: s.tokenId,
+          reportText: s.rawText ?? s.transcript,
+          lat: s.location.lat,
+          lng: s.location.lng,
+        );
+      },
     );
   }
 }

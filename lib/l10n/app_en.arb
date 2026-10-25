@@ -907,5 +907,18 @@
   "areaNotMatchedYet": "We couldn't match your exact area right now. You can update it later from Profile.",
   "liveReportMap": "Karnataka live report map",
   "liveReportMapSubtitle": "Every report across the state, updated live",
-  "seeOnLiveMap": "See it on the live map"
+  "seeOnLiveMap": "See it on the live map",
+  "suggestedOfficeTitle": "Suggested office to file the problem",
+  "findingOffice": "Finding the right office for your problem…",
+  "officialWebsite": "Official website",
+  "emailOffice": "Email the office",
+  "callOffice": "Call {phone}",
+  "suggestedOfficeNote": "Contacts are from official government sources. Office suggested by AI — please check before you file.",
+  "@callOffice": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  }
 }

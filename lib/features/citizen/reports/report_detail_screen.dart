@@ -6,6 +6,7 @@ import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/google_maps_directions_button.dart';
 import '../../../shared/widgets/status_stepper.dart';
+import '../../../shared/widgets/suggested_office_card.dart';
 
 /// Section 4, screen 10: status stepper large at top, original submission
 /// content, transcript/translation collapsed under "See details".
@@ -34,6 +35,9 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     if (widget.submission != null) {
       _submission = widget.submission;
       _loading = false;
+      // Opened straight from the confirmation screen, the passed copy can
+      // predate the backend's suggested office — refresh it quietly.
+      if (widget.submission!.suggestedOffice == null) _load();
     } else {
       _load();
     }
@@ -43,7 +47,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     final result = await _firestoreService.getSubmission(widget.submissionId);
     if (mounted) {
       setState(() {
-        _submission = result;
+        _submission = result ?? _submission;
         _loading = false;
       });
     }
@@ -88,6 +92,16 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           padding: const EdgeInsets.all(20),
           children: [
             StatusStepper(status: s.status),
+            if (s.category == SubmissionCategory.problem) ...[
+              const SizedBox(height: 16),
+              SuggestedOfficeCard(
+                office: s.suggestedOffice,
+                tokenId: s.tokenId,
+                reportText: s.rawText ?? s.transcript,
+                lat: s.location.lat,
+                lng: s.location.lng,
+              ),
+            ],
             const SizedBox(height: 24),
             Text(l10n.ticketLabel, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),

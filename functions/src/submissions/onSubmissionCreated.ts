@@ -1,6 +1,9 @@
 import * as admin from "firebase-admin";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
-import {REGION, reporterHashSalt} from "../config";
+import {SuggestInput, suggestOffice} from "../assignment/suggestOffice";
+import {officeDirectory} from "../assignment/officeDirectoryCache";
+import {REGION, gemmaApiKey, reporterHashSalt} from "../config";
+import {GemmaClient} from "../lib/gemmaClient";
 import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
 import {GeminiClient} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
@@ -16,7 +19,7 @@ import {
 
 /** Bumped whenever the shape of what this pipeline writes changes, so a
  * backfill can tell which documents predate a field. */
-const PIPELINE_VERSION = 3;
+const PIPELINE_VERSION = 4;
 
 /**
  * Main AI pipeline, triggered whenever a citizen creates a ticket
@@ -30,7 +33,8 @@ const PIPELINE_VERSION = 3;
  * cross-language tickets can be classified/clustered consistently.
  * (3) photo → Gemini vision caption. (4) Gemini classifies theme (only if
  * the citizen didn't already pick one manually), scores it, and produces a
- * PII-free `publicSummary`. (5) find-or-create a `clusters` doc for
+ * PII-free `publicSummary`. (4b) suggest the office the citizen should
+ * file with (`suggestedOffice`, see assignment/). (5) find-or-create a `clusters` doc for
  * (constituencyId, theme, boothId) and update its aggregates.
  *
  * Writes are **accumulated into one patch** and applied once at the end
@@ -42,7 +46,7 @@ export const onSubmissionCreated = onDocumentCreated(
   {
     document: "submissions/{submissionId}",
     region: REGION,
-    secrets: [reporterHashSalt],
+    secrets: gemmaApiKey ? [reporterHashSalt, gemmaApiKey] : [reporterHashSalt],
   },
   async (event) => {
     const snapshot = event.data;
@@ -56,6 +60,27 @@ export const onSubmissionCreated = onDocumentCreated(
 
     /** Accumulated field updates for the submission doc. */
     const patch: Record<string, unknown> = {};
+
+    /** Adds `suggestedOffice` to the patch. A routing failure must never
+     * block the rest of the pipeline, so errors are logged and swallowed. */
+    const addSuggestedOffice = async (input: SuggestInput): Promise<void> => {
+      try {
+        const key = gemmaApiKey?.value() ?? "";
+        const office = await suggestOffice(
+          await officeDirectory(db),
+          input,
+          key ? new GemmaClient(key) : null,
+        );
+        if (office) {
+          patch.suggestedOffice = {
+            ...office,
+            suggestedAt: admin.firestore.FieldValue.serverTimestamp(),
+          };
+        }
+      } catch (err) {
+        console.error("Office suggestion failed", err);
+      }
+    };
 
     // --- 1 & 2: transcript + translation ---------------------------------
     // Voice tickets are now transcribed on the client *before* submit (the
@@ -160,6 +185,16 @@ export const onSubmissionCreated = onDocumentCreated(
     };
 
     if (!theme) {
+      // No category means no specific department — the state-wide
+      // grievance portal is still a real place to file.
+      await addSuggestedOffice({
+        theme: null,
+        summary: patch.publicSummary as string,
+        districtId: submission.location?.districtId ?? null,
+        districtName: null,
+        talukName: null,
+        inBengaluruWard: false,
+      });
       await submissionRef.update(patch);
       return;
     }
@@ -180,6 +215,8 @@ export const onSubmissionCreated = onDocumentCreated(
     let bbmpWardId: string | undefined = submission.location?.bbmpWardId;
     let assemblyId: string | undefined = submission.location?.assemblyId;
     let districtId: string | undefined = submission.location?.districtId;
+    let talukName: string | null = null;
+    let districtName: string | null = null;
     if (typeof lat === "number" && typeof lng === "number") {
       const resolved = resolveConstituencyForPoint(lat, lng);
       if (resolved && resolved.constituencyId !== constituencyId) {
@@ -205,6 +242,8 @@ export const onSubmissionCreated = onDocumentCreated(
         patch["location.bbmpWardId"] = resolvedBbmp.wardId;
       }
       const resolvedTaluk = resolveTalukForPoint(lat, lng);
+      talukName = resolvedTaluk?.talukName ?? null;
+      districtName = resolvedTaluk?.districtName ?? null;
       if (resolvedTaluk && resolvedTaluk.talukId !== talukId) {
         talukId = resolvedTaluk.talukId;
         patch["location.talukId"] = resolvedTaluk.talukId;
@@ -222,6 +261,19 @@ export const onSubmissionCreated = onDocumentCreated(
         patch["location.assemblyName"] = resolvedAssembly.assemblyName;
       }
     }
+
+    // --- 4b: suggested office (needs the theme and the resolved place) ----
+    await addSuggestedOffice({
+      theme,
+      summary: patch.publicSummary as string,
+      districtId: districtId ?? null,
+      districtName,
+      talukName,
+      inBengaluruWard: Boolean(bbmpWardId || wardId),
+      lat: typeof lat === "number" ? lat : null,
+      lng: typeof lng === "number" ? lng : null,
+    });
+
     const boothId: string | undefined = submission.location?.boothId;
     if (!constituencyId) {
       // Unscoped ticket — no cluster to join yet. Still persist everything

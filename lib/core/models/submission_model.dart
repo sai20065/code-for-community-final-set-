@@ -58,6 +58,60 @@ class SubmissionLocation {
   }
 }
 
+/// The office `onSubmissionCreated` suggests the citizen file with — the
+/// "Suggested office to file the problem" line under the ticket id. Every
+/// contact field is copied from the server's verified office directory,
+/// never written by the model (see functions/src/assignment/).
+class SuggestedOffice {
+  final String departmentId;
+  final String name;
+  final String? shortName;
+  final String? officerDesignation;
+  final String? email;
+  final String? websiteUrl;
+  final String? phone;
+
+  /// "exact", "state-fallback" or "national-fallback".
+  final String matchQuality;
+
+  /// "gemma" when the model chose among the shortlist, "rules" otherwise.
+  final String source;
+
+  const SuggestedOffice({
+    required this.departmentId,
+    required this.name,
+    this.shortName,
+    this.officerDesignation,
+    this.email,
+    this.websiteUrl,
+    this.phone,
+    this.matchQuality = 'state-fallback',
+    this.source = 'rules',
+  });
+
+  static SuggestedOffice? fromMap(Map<String, dynamic>? map) {
+    final id = map?['departmentId'] as String?;
+    final name = map?['name'] as String?;
+    if (map == null || id == null || name == null || name.isEmpty) return null;
+    String? nonEmpty(String key) {
+      final v = (map[key] as String?)?.trim();
+      return v == null || v.isEmpty ? null : v;
+    }
+
+    return SuggestedOffice(
+      departmentId: id,
+      name: name,
+      shortName: nonEmpty('shortName'),
+      officerDesignation: nonEmpty('officerDesignation'),
+      email: nonEmpty('email'),
+      websiteUrl: nonEmpty('websiteUrl'),
+      phone: nonEmpty('phone'),
+      matchQuality: map['matchQuality'] as String? ?? 'state-fallback',
+      source: map['source'] as String? ?? 'rules',
+    );
+  }
+}
+
 /// A citizen's suggestion ticket. `tokenId` is generated client-side at
 /// creation time (see `FirestoreService.generateTokenId`) so the citizen
 /// always has a receipt, even if the downstream AI pipeline fails.
@@ -87,6 +141,10 @@ class SubmissionModel {
   final int supporterCount;
   final List<String> supporterIds;
 
+  /// Written server-side a few seconds after submit; null until then.
+  /// Read-only on the client, so deliberately absent from [toMap].
+  final SuggestedOffice? suggestedOffice;
+
   const SubmissionModel({
     required this.id,
     required this.userId,
@@ -110,6 +168,7 @@ class SubmissionModel {
     this.resolvedAt,
     this.supporterCount = 0,
     this.supporterIds = const [],
+    this.suggestedOffice,
   });
 
   static SubmissionStatus statusFromString(String value) {
@@ -174,6 +233,9 @@ class SubmissionModel {
       resolvedAt: (map['resolvedAt'] as Timestamp?)?.toDate(),
       supporterCount: map['supporterCount'] as int? ?? 0,
       supporterIds: (map['supporterIds'] as List?)?.cast<String>() ?? const [],
+      suggestedOffice: SuggestedOffice.fromMap(
+        (map['suggestedOffice'] as Map?)?.cast<String, dynamic>(),
+      ),
     );
   }
 

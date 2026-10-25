@@ -1537,4 +1537,26 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'ಲೈವ್ ನಕ್ಷೆಯಲ್ಲಿ ನೋಡಿ';
+
+  @override
+  String get suggestedOfficeTitle => 'ಸಮಸ್ಯೆ ದಾಖಲಿಸಲು ಸೂಚಿಸಲಾದ ಕಚೇರಿ';
+
+  @override
+  String get findingOffice =>
+      'ನಿಮ್ಮ ಸಮಸ್ಯೆಗೆ ಸರಿಯಾದ ಕಚೇರಿಯನ್ನು ಹುಡುಕಲಾಗುತ್ತಿದೆ…';
+
+  @override
+  String get officialWebsite => 'ಅಧಿಕೃತ ವೆಬ್‌ಸೈಟ್';
+
+  @override
+  String get emailOffice => 'ಕಚೇರಿಗೆ ಇಮೇಲ್ ಮಾಡಿ';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone ಗೆ ಕರೆ ಮಾಡಿ';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'ಸಂಪರ್ಕ ವಿವರಗಳು ಅಧಿಕೃತ ಸರ್ಕಾರಿ ಮೂಲಗಳಿಂದ. ಕಚೇರಿಯನ್ನು AI ಸೂಚಿಸಿದೆ — ದಾಖಲಿಸುವ ಮೊದಲು ಪರಿಶೀಲಿಸಿ.';
 }

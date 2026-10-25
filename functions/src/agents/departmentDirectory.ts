@@ -40,6 +40,24 @@ export interface DepartmentDoc {
    * that stays on file for months would be wrong within weeks. Null falls
    * back to a jurisdiction-level generic in the printed briefing. */
   officerDesignation?: string | null;
+  /** KGIS district ids this body serves — the ESCOM areas, which follow
+   * district lines rather than cities. When set and the caller knows the
+   * district, it replaces the `cities` check. */
+  districtIds?: string[] | null;
+  /** "rural" bodies (RDPR, RDWSD) suit points outside any city corporation;
+   * "urban" ones (KUWSDB) the reverse. Unset means either. */
+  areaType?: "urban" | "rural" | "any";
+  /** The state-wide grievance portal (IPGRS): eligible for every theme and
+   * place, but ranked below any body that specifically owns the problem. */
+  catchAll?: boolean;
+  /** Reached only by escalating from another body (UDD over the city
+   * corporations) — never suggested to a citizen as the first place to
+   * file. */
+  escalationOnly?: boolean;
+  /** Small nudge used only in per-ticket routing (when `urban` is known),
+   * to break a tie between two bodies that both fit — PWD vs the Gram
+   * Panchayat for a village road. Leaves the cluster agents' ranking alone. */
+  ticketTieBreak?: number;
   sdgGoals: number[];
   /** Where this contact came from and when it was checked. Government
    * contact details go stale constantly; a row without provenance is
@@ -64,6 +82,11 @@ export interface ResolveArgs {
   state: string | null;
   city: string | null;
   preferredLevel: JurisdictionLevel;
+  /** Per-ticket routing knows the KGIS district; the cluster agents don't. */
+  districtId?: string | null;
+  /** Whether the point is inside a city corporation. Unknown (null/unset)
+   * leaves `areaType` out of the score. */
+  urban?: boolean | null;
 }
 
 export interface ResolveResult {
@@ -89,7 +112,13 @@ export function scoreDepartment(doc: DepartmentDoc, args: ResolveArgs): number {
     return Number.NEGATIVE_INFINITY;
   }
 
-  if (doc.cities === null) {
+  if (doc.districtIds?.length && args.districtId) {
+    if (!doc.districtIds.includes(args.districtId)) {
+      return Number.NEGATIVE_INFINITY;
+    }
+    // As specific as a city match: this body serves exactly this district.
+    score += 50;
+  } else if (doc.cities === null) {
     // Covers the whole state; fine, but a city-specific body beats it.
     score += 10;
   } else if (args.city && doc.cities.some((c) => matchesCity(c, args.city!))) {
@@ -102,10 +131,17 @@ export function scoreDepartment(doc: DepartmentDoc, args: ResolveArgs): number {
 
   if (doc.jurisdictionLevel === args.preferredLevel) score += 25;
 
+  if (args.urban != null && doc.areaType && doc.areaType !== "any") {
+    score += (doc.areaType === "urban") === args.urban ? 20 : -60;
+  }
+  if (args.urban != null && doc.ticketTieBreak) score += doc.ticketTieBreak;
+
+  if (doc.catchAll) score -= 50;
+
   return score;
 }
 
-function matchesCity(candidate: string, city: string): boolean {
+export function matchesCity(candidate: string, city: string): boolean {
   const a = candidate.trim().toLowerCase();
   const b = city.trim().toLowerCase();
   // Substring both ways: "Bengaluru" should match "Bengaluru Urban", and
@@ -126,11 +162,7 @@ export function resolveDepartment(
   directory: DepartmentDoc[],
   args: ResolveArgs,
 ): ResolveResult | null {
-  const candidates = directory
-    .filter((d) => d.themes.includes(args.theme))
-    .map((d) => ({doc: d, score: scoreDepartment(d, args)}))
-    .filter((c) => Number.isFinite(c.score))
-    .sort((a, b) => b.score - a.score);
+  const candidates = rankDepartments(directory, args);
 
   if (!candidates.length) return null;
 
@@ -154,6 +186,19 @@ export function resolveDepartment(
   }
 
   return {primary, escalation, matchQuality};
+}
+
+/** Every eligible body for [args], best first. `resolveDepartment` takes the
+ * head; per-ticket routing hands the top few to the model to choose from. */
+export function rankDepartments(
+  directory: DepartmentDoc[],
+  args: ResolveArgs,
+): Array<{doc: DepartmentDoc; score: number}> {
+  return directory
+    .filter((d) => d.catchAll || d.themes.includes(args.theme))
+    .map((d) => ({doc: d, score: scoreDepartment(d, args)}))
+    .filter((c) => Number.isFinite(c.score))
+    .sort((a, b) => b.score - a.score);
 }
 
 /** Loads the directory. Small (tens of documents) and read on every agent

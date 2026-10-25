@@ -8,6 +8,7 @@ import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/status_stepper.dart';
+import '../../../shared/widgets/suggested_office_card.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 Future<void> _copyReceipt(BuildContext context, String tokenId) async {
@@ -148,6 +149,14 @@ class _TicketCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (!isSuggestion && submission.suggestedOffice != null) ...[
+                const SizedBox(height: 8),
+                SuggestedOfficeCard(
+                  office: submission.suggestedOffice,
+                  tokenId: submission.tokenId,
+                  compact: true,
+                ),
+              ],
               const SizedBox(height: 12),
               if (isSuggestion)
                 _SuggestionOutcome(submission: submission)

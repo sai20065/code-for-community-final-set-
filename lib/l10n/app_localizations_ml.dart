@@ -1546,4 +1546,27 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'ലൈവ് മാപ്പിൽ കാണുക';
+
+  @override
+  String get suggestedOfficeTitle =>
+      'പ്രശ്നം ഫയൽ ചെയ്യാൻ നിർദ്ദേശിക്കുന്ന ഓഫീസ്';
+
+  @override
+  String get findingOffice =>
+      'നിങ്ങളുടെ പ്രശ്നത്തിന് ശരിയായ ഓഫീസ് കണ്ടെത്തുന്നു…';
+
+  @override
+  String get officialWebsite => 'ഔദ്യോഗിക വെബ്സൈറ്റ്';
+
+  @override
+  String get emailOffice => 'ഓഫീസിലേക്ക് ഇമെയിൽ ചെയ്യുക';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone ൽ വിളിക്കുക';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'ബന്ധപ്പെടാനുള്ള വിവരങ്ങൾ ഔദ്യോഗിക സർക്കാർ സ്രോതസ്സുകളിൽ നിന്ന്. ഓഫീസ് AI നിർദ്ദേശിച്ചത് — ഫയൽ ചെയ്യുന്നതിന് മുമ്പ് പരിശോധിക്കുക.';
 }

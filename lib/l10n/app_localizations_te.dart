@@ -1533,4 +1533,26 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'లైవ్ మ్యాప్‌లో చూడండి';
+
+  @override
+  String get suggestedOfficeTitle =>
+      'సమస్యను నమోదు చేయడానికి సూచించిన కార్యాలయం';
+
+  @override
+  String get findingOffice => 'మీ సమస్యకు సరైన కార్యాలయం వెతుకుతున్నాం…';
+
+  @override
+  String get officialWebsite => 'అధికారిక వెబ్‌సైట్';
+
+  @override
+  String get emailOffice => 'కార్యాలయానికి ఈమెయిల్ చేయండి';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone కు కాల్ చేయండి';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'సంప్రదింపు వివరాలు అధికారిక ప్రభుత్వ మూలాల నుండి. కార్యాలయాన్ని AI సూచించింది — నమోదు చేసే ముందు తనిఖీ చేయండి.';
 }

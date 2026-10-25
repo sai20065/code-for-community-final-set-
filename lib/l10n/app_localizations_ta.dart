@@ -1558,4 +1558,27 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'நேரடி வரைபடத்தில் பார்க்கவும்';
+
+  @override
+  String get suggestedOfficeTitle =>
+      'சிக்கலைப் பதிவு செய்ய பரிந்துரைக்கப்பட்ட அலுவலகம்';
+
+  @override
+  String get findingOffice =>
+      'உங்கள் சிக்கலுக்கான சரியான அலுவலகம் தேடப்படுகிறது…';
+
+  @override
+  String get officialWebsite => 'அதிகாரப்பூர்வ இணையதளம்';
+
+  @override
+  String get emailOffice => 'அலுவலகத்திற்கு மின்னஞ்சல் அனுப்பவும்';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone ஐ அழைக்கவும்';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'தொடர்பு விவரங்கள் அதிகாரப்பூர்வ அரசு மூலங்களிலிருந்து. அலுவலகம் AI பரிந்துரைத்தது — பதிவு செய்யும் முன் சரிபார்க்கவும்.';
 }

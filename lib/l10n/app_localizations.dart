@@ -2783,6 +2783,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See it on the live map'**
   String get seeOnLiveMap;
+
+  /// No description provided for @suggestedOfficeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested office to file the problem'**
+  String get suggestedOfficeTitle;
+
+  /// No description provided for @findingOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the right office for your problem…'**
+  String get findingOffice;
+
+  /// No description provided for @officialWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Official website'**
+  String get officialWebsite;
+
+  /// No description provided for @emailOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Email the office'**
+  String get emailOffice;
+
+  /// No description provided for @callOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Call {phone}'**
+  String callOffice(String phone);
+
+  /// No description provided for @suggestedOfficeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts are from official government sources. Office suggested by AI — please check before you file.'**
+  String get suggestedOfficeNote;
 }
 
 class _AppLocalizationsDelegate

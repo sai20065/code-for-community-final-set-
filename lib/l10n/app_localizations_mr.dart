@@ -1530,4 +1530,25 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'लाइव्ह नकाशावर पहा';
+
+  @override
+  String get suggestedOfficeTitle => 'समस्या नोंदवण्यासाठी सुचवलेले कार्यालय';
+
+  @override
+  String get findingOffice => 'तुमच्या समस्येसाठी योग्य कार्यालय शोधत आहोत…';
+
+  @override
+  String get officialWebsite => 'अधिकृत वेबसाइट';
+
+  @override
+  String get emailOffice => 'कार्यालयाला ईमेल करा';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone वर कॉल करा';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'संपर्क तपशील अधिकृत सरकारी स्रोतांमधून. कार्यालय AI ने सुचवले आहे — नोंदवण्यापूर्वी तपासा.';
 }

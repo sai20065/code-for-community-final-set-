@@ -176,6 +176,14 @@ class FirestoreService {
     return SubmissionModel.fromMap(doc.id, doc.data()!);
   }
 
+  /// Live view of one ticket — the confirmation screen uses it to show the
+  /// suggested office as soon as the backend writes it.
+  Stream<SubmissionModel?> watchSubmission(String id) {
+    return _submissions.doc(id).snapshots().map(
+          (doc) => doc.exists ? SubmissionModel.fromMap(doc.id, doc.data()!) : null,
+        );
+  }
+
   Future<void> updateSubmissionStatus(String id, SubmissionStatus status) {
     final data = <String, dynamic>{
       'status': SubmissionModel.statusToString(status),

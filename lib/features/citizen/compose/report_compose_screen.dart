@@ -282,7 +282,15 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
 
   Future<void> _pickPhoto(ImageSource source) async {
     try {
-      final picked = await _picker.pickImage(source: source, imageQuality: 80);
+      // Capped at 1600px: full-resolution camera photos are 2-4 MB each,
+      // which would use up the Storage free tier within months; 1600px is
+      // ~0.3-0.5 MB and still plenty for officials and the photo caption.
+      final picked = await _picker.pickImage(
+        source: source,
+        imageQuality: 80,
+        maxWidth: 1600,
+        maxHeight: 1600,
+      );
       if (picked != null && mounted) setState(() => _photo = File(picked.path));
     } catch (_) {
       // Camera unavailable / permission denied — the tiles stay usable.

@@ -134,3 +134,31 @@ export const SECURITY_QUESTION_IDS = [
 export const RECOVERY_MAX_ATTEMPTS = 5;
 /** ...and for how long. */
 export const RECOVERY_LOCK_MINUTES = 15;
+
+/* -------------------------------------------------------------------------
+ * Per-ticket "suggested office" (functions/src/assignment/)
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Gemma runs on the **free** Gemini Developer API (Google AI Studio), not on
+ * Vertex AI, which has no free tier. The key must be created in a Google
+ * Cloud project with *no billing account attached*, so it can never be
+ * charged — the free tier's rate limits are far above pilot volume. Only
+ * the PII-free `publicSummary` is ever sent with it, since free-tier
+ * prompts may be used by Google. Set with:
+ *   firebase functions:secrets:set GEMMA_API_KEY
+ */
+/** Flip to true once `GEMMA_API_KEY` exists. The deploy CLI demands a
+ * value for every *declared* secret, so the secret isn't even defined
+ * until then. While false, every ticket still gets a suggestion from the
+ * deterministic rules. */
+export const GEMMA_ENABLED = false;
+
+export const gemmaApiKey = GEMMA_ENABLED ? defineSecret("GEMMA_API_KEY") : null;
+
+/** Tried in order; the first id the API recognises is used. */
+export const GEMMA_MODELS = ["gemma-4-26b-a4b-it", "gemma-3-27b-it"];
+
+/** Below this, the model's pick is ignored in favour of the rules' top
+ * candidate. */
+export const ROUTER_MIN_CONFIDENCE = 0.5;

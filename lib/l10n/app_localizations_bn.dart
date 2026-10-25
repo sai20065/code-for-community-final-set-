@@ -1532,4 +1532,25 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'লাইভ মানচিত্রে দেখুন';
+
+  @override
+  String get suggestedOfficeTitle => 'সমস্যা জানানোর জন্য প্রস্তাবিত অফিস';
+
+  @override
+  String get findingOffice => 'আপনার সমস্যার জন্য সঠিক অফিস খোঁজা হচ্ছে…';
+
+  @override
+  String get officialWebsite => 'অফিসিয়াল ওয়েবসাইট';
+
+  @override
+  String get emailOffice => 'অফিসে ইমেল করুন';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone নম্বরে কল করুন';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'যোগাযোগের তথ্য সরকারি সূত্র থেকে। অফিসটি AI প্রস্তাব করেছে — জানানোর আগে যাচাই করুন।';
 }

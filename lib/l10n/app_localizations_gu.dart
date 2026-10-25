@@ -1526,4 +1526,25 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'લાઇવ નકશા પર જુઓ';
+
+  @override
+  String get suggestedOfficeTitle => 'સમસ્યા નોંધાવવા માટે સૂચવેલ કચેરી';
+
+  @override
+  String get findingOffice => 'તમારી સમસ્યા માટે યોગ્ય કચેરી શોધી રહ્યા છીએ…';
+
+  @override
+  String get officialWebsite => 'સત્તાવાર વેબસાઇટ';
+
+  @override
+  String get emailOffice => 'કચેરીને ઇમેઇલ કરો';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone પર કૉલ કરો';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'સંપર્ક વિગતો સત્તાવાર સરકારી સ્ત્રોતોમાંથી. કચેરી AI એ સૂચવી છે — નોંધાવતા પહેલાં ચકાસો.';
 }

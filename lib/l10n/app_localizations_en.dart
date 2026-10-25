@@ -1528,4 +1528,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seeOnLiveMap => 'See it on the live map';
+
+  @override
+  String get suggestedOfficeTitle => 'Suggested office to file the problem';
+
+  @override
+  String get findingOffice => 'Finding the right office for your problem…';
+
+  @override
+  String get officialWebsite => 'Official website';
+
+  @override
+  String get emailOffice => 'Email the office';
+
+  @override
+  String callOffice(String phone) {
+    return 'Call $phone';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'Contacts are from official government sources. Office suggested by AI — please check before you file.';
 }
