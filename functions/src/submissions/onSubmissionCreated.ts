@@ -106,7 +106,8 @@ export const onSubmissionCreated = onDocumentCreated(
       // Bhashini first: one call gives the transcript and its English.
       try {
         const audio = await fetchAsBase64(audioUrl);
-        const heard = await bhashini.transcribeAndTranslate(audio.data, language, audio.mimeType);
+        const spoken = (await bhashini.detectLanguage(audio.data, audio.mimeType)) ?? language;
+        const heard = await bhashini.transcribeAndTranslate(audio.data, spoken, audio.mimeType);
         transcript = heard.transcript;
         transcriptionSource = "server-bhashini";
         patch.transcript = transcript;

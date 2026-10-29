@@ -10,9 +10,13 @@ class TranscriptionResult {
   final String transcript;
   final String translatedText;
 
+  /// The language detected in the audio, when the server could tell.
+  final String? language;
+
   const TranscriptionResult({
     required this.transcript,
     required this.translatedText,
+    this.language,
   });
 }
 
@@ -38,12 +42,13 @@ class TranscriptionService {
     final response = await callable.call<Map<String, dynamic>>({
       'audioBase64': base64Encode(bytes),
       'sourceLanguage': sourceLanguage,
-      'mimeType': 'audio/mp4',
+      'mimeType': 'audio/wav',
     });
     final data = response.data;
     return TranscriptionResult(
       transcript: data['transcript'] as String? ?? '',
       translatedText: data['translatedText'] as String? ?? '',
+      language: data['language'] as String?,
     );
   }
 }

@@ -28,13 +28,16 @@ export const transcribeAndTranslate = onCall(
     if (!data?.audioBase64) {
       throw new HttpsError("invalid-argument", "audioBase64 is required.");
     }
-    const lang = data.sourceLanguage || "hi";
     const mimeType = data.mimeType ?? "audio/mp4";
+    let lang = data.sourceLanguage || "hi";
 
     try {
       const bhashini = new BhashiniClient(bhashiniInferenceKey.value());
+      // The transcript must come out in the language the citizen spoke, so
+      // detect it rather than trust the app's language setting.
+      lang = (await bhashini.detectLanguage(data.audioBase64, mimeType)) ?? lang;
       const result = await bhashini.transcribeAndTranslate(data.audioBase64, lang, mimeType);
-      return {...result, provider: "bhashini"};
+      return {...result, language: lang, provider: "bhashini"};
     } catch (err) {
       console.warn("Bhashini voice failed; using Gemini", err);
     }
@@ -47,6 +50,6 @@ export const transcribeAndTranslate = onCall(
       sourceLanguage: lang,
       targetLanguage: "en",
     });
-    return {transcript, translatedText, provider: "gemini"};
+    return {transcript, translatedText, language: lang, provider: "gemini"};
   },
 );

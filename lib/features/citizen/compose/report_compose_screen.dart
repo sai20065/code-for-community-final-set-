@@ -110,6 +110,9 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
   String? _audioPath;
   String? _lastTranscript;
   String? _translatedText;
+
+  /// Language the citizen actually spoke, detected from the audio.
+  String? _spokenLanguage;
   String? _voiceError;
   Duration _elapsed = Duration.zero;
   Duration _voiceNoteLength = Duration.zero;
@@ -210,8 +213,14 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
         return;
       }
       final dir = await getTemporaryDirectory();
-      final path = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
-      await _recorder.start(const RecordConfig(), path: path);
+      final path = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.wav';
+      // 16 kHz mono WAV: what Bhashini's speech models and language
+      // detector read directly (the default AAC/m4a is rejected by the
+      // detector), so the citizen's spoken language is found automatically.
+      await _recorder.start(
+        const RecordConfig(encoder: AudioEncoder.wav, sampleRate: 16000, numChannels: 1),
+        path: path,
+      );
       FocusManager.instance.primaryFocus?.unfocus();
       setState(() {
         _isRecording = true;
@@ -259,6 +268,8 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
         _transcribing = false;
         _lastTranscript = transcript;
         _translatedText = result.translatedText;
+        // The language actually spoken, which may differ from the app's.
+        if (result.language != null) _spokenLanguage = result.language;
         _textController.text =
             existing.isEmpty ? transcript : '$existing\n$transcript';
       });
@@ -329,7 +340,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
     final profile = await _ensureProfile();
     final mediaUrl = _photo == null ? null : await _tryUpload(uid, _photo!, 'jpg');
     final audioUrl =
-        _audioPath == null ? null : await _tryUpload(uid, File(_audioPath!), 'm4a');
+        _audioPath == null ? null : await _tryUpload(uid, File(_audioPath!), 'wav');
 
     final text = _textController.text.trim();
     // A photo keeps the ticket a "photo" ticket so server captioning and the
@@ -358,7 +369,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
       mediaUrl: mediaUrl,
       audioUrl: audioUrl,
       photoPublic: _photoPublic && mediaUrl != null,
-      language: profile?.preferredLanguage ?? 'en',
+      language: _spokenLanguage ?? profile?.preferredLanguage ?? 'en',
       theme: _theme,
       location: SubmissionLocation(
         pincode: profile?.pincodeHome ?? '',
