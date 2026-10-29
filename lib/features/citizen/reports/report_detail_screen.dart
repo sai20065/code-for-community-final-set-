@@ -111,14 +111,6 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
             Text(l10n.ticketLabel, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Text(s.rawText ?? s.transcript ?? l10n.noDescription),
-            if (s.translatedText != null) ...[
-              const SizedBox(height: 16),
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(l10n.seeDetails),
-                children: [Text(s.translatedText!)],
-              ),
-            ],
             const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: () => context.push('/public/report/${s.id}'),
