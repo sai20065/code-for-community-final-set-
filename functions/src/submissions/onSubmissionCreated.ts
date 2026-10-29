@@ -2,10 +2,11 @@ import * as admin from "firebase-admin";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {SuggestInput, suggestOffice} from "../assignment/suggestOffice";
 import {officeDirectory} from "../assignment/officeDirectoryCache";
-import {REGION, gemmaApiKey, reporterHashSalt} from "../config";
+import {REGION, bhashiniInferenceKey, gemmaApiKey, reporterHashSalt} from "../config";
+import {BhashiniClient} from "../lib/bhashiniClient";
 import {GemmaClient} from "../lib/gemmaClient";
 import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
-import {GeminiClient} from "../lib/geminiClient";
+import {GeminiClient, fetchAsBase64} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
 import {resolveTalukForPoint} from "../lib/talukGeo";
 import {resolveAssemblyForPoint} from "../lib/assemblyGeo";
@@ -46,7 +47,9 @@ export const onSubmissionCreated = onDocumentCreated(
   {
     document: "submissions/{submissionId}",
     region: REGION,
-    secrets: gemmaApiKey ? [reporterHashSalt, gemmaApiKey] : [reporterHashSalt],
+    secrets: gemmaApiKey ?
+      [reporterHashSalt, bhashiniInferenceKey, gemmaApiKey] :
+      [reporterHashSalt, bhashiniInferenceKey],
   },
   async (event) => {
     const snapshot = event.data;
@@ -57,6 +60,7 @@ export const onSubmissionCreated = onDocumentCreated(
 
     const gemini = new GeminiClient();
     const translate = new TranslateClient();
+    const bhashini = new BhashiniClient(bhashiniInferenceKey.value());
 
     /** Accumulated field updates for the submission doc. */
     const patch: Record<string, unknown> = {};
@@ -95,30 +99,52 @@ export const onSubmissionCreated = onDocumentCreated(
       (submission.type === "voice" ? submission.mediaUrl : undefined);
     let transcript: string | undefined = submission.rawText;
     let transcriptionSource: string | null = submission.rawText ? "client" : null;
+    const language: string = submission.language ?? "hi";
+    let translatedText: string | undefined = submission.translatedText;
+    let translationSource: string | null = translatedText ? "client" : null;
     if (audioUrl && !submission.rawText) {
+      // Bhashini first: one call gives the transcript and its English.
       try {
-        transcript = await gemini.transcribeAudioUrl(
-          audioUrl,
-          submission.language ?? "hi",
-        );
-        transcriptionSource = "server";
+        const audio = await fetchAsBase64(audioUrl);
+        const heard = await bhashini.transcribeAndTranslate(audio.data, language, audio.mimeType);
+        transcript = heard.transcript;
+        transcriptionSource = "server-bhashini";
         patch.transcript = transcript;
+        if (!translatedText) {
+          translatedText = heard.translatedText;
+          translationSource = "bhashini";
+          patch.translatedText = translatedText;
+        }
       } catch (err) {
-        console.error("Gemini audio transcription failed", err);
+        console.warn("Bhashini audio failed; using Gemini", err);
+        try {
+          transcript = await gemini.transcribeAudioUrl(audioUrl, language);
+          transcriptionSource = "server";
+          patch.transcript = transcript;
+        } catch (err2) {
+          console.error("Gemini audio transcription failed", err2);
+        }
       }
     }
 
-    let translatedText: string | undefined = submission.translatedText;
     if (transcript && !translatedText) {
       try {
-        translatedText = await translate.translate({
-          text: transcript,
-          sourceLanguage: submission.language ?? "hi",
-          targetLanguage: "en",
-        });
+        translatedText = await bhashini.translate(transcript, language, "en");
+        translationSource = "bhashini";
         patch.translatedText = translatedText;
       } catch (err) {
-        console.error("Cloud Translate failed", err);
+        console.warn("Bhashini translation failed; using Cloud Translate", err);
+        try {
+          translatedText = await translate.translate({
+            text: transcript,
+            sourceLanguage: language,
+            targetLanguage: "en",
+          });
+          translationSource = "cloud-translate";
+          patch.translatedText = translatedText;
+        } catch (err2) {
+          console.error("Cloud Translate failed", err2);
+        }
       }
     }
 
@@ -182,6 +208,7 @@ export const onSubmissionCreated = onDocumentCreated(
       processedAt: admin.firestore.FieldValue.serverTimestamp(),
       pipelineVersion: PIPELINE_VERSION,
       transcriptionSource,
+      translationSource,
     };
 
     if (!theme) {

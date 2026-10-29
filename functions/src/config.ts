@@ -162,3 +162,10 @@ export const GEMMA_MODELS = ["gemma-4-26b-a4b-it", "gemma-3-27b-it"];
 /** Below this, the model's pick is ignored in favour of the rules' top
  * candidate. */
 export const ROUTER_MIN_CONFIDENCE = 0.5;
+
+/**
+ * Bhashini inference key (from the Bhashini dashboard) — speech-to-text and
+ * translation for voice and Indian-language reports, free. Gemini and Cloud
+ * Translation stay as the fallback. See lib/bhashiniClient.ts.
+ */
+export const bhashiniInferenceKey = defineSecret("BHASHINI_INFERENCE_KEY");

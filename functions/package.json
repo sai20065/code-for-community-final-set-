@@ -25,6 +25,7 @@
     "leaderboard:now": "ts-node src/scripts/rebuildLeaderboardsNow.ts",
     "verify:photo": "ts-node src/scripts/verifyPhotoPrivacy.ts",
     "verify:comments": "ts-node src/scripts/verifyCommentModeration.ts",
+    "verify:bhashini": "ts-node src/scripts/verifyBhashini.ts",
     "backfill:cluster-geo": "ts-node src/scripts/backfillClusterGeo.ts",
     "backfill:public": "ts-node src/scripts/backfillPublicProjections.ts"
   },
