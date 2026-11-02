@@ -64,7 +64,7 @@ export async function loadAreaData(scope: Scope): Promise<AreaData> {
       total: submissions.length,
       open: count("new") + count("reviewed"),
       inProgress: count("inProgress"),
-      resolved: count("resolved"),
+      resolved: count("resolved") + count("closed"),
       urgent: clusters.filter((c) => (c.priorityScore ?? 0) >= URGENT_THRESHOLD).length,
       newThisWeek: submissions.filter((s) => {
         const t = s.createdAt?.toDate?.() as Date | undefined;

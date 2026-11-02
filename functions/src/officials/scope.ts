@@ -61,6 +61,10 @@ export async function scopeForCaller(uid: string | undefined): Promise<Scope> {
   if (user?.role !== "official") {
     throw new HttpsError("permission-denied", "Only approved officials can do this.");
   }
+  if (user.officialType === "fieldWorker") {
+    // Workers only ever see tickets assigned to them (work/workflow.ts), never an area.
+    throw new HttpsError("permission-denied", "Field workers have no area-wide access.");
+  }
   const type: OfficialType = (OFFICIAL_TYPES as readonly string[]).includes(user.officialType) ?
     user.officialType : "mp";
   const jType: JurisdictionType = user.jurisdiction?.type ?? JURISDICTION_FOR[type];

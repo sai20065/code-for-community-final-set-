@@ -26,7 +26,7 @@ export const getAdminOverview = onCall({region: REGION}, async (request) => {
     count(apps.where("status", "==", "pending")),
     count(subs),
     count(subs.where("createdAt", ">=", weekAgo)),
-    count(subs.where("status", "==", "resolved")),
+    count(subs.where("status", "in", ["resolved", "closed"])),
     ...types.map((t) => count(users.where("officialType", "==", t))),
   ]);
   // Legacy MP accounts predate officialType; count them as MPs.

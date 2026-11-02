@@ -597,5 +597,15 @@
   "openCard": "कार्ड खोलें",
   "postedDaysAgo": "{days, plural, =0{आज} =1{कल} other{{days} दिन पहले}}",
   "openDaysShort": "{days} दिन से खुला",
-  "postShort": "पोस्ट"
+  "postShort": "पोस्ट",
+  "statusClosed": "बंद",
+  "fixQuestion": "क्या यह ठीक हो गया?",
+  "fixYes": "हाँ, ठीक हो गया",
+  "fixNo": "नहीं, अभी भी खराब है",
+  "fixWindowLeft": "जवाब देने के लिए {time} बाकी",
+  "fixAwaiting": "बंद होने की प्रतीक्षा में",
+  "fixThanks": "धन्यवाद। यह रिपोर्ट अब बंद है।",
+  "fixReopened": "क्षमा करें। इसे दोबारा ठीक करने के लिए वापस भेज दिया गया है।",
+  "fixAssignedTo": "{name} को सौंपा गया",
+  "fixClosedAuto": "48 घंटे तक जवाब न मिलने पर बंद किया गया"
 }

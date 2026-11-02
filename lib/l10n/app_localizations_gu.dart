@@ -1789,4 +1789,38 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get postShort => 'પોસ્ટ';
+
+  @override
+  String get statusClosed => 'બંધ';
+
+  @override
+  String get fixQuestion => 'શું આ ઠીક થઈ ગયું?';
+
+  @override
+  String get fixYes => 'હા, ઠીક થઈ ગયું';
+
+  @override
+  String get fixNo => 'ના, હજી ઠીક નથી';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'જવાબ આપવા $time બાકી';
+  }
+
+  @override
+  String get fixAwaiting => 'બંધ થવાની રાહ જુએ છે';
+
+  @override
+  String get fixThanks => 'આભાર. આ રિપોર્ટ હવે બંધ છે.';
+
+  @override
+  String get fixReopened => 'માફ કરશો. ફરીથી ઠીક કરવા માટે પાછું મોકલ્યું છે.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name ને સોંપ્યું';
+  }
+
+  @override
+  String get fixClosedAuto => '48 કલાક જવાબ ન મળતાં બંધ કર્યું';
 }

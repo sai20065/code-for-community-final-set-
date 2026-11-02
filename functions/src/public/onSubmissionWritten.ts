@@ -72,8 +72,10 @@ export const onSubmissionWrittenPublicProjection = onDocumentWritten(
 
     // Cluster status rollup. This trigger is the only place that observes a
     // ticket's status *transition*, so it owns the counters.
-    const beforeStatus = before?.status as string | undefined;
-    const afterStatus = after.status as string | undefined;
+    // "closed" is "fixed and signed off": the rollup keeps counting it as resolved.
+    const roll = (s: unknown) => (s === "closed" ? "resolved" : s as string | undefined);
+    const beforeStatus = roll(before?.status);
+    const afterStatus = roll(after.status);
     if (
       clusterId &&
       before &&

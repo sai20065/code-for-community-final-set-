@@ -178,7 +178,8 @@ class _SuggestionOutcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final resolved = submission.status == SubmissionStatus.resolved;
+    final resolved = submission.status == SubmissionStatus.resolved ||
+        submission.status == SubmissionStatus.closed;
     return Row(
       children: [
         const Icon(Icons.groups_rounded, size: 16, color: AppColors.inkFaint),

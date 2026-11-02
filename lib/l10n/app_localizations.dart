@@ -3206,6 +3206,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Post'**
   String get postShort;
+
+  /// No description provided for @statusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get statusClosed;
+
+  /// No description provided for @fixQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Was this fixed?'**
+  String get fixQuestion;
+
+  /// No description provided for @fixYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, it\'s fixed'**
+  String get fixYes;
+
+  /// No description provided for @fixNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, still broken'**
+  String get fixNo;
+
+  /// No description provided for @fixWindowLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left to answer'**
+  String fixWindowLeft(String time);
+
+  /// No description provided for @fixAwaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to be closed'**
+  String get fixAwaiting;
+
+  /// No description provided for @fixThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. This report is now closed.'**
+  String get fixThanks;
+
+  /// No description provided for @fixReopened.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry about that. We\'ve sent it back to be fixed again.'**
+  String get fixReopened;
+
+  /// No description provided for @fixAssignedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned to {name}'**
+  String fixAssignedTo(String name);
+
+  /// No description provided for @fixClosedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed after 48 hours without an answer'**
+  String get fixClosedAuto;
 }
 
 class _AppLocalizationsDelegate

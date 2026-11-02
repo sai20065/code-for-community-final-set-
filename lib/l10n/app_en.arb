@@ -1140,5 +1140,29 @@
         "type": "int"
       }
     }
-  }
+  },
+  "statusClosed": "Closed",
+  "fixQuestion": "Was this fixed?",
+  "fixYes": "Yes, it's fixed",
+  "fixNo": "No, still broken",
+  "fixWindowLeft": "{time} left to answer",
+  "@fixWindowLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "fixAwaiting": "Waiting to be closed",
+  "fixThanks": "Thank you. This report is now closed.",
+  "fixReopened": "Sorry about that. We've sent it back to be fixed again.",
+  "fixAssignedTo": "Assigned to {name}",
+  "@fixAssignedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fixClosedAuto": "Closed after 48 hours without an answer"
 }

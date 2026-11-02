@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/public_data_providers.dart';
+import '../../../app/providers/work_providers.dart';
+import '../work/assign_sheet.dart';
 import '../../../app/theme.dart';
 import '../../../core/models/official_scope.dart';
 import '../../../shared/widgets/citizen_avatar.dart';
@@ -106,6 +108,11 @@ class _GovShell extends ConsumerWidget {
             ],
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.groups_rounded),
+              tooltip: 'My team',
+              onPressed: () => context.push('/official/team'),
+            ),
             Padding(
               padding: const EdgeInsets.only(right: 4),
               child: InkWell(
@@ -177,6 +184,7 @@ class _Counts {
     for (final t in tickets) {
       switch (t.status) {
         case 'resolved':
+        case 'closed':
           resolved++;
         case 'inProgress':
           inProgress++;
@@ -414,6 +422,30 @@ class _ReportsTab extends ConsumerStatefulWidget {
 class _ReportsTabState extends ConsumerState<_ReportsTab> {
   String _query = '';
   String? _statusFilter;
+  final Set<String> _selected = {};
+
+  void _toast(String text) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+
+  Future<void> _assign(List<String> ids) async {
+    if (await showAssignSheet(context, ticketIds: ids) && mounted) {
+      setState(_selected.clear);
+    }
+  }
+
+  /// Closing needs 48 hours since "fixed" with no citizen answer. The server
+  /// decides, so tickets that are not ready are simply skipped.
+  Future<void> _close(List<String> ids) async {
+    try {
+      final n = await ref.read(workServiceProvider).close(ids);
+      _toast(n > 0
+          ? 'Closed $n ${n == 1 ? 'ticket' : 'tickets'}.'
+          : 'Nothing to close yet. A fixed report can be closed 48 hours after it was fixed, if the citizen has not answered.');
+      if (mounted) setState(_selected.clear);
+    } catch (_) {
+      _toast('Could not close. Try again.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -451,6 +483,7 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
                 ('reviewed', 'Reviewed'),
                 ('inProgress', 'In progress'),
                 ('resolved', 'Resolved'),
+                ('closed', 'Closed'),
               ])
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -464,6 +497,30 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
             ],
           ),
         ),
+        if (_selected.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Row(children: [
+              Text('${_selected.length} selected',
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
+              const Spacer(),
+              TextButton.icon(
+                icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
+                label: const Text('Assign'),
+                onPressed: () => _assign(_selected.toList()),
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.lock_outline_rounded, size: 18),
+                label: const Text('Close'),
+                onPressed: () => _close(_selected.toList()),
+              ),
+              IconButton(
+                icon: const Icon(Icons.clear_rounded),
+                tooltip: 'Clear',
+                onPressed: () => setState(_selected.clear),
+              ),
+            ]),
+          ),
         Expanded(
           child: ticketsAsync.when(
             data: (all) {
@@ -486,9 +543,21 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, i) => _GovTicketCard(
                   ticket: filtered[i],
-                  onStatusChanged: (status) => ref
-                      .read(firestoreServiceProvider)
-                      .updateSubmissionStatus(filtered[i].id, status),
+                  selected: _selected.contains(filtered[i].id),
+                  onSelect: (on) => setState(() => on
+                      ? _selected.add(filtered[i].id)
+                      : _selected.remove(filtered[i].id)),
+                  onAssign: () => _assign([filtered[i].id]),
+                  onClose: () => _close([filtered[i].id]),
+                  onStatusChanged: (status) async {
+                    try {
+                      await ref
+                          .read(firestoreServiceProvider)
+                          .updateSubmissionStatus(filtered[i].id, status);
+                    } catch (_) {
+                      _toast('Could not change this report.');
+                    }
+                  },
                 ),
               );
             },
@@ -506,10 +575,21 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
 /// a status control. No identity, by construction — `publicTickets` has no
 /// field for one.
 class _GovTicketCard extends StatelessWidget {
-  const _GovTicketCard({required this.ticket, required this.onStatusChanged});
+  const _GovTicketCard({
+    required this.ticket,
+    required this.onStatusChanged,
+    required this.selected,
+    required this.onSelect,
+    required this.onAssign,
+    required this.onClose,
+  });
 
   final PublicTicketModel ticket;
   final ValueChanged<SubmissionStatus> onStatusChanged;
+  final bool selected;
+  final ValueChanged<bool> onSelect;
+  final VoidCallback onAssign;
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -527,6 +607,14 @@ class _GovTicketCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              SizedBox(
+                width: 28,
+                child: Checkbox(
+                  value: selected,
+                  visualDensity: VisualDensity.compact,
+                  onChanged: (v) => onSelect(v == true),
+                ),
+              ),
               Container(
                 width: 32,
                 height: 32,
@@ -582,6 +670,13 @@ class _GovTicketCard extends StatelessWidget {
                       fontSize: 11.5, color: AppColors.inkFaint),
                 ),
               ),
+              if (ticket.status == 'closed')
+                const Text('Closed',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.tealDeep))
+              else
               DropdownButtonHideUnderline(
                 child: DropdownButton<SubmissionStatus>(
                   isDense: true,
@@ -608,6 +703,24 @@ class _GovTicketCard extends StatelessWidget {
               ),
             ],
           ),
+          if (ticket.status != 'closed') ...[
+            const SizedBox(height: 6),
+            Row(children: [
+              TextButton.icon(
+                style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                icon: const Icon(Icons.person_add_alt_1_rounded, size: 16),
+                label: const Text('Assign', style: TextStyle(fontSize: 12)),
+                onPressed: onAssign,
+              ),
+              if (ticket.status == 'resolved')
+                TextButton.icon(
+                  style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                  icon: const Icon(Icons.lock_outline_rounded, size: 16),
+                  label: const Text('Close ticket', style: TextStyle(fontSize: 12)),
+                  onPressed: onClose,
+                ),
+            ]),
+          ],
         ],
       ),
     );

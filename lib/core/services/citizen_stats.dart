@@ -242,7 +242,9 @@ List<CitizenBadge> computeBadges(
   final distinctThemes =
       submissions.map((s) => s.theme).whereType<String>().toSet().length;
   final resolved = submissions
-      .where((s) => s.status == SubmissionStatus.resolved)
+      .where((s) =>
+          s.status == SubmissionStatus.resolved ||
+          s.status == SubmissionStatus.closed)
       .length;
   final photos =
       submissions.where((s) => s.type == SubmissionType.photo).length;

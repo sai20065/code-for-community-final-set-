@@ -15,6 +15,7 @@ Map<SubmissionStatus, String> _statusLabels(AppLocalizations l10n) => {
       SubmissionStatus.reviewed: l10n.statusAcknowledged,
       SubmissionStatus.inProgress: l10n.statusInProgress,
       SubmissionStatus.resolved: l10n.statusResolved,
+      SubmissionStatus.closed: l10n.statusClosed,
     };
 
 /// Problem-reports queue: a standard triage list for citizen-reported civic
@@ -174,9 +175,14 @@ class _TicketListState extends ConsumerState<_TicketList> {
                             lng: ticket.location.lng,
                             compact: true,
                           ),
+                          if (ticket.status == SubmissionStatus.closed)
+                            Text(statusLabels[SubmissionStatus.closed]!)
+                          else
                           DropdownButton<SubmissionStatus>(
                             value: ticket.status,
+                            // Closing is a separate action with a 48-hour rule.
                             items: SubmissionStatus.values
+                                .where((s) => s != SubmissionStatus.closed)
                                 .map((s) => DropdownMenuItem(
                                       value: s,
                                       child: Text(statusLabels[s] ?? SubmissionModel.statusToString(s)),

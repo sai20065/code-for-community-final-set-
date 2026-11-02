@@ -45,6 +45,7 @@ String statusLabel(AppLocalizations l10n, String status) => switch (status) {
       'reviewed' => l10n.statusAcknowledged,
       'inProgress' => l10n.statusInProgress,
       'resolved' => l10n.statusResolved,
+      'closed' => l10n.statusClosed,
       _ => l10n.statusFiled,
     };
 

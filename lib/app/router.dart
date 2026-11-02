@@ -13,6 +13,8 @@ import '../features/citizen/reports/my_reports_screen.dart';
 import '../features/citizen/reports/report_detail_screen.dart';
 import '../features/official/report/generate_report_screen.dart';
 import '../features/official/tickets/ticket_management_screen.dart';
+import '../features/official/work/team_screen.dart';
+import '../features/official/work/worker_tasks_screen.dart';
 import '../features/official/transcript/agent_transcript_screen.dart';
 import '../features/onboarding/auth/citizen_signin_screen.dart';
 import '../features/onboarding/auth/citizen_signup_screen.dart';
@@ -66,6 +68,8 @@ const _officialOnlyPrefixes = <String>[
   '/official/transcript',
   '/gov/dashboard',
   '/gov/profile',
+  '/official/team',
+  '/worker',
 ];
 
 /// The app's router.
@@ -103,6 +107,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         // Admins have their own console; anyone else goes public.
         if (profile?.role == UserRole.admin) return '/admin';
         if (profile?.role != UserRole.official) return '/public/dashboard';
+        // Field workers see only the reports assigned to them; everyone else
+        // in the official area has no business on their screen.
+        final isWorker = profile?.officialType == 'fieldWorker';
+        if (isWorker && !path.startsWith('/worker')) return '/worker/tasks';
+        if (!isWorker && path.startsWith('/worker')) return '/gov/dashboard';
       }
 
       return null;
@@ -141,6 +150,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/gov/dashboard',
         builder: (context, state) => const GovDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/official/team',
+        builder: (context, state) => const TeamScreen(),
+      ),
+      GoRoute(
+        path: '/worker/tasks',
+        builder: (context, state) => const WorkerTasksScreen(),
       ),
       GoRoute(
         path: '/gov/profile',

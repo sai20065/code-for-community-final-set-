@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum SubmissionType { voice, text, photo, video }
 
-enum SubmissionStatus { newSubmission, reviewed, inProgress, resolved }
+/// `closed` = fixed and signed off: the citizen confirmed it, or an admin or
+/// worker closed it after 48 hours without an answer.
+enum SubmissionStatus { newSubmission, reviewed, inProgress, resolved, closed }
 
 /// Whether a ticket reports a problem (pothole, outage, etc.) or is
 /// feedback on an existing/planned development project — the citizen picks
@@ -153,6 +155,14 @@ class SubmissionModel {
   /// rejected, error or withdrawn. Read-only on the client.
   final String? publicPhotoStatus;
 
+  /// Workflow state, all written by the server (functions/src/work/).
+  /// [fixedAt] starts the citizen's 48-hour window; [citizenResponseKind] is
+  /// `confirmed` or `not_fixed` once they answer.
+  final DateTime? fixedAt;
+  final String? citizenResponseKind;
+  final String? assignedToName;
+  final String? closeReason;
+
   const SubmissionModel({
     required this.id,
     required this.userId,
@@ -179,6 +189,10 @@ class SubmissionModel {
     this.suggestedOffice,
     this.photoPublic = false,
     this.publicPhotoStatus,
+    this.fixedAt,
+    this.citizenResponseKind,
+    this.assignedToName,
+    this.closeReason,
   });
 
   static SubmissionStatus statusFromString(String value) {
@@ -189,6 +203,8 @@ class SubmissionModel {
         return SubmissionStatus.inProgress;
       case 'resolved':
         return SubmissionStatus.resolved;
+      case 'closed':
+        return SubmissionStatus.closed;
       case 'new':
       default:
         return SubmissionStatus.newSubmission;
@@ -205,6 +221,8 @@ class SubmissionModel {
         return 'inProgress';
       case SubmissionStatus.resolved:
         return 'resolved';
+      case SubmissionStatus.closed:
+        return 'closed';
     }
   }
 
@@ -248,6 +266,10 @@ class SubmissionModel {
       ),
       photoPublic: map['photoPublic'] == true,
       publicPhotoStatus: (map['publicPhoto'] as Map?)?['status'] as String?,
+      fixedAt: (map['fixedAt'] as Timestamp?)?.toDate(),
+      citizenResponseKind: (map['citizenResponse'] as Map?)?['kind'] as String?,
+      assignedToName: (map['assignment'] as Map?)?['toName'] as String?,
+      closeReason: map['closeReason'] as String?,
     );
   }
 

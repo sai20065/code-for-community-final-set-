@@ -218,7 +218,7 @@ class _ProgressTrack extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     const order = ['new', 'reviewed', 'inProgress', 'resolved'];
     final labels = [l10n.statusFiled, l10n.statusAcknowledged, l10n.statusInProgress, l10n.statusResolved];
-    final at = order.indexOf(status).clamp(0, 3);
+    final at = (status == 'closed' ? 3 : order.indexOf(status)).clamp(0, 3);
     final color = statusColor(status);
     return Column(children: [
       Row(children: [
@@ -230,7 +230,7 @@ class _ProgressTrack extends StatelessWidget {
               color: i <= at ? color : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
-            child: i < at || (i == at && status == 'resolved')
+            child: i < at || (i == at && (status == 'resolved' || status == 'closed'))
                 ? const Icon(Icons.check_rounded, size: 13, color: Colors.white)
                 : null,
           ),

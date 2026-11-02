@@ -1793,4 +1793,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postShort => 'Post';
+
+  @override
+  String get statusClosed => 'Closed';
+
+  @override
+  String get fixQuestion => 'Was this fixed?';
+
+  @override
+  String get fixYes => 'Yes, it\'s fixed';
+
+  @override
+  String get fixNo => 'No, still broken';
+
+  @override
+  String fixWindowLeft(String time) {
+    return '$time left to answer';
+  }
+
+  @override
+  String get fixAwaiting => 'Waiting to be closed';
+
+  @override
+  String get fixThanks => 'Thank you. This report is now closed.';
+
+  @override
+  String get fixReopened =>
+      'Sorry about that. We\'ve sent it back to be fixed again.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
+  String get fixClosedAuto => 'Closed after 48 hours without an answer';
 }

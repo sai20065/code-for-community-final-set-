@@ -1814,4 +1814,39 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get postShort => 'പോസ്റ്റ്';
+
+  @override
+  String get statusClosed => 'അടച്ചു';
+
+  @override
+  String get fixQuestion => 'ഇത് പരിഹരിച്ചോ?';
+
+  @override
+  String get fixYes => 'അതെ, ശരിയായി';
+
+  @override
+  String get fixNo => 'ഇല്ല, ഇപ്പോഴും ശരിയായില്ല';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'മറുപടി നൽകാൻ $time ബാക്കി';
+  }
+
+  @override
+  String get fixAwaiting => 'അടയ്ക്കാൻ കാത്തിരിക്കുന്നു';
+
+  @override
+  String get fixThanks => 'നന്ദി. ഈ റിപ്പോർട്ട് ഇപ്പോൾ അടച്ചു.';
+
+  @override
+  String get fixReopened =>
+      'ക്ഷമിക്കണം. വീണ്ടും പരിഹരിക്കാൻ തിരിച്ചയച്ചിട്ടുണ്ട്.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name ന് ഏൽപ്പിച്ചിരിക്കുന്നു';
+  }
+
+  @override
+  String get fixClosedAuto => '48 മണിക്കൂർ മറുപടി ലഭിക്കാത്തതിനാൽ അടച്ചു';
 }

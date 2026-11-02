@@ -597,5 +597,15 @@
   "openCard": "కార్డ్ తెరవండి",
   "postedDaysAgo": "{days, plural, =0{ఈరోజు} =1{నిన్న} other{{days} రోజుల క్రితం}}",
   "openDaysShort": "{days} రో. తెరిచి",
-  "postShort": "పోస్ట్"
+  "postShort": "పోస్ట్",
+  "statusClosed": "ముగిసింది",
+  "fixQuestion": "ఇది సరిచేయబడిందా?",
+  "fixYes": "అవును, సరైంది",
+  "fixNo": "లేదు, ఇంకా సరికాలేదు",
+  "fixWindowLeft": "సమాధానం ఇవ్వడానికి {time} మిగిలి ఉంది",
+  "fixAwaiting": "ముగింపు కోసం వేచి ఉంది",
+  "fixThanks": "ధన్యవాదాలు. ఈ నివేదిక ఇప్పుడు ముగిసింది.",
+  "fixReopened": "క్షమించండి. మళ్లీ సరిచేయడానికి తిరిగి పంపాము.",
+  "fixAssignedTo": "{name} కు కేటాయించబడింది",
+  "fixClosedAuto": "48 గంటలు సమాధానం రాకపోవడంతో ముగించబడింది"
 }

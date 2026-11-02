@@ -79,8 +79,10 @@ export function buildLeaderboard(
   const rows: LeaderboardRow[] = [];
   for (const [repId, list] of groups) {
     const rep = reps.get(repId)!;
-    const fixedList = list.filter((t) => t.status === "resolved");
-    const openList = list.filter((t) => t.status !== "resolved");
+    // "closed" is a fixed report that was signed off (by the citizen or after 48 h).
+    const isFixed = (t: LeaderboardTicket) => t.status === "resolved" || t.status === "closed";
+    const fixedList = list.filter(isFixed);
+    const openList = list.filter((t) => !isFixed(t));
     rows.push({
       repId,
       name: rep.name,

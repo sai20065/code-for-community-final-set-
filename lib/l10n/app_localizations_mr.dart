@@ -1793,4 +1793,39 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get postShort => 'पोस्ट';
+
+  @override
+  String get statusClosed => 'बंद';
+
+  @override
+  String get fixQuestion => 'हे दुरुस्त झाले का?';
+
+  @override
+  String get fixYes => 'होय, दुरुस्त झाले';
+
+  @override
+  String get fixNo => 'नाही, अजून बिघडलेलेच आहे';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'उत्तर देण्यासाठी $time बाकी';
+  }
+
+  @override
+  String get fixAwaiting => 'बंद होण्याच्या प्रतीक्षेत';
+
+  @override
+  String get fixThanks => 'धन्यवाद. हा अहवाल आता बंद आहे.';
+
+  @override
+  String get fixReopened =>
+      'क्षमस्व. पुन्हा दुरुस्त करण्यासाठी परत पाठवले आहे.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name यांना सोपवले';
+  }
+
+  @override
+  String get fixClosedAuto => '48 तास उत्तर न मिळाल्याने बंद केले';
 }

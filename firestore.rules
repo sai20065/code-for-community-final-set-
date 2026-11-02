@@ -38,7 +38,10 @@ service cloud.firestore {
     // their constituencyId.
     function isOfficialForArea(area) {
       let me = userDoc(request.auth.uid);
-      return isSignedIn() && me.role == 'official' && (
+      // Field workers carry their assigner's area but get no area-wide
+      // access: they only see tickets assigned to them, through a function.
+      return isSignedIn() && me.role == 'official' &&
+        me.get('officialType', '') != 'fieldWorker' && (
         (me.get('jurisdiction', null) != null &&
           area.get(scopeFieldFor(me.jurisdiction.type), null) == me.jurisdiction.id) ||
         (me.get('jurisdiction', null) == null &&
@@ -63,7 +66,8 @@ service cloud.firestore {
         request.resource.data.role == resource.data.role &&
         (resource.data.role != 'official' ||
           !request.resource.data.diff(resource.data).affectedKeys()
-            .hasAny(['jurisdiction', 'officialType', 'constituencyId', 'approvedAt']));
+            .hasAny(['jurisdiction', 'officialType', 'constituencyId', 'approvedAt',
+              'parentUid', 'disabled']));
       allow delete: if false;
     }
 
@@ -111,9 +115,13 @@ service cloud.firestore {
          isOfficialForArea(resource.data.location) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId));
+      // Status, assignment and closing are written ONLY by the functions in
+      // functions/src/work/ (which check scope, record history and enforce the
+      // 48-hour rule), so no client can set them directly. The reporter may
+      // still flip their photo-consent switch.
       allow update: if isSignedIn() &&
-        (resource.data.userId == request.auth.uid ||
-         isOfficialForArea(resource.data.location) ||
+        ((resource.data.userId == request.auth.uid &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photoPublic'])) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId &&
           request.resource.data.diff(resource.data).affectedKeys()

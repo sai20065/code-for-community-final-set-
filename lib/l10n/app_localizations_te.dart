@@ -1799,4 +1799,38 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get postShort => 'పోస్ట్';
+
+  @override
+  String get statusClosed => 'ముగిసింది';
+
+  @override
+  String get fixQuestion => 'ఇది సరిచేయబడిందా?';
+
+  @override
+  String get fixYes => 'అవును, సరైంది';
+
+  @override
+  String get fixNo => 'లేదు, ఇంకా సరికాలేదు';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'సమాధానం ఇవ్వడానికి $time మిగిలి ఉంది';
+  }
+
+  @override
+  String get fixAwaiting => 'ముగింపు కోసం వేచి ఉంది';
+
+  @override
+  String get fixThanks => 'ధన్యవాదాలు. ఈ నివేదిక ఇప్పుడు ముగిసింది.';
+
+  @override
+  String get fixReopened => 'క్షమించండి. మళ్లీ సరిచేయడానికి తిరిగి పంపాము.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name కు కేటాయించబడింది';
+  }
+
+  @override
+  String get fixClosedAuto => '48 గంటలు సమాధానం రాకపోవడంతో ముగించబడింది';
 }

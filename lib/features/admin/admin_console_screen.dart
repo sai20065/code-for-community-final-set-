@@ -13,6 +13,7 @@ import '../../core/services/auth_service.dart';
 import '../../core/services/official_service.dart';
 import '../../shared/widgets/animated_stat_tile.dart';
 import '../official/briefing/ai_briefing_card.dart';
+import 'admin_issues_tab.dart';
 
 final _overviewProvider =
     FutureProvider.autoDispose<AdminOverview>((ref) => OfficialService().adminOverview());
@@ -47,7 +48,7 @@ class AdminConsoleScreen extends ConsumerWidget {
         }
         final pending = ref.watch(_applicationsProvider('pending')).valueOrNull?.length ?? 0;
         return DefaultTabController(
-          length: 2,
+          length: 3,
           child: Scaffold(
             backgroundColor: AppColors.paper,
             appBar: AppBar(
@@ -69,6 +70,7 @@ class AdminConsoleScreen extends ConsumerWidget {
                 unselectedLabelColor: Colors.white70,
                 tabs: [
                   const Tab(icon: Icon(Icons.insights_rounded), text: 'Overview'),
+                  const Tab(icon: Icon(Icons.hub_rounded), text: 'Issues'),
                   Tab(
                     icon: Badge(
                       isLabelVisible: pending > 0,
@@ -80,7 +82,8 @@ class AdminConsoleScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            body: const TabBarView(children: [_OverviewTab(), _ApprovalsTab()]),
+            body: const TabBarView(
+                children: [_OverviewTab(), AdminIssuesTab(), _ApprovalsTab()]),
           ),
         );
       },

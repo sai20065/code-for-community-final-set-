@@ -1805,4 +1805,39 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get postShort => 'ಪೋಸ್ಟ್';
+
+  @override
+  String get statusClosed => 'ಮುಕ್ತಾಯ';
+
+  @override
+  String get fixQuestion => 'ಇದು ಸರಿಪಡಿಸಲಾಗಿದೆಯೇ?';
+
+  @override
+  String get fixYes => 'ಹೌದು, ಸರಿಯಾಯಿತು';
+
+  @override
+  String get fixNo => 'ಇಲ್ಲ, ಇನ್ನೂ ಸರಿಯಾಗಿಲ್ಲ';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'ಉತ್ತರಿಸಲು $time ಬಾಕಿ';
+  }
+
+  @override
+  String get fixAwaiting => 'ಮುಕ್ತಾಯಕ್ಕಾಗಿ ಕಾಯುತ್ತಿದೆ';
+
+  @override
+  String get fixThanks => 'ಧನ್ಯವಾದ. ಈ ವರದಿ ಈಗ ಮುಕ್ತಾಯವಾಗಿದೆ.';
+
+  @override
+  String get fixReopened =>
+      'ಕ್ಷಮಿಸಿ. ಇದನ್ನು ಮತ್ತೆ ಸರಿಪಡಿಸಲು ಹಿಂದಕ್ಕೆ ಕಳುಹಿಸಲಾಗಿದೆ.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name ಅವರಿಗೆ ನಿಯೋಜಿಸಲಾಗಿದೆ';
+  }
+
+  @override
+  String get fixClosedAuto => '48 ಗಂಟೆ ಉತ್ತರ ಬಾರದ ಕಾರಣ ಮುಕ್ತಾಯಗೊಳಿಸಲಾಗಿದೆ';
 }

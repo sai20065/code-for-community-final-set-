@@ -104,7 +104,7 @@ class _ProfileBody extends ConsumerWidget {
     final level = computeLevel(submissions.length);
     final completeness = profileCompleteness(profile);
     final resolved =
-        submissions.where((s) => s.status == SubmissionStatus.resolved).length;
+        submissions.where((s) => s.status == SubmissionStatus.resolved || s.status == SubmissionStatus.closed).length;
     final supporters = submissions.fold<int>(0, (a, s) => a + s.supporterCount);
 
     return CustomScrollView(
@@ -726,6 +726,7 @@ class _RecentReportsCard extends StatelessWidget {
         SubmissionStatus.reviewed => l10n.statusAcknowledged,
         SubmissionStatus.inProgress => l10n.statusInProgress,
         SubmissionStatus.resolved => l10n.statusResolved,
+        SubmissionStatus.closed => l10n.statusClosed,
       };
 
   @override
@@ -772,7 +773,7 @@ class _RecentReportsCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: s.status == SubmissionStatus.resolved
+                    color: (s.status == SubmissionStatus.resolved || s.status == SubmissionStatus.closed)
                         ? AppColors.tealMist
                         : AppColors.indigoMist,
                     borderRadius: BorderRadius.circular(10),
@@ -781,7 +782,7 @@ class _RecentReportsCard extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: s.status == SubmissionStatus.resolved
+                          color: (s.status == SubmissionStatus.resolved || s.status == SubmissionStatus.closed)
                               ? AppColors.tealDeep
                               : AppColors.indigo)),
                 ),

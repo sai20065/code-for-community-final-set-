@@ -39,4 +39,17 @@ export {
   onFeedCommentDeleted,
   reportFeedComment,
 } from "./public/feedComments";
+// Assigning tickets to field workers, status changes, the citizen's 48-hour
+// "was it fixed?" window, manual close, and the admin issue dashboard.
+export {
+  assignTicket,
+  citizenRespondFix,
+  closeTicket,
+  createWorker,
+  getWorkerTasks,
+  listMyWorkers,
+  setWorkerActive,
+  updateTicketStatus,
+} from "./work/workflow";
+export {getAdminIssueGroups} from "./officials/adminIssues";
 export {transcribeAndTranslate} from "./submissions/transcribeAndTranslate";

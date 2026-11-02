@@ -124,7 +124,7 @@ class PublicTicketModel {
 
   bool get isApproximateLocation => geoPrecision != 'none';
 
-  bool get isOpen => status != 'resolved';
+  bool get isOpen => status != 'resolved' && status != 'closed';
 
   bool get hasPhoto => photoUrl != null && photoUrl!.isNotEmpty;
 
@@ -234,7 +234,7 @@ class PublicClusterModel {
     );
   }
 
-  int get resolvedCount => statusCounts['resolved'] ?? 0;
+  int get resolvedCount => statusCounts['resolved'] ?? 0; // closed is rolled up into resolved
 
   /// The last 12 weeks of activity in chronological order, zero-filled so
   /// the sparkline shows quiet weeks as gaps rather than closing over them

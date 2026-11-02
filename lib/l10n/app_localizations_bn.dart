@@ -1797,4 +1797,38 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get postShort => 'পোস্ট';
+
+  @override
+  String get statusClosed => 'বন্ধ';
+
+  @override
+  String get fixQuestion => 'এটা কি ঠিক হয়েছে?';
+
+  @override
+  String get fixYes => 'হ্যাঁ, ঠিক হয়েছে';
+
+  @override
+  String get fixNo => 'না, এখনও ঠিক হয়নি';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'উত্তর দিতে $time বাকি';
+  }
+
+  @override
+  String get fixAwaiting => 'বন্ধ হওয়ার অপেক্ষায়';
+
+  @override
+  String get fixThanks => 'ধন্যবাদ। এই রিপোর্ট এখন বন্ধ।';
+
+  @override
+  String get fixReopened => 'দুঃখিত। আবার ঠিক করার জন্য ফেরত পাঠানো হয়েছে।';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name-কে দেওয়া হয়েছে';
+  }
+
+  @override
+  String get fixClosedAuto => '৪৮ ঘণ্টায় উত্তর না পাওয়ায় বন্ধ করা হয়েছে';
 }

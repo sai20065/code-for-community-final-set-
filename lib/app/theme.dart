@@ -86,6 +86,7 @@ Color categoryColor(String themeId) {
 Color statusColor(String status) {
   switch (status) {
     case 'resolved':
+    case 'closed':
       return AppColors.teal;
     case 'inProgress':
       return AppColors.saffron;

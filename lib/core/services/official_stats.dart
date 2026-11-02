@@ -50,6 +50,7 @@ OfficialPerformance computePerformance(
     final created = _day(t.createdDate);
     switch (t.status) {
       case 'resolved':
+      case 'closed':
         resolved++;
         final done = _day(t.resolvedDate);
         if (done != null) {

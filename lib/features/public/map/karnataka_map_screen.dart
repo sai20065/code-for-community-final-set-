@@ -51,6 +51,7 @@ const _statusLabels = {
   'reviewed': 'Acknowledged',
   'inProgress': 'In progress',
   'resolved': 'Resolved',
+  'closed': 'Closed',
 };
 
 const _rangeLabels = {7: '7 days', 30: '30 days', 90: '90 days', 0: 'All time'};

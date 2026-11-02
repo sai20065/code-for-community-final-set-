@@ -597,5 +597,15 @@
   "openCard": "ಕಾರ್ಡ್ ತೆರೆಯಿರಿ",
   "postedDaysAgo": "{days, plural, =0{ಇಂದು} =1{ನಿನ್ನೆ} other{{days} ದಿನಗಳ ಹಿಂದೆ}}",
   "openDaysShort": "{days} ದಿನ ತೆರೆದಿದೆ",
-  "postShort": "ಪೋಸ್ಟ್"
+  "postShort": "ಪೋಸ್ಟ್",
+  "statusClosed": "ಮುಕ್ತಾಯ",
+  "fixQuestion": "ಇದು ಸರಿಪಡಿಸಲಾಗಿದೆಯೇ?",
+  "fixYes": "ಹೌದು, ಸರಿಯಾಯಿತು",
+  "fixNo": "ಇಲ್ಲ, ಇನ್ನೂ ಸರಿಯಾಗಿಲ್ಲ",
+  "fixWindowLeft": "ಉತ್ತರಿಸಲು {time} ಬಾಕಿ",
+  "fixAwaiting": "ಮುಕ್ತಾಯಕ್ಕಾಗಿ ಕಾಯುತ್ತಿದೆ",
+  "fixThanks": "ಧನ್ಯವಾದ. ಈ ವರದಿ ಈಗ ಮುಕ್ತಾಯವಾಗಿದೆ.",
+  "fixReopened": "ಕ್ಷಮಿಸಿ. ಇದನ್ನು ಮತ್ತೆ ಸರಿಪಡಿಸಲು ಹಿಂದಕ್ಕೆ ಕಳುಹಿಸಲಾಗಿದೆ.",
+  "fixAssignedTo": "{name} ಅವರಿಗೆ ನಿಯೋಜಿಸಲಾಗಿದೆ",
+  "fixClosedAuto": "48 ಗಂಟೆ ಉತ್ತರ ಬಾರದ ಕಾರಣ ಮುಕ್ತಾಯಗೊಳಿಸಲಾಗಿದೆ"
 }

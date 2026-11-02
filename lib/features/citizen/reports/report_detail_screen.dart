@@ -8,6 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/google_maps_directions_button.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/suggested_office_card.dart';
+import 'fix_confirmation_card.dart';
 
 /// Section 4, screen 10: status stepper large at top, original submission
 /// content, transcript/translation collapsed under "See details".
@@ -93,6 +94,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           padding: const EdgeInsets.all(20),
           children: [
             StatusStepper(status: s.status),
+            FixConfirmationCard(submission: s, onChanged: _load),
             if (s.category == SubmissionCategory.problem && s.mediaUrl != null) ...[
               const SizedBox(height: 12),
               _PhotoConsent(submissionId: s.id, initial: s),

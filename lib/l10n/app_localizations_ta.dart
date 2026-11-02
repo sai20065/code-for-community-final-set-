@@ -1828,4 +1828,39 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get postShort => 'பதிவிடு';
+
+  @override
+  String get statusClosed => 'மூடப்பட்டது';
+
+  @override
+  String get fixQuestion => 'இது சரிசெய்யப்பட்டதா?';
+
+  @override
+  String get fixYes => 'ஆம், சரியாகிவிட்டது';
+
+  @override
+  String get fixNo => 'இல்லை, இன்னும் சரியாகவில்லை';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'பதிலளிக்க $time உள்ளது';
+  }
+
+  @override
+  String get fixAwaiting => 'மூடப்பட காத்திருக்கிறது';
+
+  @override
+  String get fixThanks => 'நன்றி. இந்த புகார் இப்போது மூடப்பட்டது.';
+
+  @override
+  String get fixReopened =>
+      'மன்னிக்கவும். மீண்டும் சரிசெய்ய திருப்பி அனுப்பப்பட்டுள்ளது.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name இடம் ஒதுக்கப்பட்டது';
+  }
+
+  @override
+  String get fixClosedAuto => '48 மணி நேரம் பதில் வராததால் மூடப்பட்டது';
 }

@@ -8,6 +8,7 @@ import '../models/submission_model.dart';
 import '../models/taluk_model.dart';
 import '../models/user_model.dart';
 import '../models/ward_model.dart';
+import 'work_service.dart';
 
 class FirestoreService {
   FirestoreService({FirebaseFirestore? firestore})
@@ -184,15 +185,15 @@ class FirestoreService {
         );
   }
 
-  Future<void> updateSubmissionStatus(String id, SubmissionStatus status) {
-    final data = <String, dynamic>{
-      'status': SubmissionModel.statusToString(status),
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
-    if (status == SubmissionStatus.resolved) {
-      data['resolvedAt'] = FieldValue.serverTimestamp();
+  /// Status changes go through a Cloud Function, which checks the caller's
+  /// area, records who changed it and stamps the fixed time on the server.
+  /// Closing is separate (`WorkService.close`): it needs the 48-hour wait.
+  Future<void> updateSubmissionStatus(String id, SubmissionStatus status) async {
+    final changed = await WorkService()
+        .updateStatus([id], SubmissionModel.statusToString(status));
+    if (changed == 0) {
+      throw StateError('This report could not be changed.');
     }
-    return _submissions.doc(id).update(data);
   }
 
   /// Every ticket in an official's area — `location.<field> == id`, where
