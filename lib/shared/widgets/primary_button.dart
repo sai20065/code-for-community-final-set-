@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../app/theme.dart';
 
 /// Icon-first, text-second primary CTA (Section 3.3). Icon is always shown
 /// before the label since low-literacy users recognize the icon first.
@@ -26,7 +27,7 @@ class PrimaryButton extends StatelessWidget {
               width: 24,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: Colors.white,
+                color: AppColors.ink,
               ),
             )
           : Row(

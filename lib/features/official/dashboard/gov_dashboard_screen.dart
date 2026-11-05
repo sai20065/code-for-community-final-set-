@@ -1,3 +1,5 @@
+import '../../../shared/widgets/ticket_photo_viewer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -91,11 +93,15 @@ class _GovShell extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: AppColors.paper,
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () =>
-                context.canPop() ? context.pop() : context.go('/public/dashboard'),
-          ),
+          // This is the official's home: no back arrow at the root (it used to
+          // open the public dashboard, which looked like a citizen screen).
+          automaticallyImplyLeading: false,
+          leading: context.canPop()
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  onPressed: () => context.pop(),
+                )
+              : null,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -117,7 +123,7 @@ class _GovShell extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: InkWell(
                 customBorder: const CircleBorder(),
-                onTap: () => context.go('/gov/profile'),
+                onTap: () => context.push('/gov/profile'),
                 child: Tooltip(
                   message: 'My profile',
                   child: CitizenAvatar(
@@ -304,7 +310,7 @@ class _OverviewTab extends ConsumerWidget {
               tint: AppColors.indigo,
               title: 'Bulk status updates',
               subtitle: 'Mark several reports in progress or resolved at once',
-              onTap: () => context.go('/official/tickets'),
+              onTap: () => context.push('/official/tickets'),
             ),
             const SizedBox(height: 10),
             _ActionRow(
@@ -312,7 +318,7 @@ class _OverviewTab extends ConsumerWidget {
               tint: AppColors.teal,
               title: 'Public dashboard',
               subtitle: 'See exactly what citizens see for this area',
-              onTap: () => context.go('/public/dashboard'),
+              onTap: () => context.push('/public/dashboard'),
             ),
           ],
         );
@@ -359,7 +365,7 @@ class _OfficialHeader extends StatelessWidget {
         children: [
           InkWell(
             customBorder: const CircleBorder(),
-            onTap: () => context.go('/gov/profile'),
+            onTap: () => context.push('/gov/profile'),
             child: CitizenAvatar(
               name: profile.name,
               photoPath: profile.photoPath,
@@ -655,6 +661,20 @@ class _GovTicketCard extends StatelessWidget {
                 : ticket.publicSummary,
             style: const TextStyle(fontSize: 13, height: 1.4),
           ),
+          // The same blurred, public copy the feed shows, never the original.
+          if (ticket.photoUrl != null) ...[
+            const SizedBox(height: 10),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CachedNetworkImage(
+                imageUrl: ticket.photoUrl!,
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ],
           const SizedBox(height: 10),
           Row(
             children: [
@@ -712,6 +732,8 @@ class _GovTicketCard extends StatelessWidget {
                 label: const Text('Assign', style: TextStyle(fontSize: 12)),
                 onPressed: onAssign,
               ),
+              // The original photo, whatever the citizen chose for the public.
+              ViewPhotoButton(ticketId: ticket.id),
               if (ticket.status == 'resolved')
                 TextButton.icon(
                   style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
@@ -783,7 +805,7 @@ class _MapTab extends StatelessWidget {
           tint: AppColors.indigo,
           title: 'Open the full map',
           subtitle: 'Boundaries, hotspot circles and booth pins',
-          onTap: () => context.go('/public/map'),
+          onTap: () => context.push('/public/map'),
         ),
         const SizedBox(height: 10),
         _ActionRow(
@@ -791,7 +813,7 @@ class _MapTab extends StatelessWidget {
           tint: AppColors.teal,
           title: 'Jump to a district or taluk',
           subtitle: 'Frame the map on one area',
-          onTap: () => context.go('/public/area'),
+          onTap: () => context.push('/public/area'),
         ),
         const SizedBox(height: 10),
         _ActionRow(
@@ -799,7 +821,7 @@ class _MapTab extends StatelessWidget {
           tint: AppColors.vermilion,
           title: 'Statewide view',
           subtitle: 'All 30 districts and 227 taluks of Karnataka',
-          onTap: () => context.go('/public/karnataka'),
+          onTap: () => context.push('/public/karnataka'),
         ),
       ],
     );
@@ -860,7 +882,7 @@ class _HotspotCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadii.md),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.md),
-        onTap: () => context.go('/public/cluster/${cluster.id}'),
+        onTap: () => context.push('/public/cluster/${cluster.id}'),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -1068,7 +1090,7 @@ class _EmergencyCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton.icon(
-              onPressed: () => context.go('/public/cluster/${cluster.id}'),
+              onPressed: () => context.push('/public/cluster/${cluster.id}'),
               icon: const Icon(Icons.arrow_forward_rounded, size: 15),
               label: const Text('Full solution card',
                   style: TextStyle(fontSize: 12)),

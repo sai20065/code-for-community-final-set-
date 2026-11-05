@@ -86,29 +86,41 @@ void main() {
 
       expect(find.text("What's the issue?"), findsOneWidget);
       expect(find.text('Tap the mic to speak instead of typing'), findsOneWidget);
-      expect(find.text('Add a photo (optional)'), findsOneWidget);
+      expect(find.text('Add a photo (required)'), findsOneWidget);
       expect(find.text('Camera'), findsOneWidget);
       expect(find.text('Gallery'), findsOneWidget);
     });
 
-    testWidgets('submit enables once there is text, and the Text chip lights up',
-        (tester) async {
+    testWidgets('a problem report cannot be sent without a photo', (tester) async {
       _tallView(tester);
       await tester.pumpWidget(_app(_screen()));
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(_submitButton(tester).onPressed, isNull);
-      expect(find.text('Type, speak or add a photo to submit'), findsOneWidget);
+      expect(find.text('A photo of the problem is required'), findsWidgets);
       expect(find.byIcon(Icons.check_circle_rounded), findsNothing);
 
+      // Text alone is not enough for a problem.
       await tester.enterText(find.byType(TextField), 'Big pothole near the bus stand');
       await tester.pump(const Duration(milliseconds: 300));
+      expect(_submitButton(tester).onPressed, isNull);
+      expect(find.text('A photo of the problem is required'), findsWidgets);
+      // The on-device heuristic still offers a category to confirm.
+      expect(find.textContaining('Roads'), findsWidgets);
+    });
 
+    testWidgets('a suggestion still needs only some text', (tester) async {
+      _tallView(tester);
+      await tester.pumpWidget(_app(_screen(SubmissionCategory.feedback)));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(_submitButton(tester).onPressed, isNull);
+      expect(find.text('Type, speak or add a photo to submit'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'A new library for our ward');
+      await tester.pump(const Duration(milliseconds: 300));
       expect(_submitButton(tester).onPressed, isNotNull);
       expect(find.text('Type, speak or add a photo to submit'), findsNothing);
-      expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
-      // The on-device heuristic offers a category to confirm.
-      expect(find.textContaining('Roads'), findsWidgets);
     });
 
     testWidgets('the header toggle switches between report and suggestion',

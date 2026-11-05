@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'navigation.dart';
 import '../core/models/booth_model.dart';
 import '../core/models/submission_model.dart';
 import '../core/models/user_model.dart';
@@ -72,6 +73,10 @@ const _officialOnlyPrefixes = <String>[
   '/worker',
 ];
 
+/// Screens that exist only for citizens (their home, reporting, own reports
+/// and profile). Officials and admins are redirected away from them.
+const _citizenOnlyPrefixes = <String>['/home', '/compose', '/confirmation', '/reports', '/profile'];
+
 /// The app's router.
 ///
 /// A provider rather than a bare global because role gating needs to read
@@ -112,6 +117,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         final isWorker = profile?.officialType == 'fieldWorker';
         if (isWorker && !path.startsWith('/worker')) return '/worker/tasks';
         if (!isWorker && path.startsWith('/worker')) return '/gov/dashboard';
+      }
+
+      // Officials and admins have no citizen home: if any back button, link
+      // or stale route lands them on a citizen-only screen, send them to
+      // their own dashboard instead.
+      if (_citizenOnlyPrefixes.any((p) => path == p || path.startsWith('$p/'))) {
+        final profile = ref.read(currentUserProfileProvider).valueOrNull;
+        if (profile?.role == UserRole.official || profile?.role == UserRole.admin) {
+          return homeRouteFor(profile);
+        }
       }
 
       return null;

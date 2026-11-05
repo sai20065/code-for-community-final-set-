@@ -168,14 +168,39 @@ class AppTheme {
           color: Colors.white,
         ),
       ),
+      // Saffron is a light colour: text on it must be dark (white on saffron
+      // is about 2:1 and unreadable). Disabled buttons keep readable text too.
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.saffron,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.ink,
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.indigo,
+          disabledForegroundColor: AppColors.inkSoft.withValues(alpha: 0.6),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.indigo,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: const Color(0xFFD9D6EA),
+          disabledForegroundColor: AppColors.inkSoft,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.indigo,
+          side: const BorderSide(color: AppColors.indigo, width: 1.4),
+          disabledForegroundColor: AppColors.inkSoft.withValues(alpha: 0.6),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.saffron,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.ink,
+          disabledBackgroundColor: const Color(0xFFE6E3F2),
+          disabledForegroundColor: AppColors.inkSoft,
           minimumSize: const Size.fromHeight(56),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.md),

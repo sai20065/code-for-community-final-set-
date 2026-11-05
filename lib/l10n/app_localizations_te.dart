@@ -1833,4 +1833,74 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 గంటలు సమాధానం రాకపోవడంతో ముగించబడింది';
+
+  @override
+  String get photoRequired => 'సమస్య ఫోటో తప్పనిసరి';
+
+  @override
+  String get photoPublicNote =>
+      'మీ ఫోటో బహిరంగంగా కనిపిస్తుంది; ముఖాలు, నంబర్ ప్లేట్లు మసకబారుతాయి.';
+
+  @override
+  String get stepAddPhotoRequired => 'ఫోటో జోడించండి (తప్పనిసరి)';
+
+  @override
+  String get photoVisTitle => 'ఈ ఫోటోను ఎవరు చూడగలరు?';
+
+  @override
+  String get photoVisPrivate => 'ప్రైవేట్';
+
+  @override
+  String get photoVisPrivateNote =>
+      'మీ ప్రాంత అధికారులు, వారి బృందం, అడ్మిన్ మాత్రమే చూస్తారు. ఇంకెవరూ చూడరు.';
+
+  @override
+  String get photoVisFaces => 'బహిరంగం, ముఖాలు, నంబర్ ప్లేట్లు మసక';
+
+  @override
+  String get photoVisFacesNote =>
+      'పబ్లిక్ ఫీడ్‌లో కనిపిస్తుంది. వ్యక్తులు, వాహనాలను గుర్తించలేరు.';
+
+  @override
+  String get photoVisFull => 'బహిరంగం, మొత్తం ఫోటో మసక';
+
+  @override
+  String get photoVisFullNote =>
+      'పబ్లిక్ ఫీడ్‌లో మసక చిత్రంగా కనిపిస్తుంది. ప్రదేశాన్ని గుర్తించలేరు.';
+
+  @override
+  String get photoTermsTitle => 'ఫోటో గోప్యతా నిబంధనలు';
+
+  @override
+  String get photoTermsPoint1 =>
+      'మీ ఫోటో మసక కాపీ పబ్లిక్ ఫీడ్‌లో, రిపోర్ట్ కార్డ్‌లో, చిన్న సారాంశం, ప్రాంతంతో కనిపిస్తుంది.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'మీ పేరు, ఫోన్ నంబర్, చిరునామా, ఖచ్చితమైన ప్రదేశం ఎప్పుడూ చూపబడవు. అసలు ఫోటో ప్రైవేట్‌గానే ఉంటుంది.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'అసలు ఫోటోను మీ ప్రాంత అధికారులు, మీ రిపోర్ట్‌కు కేటాయించిన బృంద సభ్యుడు, అడ్మిన్ ఎల్లప్పుడూ చూస్తారు.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'మసకబార్చడం ఆటోమేటిక్, కొన్ని తప్పిపోవచ్చు. వ్యక్తుల ముఖాలు, ఇంటి నంబర్లు, పత్రాల ఫోటోలు తీయకండి.';
+
+  @override
+  String get photoTermsPoint5 => 'అనుచితమైన ఫోటోలు ప్రచురించబడవు.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'మీరు ఎప్పుడైనా ప్రైవేట్‌కు మారవచ్చు; పబ్లిక్ కాపీ తొలగించబడుతుంది.';
+
+  @override
+  String get photoTermsAgree => 'నేను ఈ నిబంధనలు చదివి అంగీకరిస్తున్నాను';
+
+  @override
+  String get photoTermsAgreeButton => 'అంగీకరించి కొనసాగండి';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'గోప్యతా నిబంధనలకు మీ అంగీకారం కోసం వేచి ఉంది';
 }

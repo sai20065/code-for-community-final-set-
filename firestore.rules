@@ -121,7 +121,13 @@ service cloud.firestore {
       // still flip their photo-consent switch.
       allow update: if isSignedIn() &&
         ((resource.data.userId == request.auth.uid &&
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photoPublic'])) ||
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['photoPublic', 'photoBlur', 'photoConsent']) &&
+          request.resource.data.get('photoBlur', 'faces') in ['faces', 'full'] &&
+          // Going public needs the citizen's agreement to the privacy terms on record
+          // (the publish function checks it again).
+          (request.resource.data.get('photoPublic', false) != true ||
+           request.resource.data.get('photoConsent', null) != null)) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId &&
           request.resource.data.diff(resource.data).affectedKeys()

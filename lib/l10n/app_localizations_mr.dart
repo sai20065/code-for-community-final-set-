@@ -1828,4 +1828,74 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 तास उत्तर न मिळाल्याने बंद केले';
+
+  @override
+  String get photoRequired => 'समस्येचा फोटो आवश्यक आहे';
+
+  @override
+  String get photoPublicNote =>
+      'तुमचा फोटो सार्वजनिकरित्या दिसेल; चेहरे आणि नंबर प्लेट धूसर केल्या जातील.';
+
+  @override
+  String get stepAddPhotoRequired => 'फोटो जोडा (आवश्यक)';
+
+  @override
+  String get photoVisTitle => 'हा फोटो कोण पाहू शकतो?';
+
+  @override
+  String get photoVisPrivate => 'खाजगी';
+
+  @override
+  String get photoVisPrivateNote =>
+      'फक्त तुमच्या भागातील अधिकारी, त्यांची टीम आणि अ‍ॅडमिन पाहतात. इतर कोणी नाही.';
+
+  @override
+  String get photoVisFaces => 'सार्वजनिक, चेहरे आणि नंबर प्लेट धूसर';
+
+  @override
+  String get photoVisFacesNote =>
+      'सार्वजनिक फीडमध्ये दिसेल. माणसे आणि वाहने ओळखता येणार नाहीत.';
+
+  @override
+  String get photoVisFull => 'सार्वजनिक, संपूर्ण फोटो धूसर';
+
+  @override
+  String get photoVisFullNote =>
+      'सार्वजनिक फीडमध्ये धूसर चित्र म्हणून दिसेल. ठिकाण ओळखता येणार नाही.';
+
+  @override
+  String get photoTermsTitle => 'फोटो गोपनीयता अटी';
+
+  @override
+  String get photoTermsPoint1 =>
+      'तुमच्या फोटोची धूसर प्रत सार्वजनिक फीड आणि रिपोर्ट कार्डवर, लहान सारांश आणि भागासह दिसेल.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'तुमचे नाव, फोन नंबर, पत्ता आणि अचूक ठिकाण कधीही दाखवले जात नाही. मूळ फोटो खाजगी राहतो.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'मूळ फोटो नेहमी तुमच्या भागातील अधिकारी, तुमच्या अहवालाला नेमलेला टीम सदस्य आणि अ‍ॅडमिन पाहतात.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'धूसर करणे आपोआप होते, काही सुटू शकते. लोकांचे चेहरे, घर क्रमांक किंवा कागदपत्रांचे फोटो काढू नका.';
+
+  @override
+  String get photoTermsPoint5 => 'अयोग्य फोटो प्रसिद्ध केले जाणार नाहीत.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'तुम्ही कधीही खाजगीवर परत जाऊ शकता; सार्वजनिक प्रत हटवली जाते.';
+
+  @override
+  String get photoTermsAgree => 'मी या अटी वाचल्या आहेत आणि मान्य करतो/करते';
+
+  @override
+  String get photoTermsAgreeButton => 'मान्य करून पुढे जा';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'गोपनीयता अटींना तुमच्या संमतीची प्रतीक्षा';
 }

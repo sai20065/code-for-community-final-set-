@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
@@ -101,7 +102,7 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
       });
       return;
     }
-    context.canPop() ? context.pop() : context.go('/welcome');
+    goBackOrHome(context, citizenFallback: '/welcome');
   }
 
   void _resetToDistricts() => setState(() {
@@ -131,7 +132,7 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
     if (constituencyId != null && constituencyId.isNotEmpty) {
       await ref.read(publicConstituencyProvider.notifier).select(constituencyId);
     }
-    if (mounted) context.go('/public/map');
+    if (mounted) context.replace('/public/map'); // keep the page below (the dashboard) on the stack
   }
 
   /// District → Taluk everywhere. Inside Bengaluru Urban: District → ward
@@ -466,7 +467,7 @@ class _DistrictList extends ConsumerWidget {
                 tint: AppColors.vermilion,
                 title: 'See all of Karnataka',
                 subtitle: 'All 30 districts and 227 taluks on one map',
-                onTap: () => context.go('/public/karnataka'),
+                onTap: () => context.push('/public/karnataka'),
               );
             }
             final d = filtered[i - 1];

@@ -354,6 +354,7 @@ export const getWorkerTasks = onCall({region: REGION}, async (request) => {
       lat: typeof t.location?.lat === "number" ? t.location.lat : null,
       lng: typeof t.location?.lng === "number" ? t.location.lng : null,
       note: t.assignment?.note ?? null,
+      hasPhoto: typeof t.mediaUrl === "string" && t.mediaUrl.length > 0,
       assignedBy: t.assignment?.byName ?? "",
       assignedAt: millis(t.assignment?.at),
       fixedAt,
@@ -363,4 +364,24 @@ export const getWorkerTasks = onCall({region: REGION}, async (request) => {
   });
   tasks.sort((a, b) => (b.assignedAt ?? 0) - (a.assignedAt ?? 0));
   return {tasks};
+});
+
+// ------------------------------------------------------------ the photo
+
+/**
+ * The original report photo, for the people who handle the report: the admin,
+ * an official whose area it is, and the worker it is assigned to. Whatever
+ * the citizen chose for the PUBLIC copy, these roles always see the real
+ * photo. The reporter's identity is never returned.
+ */
+export const getTicketPhoto = onCall({region: REGION}, async (request) => {
+  const caller = await callerOf(request.auth?.uid);
+  const id = str(request.data?.ticketId, 128);
+  if (!id) throw new HttpsError("invalid-argument", "ticketId is required.");
+  const t = (await db().collection("submissions").doc(id).get()).data();
+  if (!t || !inScope(caller, t)) {
+    throw new HttpsError("permission-denied", "This report is not in your area or not assigned to you.");
+  }
+  const url = typeof t.mediaUrl === "string" && t.mediaUrl ? t.mediaUrl : null;
+  return {url};
 });

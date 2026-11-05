@@ -3266,6 +3266,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Closed after 48 hours without an answer'**
   String get fixClosedAuto;
+
+  /// No description provided for @photoRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo of the problem is required'**
+  String get photoRequired;
+
+  /// No description provided for @photoPublicNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photo is shown publicly with faces and number plates blurred.'**
+  String get photoPublicNote;
+
+  /// No description provided for @stepAddPhotoRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo (required)'**
+  String get stepAddPhotoRequired;
+
+  /// No description provided for @photoVisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see this photo?'**
+  String get photoVisTitle;
+
+  /// No description provided for @photoVisPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get photoVisPrivate;
+
+  /// No description provided for @photoVisPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only officials for your area, their team and admins see it. Nobody else.'**
+  String get photoVisPrivateNote;
+
+  /// No description provided for @photoVisFaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Public, faces and number plates blurred'**
+  String get photoVisFaces;
+
+  /// No description provided for @photoVisFacesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the public feed. People and vehicles can\'t be recognised.'**
+  String get photoVisFacesNote;
+
+  /// No description provided for @photoVisFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Public, whole photo blurred'**
+  String get photoVisFull;
+
+  /// No description provided for @photoVisFullNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the public feed as a blurred picture. The scene can\'t be recognised.'**
+  String get photoVisFullNote;
+
+  /// No description provided for @photoTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo privacy terms'**
+  String get photoTermsTitle;
+
+  /// No description provided for @photoTermsPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'A blurred copy of your photo is shown in the public feed and on the report card, with a short summary and the area.'**
+  String get photoTermsPoint1;
+
+  /// No description provided for @photoTermsPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name, phone number, address and exact location are never shown. The original photo stays private.'**
+  String get photoTermsPoint2;
+
+  /// No description provided for @photoTermsPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'The original is always seen by the officials of your area, the team member assigned to your report, and the admin.'**
+  String get photoTermsPoint3;
+
+  /// No description provided for @photoTermsPoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'Blurring is automatic and may miss things. Do not photograph people\'s faces, house numbers or documents.'**
+  String get photoTermsPoint4;
+
+  /// No description provided for @photoTermsPoint5.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos that are unsuitable will not be published.'**
+  String get photoTermsPoint5;
+
+  /// No description provided for @photoTermsPoint6.
+  ///
+  /// In en, this message translates to:
+  /// **'You can switch back to private at any time and the public copy is deleted.'**
+  String get photoTermsPoint6;
+
+  /// No description provided for @photoTermsAgree.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and agree to these terms'**
+  String get photoTermsAgree;
+
+  /// No description provided for @photoTermsAgreeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree and continue'**
+  String get photoTermsAgreeButton;
+
+  /// No description provided for @photoStatusNeedsConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your agreement to the privacy terms'**
+  String get photoStatusNeedsConsent;
 }
 
 class _AppLocalizationsDelegate

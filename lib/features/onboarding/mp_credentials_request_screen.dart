@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../app/navigation.dart';
 
 import '../../app/theme.dart';
 import '../../core/services/mp_credentials_service.dart';
@@ -71,7 +72,7 @@ class _MpCredentialsRequestScreenState extends State<MpCredentialsRequestScreen>
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/welcome'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/welcome'),
         ),
         title: Text(widget.isFirstTime ? l10n.mpFirstTimeSetupTitle : l10n.mpForgotCredentialsTitle),
       ),

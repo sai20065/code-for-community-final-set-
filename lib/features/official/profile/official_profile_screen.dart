@@ -364,7 +364,7 @@ class _PerformanceCard extends StatelessWidget {
           ],
           const SizedBox(height: 10),
           FilledButton.icon(
-            onPressed: () => context.go('/official/tickets'),
+            onPressed: () => context.push('/official/tickets'),
             icon: const Icon(Icons.checklist_rounded),
             label: const Text('Work through open reports'),
             style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(44)),

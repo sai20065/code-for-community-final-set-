@@ -1849,4 +1849,74 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 മണിക്കൂർ മറുപടി ലഭിക്കാത്തതിനാൽ അടച്ചു';
+
+  @override
+  String get photoRequired => 'പ്രശ്നത്തിന്റെ ഫോട്ടോ നിർബന്ധമാണ്';
+
+  @override
+  String get photoPublicNote =>
+      'നിങ്ങളുടെ ഫോട്ടോ പരസ്യമായി കാണിക്കും; മുഖങ്ങളും നമ്പർ പ്ലേറ്റുകളും മങ്ങിക്കും.';
+
+  @override
+  String get stepAddPhotoRequired => 'ഫോട്ടോ ചേർക്കുക (നിർബന്ധം)';
+
+  @override
+  String get photoVisTitle => 'ഈ ഫോട്ടോ ആർക്കൊക്കെ കാണാം?';
+
+  @override
+  String get photoVisPrivate => 'സ്വകാര്യം';
+
+  @override
+  String get photoVisPrivateNote =>
+      'നിങ്ങളുടെ പ്രദേശത്തെ ഉദ്യോഗസ്ഥരും അവരുടെ ടീമും അഡ്മിനും മാത്രം കാണും. മറ്റാരും കാണില്ല.';
+
+  @override
+  String get photoVisFaces => 'പരസ്യം, മുഖങ്ങളും നമ്പർ പ്ലേറ്റുകളും മങ്ങിച്ചത്';
+
+  @override
+  String get photoVisFacesNote =>
+      'പൊതു ഫീഡിൽ കാണിക്കും. ആളുകളെയും വാഹനങ്ങളെയും തിരിച്ചറിയാനാവില്ല.';
+
+  @override
+  String get photoVisFull => 'പരസ്യം, മുഴുവൻ ഫോട്ടോയും മങ്ങിച്ചത്';
+
+  @override
+  String get photoVisFullNote =>
+      'പൊതു ഫീഡിൽ മങ്ങിയ ചിത്രമായി കാണിക്കും. സ്ഥലം തിരിച്ചറിയാനാവില്ല.';
+
+  @override
+  String get photoTermsTitle => 'ഫോട്ടോ സ്വകാര്യതാ വ്യവസ്ഥകൾ';
+
+  @override
+  String get photoTermsPoint1 =>
+      'നിങ്ങളുടെ ഫോട്ടോയുടെ മങ്ങിയ പകർപ്പ് പൊതു ഫീഡിലും റിപ്പോർട്ട് കാർഡിലും ചെറിയ സംഗ്രഹത്തോടും പ്രദേശത്തോടുമൊപ്പം കാണിക്കും.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'നിങ്ങളുടെ പേര്, ഫോൺ നമ്പർ, വിലാസം, കൃത്യമായ സ്ഥലം എന്നിവ ഒരിക്കലും കാണിക്കില്ല. യഥാർത്ഥ ഫോട്ടോ സ്വകാര്യമായി തുടരും.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'യഥാർത്ഥ ഫോട്ടോ നിങ്ങളുടെ പ്രദേശത്തെ ഉദ്യോഗസ്ഥരും നിങ്ങളുടെ റിപ്പോർട്ടിന് നിയോഗിച്ച ടീം അംഗവും അഡ്മിനും എപ്പോഴും കാണും.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'മങ്ങിക്കൽ ഓട്ടോമാറ്റിക്കാണ്, ചിലത് വിട്ടുപോകാം. ആളുകളുടെ മുഖം, വീട്ടുനമ്പർ, രേഖകൾ എന്നിവ ഫോട്ടോ എടുക്കരുത്.';
+
+  @override
+  String get photoTermsPoint5 => 'അനുചിതമായ ഫോട്ടോകൾ പ്രസിദ്ധീകരിക്കില്ല.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'നിങ്ങൾക്ക് എപ്പോൾ വേണമെങ്കിലും സ്വകാര്യത്തിലേക്ക് മാറാം; പൊതു പകർപ്പ് ഇല്ലാതാക്കും.';
+
+  @override
+  String get photoTermsAgree => 'ഞാൻ ഈ വ്യവസ്ഥകൾ വായിച്ച് അംഗീകരിക്കുന്നു';
+
+  @override
+  String get photoTermsAgreeButton => 'അംഗീകരിച്ച് തുടരുക';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'സ്വകാര്യതാ വ്യവസ്ഥകൾക്കുള്ള നിങ്ങളുടെ സമ്മതത്തിനായി കാത്തിരിക്കുന്നു';
 }

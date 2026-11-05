@@ -26,6 +26,7 @@ export interface Row {
   closeState: string;
   reopened: boolean;
   summary: string;
+  hasPhoto: boolean;
 }
 
 export interface Filters {
@@ -152,6 +153,7 @@ export const getAdminIssueGroups = onCall({region: REGION, memory: "512MiB"}, as
       closeState: closeState(t.status, fixedAt, t.citizenResponse, now),
       reopened: (t.reopenCount ?? 0) > 0,
       summary: t.publicSummary ?? "",
+      hasPhoto: typeof t.mediaUrl === "string" && t.mediaUrl.length > 0,
     };
   }).filter((r) => matches(r, f, now));
 
@@ -180,7 +182,7 @@ export const getAdminIssueGroups = onCall({region: REGION, memory: "512MiB"}, as
     const open = groupRows(rows, keys, now).find((g) => g.key === wantGroupKey);
     const ids = new Set(open?.ticketIds ?? []);
     tickets = rows.filter((r) => ids.has(r.id)).slice(0, MAX_TICKETS_OUT).map((r) => ({
-      id: r.id, tokenId: r.tokenId, theme: r.theme, status: r.status, summary: r.summary,
+      id: r.id, tokenId: r.tokenId, theme: r.theme, status: r.status, summary: r.summary, hasPhoto: r.hasPhoto,
       district: label("district", r.districtId), taluk: label("taluk", r.taluk),
       ageDays: Math.round((now - r.createdMs) / 86400000),
       assignedTo: r.assignedToName, closeState: r.closeState, reopened: r.reopened,

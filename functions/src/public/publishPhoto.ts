@@ -5,6 +5,7 @@ import {REGION} from "../config";
 import {
   isUnsafe,
   loadForAnalysis,
+  renderFullyBlurred,
   renderPublicCopy,
   sensitiveBoxes,
   toJpeg,
@@ -20,6 +21,15 @@ export function feedPhotoPath(submissionId: string): string {
 export function storagePathFromUrl(url: string): {bucket: string; path: string} | null {
   const m = /\/b\/([^/]+)\/o\/([^?]+)/.exec(url);
   return m ? {bucket: m[1], path: decodeURIComponent(m[2])} : null;
+}
+
+export type PhotoBlurMode = "faces" | "full";
+
+/** The privacy terms version the app asks the citizen to accept. A public
+ * photo needs a consent record; bump the app's version to ask again. */
+export function hasPhotoConsent(consent: unknown): boolean {
+  const v = (consent as {termsVersion?: unknown} | null | undefined)?.termsVersion;
+  return typeof v === "string" && v.length > 0;
 }
 
 let vision: ImageAnnotatorClient | null = null;
@@ -49,6 +59,8 @@ export const onSubmissionPhotoConsent = onDocumentWritten(
     const wants = after.photoPublic === true && typeof after.mediaUrl === "string" && after.mediaUrl;
     const status: string | undefined = after.publicPhoto?.status;
     const ref = event.data!.after.ref;
+    const mode: PhotoBlurMode = after.photoBlur === "full" ? "full" : "faces";
+    const consented = hasPhotoConsent(after.photoConsent);
 
     if (!wants) {
       if (status === "published" || status === "processing") {
@@ -58,9 +70,23 @@ export const onSubmissionPhotoConsent = onDocumentWritten(
       return;
     }
 
-    // Already handled for this photo — this is our own write echoing back,
-    // or an unrelated field changing.
-    const unchanged = before?.photoPublic === true && before?.mediaUrl === after.mediaUrl;
+    // Public only with the citizen's agreement to the privacy terms. Without
+    // it nothing is published (and any earlier public copy is removed).
+    if (!consented) {
+      if (status !== "needs_consent") {
+        await file.delete({ignoreNotFound: true});
+        await ref.update({publicPhoto: {status: "needs_consent"}});
+      }
+      return;
+    }
+
+    // Already handled for this photo and mode — this is our own write
+    // echoing back, or an unrelated field changing. Switching the blur mode
+    // or giving consent republishes.
+    const unchanged = before?.photoPublic === true &&
+      before?.mediaUrl === after.mediaUrl &&
+      (before?.photoBlur === "full" ? "full" : "faces") === mode &&
+      hasPhotoConsent(before?.photoConsent);
     if (unchanged && status && status !== "withdrawn") return;
 
     await ref.update({publicPhoto: {status: "processing"}});
@@ -86,8 +112,12 @@ export const onSubmissionPhotoConsent = onDocumentWritten(
         return;
       }
 
-      const {faces, plates} = sensitiveBoxes(result, img.bitmap.width, img.bitmap.height);
-      const out = await renderPublicCopy(img, [...faces, ...plates]);
+      const {faces, plates} = mode === "full" ?
+        {faces: [], plates: []} :
+        sensitiveBoxes(result, img.bitmap.width, img.bitmap.height);
+      const out = mode === "full" ?
+        await renderFullyBlurred(img) :
+        await renderPublicCopy(img, [...faces, ...plates]);
       await file.save(out.buffer, {
         contentType: "image/jpeg",
         resumable: false,
@@ -101,6 +131,7 @@ export const onSubmissionPhotoConsent = onDocumentWritten(
           url,
           width: out.width,
           height: out.height,
+          blur: mode,
           faces: faces.length,
           plates: plates.length,
           publishedAt: admin.firestore.FieldValue.serverTimestamp(),

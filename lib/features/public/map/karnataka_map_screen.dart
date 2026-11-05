@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import '../../../app/navigation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -168,7 +169,7 @@ class _KarnatakaMapScreenState extends ConsumerState<KarnatakaMapScreen> {
               _backToState();
               return;
             }
-            context.canPop() ? context.pop() : context.go('/public/dashboard');
+            goBackOrHome(context, citizenFallback: '/public/dashboard');
           },
         ),
         title: Text(_districtId == null ? 'Karnataka Live Report Map' : _districtName),

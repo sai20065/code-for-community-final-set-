@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
@@ -26,7 +26,7 @@ class RepresentativeLeaderboardScreen extends StatelessWidget {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.canPop() ? context.pop() : context.go('/public/karnataka'),
+            onPressed: () => goBackOrHome(context, citizenFallback: '/public/karnataka'),
           ),
           title: Text(l10n.leaderboardTitle),
           bottom: TabBar(tabs: [Tab(text: l10n.leaderboardMlaTab), Tab(text: l10n.leaderboardMpTab)]),

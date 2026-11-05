@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../../app/navigation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
 import '../../../app/theme.dart';
+import '../../../core/models/photo_visibility.dart';
 import '../../../core/models/submission_model.dart';
+import '../privacy/photo_visibility_picker.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
@@ -120,10 +123,6 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
   // Photo
   File? _photo;
 
-  /// Consent to show a blurred copy of the photo in the public feed. Off by
-  /// default, and reset whenever the photo is removed.
-  bool _photoPublic = false;
-
   // Location / submit
   LatLng? _pin;
   bool _submitting = false;
@@ -132,8 +131,20 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
   bool get _hasText => _textController.text.trim().isNotEmpty;
   bool get _hasVoice => _audioPath != null;
   bool get _hasPhoto => _photo != null;
+  bool get _isProblem => _category != SubmissionCategory.feedback;
+
+  // Who may see the photo publicly; private unless the citizen chooses
+  // otherwise and agrees to the privacy terms.
+  PhotoVisibility _visibility = PhotoVisibility.private;
+  bool _agreedTerms = false;
+
+  /// A problem report must carry a photo of the problem; a suggestion needs
+  /// only some text (or a photo).
   bool get _canSubmit =>
-      (_hasText || _hasPhoto) && !_isRecording && !_transcribing && !_submitting;
+      (_isProblem ? _hasPhoto : (_hasText || _hasPhoto)) &&
+      !_isRecording &&
+      !_transcribing &&
+      !_submitting;
 
   @override
   void initState() {
@@ -368,7 +379,11 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
       translatedText: text == _lastTranscript ? _translatedText : null,
       mediaUrl: mediaUrl,
       audioUrl: audioUrl,
-      photoPublic: _photoPublic && mediaUrl != null,
+      // The photo is public only if the citizen chose it (and agreed to the
+      // privacy terms); the server blurs it. Officials always see the original.
+      photoPublic: _isProblem && mediaUrl != null && _visibility.isPublic && _agreedTerms,
+      photoBlur: _visibility.blurMode,
+      photoTermsVersion: _agreedTerms ? kPhotoTermsVersion : null,
       language: _spokenLanguage ?? profile?.preferredLanguage ?? 'en',
       theme: _theme,
       location: SubmissionLocation(
@@ -414,7 +429,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
             child: _ComposeHeader(
               category: _category,
               onCategoryChanged: (v) => setState(() => _category = v),
-              onBack: () => context.canPop() ? context.pop() : context.go('/home'),
+              onBack: () => goBackOrHome(context, citizenFallback: '/home'),
             ),
           ),
           SliverPadding(
@@ -434,7 +449,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
                   step: 2,
                   icon: Icons.photo_camera_rounded,
                   color: AppColors.teal,
-                  title: l10n.stepAddPhoto,
+                  title: isSuggestion ? l10n.stepAddPhoto : l10n.stepAddPhotoRequired,
                   done: _hasPhoto,
                   child: _buildPhoto(l10n),
                 ),
@@ -470,6 +485,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
         hasText: _hasText,
         hasVoice: _hasVoice,
         hasPhoto: _hasPhoto,
+        photoRequired: _isProblem,
         submitting: _submitting,
         error: _submitError,
         label: isSuggestion ? l10n.submitSuggestion : l10n.submitReport,
@@ -600,14 +616,34 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildPhotoPreview(l10n),
-        if (_photo != null)
-          SwitchListTile.adaptive(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-            value: _photoPublic,
-            onChanged: (v) => setState(() => _photoPublic = v),
-            title: Text(l10n.showPhotoInFeed,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.showPhotoInFeedNote, style: const TextStyle(fontSize: 12)),
+        if (_isProblem && _photo == null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.photo_camera_outlined, size: 16, color: AppColors.vermilion),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.photoRequired,
+                    style: const TextStyle(
+                        fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.vermilion),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        // Who sees the photo: private by default; public needs the citizen's
+        // agreement to the privacy terms.
+        if (_isProblem && _photo != null)
+          PhotoVisibilityPicker(
+            value: _visibility,
+            consented: _agreedTerms,
+            onChanged: (choice, {agreed = false}) => setState(() {
+              _visibility = choice;
+              if (agreed) _agreedTerms = true;
+            }),
           ),
       ],
     );
@@ -632,7 +668,7 @@ class _ReportComposeScreenState extends State<ReportComposeScreen> {
                       tooltip: l10n.removePhoto,
                       onTap: () => setState(() {
                         _photo = null;
-                        _photoPublic = false;
+                        _visibility = PhotoVisibility.private;
                       }),
                     ),
                   ),
@@ -1188,6 +1224,7 @@ class _SubmitBar extends StatelessWidget {
     required this.hasText,
     required this.hasVoice,
     required this.hasPhoto,
+    required this.photoRequired,
     required this.submitting,
     required this.error,
     required this.label,
@@ -1197,6 +1234,9 @@ class _SubmitBar extends StatelessWidget {
   final bool hasText;
   final bool hasVoice;
   final bool hasPhoto;
+
+  /// A problem report cannot be sent without a photo.
+  final bool photoRequired;
   final bool submitting;
   final String? error;
   final String label;
@@ -1205,7 +1245,7 @@ class _SubmitBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final nothingYet = !hasText && !hasPhoto;
+    final nothingYet = photoRequired ? !hasPhoto : (!hasText && !hasPhoto);
     return Container(
       padding: EdgeInsets.fromLTRB(16, 10, 16, 12 + MediaQuery.of(context).padding.bottom),
       decoration: BoxDecoration(
@@ -1234,7 +1274,7 @@ class _SubmitBar extends StatelessWidget {
           if (error != null || nothingYet) ...[
             const SizedBox(height: 6),
             Text(
-              error ?? l10n.addTextOrPhotoToSubmit,
+              error ?? (photoRequired ? l10n.photoRequired : l10n.addTextOrPhotoToSubmit),
               style: TextStyle(
                 fontSize: 12,
                 color: error != null ? AppColors.vermilion : AppColors.inkFaint,

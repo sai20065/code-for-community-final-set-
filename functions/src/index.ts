@@ -46,6 +46,7 @@ export {
   citizenRespondFix,
   closeTicket,
   createWorker,
+  getTicketPhoto,
   getWorkerTasks,
   listMyWorkers,
   setWorkerActive,

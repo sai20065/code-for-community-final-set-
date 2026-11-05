@@ -11,12 +11,15 @@
  */
 import {Jimp} from "jimp";
 import {
+  FULL_BLUR_PX,
   PUBLIC_MAX_PX,
   isUnsafe,
   loadForAnalysis,
+  renderFullyBlurred,
   renderPublicCopy,
   sensitiveBoxes,
 } from "../public/photoPrivacy";
+import {hasPhotoConsent} from "../public/publishPhoto";
 
 /** A minimal JPEG APP1 Exif segment carrying a GPS IFD marker. */
 function withFakeExif(jpeg: Buffer): Buffer {
@@ -82,6 +85,25 @@ async function main(): Promise<void> {
   const farY = Math.round(200 * scale);
   checks.push(["far from any box stays sharp",
     variance(after, farX, farY) > variance(before, farX, farY) * 0.5]);
+
+  // Whole-photo blur: every sampled point loses its contrast, EXIF is gone,
+  // and the copy is small.
+  const fullSrc = await loadForAnalysis(input);
+  const full = await renderFullyBlurred(fullSrc);
+  const fullImg = await Jimp.read(full.buffer);
+  const fullVar = (fx: number, fy: number) =>
+    variance(fullImg, Math.round(fx * full.width), Math.round(fy * full.height));
+  checks.push(["full blur: far corner is blurred too",
+    fullVar(0.75, 0.13) < variance(before, farX, farY) * 0.2]);
+  checks.push(["full blur: centre is blurred", fullVar(0.5, 0.5) < variance(before, faceX, faceY) * 0.2]);
+  checks.push(["full blur: no Exif", !full.buffer.includes(Buffer.from("Exif\0\0")) &&
+    !full.buffer.includes(Buffer.from("GPSLatitude"))]);
+  checks.push([`full blur: long side <= ${FULL_BLUR_PX}px`, Math.max(full.width, full.height) <= FULL_BLUR_PX]);
+
+  // Consent: a public photo needs a terms version on record.
+  checks.push(["no consent record: not publishable", !hasPhotoConsent(undefined) && !hasPhotoConsent({})]);
+  checks.push(["empty terms version: not publishable", !hasPhotoConsent({termsVersion: ""})]);
+  checks.push(["a terms version counts as consent", hasPhotoConsent({termsVersion: "2026-11-photo-v1"})]);
 
   checks.push(["SafeSearch LIKELY adult is rejected", isUnsafe({safeSearchAnnotation: {adult: "LIKELY"}})]);
   checks.push(["SafeSearch POSSIBLE is allowed", !isUnsafe({safeSearchAnnotation: {adult: "POSSIBLE", violence: "UNLIKELY"}})]);

@@ -1,3 +1,4 @@
+import '../../shared/widgets/ticket_photo_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -350,6 +351,7 @@ class _AdminIssuesTabState extends ConsumerState<AdminIssuesTab> {
             '${[t.taluk, t.district].where((s) => s.isNotEmpty && s != 'unknown').join(', ')} · ${t.ageDays} days old'
             '${t.assignedTo != null ? ' · ${t.assignedTo}' : ''}${t.reopened ? ' · reopened' : ''}',
             style: const TextStyle(fontSize: 11, color: AppColors.inkFaint)),
+        Align(alignment: Alignment.centerLeft, child: ViewPhotoButton(ticketId: t.id)),
       ]),
     );
   }

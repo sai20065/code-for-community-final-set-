@@ -1823,4 +1823,73 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 કલાક જવાબ ન મળતાં બંધ કર્યું';
+
+  @override
+  String get photoRequired => 'સમસ્યાનો ફોટો જરૂરી છે';
+
+  @override
+  String get photoPublicNote =>
+      'તમારો ફોટો જાહેરમાં દેખાશે; ચહેરા અને નંબર પ્લેટ ઝાંખા કરવામાં આવશે.';
+
+  @override
+  String get stepAddPhotoRequired => 'ફોટો ઉમેરો (જરૂરી)';
+
+  @override
+  String get photoVisTitle => 'આ ફોટો કોણ જોઈ શકે?';
+
+  @override
+  String get photoVisPrivate => 'ખાનગી';
+
+  @override
+  String get photoVisPrivateNote =>
+      'ફક્ત તમારા વિસ્તારના અધિકારીઓ, તેમની ટીમ અને એડમિન જુએ છે. બીજું કોઈ નહીં.';
+
+  @override
+  String get photoVisFaces => 'જાહેર, ચહેરા અને નંબર પ્લેટ ઝાંખા';
+
+  @override
+  String get photoVisFacesNote =>
+      'જાહેર ફીડમાં દેખાશે. લોકો અને વાહનો ઓળખાશે નહીં.';
+
+  @override
+  String get photoVisFull => 'જાહેર, આખો ફોટો ઝાંખો';
+
+  @override
+  String get photoVisFullNote =>
+      'જાહેર ફીડમાં ઝાંખા ચિત્ર તરીકે દેખાશે. સ્થળ ઓળખાશે નહીં.';
+
+  @override
+  String get photoTermsTitle => 'ફોટો ગોપનીયતાની શરતો';
+
+  @override
+  String get photoTermsPoint1 =>
+      'તમારા ફોટાની ઝાંખી નકલ જાહેર ફીડ અને રિપોર્ટ કાર્ડ પર, ટૂંકા સારાંશ અને વિસ્તાર સાથે દેખાશે.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'તમારું નામ, ફોન નંબર, સરનામું અને ચોક્કસ સ્થાન ક્યારેય બતાવાતા નથી. મૂળ ફોટો ખાનગી રહે છે.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'મૂળ ફોટો હંમેશા તમારા વિસ્તારના અધિકારીઓ, તમારા રિપોર્ટને સોંપાયેલ ટીમ સભ્ય અને એડમિન જુએ છે.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'ઝાંખું કરવું આપમેળે થાય છે, કંઈક રહી શકે. લોકોના ચહેરા, મકાન નંબર કે દસ્તાવેજોના ફોટા ન લો.';
+
+  @override
+  String get photoTermsPoint5 => 'અયોગ્ય ફોટા પ્રકાશિત થશે નહીં.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'તમે ગમે ત્યારે ખાનગી પર પાછા જઈ શકો છો; જાહેર નકલ ડિલીટ થશે.';
+
+  @override
+  String get photoTermsAgree => 'મેં આ શરતો વાંચી છે અને હું સંમત છું';
+
+  @override
+  String get photoTermsAgreeButton => 'સંમત થઈને આગળ વધો';
+
+  @override
+  String get photoStatusNeedsConsent => 'ગોપનીયતા શરતો માટે તમારી સંમતિની રાહ';
 }

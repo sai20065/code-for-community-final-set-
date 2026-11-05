@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/onboarding_progress_provider.dart';
@@ -248,7 +249,7 @@ class _HeroHeaderState extends ConsumerState<_HeroHeader> {
                 IconButton(
                   icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
                   onPressed: () =>
-                      context.canPop() ? context.pop() : context.go('/home'),
+                      goBackOrHome(context, citizenFallback: '/home'),
                 ),
                 Expanded(
                   child: Text(l10n.profileTitle,
@@ -841,7 +842,7 @@ class _AccountCard extends ConsumerWidget {
                 : l10n.recoveryNotSetUp,
           ),
           tile(Icons.travel_explore_rounded, l10n.seePublicDashboard,
-              () => context.go('/public/dashboard')),
+              () => context.push('/public/dashboard')),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(12),

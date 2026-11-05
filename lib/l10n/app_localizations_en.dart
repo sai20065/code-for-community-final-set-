@@ -1828,4 +1828,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fixClosedAuto => 'Closed after 48 hours without an answer';
+
+  @override
+  String get photoRequired => 'A photo of the problem is required';
+
+  @override
+  String get photoPublicNote =>
+      'Your photo is shown publicly with faces and number plates blurred.';
+
+  @override
+  String get stepAddPhotoRequired => 'Add a photo (required)';
+
+  @override
+  String get photoVisTitle => 'Who can see this photo?';
+
+  @override
+  String get photoVisPrivate => 'Private';
+
+  @override
+  String get photoVisPrivateNote =>
+      'Only officials for your area, their team and admins see it. Nobody else.';
+
+  @override
+  String get photoVisFaces => 'Public, faces and number plates blurred';
+
+  @override
+  String get photoVisFacesNote =>
+      'Shown in the public feed. People and vehicles can\'t be recognised.';
+
+  @override
+  String get photoVisFull => 'Public, whole photo blurred';
+
+  @override
+  String get photoVisFullNote =>
+      'Shown in the public feed as a blurred picture. The scene can\'t be recognised.';
+
+  @override
+  String get photoTermsTitle => 'Photo privacy terms';
+
+  @override
+  String get photoTermsPoint1 =>
+      'A blurred copy of your photo is shown in the public feed and on the report card, with a short summary and the area.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'Your name, phone number, address and exact location are never shown. The original photo stays private.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'The original is always seen by the officials of your area, the team member assigned to your report, and the admin.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'Blurring is automatic and may miss things. Do not photograph people\'s faces, house numbers or documents.';
+
+  @override
+  String get photoTermsPoint5 =>
+      'Photos that are unsuitable will not be published.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'You can switch back to private at any time and the public copy is deleted.';
+
+  @override
+  String get photoTermsAgree => 'I have read and agree to these terms';
+
+  @override
+  String get photoTermsAgreeButton => 'Agree and continue';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'Waiting for your agreement to the privacy terms';
 }

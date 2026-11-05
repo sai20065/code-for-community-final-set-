@@ -1840,4 +1840,74 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 ಗಂಟೆ ಉತ್ತರ ಬಾರದ ಕಾರಣ ಮುಕ್ತಾಯಗೊಳಿಸಲಾಗಿದೆ';
+
+  @override
+  String get photoRequired => 'ಸಮಸ್ಯೆಯ ಫೋಟೋ ಅಗತ್ಯ';
+
+  @override
+  String get photoPublicNote =>
+      'ನಿಮ್ಮ ಫೋಟೋ ಸಾರ್ವಜನಿಕವಾಗಿ ಕಾಣಿಸುತ್ತದೆ; ಮುಖ ಮತ್ತು ನಂಬರ್ ಪ್ಲೇಟ್ ಮಸುಕಾಗಿರುತ್ತವೆ.';
+
+  @override
+  String get stepAddPhotoRequired => 'ಫೋಟೋ ಸೇರಿಸಿ (ಕಡ್ಡಾಯ)';
+
+  @override
+  String get photoVisTitle => 'ಈ ಫೋಟೋವನ್ನು ಯಾರು ನೋಡಬಹುದು?';
+
+  @override
+  String get photoVisPrivate => 'ಖಾಸಗಿ';
+
+  @override
+  String get photoVisPrivateNote =>
+      'ನಿಮ್ಮ ಪ್ರದೇಶದ ಅಧಿಕಾರಿಗಳು, ಅವರ ತಂಡ ಮತ್ತು ಅಡ್ಮಿನ್ ಮಾತ್ರ ನೋಡುತ್ತಾರೆ. ಬೇರೆ ಯಾರೂ ಇಲ್ಲ.';
+
+  @override
+  String get photoVisFaces => 'ಸಾರ್ವಜನಿಕ, ಮುಖ ಮತ್ತು ನಂಬರ್ ಪ್ಲೇಟ್ ಮಸುಕು';
+
+  @override
+  String get photoVisFacesNote =>
+      'ಸಾರ್ವಜನಿಕ ಫೀಡ್‌ನಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ. ಜನರು ಮತ್ತು ವಾಹನಗಳನ್ನು ಗುರುತಿಸಲಾಗದು.';
+
+  @override
+  String get photoVisFull => 'ಸಾರ್ವಜನಿಕ, ಪೂರ್ತಿ ಫೋಟೋ ಮಸುಕು';
+
+  @override
+  String get photoVisFullNote =>
+      'ಸಾರ್ವಜನಿಕ ಫೀಡ್‌ನಲ್ಲಿ ಮಸುಕು ಚಿತ್ರವಾಗಿ ಕಾಣಿಸುತ್ತದೆ. ಸ್ಥಳ ಗುರುತಿಸಲಾಗದು.';
+
+  @override
+  String get photoTermsTitle => 'ಫೋಟೋ ಗೌಪ್ಯತೆ ನಿಯಮಗಳು';
+
+  @override
+  String get photoTermsPoint1 =>
+      'ನಿಮ್ಮ ಫೋಟೋದ ಮಸುಕು ಪ್ರತಿ ಸಾರ್ವಜನಿಕ ಫೀಡ್ ಮತ್ತು ವರದಿ ಕಾರ್ಡ್‌ನಲ್ಲಿ, ಸಣ್ಣ ಸಾರಾಂಶ ಮತ್ತು ಪ್ರದೇಶದೊಂದಿಗೆ ಕಾಣಿಸುತ್ತದೆ.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'ನಿಮ್ಮ ಹೆಸರು, ಫೋನ್ ಸಂಖ್ಯೆ, ವಿಳಾಸ ಮತ್ತು ನಿಖರ ಸ್ಥಳ ಎಂದಿಗೂ ತೋರಿಸುವುದಿಲ್ಲ. ಮೂಲ ಫೋಟೋ ಖಾಸಗಿಯಾಗಿರುತ್ತದೆ.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'ಮೂಲ ಫೋಟೋವನ್ನು ನಿಮ್ಮ ಪ್ರದೇಶದ ಅಧಿಕಾರಿಗಳು, ನಿಮ್ಮ ವರದಿಗೆ ನಿಯೋಜಿತ ತಂಡದ ಸದಸ್ಯ ಮತ್ತು ಅಡ್ಮಿನ್ ಯಾವಾಗಲೂ ನೋಡುತ್ತಾರೆ.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'ಮಸುಕುಗೊಳಿಸುವಿಕೆ ಸ್ವಯಂಚಾಲಿತ, ಕೆಲವು ತಪ್ಪಬಹುದು. ಜನರ ಮುಖ, ಮನೆ ಸಂಖ್ಯೆ ಅಥವಾ ದಾಖಲೆಗಳ ಫೋಟೋ ತೆಗೆಯಬೇಡಿ.';
+
+  @override
+  String get photoTermsPoint5 => 'ಅನುಚಿತ ಫೋಟೋಗಳನ್ನು ಪ್ರಕಟಿಸಲಾಗುವುದಿಲ್ಲ.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'ನೀವು ಯಾವಾಗ ಬೇಕಾದರೂ ಖಾಸಗಿಗೆ ಮರಳಬಹುದು; ಸಾರ್ವಜನಿಕ ಪ್ರತಿ ಅಳಿಸಲಾಗುತ್ತದೆ.';
+
+  @override
+  String get photoTermsAgree => 'ನಾನು ಈ ನಿಯಮಗಳನ್ನು ಓದಿದ್ದೇನೆ ಮತ್ತು ಒಪ್ಪುತ್ತೇನೆ';
+
+  @override
+  String get photoTermsAgreeButton => 'ಒಪ್ಪಿ ಮುಂದುವರಿಸಿ';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'ಗೌಪ್ಯತೆ ನಿಯಮಗಳಿಗೆ ನಿಮ್ಮ ಒಪ್ಪಿಗೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ';
 }

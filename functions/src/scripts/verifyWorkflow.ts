@@ -60,7 +60,7 @@ check("leaderboard counts closed as fixed", board[0].fixed === 3 && board[0].ope
 const row = (over: Partial<Row>): Row => ({
   id: "x", tokenId: "T", theme: "water", status: "new", districtId: "D1", taluk: "T1", assemblyId: "A1",
   clusterId: "C1", priority: 3, createdMs: NOW - 5 * 86400000, assignedToUid: null, assignedToName: null,
-  closeState: "none", reopened: false, summary: "", ...over,
+  closeState: "none", reopened: false, summary: "", hasPhoto: false, ...over,
 });
 const rows = [
   row({id: "1"}), row({id: "2", assignedToUid: "w", assignedToName: "Ravi"}),

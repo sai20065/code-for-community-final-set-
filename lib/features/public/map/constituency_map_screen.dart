@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import '../../../app/navigation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -184,14 +185,14 @@ class ConstituencyMapScreen extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/public/dashboard'),
+              goBackOrHome(context, citizenFallback: '/public/dashboard'),
         ),
         title: Text(l10n.boothDemandMap),
         actions: [
           IconButton(
             icon: const Icon(Icons.tune_rounded),
             tooltip: 'Change area',
-            onPressed: () => context.go('/public/area'),
+            onPressed: () => context.push('/public/area'),
           ),
         ],
       ),
@@ -205,7 +206,7 @@ class ConstituencyMapScreen extends ConsumerWidget {
                     Text(l10n.chooseConstituency, textAlign: TextAlign.center),
                     const SizedBox(height: 16),
                     FilledButton.icon(
-                      onPressed: () => context.go('/public/area'),
+                      onPressed: () => context.push('/public/area'),
                       icon: const Icon(Icons.travel_explore_rounded),
                       label: const Text('Pick a district'),
                     ),

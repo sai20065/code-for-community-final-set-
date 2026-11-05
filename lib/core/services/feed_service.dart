@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../models/feed_comment_model.dart';
+import '../models/photo_visibility.dart';
 import '../models/public_models.dart';
 
 /// One page of the citizen feed, plus the cursor for the next.
@@ -102,8 +103,22 @@ class FeedService {
         .map((s) => s.docs.map((d) => d.id).toSet());
   }
 
-  /// The reporter's consent switch for showing a blurred copy of their photo
-  /// in the feed; the server publishes or withdraws it.
-  Future<void> setPhotoPublic(String submissionId, bool value) =>
-      _db.collection('submissions').doc(submissionId).update({'photoPublic': value});
+  /// The reporter's choice of who sees the photo. Going public stores the
+  /// blur mode, and (when [recordConsent]) their agreement to the privacy
+  /// terms; the server then publishes, or withdraws, the public copy.
+  /// Officials and the admin see the original either way.
+  Future<void> setPhotoVisibility(
+    String submissionId,
+    PhotoVisibility choice, {
+    bool recordConsent = false,
+  }) =>
+      _db.collection('submissions').doc(submissionId).update({
+        'photoPublic': choice.isPublic,
+        if (choice.isPublic) 'photoBlur': choice.blurMode,
+        if (choice.isPublic && recordConsent)
+          'photoConsent': {
+            'termsVersion': kPhotoTermsVersion,
+            'acceptedAt': FieldValue.serverTimestamp(),
+          },
+      });
 }

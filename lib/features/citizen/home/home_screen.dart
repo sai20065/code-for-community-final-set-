@@ -149,7 +149,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             icon: Icons.dashboard_rounded,
                             tint: AppColors.indigo,
                             label: l10n.seePublicDashboard,
-                            onTap: () => context.go('/public/dashboard'),
+                            onTap: () => context.push('/public/dashboard'),
                           ),
                           const SizedBox(height: 10),
                           // Moved here from the signed-out Welcome screen: a
@@ -162,7 +162,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             tint: AppColors.teal,
                             label: l10n.exploreYourArea,
                             subtitle: 'District, taluk and ward maps',
-                            onTap: () => context.go('/public/area'),
+                            onTap: () => context.push('/public/area'),
                           ),
                           const SizedBox(height: 10),
                           _HomeLinkCard(
@@ -170,7 +170,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             tint: AppColors.vermilion,
                             label: l10n.liveReportMap,
                             subtitle: l10n.liveReportMapSubtitle,
-                            onTap: () => context.go('/public/karnataka'),
+                            onTap: () => context.push('/public/karnataka'),
                           ),
                           const SizedBox(height: 10),
                           _HomeLinkCard(

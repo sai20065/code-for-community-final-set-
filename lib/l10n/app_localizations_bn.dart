@@ -1831,4 +1831,74 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '৪৮ ঘণ্টায় উত্তর না পাওয়ায় বন্ধ করা হয়েছে';
+
+  @override
+  String get photoRequired => 'সমস্যার ছবি দিতে হবে';
+
+  @override
+  String get photoPublicNote =>
+      'আপনার ছবি সবার জন্য দেখানো হবে; মুখ ও নম্বর প্লেট ঝাপসা করা হবে।';
+
+  @override
+  String get stepAddPhotoRequired => 'ছবি যোগ করুন (আবশ্যক)';
+
+  @override
+  String get photoVisTitle => 'এই ছবি কে দেখতে পারবে?';
+
+  @override
+  String get photoVisPrivate => 'ব্যক্তিগত';
+
+  @override
+  String get photoVisPrivateNote =>
+      'শুধু আপনার এলাকার আধিকারিক, তাঁদের দল ও অ্যাডমিন দেখবেন। আর কেউ নয়।';
+
+  @override
+  String get photoVisFaces => 'সবার জন্য, মুখ ও নম্বর প্লেট ঝাপসা';
+
+  @override
+  String get photoVisFacesNote =>
+      'পাবলিক ফিডে দেখা যাবে। মানুষ ও গাড়ি চেনা যাবে না।';
+
+  @override
+  String get photoVisFull => 'সবার জন্য, পুরো ছবি ঝাপসা';
+
+  @override
+  String get photoVisFullNote =>
+      'পাবলিক ফিডে ঝাপসা ছবি হিসেবে দেখা যাবে। জায়গা চেনা যাবে না।';
+
+  @override
+  String get photoTermsTitle => 'ছবির গোপনীয়তার শর্ত';
+
+  @override
+  String get photoTermsPoint1 =>
+      'আপনার ছবির ঝাপসা কপি পাবলিক ফিড ও রিপোর্ট কার্ডে, ছোট সারাংশ ও এলাকাসহ দেখা যাবে।';
+
+  @override
+  String get photoTermsPoint2 =>
+      'আপনার নাম, ফোন নম্বর, ঠিকানা ও সঠিক অবস্থান কখনও দেখানো হয় না। আসল ছবি ব্যক্তিগতই থাকে।';
+
+  @override
+  String get photoTermsPoint3 =>
+      'আসল ছবি সবসময় আপনার এলাকার আধিকারিক, আপনার রিপোর্টে নিযুক্ত দলের সদস্য ও অ্যাডমিন দেখেন।';
+
+  @override
+  String get photoTermsPoint4 =>
+      'ঝাপসা করা স্বয়ংক্রিয়, কিছু বাদ পড়তে পারে। মানুষের মুখ, বাড়ির নম্বর বা নথির ছবি তুলবেন না।';
+
+  @override
+  String get photoTermsPoint5 => 'অনুপযুক্ত ছবি প্রকাশ করা হবে না।';
+
+  @override
+  String get photoTermsPoint6 =>
+      'আপনি যেকোনো সময় ব্যক্তিগতে ফিরতে পারেন; পাবলিক কপি মুছে যাবে।';
+
+  @override
+  String get photoTermsAgree => 'আমি এই শর্তগুলি পড়েছি এবং সম্মত';
+
+  @override
+  String get photoTermsAgreeButton => 'সম্মত হয়ে এগিয়ে যান';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'গোপনীয়তার শর্তে আপনার সম্মতির অপেক্ষায়';
 }

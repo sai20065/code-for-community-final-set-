@@ -1833,4 +1833,74 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 ਘੰਟੇ ਜਵਾਬ ਨਾ ਮਿਲਣ ਕਾਰਨ ਬੰਦ ਕੀਤਾ';
+
+  @override
+  String get photoRequired => 'ਸਮੱਸਿਆ ਦੀ ਫੋਟੋ ਜ਼ਰੂਰੀ ਹੈ';
+
+  @override
+  String get photoPublicNote =>
+      'ਤੁਹਾਡੀ ਫੋਟੋ ਜਨਤਕ ਤੌਰ \'ਤੇ ਦਿਖਾਈ ਜਾਵੇਗੀ; ਚਿਹਰੇ ਅਤੇ ਨੰਬਰ ਪਲੇਟਾਂ ਧੁੰਦਲੀਆਂ ਹੋਣਗੀਆਂ।';
+
+  @override
+  String get stepAddPhotoRequired => 'ਫੋਟੋ ਜੋੜੋ (ਜ਼ਰੂਰੀ)';
+
+  @override
+  String get photoVisTitle => 'ਇਹ ਫੋਟੋ ਕੌਣ ਦੇਖ ਸਕਦਾ ਹੈ?';
+
+  @override
+  String get photoVisPrivate => 'ਨਿੱਜੀ';
+
+  @override
+  String get photoVisPrivateNote =>
+      'ਸਿਰਫ਼ ਤੁਹਾਡੇ ਖੇਤਰ ਦੇ ਅਧਿਕਾਰੀ, ਉਨ੍ਹਾਂ ਦੀ ਟੀਮ ਅਤੇ ਐਡਮਿਨ ਦੇਖਦੇ ਹਨ। ਹੋਰ ਕੋਈ ਨਹੀਂ।';
+
+  @override
+  String get photoVisFaces => 'ਜਨਤਕ, ਚਿਹਰੇ ਅਤੇ ਨੰਬਰ ਪਲੇਟਾਂ ਧੁੰਦਲੀਆਂ';
+
+  @override
+  String get photoVisFacesNote =>
+      'ਜਨਤਕ ਫੀਡ ਵਿੱਚ ਦਿਖੇਗੀ। ਲੋਕ ਅਤੇ ਵਾਹਨ ਪਛਾਣੇ ਨਹੀਂ ਜਾ ਸਕਣਗੇ।';
+
+  @override
+  String get photoVisFull => 'ਜਨਤਕ, ਪੂਰੀ ਫੋਟੋ ਧੁੰਦਲੀ';
+
+  @override
+  String get photoVisFullNote =>
+      'ਜਨਤਕ ਫੀਡ ਵਿੱਚ ਧੁੰਦਲੀ ਤਸਵੀਰ ਵਜੋਂ ਦਿਖੇਗੀ। ਥਾਂ ਪਛਾਣੀ ਨਹੀਂ ਜਾ ਸਕੇਗੀ।';
+
+  @override
+  String get photoTermsTitle => 'ਫੋਟੋ ਪਰਦੇਦਾਰੀ ਦੀਆਂ ਸ਼ਰਤਾਂ';
+
+  @override
+  String get photoTermsPoint1 =>
+      'ਤੁਹਾਡੀ ਫੋਟੋ ਦੀ ਧੁੰਦਲੀ ਕਾਪੀ ਜਨਤਕ ਫੀਡ ਅਤੇ ਰਿਪੋਰਟ ਕਾਰਡ \'ਤੇ, ਛੋਟੇ ਸਾਰ ਅਤੇ ਖੇਤਰ ਨਾਲ ਦਿਖੇਗੀ।';
+
+  @override
+  String get photoTermsPoint2 =>
+      'ਤੁਹਾਡਾ ਨਾਮ, ਫ਼ੋਨ ਨੰਬਰ, ਪਤਾ ਅਤੇ ਸਹੀ ਥਾਂ ਕਦੇ ਨਹੀਂ ਦਿਖਾਈ ਜਾਂਦੀ। ਅਸਲ ਫੋਟੋ ਨਿੱਜੀ ਰਹਿੰਦੀ ਹੈ।';
+
+  @override
+  String get photoTermsPoint3 =>
+      'ਅਸਲ ਫੋਟੋ ਹਮੇਸ਼ਾ ਤੁਹਾਡੇ ਖੇਤਰ ਦੇ ਅਧਿਕਾਰੀ, ਤੁਹਾਡੀ ਰਿਪੋਰਟ ਨੂੰ ਸੌਂਪਿਆ ਟੀਮ ਮੈਂਬਰ ਅਤੇ ਐਡਮਿਨ ਦੇਖਦੇ ਹਨ।';
+
+  @override
+  String get photoTermsPoint4 =>
+      'ਧੁੰਦਲਾ ਕਰਨਾ ਆਪਣੇ-ਆਪ ਹੁੰਦਾ ਹੈ, ਕੁਝ ਰਹਿ ਸਕਦਾ ਹੈ। ਲੋਕਾਂ ਦੇ ਚਿਹਰੇ, ਮਕਾਨ ਨੰਬਰ ਜਾਂ ਦਸਤਾਵੇਜ਼ਾਂ ਦੀ ਫੋਟੋ ਨਾ ਲਓ।';
+
+  @override
+  String get photoTermsPoint5 => 'ਅਣਉਚਿਤ ਫੋਟੋਆਂ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ।';
+
+  @override
+  String get photoTermsPoint6 =>
+      'ਤੁਸੀਂ ਕਦੇ ਵੀ ਨਿੱਜੀ \'ਤੇ ਵਾਪਸ ਜਾ ਸਕਦੇ ਹੋ; ਜਨਤਕ ਕਾਪੀ ਮਿਟਾ ਦਿੱਤੀ ਜਾਵੇਗੀ।';
+
+  @override
+  String get photoTermsAgree => 'ਮੈਂ ਇਹ ਸ਼ਰਤਾਂ ਪੜ੍ਹੀਆਂ ਹਨ ਅਤੇ ਸਹਿਮਤ ਹਾਂ';
+
+  @override
+  String get photoTermsAgreeButton => 'ਸਹਿਮਤ ਹੋ ਕੇ ਅੱਗੇ ਵਧੋ';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'ਪਰਦੇਦਾਰੀ ਸ਼ਰਤਾਂ ਲਈ ਤੁਹਾਡੀ ਸਹਿਮਤੀ ਦੀ ਉਡੀਕ';
 }

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'photo_visibility.dart';
+
 enum SubmissionType { voice, text, photo, video }
 
 /// `closed` = fixed and signed off: the citizen confirmed it, or an admin or
@@ -151,6 +153,12 @@ class SubmissionModel {
   /// feed. Off unless they switch it on.
   final bool photoPublic;
 
+  /// `faces` (faces and plates blurred) or `full` (whole photo blurred); the
+  /// citizen's choice when [photoPublic]. [photoTermsVersion] is the privacy
+  /// terms version they agreed to.
+  final String? photoBlur;
+  final String? photoTermsVersion;
+
   /// Server-written state of that public copy: processing, published,
   /// rejected, error or withdrawn. Read-only on the client.
   final String? publicPhotoStatus;
@@ -188,6 +196,8 @@ class SubmissionModel {
     this.supporterIds = const [],
     this.suggestedOffice,
     this.photoPublic = false,
+    this.photoBlur,
+    this.photoTermsVersion,
     this.publicPhotoStatus,
     this.fixedAt,
     this.citizenResponseKind,
@@ -265,6 +275,8 @@ class SubmissionModel {
         (map['suggestedOffice'] as Map?)?.cast<String, dynamic>(),
       ),
       photoPublic: map['photoPublic'] == true,
+      photoBlur: map['photoBlur'] as String?,
+      photoTermsVersion: (map['photoConsent'] as Map?)?['termsVersion'] as String?,
       publicPhotoStatus: (map['publicPhoto'] as Map?)?['status'] as String?,
       fixedAt: (map['fixedAt'] as Timestamp?)?.toDate(),
       citizenResponseKind: (map['citizenResponse'] as Map?)?['kind'] as String?,
@@ -284,7 +296,15 @@ class SubmissionModel {
       'rawText': rawText,
       'mediaUrl': mediaUrl,
       if (audioUrl != null) 'audioUrl': audioUrl,
-      if (photoPublic) 'photoPublic': true,
+      if (photoPublic) ...{
+        'photoPublic': true,
+        'photoBlur': photoBlur ?? 'faces',
+        // The citizen agreed to the privacy terms before choosing this.
+        'photoConsent': {
+          'termsVersion': photoTermsVersion ?? kPhotoTermsVersion,
+          'acceptedAt': FieldValue.serverTimestamp(),
+        },
+      },
       'transcript': transcript,
       'translatedText': translatedText,
       'language': language,

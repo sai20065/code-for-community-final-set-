@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
+import '../../../app/theme.dart';
+import '../../../core/models/photo_visibility.dart';
 import '../../../core/models/submission_model.dart';
 import '../../../core/services/feed_service.dart';
 import '../../../core/services/firestore_service.dart';
+import '../privacy/photo_visibility_picker.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/google_maps_directions_button.dart';
 import '../../../shared/widgets/status_stepper.dart';
@@ -63,7 +67,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.canPop() ? context.pop() : context.go('/reports'),
+            onPressed: () => goBackOrHome(context, citizenFallback: '/reports'),
           ),
         ),
         body: const Center(child: CircularProgressIndicator()),
@@ -75,7 +79,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.canPop() ? context.pop() : context.go('/reports'),
+            onPressed: () => goBackOrHome(context, citizenFallback: '/reports'),
           ),
         ),
         body: Center(child: Text(l10n.ticketNotFound)),
@@ -85,7 +89,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/reports'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/reports'),
         ),
         title: Text(s.tokenId),
       ),
@@ -131,9 +135,9 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
   }
 }
 
-/// The reporter's switch for showing a blurred copy of their photo in the
-/// public feed, with what the server did about it. Follows the ticket doc,
-/// because publishing takes a few seconds.
+/// The reporter's choice of who sees the photo, and what happened to its
+/// public, blurred copy. Follows the ticket doc, because publishing takes a
+/// few seconds.
 class _PhotoConsent extends StatelessWidget {
   const _PhotoConsent({required this.submissionId, required this.initial});
 
@@ -148,19 +152,40 @@ class _PhotoConsent extends StatelessWidget {
       initialData: initial,
       builder: (context, snap) {
         final s = snap.data ?? initial;
-        final status = switch (s.photoPublic ? s.publicPhotoStatus : null) {
-          'processing' => l10n.photoStatusProcessing,
-          'published' => l10n.photoStatusPublished,
-          'rejected' => l10n.photoStatusRejected,
-          'error' => l10n.photoStatusError,
-          _ => l10n.showPhotoInFeedNote,
-        };
-        return SwitchListTile.adaptive(
-          contentPadding: EdgeInsets.zero,
-          value: s.photoPublic,
-          onChanged: (v) => FeedService().setPhotoPublic(submissionId, v),
-          title: Text(l10n.showPhotoInFeed, style: const TextStyle(fontWeight: FontWeight.w600)),
-          subtitle: Text(status),
+        final visibility =
+            PhotoVisibilityFields.from(photoPublic: s.photoPublic, blur: s.photoBlur);
+        final status = !s.photoPublic
+            ? null
+            : switch (s.publicPhotoStatus) {
+                'processing' => l10n.photoStatusProcessing,
+                'published' => l10n.photoStatusPublished,
+                'rejected' => l10n.photoStatusRejected,
+                'error' => l10n.photoStatusError,
+                'needs_consent' => l10n.photoStatusNeedsConsent,
+                _ => l10n.photoStatusProcessing,
+              };
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PhotoVisibilityPicker(
+              value: visibility,
+              consented: s.photoTermsVersion == kPhotoTermsVersion,
+              onChanged: (choice, {agreed = false}) => FeedService()
+                  .setPhotoVisibility(submissionId, choice, recordConsent: agreed),
+            ),
+            if (status != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(2, 0, 2, 4),
+                child: Row(children: [
+                  const Icon(Icons.public_rounded, size: 16, color: AppColors.inkFaint),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(status,
+                        style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                  ),
+                ]),
+              ),
+          ],
         );
       },
     );

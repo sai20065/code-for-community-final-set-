@@ -117,6 +117,24 @@ export async function toJpeg(img: JimpImage, quality = 82): Promise<Buffer> {
   return img.getBuffer("image/jpeg", {quality});
 }
 
+/**
+ * The "blur the whole photo" public copy: shrunk first (a blurred image
+ * needs no detail, and a big blur on a big image is slow), then blurred
+ * twice so no face, plate or sign is recognisable. EXIF is dropped by the
+ * re-encode, as for every public copy.
+ */
+export const FULL_BLUR_PX = 540;
+
+export async function renderFullyBlurred(
+  img: JimpImage,
+): Promise<{buffer: Buffer; width: number; height: number}> {
+  img.scaleToFit({w: FULL_BLUR_PX, h: FULL_BLUR_PX});
+  const radius = Math.max(10, Math.round(Math.max(img.bitmap.width, img.bitmap.height) / 28));
+  img.blur(radius).blur(radius);
+  const buffer = await toJpeg(img, 75);
+  return {buffer, width: img.bitmap.width, height: img.bitmap.height};
+}
+
 /** Blur, shrink and re-encode: the public copy. */
 export async function renderPublicCopy(
   img: JimpImage,

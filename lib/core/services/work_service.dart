@@ -55,6 +55,7 @@ class WorkerTask {
     required this.closeState,
     required this.reopened,
     this.fixedAt,
+    this.hasPhoto = false,
   });
 
   final String id;
@@ -63,6 +64,9 @@ class WorkerTask {
   final String? theme;
   final String status;
   final String area;
+
+  /// The report has a photo; the worker opens the original with `ticketPhoto`.
+  final bool hasPhoto;
   final double? lat;
   final double? lng;
   final String? note;
@@ -92,6 +96,7 @@ class WorkerTask {
             : null,
         closeState: m['closeState'] as String? ?? 'none',
         reopened: m['reopened'] == true,
+        hasPhoto: m['hasPhoto'] == true,
       );
 }
 
@@ -250,6 +255,13 @@ class WorkService {
       if (reason != null && reason.trim().isNotEmpty) 'reason': reason.trim(),
     });
     return (r['closed'] as num?)?.toInt() ?? 0;
+  }
+
+  /// The original report photo URL, for the people who handle the report
+  /// (admin, the area's officials, the assigned worker). Null when there is none.
+  Future<String?> ticketPhoto(String ticketId) async {
+    final r = await _call('getTicketPhoto', {'ticketId': ticketId});
+    return r['url'] as String?;
   }
 
   Future<List<WorkerTask>> myTasks() async {

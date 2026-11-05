@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
@@ -39,7 +40,7 @@ class MyReportsScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/home'),
         ),
         title: Text(l10n.myTicketsTitle),
       ),

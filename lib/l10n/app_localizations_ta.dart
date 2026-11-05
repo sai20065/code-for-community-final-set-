@@ -1863,4 +1863,75 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get fixClosedAuto => '48 மணி நேரம் பதில் வராததால் மூடப்பட்டது';
+
+  @override
+  String get photoRequired => 'பிரச்சனையின் புகைப்படம் தேவை';
+
+  @override
+  String get photoPublicNote =>
+      'உங்கள் புகைப்படம் பொதுவில் தெரியும்; முகங்களும் எண் தகடுகளும் மங்கலாக்கப்படும்.';
+
+  @override
+  String get stepAddPhotoRequired => 'புகைப்படம் சேர்க்கவும் (அவசியம்)';
+
+  @override
+  String get photoVisTitle => 'இந்த புகைப்படத்தை யார் பார்க்கலாம்?';
+
+  @override
+  String get photoVisPrivate => 'தனிப்பட்டது';
+
+  @override
+  String get photoVisPrivateNote =>
+      'உங்கள் பகுதி அதிகாரிகள், அவர்களின் குழு மற்றும் நிர்வாகி மட்டுமே பார்ப்பார்கள். வேறு யாரும் இல்லை.';
+
+  @override
+  String get photoVisFaces => 'பொது, முகங்களும் எண் தகடுகளும் மங்கல்';
+
+  @override
+  String get photoVisFacesNote =>
+      'பொது ஃபீடில் தெரியும். மக்களையும் வாகனங்களையும் அடையாளம் காண முடியாது.';
+
+  @override
+  String get photoVisFull => 'பொது, முழு புகைப்படமும் மங்கல்';
+
+  @override
+  String get photoVisFullNote =>
+      'பொது ஃபீடில் மங்கலான படமாகத் தெரியும். இடத்தை அடையாளம் காண முடியாது.';
+
+  @override
+  String get photoTermsTitle => 'புகைப்பட தனியுரிமை விதிமுறைகள்';
+
+  @override
+  String get photoTermsPoint1 =>
+      'உங்கள் புகைப்படத்தின் மங்கலான நகல் பொது ஃபீடிலும் புகார் அட்டையிலும், சிறு சுருக்கம் மற்றும் பகுதியுடன் தெரியும்.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'உங்கள் பெயர், தொலைபேசி எண், முகவரி, துல்லிய இடம் ஒருபோதும் காட்டப்படாது. அசல் புகைப்படம் தனிப்பட்டதாகவே இருக்கும்.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'அசல் புகைப்படத்தை உங்கள் பகுதி அதிகாரிகள், உங்கள் புகாருக்கு நியமிக்கப்பட்ட குழு உறுப்பினர், நிர்வாகி எப்போதும் பார்ப்பார்கள்.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'மங்கலாக்குதல் தானியங்கியானது; சிலவற்றை தவறவிடலாம். மக்களின் முகம், வீட்டு எண், ஆவணங்களைப் படம் எடுக்க வேண்டாம்.';
+
+  @override
+  String get photoTermsPoint5 => 'பொருத்தமற்ற புகைப்படங்கள் வெளியிடப்படாது.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'எப்போது வேண்டுமானாலும் தனிப்பட்டதற்கு மாறலாம்; பொது நகல் நீக்கப்படும்.';
+
+  @override
+  String get photoTermsAgree =>
+      'நான் இந்த விதிமுறைகளைப் படித்து ஒப்புக்கொள்கிறேன்';
+
+  @override
+  String get photoTermsAgreeButton => 'ஒப்புக்கொண்டு தொடரவும்';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'தனியுரிமை விதிமுறைகளுக்கு உங்கள் ஒப்புதலுக்காகக் காத்திருக்கிறது';
 }

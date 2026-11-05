@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
@@ -49,7 +50,7 @@ class SubmissionConfirmationScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/home'),
         ),
         title: Text(isSuggestion ? l10n.badgeSuggestion : l10n.badgeReport),
       ),
@@ -156,7 +157,7 @@ class SubmissionConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
-                onPressed: () => context.go('/public/karnataka'),
+                onPressed: () => context.push('/public/karnataka'),
                 icon: const Icon(Icons.public_rounded, size: 18),
                 label: Text(l10n.seeOnLiveMap),
               ),

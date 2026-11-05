@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/public_data_providers.dart';
@@ -42,7 +43,7 @@ class _SolutionCardScreenState extends ConsumerState<SolutionCardScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/public/dashboard'),
+              goBackOrHome(context, citizenFallback: '/public/dashboard'),
         ),
         title: Text(l10n.solutionCardTitle),
       ),
@@ -246,7 +247,7 @@ class _CardBody extends ConsumerWidget {
           const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: () =>
-                context.go('/official/transcript/${card.clusterId}'),
+                context.push('/official/transcript/${card.clusterId}'),
             icon: const Icon(Icons.forum_outlined, size: 18),
             label: Text(l10n.viewAgentTranscript),
           ),

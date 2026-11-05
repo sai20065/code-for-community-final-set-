@@ -1,3 +1,4 @@
+import '../../../shared/widgets/ticket_photo_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -185,6 +186,7 @@ class _TaskCardState extends ConsumerState<_TaskCard> {
               if (t.lat != null && t.lng != null)
                 GoogleMapsDirectionsButton(
                     lat: t.lat!, lng: t.lng!, compact: true),
+              if (t.hasPhoto) ViewPhotoButton(ticketId: t.id),
               if (t.status == 'new' || t.status == 'reviewed')
                 OutlinedButton(
                   onPressed: _busy
@@ -212,6 +214,10 @@ class _TaskCardState extends ConsumerState<_TaskCard> {
                         fontSize: 12, color: AppColors.inkFaint)),
               if (t.closeState == 'closeable')
                 FilledButton.tonalIcon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.indigoMist,
+                    foregroundColor: AppColors.indigoDeep,
+                  ),
                   icon: const Icon(Icons.lock_outline_rounded, size: 18),
                   label: const Text('Close ticket'),
                   onPressed: _busy
