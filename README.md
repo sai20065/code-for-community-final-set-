@@ -17,7 +17,7 @@ An AI platform for constituency development planning. Citizens suggest developme
 
 ## Tech stack
 - **App:** Flutter, Riverpod, go_router
-- **Backend:** Firebase (Firestore in asia-south1, Auth, Cloud Functions on Node 20 / TypeScript)
+- **Backend:** Firebase (Firestore in asia-south1, Auth, Cloud Functions v2 on Node 22 / TypeScript, region asia-south1)
 - **AI:** Gemini 3.8 via Vertex AI, plus Cloud Translate
 - **Maps:** OpenFreeMap vector tiles on Android, OpenStreetMap raster tiles on web and as the fallback (flutter_map), Nominatim for addresses. All free, no API keys. Directions open in Google Maps via a plain link, also keyless.
 - **Wards:** two Bengaluru layers, switchable on the map — the 369 GBA wards (2025) and the 198 BBMP wards (2010, DataMeet, CC BY-SA 2.5 India).
@@ -68,6 +68,21 @@ The welcome screen has three sections:
 - **Ranked Works:** rank badges with score bars for demand, demographics and infrastructure gap.
 - **Compare Proposals:** pick two works and compare them side by side, with a recommendation that cites the numbers.
 - **Problem Reports:** ticket management for problem-type tickets only.
+- **Photos:** a **View photo** button opens the original photo, whatever the citizen chose for public visibility.
+
+## Assigning work and closing the loop
+- **Field workers:** a District Commissioner, MLA or MP creates field workers (), lists and deactivates them. Workers see only the tasks assigned to them () at , and update status with a photo. Officials manage the team at .
+- **Assign:** officials assign a ticket in their own area to a named worker () and move it through statuses (). Every role check runs on the server.
+- **Citizen confirms:** when work is marked done, the citizen is asked whether it is really fixed (). If not, the ticket reopens.
+- **48-hour rule:** if the citizen does not answer within 48 hours, an official, admin or the worker can close the ticket manually (). Nothing closes automatically. Closed tickets count as resolved on the leaderboard.
+- **Admin issues dashboard:** statewide, with similar issues grouped by district, taluk, constituency, type, status or assignee ().
+
+## Photo visibility and consent
+- A photo is **required** for a problem report.
+- The citizen chooses: **Private** (default), **Public with faces and number plates blurred**, or **Public with the whole photo blurred**.
+- Choosing a public option needs the privacy terms to be accepted (versioned, ). The server refuses to publish without that consent ().
+- Blur uses Google Cloud Vision (safe-search, faces, plates) and jimp, and strips EXIF. Switching back to Private deletes the public copy.
+- Officials for the area, assigned workers and admins can always open the original (); the public feed, cards and map show only the blurred copy.
 
 ## Identity and privacy rules
 - Citizens never give an email, phone number or ID. The username maps to an undeliverable synthetic address (`<username>@citizen.prajadhwani.app`) inside Firebase Auth.
@@ -89,6 +104,10 @@ The welcome screen has three sections:
 - ✅ Android and iOS apps are registered (`com.prajadhvani.app`).
 - ✅ Cloud Functions: AI pipeline (`onSubmissionCreated`, `transcribeAndTranslate`), agents, public projections, MP credentials, and citizen password recovery (`setSecurityQuestion`, `getSecurityQuestion`, `resetPasswordWithSecurityQuestion`). Aadhaar OCR was removed.
 - ✅ Blaze billing is attached, and Gemini runs through Vertex AI with no API key.
+- ✅ Field-worker assignment, admin issues dashboard, 48-hour confirm window and manual close.
+- ✅ Citizen-chosen photo visibility with blur and privacy terms.
+- ✅ Tests:  (32 checks),  (16 checks) and 64 Flutter tests.
+- ⏳ No real-citizen pilot has run yet. Department Hub (inter-department transfer) is planned.
 - ⏳ Booth and constituency data is a Bengaluru demo set. Swap in the real dataset when ready.
 
 ## Getting started
@@ -104,6 +123,10 @@ The welcome screen has three sections:
 - **Signing:** a stable debug keystore is committed at `ci-keystore/prajadhvani-debug.keystore`, so every build has the same SHA fingerprint.
 - **Play Store release:** it needs its own upload key, with that SHA registered in Firebase.
 - **Nominatim:** the public instance is limited to about 1 request per second, so self-host it at scale.
+
+## Docs
+- `docs/` holds the SEVA First application and the business and governance concept report (latest: v4).
+- Live web app: https://code-for-community-e2cf2.web.app
 
 ## Key docs
 - `PrajaDhvani_ClaudeCode_BuildPrompt.md` has the full spec, design system and data model.
