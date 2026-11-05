@@ -16,12 +16,16 @@ import '../../../shared/widgets/onboarding_progress_stepper.dart';
 import '../../../shared/widgets/primary_button.dart';
 
 /// Step 3 of 4, built as a 2-page `PageView` sharing one stepper position:
-/// sub-step A pincode entry (prefilled from Aadhaar OCR if available), sub-
+/// sub-step A pincode entry, sub-
 /// step B confirm on an OpenStreetMap view — tap anywhere to drop the pin
 /// (flutter_map has no built-in drag-marker gesture, so tap-to-move is used
 /// instead of drag).
 class LocationSetupScreen extends ConsumerStatefulWidget {
-  const LocationSetupScreen({super.key});
+  const LocationSetupScreen({super.key, this.fromProfile = false});
+
+  /// Opened from Profile's "Change home location": saves and returns to
+  /// Profile instead of continuing onboarding.
+  final bool fromProfile;
 
   @override
   ConsumerState<LocationSetupScreen> createState() =>
@@ -115,48 +119,75 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     if (uid == null || _pin == null) return;
 
     setState(() => _saving = true);
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final pincode = _pincodeController.text.trim();
     final match = _boothMatch ?? await _locationService.resolveHomeBooth(pincode);
 
     // Authoritative point-in-polygon lookup against real constituency
-    // boundaries — falls back to the booth/pincode heuristic's guess (if
-    // any) only if the network call itself fails, rather than leaving the
-    // citizen permanently unmapped just because this one lookup hiccuped.
+    // boundaries — retried once, then falls back to the booth/pincode
+    // heuristic's guess (if any) rather than leaving the citizen stuck. The
+    // citizen is told, so a half-mapped profile is never saved silently.
     String? constituencyId = match?.constituencyId;
     ResolvedConstituency? resolved;
+    for (var attempt = 0; attempt < 2 && resolved == null; attempt++) {
+      try {
+        resolved = await _constituencyResolutionService.resolve(
+          lat: _pin!.latitude,
+          lng: _pin!.longitude,
+        );
+        break;
+      } catch (e) {
+        debugPrint('resolveConstituencyForLocation failed: $e');
+      }
+    }
+    if (resolved != null) constituencyId = resolved.constituencyId;
+
     try {
-      resolved = await _constituencyResolutionService.resolve(
+      final existing = await _firestoreService.getUser(uid) ??
+          await _firestoreService.getOrCreateUser(
+              uid: uid, preferredLanguage: 'en');
+      final updated = existing.copyWith(
+        pincodeHome: pincode,
+        addressHome: _addressController.text.trim(),
         lat: _pin!.latitude,
         lng: _pin!.longitude,
+        constituencyId: constituencyId,
+        constituencyName: resolved?.constituencyName,
+        homeBoothId: match?.boothId,
+        homeBoothName: match?.boothName,
+        // The layers that actually place this citizen on a map. Pincode is
+        // kept above for contact/display only — postal areas straddle taluk
+        // and ward boundaries, so an area query keyed on one would put people
+        // in the wrong place.
+        districtId: resolved?.districtId,
+        districtName: resolved?.districtName,
+        talukId: resolved?.talukId,
+        talukName: resolved?.talukName,
+        homeWardId: resolved?.wardId,
+        homeWardName: resolved?.wardName,
+        homeBbmpWardId: resolved?.bbmpWardId,
+        homeBbmpWardName: resolved?.bbmpWardName,
+        assemblyId: resolved?.assemblyId,
+        assemblyName: resolved?.assemblyName,
+        // Onboarding is only complete once the home location is saved.
+        signupCompletedAt: existing.signupCompletedAt ?? DateTime.now(),
       );
-      if (resolved != null) constituencyId = resolved.constituencyId;
-    } catch (_) {
-      // keep the booth/pincode fallback above
+      await _firestoreService.upsertUser(updated);
+    } catch (e) {
+      debugPrint('Saving home location failed: $e');
+      if (!mounted) return;
+      setState(() => _saving = false);
+      messenger.showSnackBar(SnackBar(content: Text(l10n.profileSaveFailed)));
+      return;
     }
-
-    final existing = await _firestoreService.getUser(uid);
-    final updated = (existing ??
-            (throw StateError('User document missing after sign-in')))
-        .copyWith(
-      pincodeHome: pincode,
-      addressHome: _addressController.text.trim(),
-      lat: _pin!.latitude,
-      lng: _pin!.longitude,
-      constituencyId: constituencyId,
-      homeBoothId: match?.boothId,
-      homeBoothName: match?.boothName,
-      // The layers that actually place this citizen on a map. Pincode is
-      // kept above for contact/display only — postal areas straddle taluk
-      // and ward boundaries, so an area query keyed on one would put people
-      // in the wrong place.
-      districtId: resolved?.districtId,
-      districtName: resolved?.districtName,
-      talukId: resolved?.talukId,
-      talukName: resolved?.talukName,
-      homeWardId: resolved?.wardId,
-      homeWardName: resolved?.wardName,
-    );
-    await _firestoreService.upsertUser(updated);
+    if (resolved == null) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.areaNotMatchedYet)));
+    }
+    if (widget.fromProfile) {
+      if (mounted) context.go('/profile');
+      return;
+    }
     await ref
         .read(onboardingProgressProvider.notifier)
         .advanceTo(OnboardingStep.done);
@@ -179,14 +210,16 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/signup/basic-info'),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(widget.fromProfile ? '/profile' : '/signup/basic-info'),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            const OnboardingProgressStepper(currentStep: 3),
+            if (!widget.fromProfile)
+              const OnboardingProgressStepper(currentStep: 3),
             const SizedBox(height: 12),
             Expanded(
               child: PageView(

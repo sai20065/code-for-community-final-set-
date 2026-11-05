@@ -1,24 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum UserRole { citizen, official }
+/// `admin` = Prajadhwani platform admin (approves officials). Granted only
+/// by `functions/src/scripts/makeAdmin.ts`; rules forbid any client write.
+enum UserRole { citizen, official, admin }
 
 /// How a citizen authenticated — persisted so there's a stored record of it,
 /// rather than only being derivable transiently from the current Firebase
-/// Auth session.
-enum SignInMethod { anonymous, phone, email }
+/// Auth session. [password] (username + password) is the only method new
+/// citizens can use; the others are kept so older profiles still parse.
+enum SignInMethod { password, anonymous, phone, email }
 
-/// Identity is Firebase Auth — Anonymous, Phone (OTP), or Email/password,
-/// citizen's choice (no Aadhaar number ever stored regardless of which) —
-/// `users/{uid}` is created the moment sign-in succeeds and filled in
-/// incrementally: name/address/pincode/wardNumber arrive from one-time
-/// Aadhaar OCR extraction (image discarded immediately server-side, never
-/// persisted), age from Basic Info, constituencyId from pincode resolution
-/// in Location Setup. `signupCompletedAt` is the authoritative "this citizen
-/// has a real, saved profile" marker — Sign In trusts it over any local,
-/// per-device onboarding-progress state.
+/// Identity is Firebase Auth username + password (the username is mapped to
+/// a synthetic address internally — see `AuthService`; no email or phone
+/// number is ever asked for or stored). `users/{uid}` is created at Sign Up
+/// with [username] and name, then filled in incrementally: home location
+/// and constituency at Location Setup. `signupCompletedAt` is the
+/// authoritative "this citizen has a real, saved profile" marker — Sign In
+/// trusts it over any local, per-device onboarding-progress state.
 class UserModel {
   final String uid;
   final String? name;
+
+  /// Lowercase login name, unique app-wide via `usernames/{username}`.
+  final String? username;
   final int? age;
   final String? pincodeHome;
   final String? addressHome;
@@ -27,6 +31,10 @@ class UserModel {
   final double? lng;
   final UserRole role;
   final String? constituencyId;
+
+  /// Display name for [constituencyId] (e.g. "Chikballapur"), saved at
+  /// Location Setup so the profile never has to show a bare id.
+  final String? constituencyName;
   final String? homeBoothId;
   final String? homeBoothName;
 
@@ -45,9 +53,38 @@ class UserModel {
   final String? talukName;
   final String? homeWardId;
   final String? homeWardName;
+
+  /// Home ward in the 198-ward BBMP layer (alongside the GBA [homeWardId]).
+  final String? homeBbmpWardId;
+  final String? homeBbmpWardName;
+
+  /// Home assembly constituency (MLA seat), e.g. `KA-AC-150`.
+  final String? assemblyId;
+  final String? assemblyName;
+
+  /// Storage path of the citizen's optional profile photo
+  /// (`avatars/{uid}/avatar.jpg`). Read through Storage rules, never a
+  /// public URL.
+  final String? photoPath;
+
+  /// Set by the `setSecurityQuestion` function, so the profile can show
+  /// whether password recovery is set up without reading `userSecrets`.
+  final bool hasSecurityQuestion;
+
+  // ---- Officials (server-written; see reviewOfficialApplication.ts) -------
+  /// `mp` | `mla` | `wardOfficer` | `tahsildar` | `districtOfficer`. Null on
+  /// legacy MP accounts, which are treated as `mp`.
+  final String? officialType;
+
+  /// `constituency` | `assembly` | `bbmpWard` | `taluk` | `district`.
+  final String? jurisdictionType;
+  final String? jurisdictionId;
+  final String? jurisdictionName;
+  final String? designation;
+  final String? officialEmail;
+  final DateTime? approvedAt;
   final String preferredLanguage;
   final SignInMethod? signInMethod;
-  final double? aadhaarExtractionConfidence;
   final DateTime createdAt;
   final DateTime? signupCompletedAt;
 
@@ -56,6 +93,7 @@ class UserModel {
     required this.role,
     required this.createdAt,
     this.name,
+    this.username,
     this.age,
     this.pincodeHome,
     this.addressHome,
@@ -63,6 +101,7 @@ class UserModel {
     this.lat,
     this.lng,
     this.constituencyId,
+    this.constituencyName,
     this.homeBoothId,
     this.homeBoothName,
     this.districtId,
@@ -71,14 +110,48 @@ class UserModel {
     this.talukName,
     this.homeWardId,
     this.homeWardName,
+    this.homeBbmpWardId,
+    this.homeBbmpWardName,
+    this.assemblyId,
+    this.assemblyName,
+    this.photoPath,
+    this.hasSecurityQuestion = false,
+    this.officialType,
+    this.jurisdictionType,
+    this.jurisdictionId,
+    this.jurisdictionName,
+    this.designation,
+    this.officialEmail,
+    this.approvedAt,
     this.preferredLanguage = 'en',
     this.signInMethod,
-    this.aadhaarExtractionConfidence,
     this.signupCompletedAt,
   });
 
+  /// Whether a citizen has finished onboarding — i.e. their home location is
+  /// actually saved. Deliberately not `signupCompletedAt` alone: accounts
+  /// created before that flag moved to the Location step had it set at
+  /// account creation, with no location behind it.
+  bool get isProfileComplete =>
+      lat != null && lng != null && (pincodeHome?.isNotEmpty ?? false);
+
+  /// Where an incomplete citizen should resume onboarding.
+  String get resumeOnboardingRoute =>
+      age == null ? '/signup/basic-info' : '/signup/location';
+
+  /// Readable home area for headers: ward, then constituency name, with the
+  /// raw constituency id only as a last resort.
+  String? get homeAreaLabel {
+    final ward = homeBbmpWardName ?? homeWardName;
+    final seat = constituencyName ?? assemblyName ?? talukName ?? constituencyId;
+    if (ward != null && seat != null && ward != seat) return '$ward · $seat';
+    return ward ?? seat;
+  }
+
   static SignInMethod? _signInMethodFromString(String? value) {
     switch (value) {
+      case 'password':
+        return SignInMethod.password;
       case 'phone':
         return SignInMethod.phone;
       case 'email':
@@ -94,16 +167,20 @@ class UserModel {
     return UserModel(
       uid: uid,
       name: map['name'] as String?,
+      username: map['username'] as String?,
       age: map['age'] as int?,
       pincodeHome: map['pincodeHome'] as String?,
       addressHome: map['addressHome'] as String?,
       wardNumber: map['wardNumber'] as String?,
       lat: (map['location']?['lat'] as num?)?.toDouble(),
       lng: (map['location']?['lng'] as num?)?.toDouble(),
-      role: (map['role'] as String? ?? 'citizen') == 'official'
-          ? UserRole.official
-          : UserRole.citizen,
+      role: switch (map['role']) {
+        'official' => UserRole.official,
+        'admin' => UserRole.admin,
+        _ => UserRole.citizen,
+      },
       constituencyId: map['constituencyId'] as String?,
+      constituencyName: map['constituencyName'] as String?,
       homeBoothId: map['homeBoothId'] as String?,
       homeBoothName: map['homeBoothName'] as String?,
       districtId: map['districtId'] as String?,
@@ -112,10 +189,21 @@ class UserModel {
       talukName: map['talukName'] as String?,
       homeWardId: map['homeWardId'] as String?,
       homeWardName: map['homeWardName'] as String?,
+      homeBbmpWardId: map['homeBbmpWardId'] as String?,
+      homeBbmpWardName: map['homeBbmpWardName'] as String?,
+      assemblyId: map['assemblyId'] as String?,
+      assemblyName: map['assemblyName'] as String?,
+      photoPath: map['photoPath'] as String?,
+      hasSecurityQuestion: map['hasSecurityQuestion'] == true,
+      officialType: map['officialType'] as String?,
+      jurisdictionType: map['jurisdiction']?['type'] as String?,
+      jurisdictionId: map['jurisdiction']?['id'] as String?,
+      jurisdictionName: map['jurisdiction']?['name'] as String?,
+      designation: map['designation'] as String?,
+      officialEmail: map['officialEmail'] as String?,
+      approvedAt: (map['approvedAt'] as Timestamp?)?.toDate(),
       preferredLanguage: map['preferredLanguage'] as String? ?? 'en',
       signInMethod: _signInMethodFromString(map['signInMethod'] as String?),
-      aadhaarExtractionConfidence:
-          (map['aadhaarExtractionConfidence'] as num?)?.toDouble(),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       signupCompletedAt:
           (map['signupCompletedAt'] as Timestamp?)?.toDate(),
@@ -125,13 +213,16 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       if (name != null) 'name': name,
+      if (username != null) 'username': username,
       if (age != null) 'age': age,
       if (pincodeHome != null) 'pincodeHome': pincodeHome,
       if (addressHome != null) 'addressHome': addressHome,
       if (wardNumber != null) 'wardNumber': wardNumber,
       if (lat != null && lng != null) 'location': {'lat': lat, 'lng': lng},
       'role': role.name,
+      if (designation != null) 'designation': designation,
       if (constituencyId != null) 'constituencyId': constituencyId,
+      if (constituencyName != null) 'constituencyName': constituencyName,
       if (homeBoothId != null) 'homeBoothId': homeBoothId,
       if (homeBoothName != null) 'homeBoothName': homeBoothName,
       if (districtId != null) 'districtId': districtId,
@@ -140,10 +231,13 @@ class UserModel {
       if (talukName != null) 'talukName': talukName,
       if (homeWardId != null) 'homeWardId': homeWardId,
       if (homeWardName != null) 'homeWardName': homeWardName,
+      if (homeBbmpWardId != null) 'homeBbmpWardId': homeBbmpWardId,
+      if (homeBbmpWardName != null) 'homeBbmpWardName': homeBbmpWardName,
+      if (assemblyId != null) 'assemblyId': assemblyId,
+      if (assemblyName != null) 'assemblyName': assemblyName,
+      if (photoPath != null) 'photoPath': photoPath,
       'preferredLanguage': preferredLanguage,
       if (signInMethod != null) 'signInMethod': signInMethod!.name,
-      if (aadhaarExtractionConfidence != null)
-        'aadhaarExtractionConfidence': aadhaarExtractionConfidence,
       'createdAt': Timestamp.fromDate(createdAt),
       if (signupCompletedAt != null)
         'signupCompletedAt': Timestamp.fromDate(signupCompletedAt!),
@@ -152,6 +246,7 @@ class UserModel {
 
   UserModel copyWith({
     String? name,
+    String? username,
     int? age,
     String? pincodeHome,
     String? addressHome,
@@ -159,6 +254,7 @@ class UserModel {
     double? lat,
     double? lng,
     String? constituencyId,
+    String? constituencyName,
     String? homeBoothId,
     String? homeBoothName,
     String? districtId,
@@ -167,9 +263,14 @@ class UserModel {
     String? talukName,
     String? homeWardId,
     String? homeWardName,
+    String? homeBbmpWardId,
+    String? homeBbmpWardName,
+    String? assemblyId,
+    String? assemblyName,
+    String? photoPath,
+    String? designation,
     String? preferredLanguage,
     SignInMethod? signInMethod,
-    double? aadhaarExtractionConfidence,
     DateTime? signupCompletedAt,
   }) {
     return UserModel(
@@ -177,6 +278,7 @@ class UserModel {
       role: role,
       createdAt: createdAt,
       name: name ?? this.name,
+      username: username ?? this.username,
       age: age ?? this.age,
       pincodeHome: pincodeHome ?? this.pincodeHome,
       addressHome: addressHome ?? this.addressHome,
@@ -184,6 +286,7 @@ class UserModel {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       constituencyId: constituencyId ?? this.constituencyId,
+      constituencyName: constituencyName ?? this.constituencyName,
       homeBoothId: homeBoothId ?? this.homeBoothId,
       homeBoothName: homeBoothName ?? this.homeBoothName,
       districtId: districtId ?? this.districtId,
@@ -192,10 +295,21 @@ class UserModel {
       talukName: talukName ?? this.talukName,
       homeWardId: homeWardId ?? this.homeWardId,
       homeWardName: homeWardName ?? this.homeWardName,
+      homeBbmpWardId: homeBbmpWardId ?? this.homeBbmpWardId,
+      homeBbmpWardName: homeBbmpWardName ?? this.homeBbmpWardName,
+      assemblyId: assemblyId ?? this.assemblyId,
+      assemblyName: assemblyName ?? this.assemblyName,
+      photoPath: photoPath ?? this.photoPath,
+      hasSecurityQuestion: hasSecurityQuestion,
+      officialType: officialType,
+      jurisdictionType: jurisdictionType,
+      jurisdictionId: jurisdictionId,
+      jurisdictionName: jurisdictionName,
+      designation: designation ?? this.designation,
+      officialEmail: officialEmail,
+      approvedAt: approvedAt,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       signInMethod: signInMethod ?? this.signInMethod,
-      aadhaarExtractionConfidence:
-          aadhaarExtractionConfidence ?? this.aadhaarExtractionConfidence,
       signupCompletedAt: signupCompletedAt ?? this.signupCompletedAt,
     );
   }

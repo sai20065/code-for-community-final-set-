@@ -1,13 +1,21 @@
+import '../../../shared/widgets/ticket_photo_viewer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/public_data_providers.dart';
+import '../../../app/providers/work_providers.dart';
+import '../work/assign_sheet.dart';
 import '../../../app/theme.dart';
+import '../../../core/models/official_scope.dart';
+import '../../../shared/widgets/citizen_avatar.dart';
+import '../briefing/ai_briefing_card.dart';
 import '../../../core/models/public_models.dart';
 import '../../../core/models/solution_card_model.dart';
 import '../../../core/models/submission_model.dart';
+import '../../../core/models/user_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 import '../../../shared/widgets/weekly_sparkline.dart';
@@ -33,15 +41,20 @@ class GovDashboardScreen extends ConsumerWidget {
 
     return profileAsync.when(
       data: (profile) {
-        final constituencyId = profile?.constituencyId;
-        if (constituencyId == null) {
+        if (profile?.role == UserRole.admin) {
+          WidgetsBinding.instance.addPostFrameCallback(
+              (_) => context.go('/admin'));
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        final scope = profile == null ? null : OfficialScope.fromUser(profile);
+        if (scope == null) {
           return Scaffold(
             appBar: AppBar(title: const Text('Government dashboard')),
             body: const Center(
               child: Padding(
                 padding: EdgeInsets.all(24),
                 child: Text(
-                  'This account is not linked to a constituency yet. Contact '
+                  'This account is not linked to an area yet. Contact '
                   'the Prajadhwani administrator to have it assigned.',
                   textAlign: TextAlign.center,
                 ),
@@ -49,7 +62,7 @@ class GovDashboardScreen extends ConsumerWidget {
             ),
           );
         }
-        return _GovShell(constituencyId: constituencyId);
+        return _GovShell(scope: scope, profile: profile!);
       },
       loading: () => const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -63,35 +76,65 @@ class GovDashboardScreen extends ConsumerWidget {
 }
 
 class _GovShell extends ConsumerWidget {
-  const _GovShell({required this.constituencyId});
+  const _GovShell({required this.scope, required this.profile});
 
-  final String constituencyId;
+  final OfficialScope scope;
+  final UserModel profile;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final constituency = ref.watch(constituencyProvider(constituencyId)).valueOrNull;
+    final key = scope.key;
+    // Solution cards are filed per Lok Sabha seat; officers below MP level
+    // use their parent seat's cards (matched to their own clusters by id).
+    final cardsConstituency = scope.constituencyId ?? scope.id;
 
     return DefaultTabController(
       length: 6,
       child: Scaffold(
         backgroundColor: AppColors.paper,
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () =>
-                context.canPop() ? context.pop() : context.go('/public/dashboard'),
-          ),
+          // This is the official's home: no back arrow at the root (it used to
+          // open the public dashboard, which looked like a citizen screen).
+          automaticallyImplyLeading: false,
+          leading: context.canPop()
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  onPressed: () => context.pop(),
+                )
+              : null,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Government dashboard', style: TextStyle(fontSize: 16)),
+              Text('${scope.type.shortLabel} dashboard',
+                  style: const TextStyle(fontSize: 16)),
               Text(
-                constituency?.name ?? constituencyId,
+                '${scope.type.areaNoun} · ${scope.name}',
                 style: const TextStyle(fontSize: 11.5, color: Colors.white70),
               ),
             ],
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.groups_rounded),
+              tooltip: 'My team',
+              onPressed: () => context.push('/official/team'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: () => context.push('/gov/profile'),
+                child: Tooltip(
+                  message: 'My profile',
+                  child: CitizenAvatar(
+                    name: profile.name,
+                    photoPath: profile.photoPath,
+                    size: 40,
+                    seed: profile.uid,
+                  ),
+                ),
+              ),
+            ),
             IconButton(
               icon: const Icon(Icons.logout_rounded),
               tooltip: 'Sign out',
@@ -121,12 +164,13 @@ class _GovShell extends ConsumerWidget {
         ),
         body: TabBarView(
           children: [
-            _OverviewTab(constituencyId: constituencyId),
-            _ReportsTab(constituencyId: constituencyId),
+            _OverviewTab(constituencyId: key, scope: scope, profile: profile),
+            _ReportsTab(constituencyId: key),
             const _MapTab(),
-            _HotspotsTab(constituencyId: constituencyId),
-            _EmergencyTab(constituencyId: constituencyId),
-            _AnalyticsTab(constituencyId: constituencyId),
+            _HotspotsTab(constituencyId: key),
+            _EmergencyTab(
+                constituencyId: key, cardsConstituencyId: cardsConstituency),
+            _AnalyticsTab(constituencyId: key),
           ],
         ),
       ),
@@ -146,6 +190,7 @@ class _Counts {
     for (final t in tickets) {
       switch (t.status) {
         case 'resolved':
+        case 'closed':
           resolved++;
         case 'inProgress':
           inProgress++;
@@ -175,9 +220,16 @@ class _Counts {
 // ---------------------------------------------------------------------------
 
 class _OverviewTab extends ConsumerWidget {
-  const _OverviewTab({required this.constituencyId});
+  const _OverviewTab({
+    required this.constituencyId,
+    required this.scope,
+    required this.profile,
+  });
 
+  /// Scope key (see `OfficialScope.key`).
   final String constituencyId;
+  final OfficialScope scope;
+  final UserModel profile;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -193,7 +245,9 @@ class _OverviewTab extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            const _PrivacyNote(),
+            _OfficialHeader(scope: scope, profile: profile, counts: counts),
+            const SizedBox(height: 16),
+            const AiBriefingCard(),
             const SizedBox(height: 16),
             GridView.count(
               shrinkWrap: true,
@@ -239,14 +293,16 @@ class _OverviewTab extends ConsumerWidget {
                     'full list and who to route each one to.',
               ),
             const SizedBox(height: 16),
+            const _PrivacyNote(),
+            const SizedBox(height: 16),
             const _SectionHeader('Actions'),
             const SizedBox(height: 10),
             _ActionRow(
               icon: Icons.picture_as_pdf_rounded,
               tint: AppColors.vermilion,
-              title: 'Generate constituency briefing',
+              title: 'Download PDF report',
               subtitle: 'AI summary, top issues, departments and cost bands',
-              onTap: () => context.go('/official/report'),
+              onTap: () => downloadAreaReport(context),
             ),
             const SizedBox(height: 10),
             _ActionRow(
@@ -254,21 +310,104 @@ class _OverviewTab extends ConsumerWidget {
               tint: AppColors.indigo,
               title: 'Bulk status updates',
               subtitle: 'Mark several reports in progress or resolved at once',
-              onTap: () => context.go('/official/tickets'),
+              onTap: () => context.push('/official/tickets'),
             ),
             const SizedBox(height: 10),
             _ActionRow(
               icon: Icons.public_rounded,
               tint: AppColors.teal,
               title: 'Public dashboard',
-              subtitle: 'See exactly what citizens see for this constituency',
-              onTap: () => context.go('/public/dashboard'),
+              subtitle: 'See exactly what citizens see for this area',
+              onTap: () => context.push('/public/dashboard'),
             ),
           ],
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, __) => const _TabError(what: 'the overview'),
+    );
+  }
+}
+
+/// Gradient "who and where" header at the top of Overview — the official's
+/// avatar, role and area, and a one-line pulse of today's workload.
+class _OfficialHeader extends StatelessWidget {
+  const _OfficialHeader({
+    required this.scope,
+    required this.profile,
+    required this.counts,
+  });
+
+  final OfficialScope scope;
+  final UserModel profile;
+  final _Counts counts;
+
+  @override
+  Widget build(BuildContext context) {
+    final hour = DateTime.now().hour;
+    final greeting = hour < 12
+        ? 'Good morning'
+        : hour < 17
+            ? 'Good afternoon'
+            : 'Good evening';
+    final first = (profile.name ?? '').trim().split(RegExp(r'\s+')).first;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.indigoDeep, AppColors.indigo],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+      ),
+      child: Row(
+        children: [
+          InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => context.push('/gov/profile'),
+            child: CitizenAvatar(
+              name: profile.name,
+              photoPath: profile.photoPath,
+              size: 64,
+              seed: profile.uid,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(first.isEmpty ? greeting : '$greeting, $first',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800)),
+                const SizedBox(height: 4),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.saffron.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text('${scope.type.shortLabel} · ${scope.name}',
+                      style: const TextStyle(
+                          color: AppColors.saffron,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800)),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '${counts.open} open · ${counts.inProgress} in progress · '
+                  '${counts.resolvedPct}% resolved',
+                  style: const TextStyle(color: Colors.white70, fontSize: 12.5),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -289,6 +428,30 @@ class _ReportsTab extends ConsumerStatefulWidget {
 class _ReportsTabState extends ConsumerState<_ReportsTab> {
   String _query = '';
   String? _statusFilter;
+  final Set<String> _selected = {};
+
+  void _toast(String text) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+
+  Future<void> _assign(List<String> ids) async {
+    if (await showAssignSheet(context, ticketIds: ids) && mounted) {
+      setState(_selected.clear);
+    }
+  }
+
+  /// Closing needs 48 hours since "fixed" with no citizen answer. The server
+  /// decides, so tickets that are not ready are simply skipped.
+  Future<void> _close(List<String> ids) async {
+    try {
+      final n = await ref.read(workServiceProvider).close(ids);
+      _toast(n > 0
+          ? 'Closed $n ${n == 1 ? 'ticket' : 'tickets'}.'
+          : 'Nothing to close yet. A fixed report can be closed 48 hours after it was fixed, if the citizen has not answered.');
+      if (mounted) setState(_selected.clear);
+    } catch (_) {
+      _toast('Could not close. Try again.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -326,6 +489,7 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
                 ('reviewed', 'Reviewed'),
                 ('inProgress', 'In progress'),
                 ('resolved', 'Resolved'),
+                ('closed', 'Closed'),
               ])
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -339,6 +503,30 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
             ],
           ),
         ),
+        if (_selected.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Row(children: [
+              Text('${_selected.length} selected',
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
+              const Spacer(),
+              TextButton.icon(
+                icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
+                label: const Text('Assign'),
+                onPressed: () => _assign(_selected.toList()),
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.lock_outline_rounded, size: 18),
+                label: const Text('Close'),
+                onPressed: () => _close(_selected.toList()),
+              ),
+              IconButton(
+                icon: const Icon(Icons.clear_rounded),
+                tooltip: 'Clear',
+                onPressed: () => setState(_selected.clear),
+              ),
+            ]),
+          ),
         Expanded(
           child: ticketsAsync.when(
             data: (all) {
@@ -361,9 +549,21 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, i) => _GovTicketCard(
                   ticket: filtered[i],
-                  onStatusChanged: (status) => ref
-                      .read(firestoreServiceProvider)
-                      .updateSubmissionStatus(filtered[i].id, status),
+                  selected: _selected.contains(filtered[i].id),
+                  onSelect: (on) => setState(() => on
+                      ? _selected.add(filtered[i].id)
+                      : _selected.remove(filtered[i].id)),
+                  onAssign: () => _assign([filtered[i].id]),
+                  onClose: () => _close([filtered[i].id]),
+                  onStatusChanged: (status) async {
+                    try {
+                      await ref
+                          .read(firestoreServiceProvider)
+                          .updateSubmissionStatus(filtered[i].id, status);
+                    } catch (_) {
+                      _toast('Could not change this report.');
+                    }
+                  },
                 ),
               );
             },
@@ -381,10 +581,21 @@ class _ReportsTabState extends ConsumerState<_ReportsTab> {
 /// a status control. No identity, by construction — `publicTickets` has no
 /// field for one.
 class _GovTicketCard extends StatelessWidget {
-  const _GovTicketCard({required this.ticket, required this.onStatusChanged});
+  const _GovTicketCard({
+    required this.ticket,
+    required this.onStatusChanged,
+    required this.selected,
+    required this.onSelect,
+    required this.onAssign,
+    required this.onClose,
+  });
 
   final PublicTicketModel ticket;
   final ValueChanged<SubmissionStatus> onStatusChanged;
+  final bool selected;
+  final ValueChanged<bool> onSelect;
+  final VoidCallback onAssign;
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -402,6 +613,14 @@ class _GovTicketCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              SizedBox(
+                width: 28,
+                child: Checkbox(
+                  value: selected,
+                  visualDensity: VisualDensity.compact,
+                  onChanged: (v) => onSelect(v == true),
+                ),
+              ),
               Container(
                 width: 32,
                 height: 32,
@@ -442,6 +661,20 @@ class _GovTicketCard extends StatelessWidget {
                 : ticket.publicSummary,
             style: const TextStyle(fontSize: 13, height: 1.4),
           ),
+          // The same blurred, public copy the feed shows, never the original.
+          if (ticket.photoUrl != null) ...[
+            const SizedBox(height: 10),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CachedNetworkImage(
+                imageUrl: ticket.photoUrl!,
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          ],
           const SizedBox(height: 10),
           Row(
             children: [
@@ -457,6 +690,13 @@ class _GovTicketCard extends StatelessWidget {
                       fontSize: 11.5, color: AppColors.inkFaint),
                 ),
               ),
+              if (ticket.status == 'closed')
+                const Text('Closed',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.tealDeep))
+              else
               DropdownButtonHideUnderline(
                 child: DropdownButton<SubmissionStatus>(
                   isDense: true,
@@ -483,6 +723,26 @@ class _GovTicketCard extends StatelessWidget {
               ),
             ],
           ),
+          if (ticket.status != 'closed') ...[
+            const SizedBox(height: 6),
+            Row(children: [
+              TextButton.icon(
+                style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                icon: const Icon(Icons.person_add_alt_1_rounded, size: 16),
+                label: const Text('Assign', style: TextStyle(fontSize: 12)),
+                onPressed: onAssign,
+              ),
+              // The original photo, whatever the citizen chose for the public.
+              ViewPhotoButton(ticketId: ticket.id),
+              if (ticket.status == 'resolved')
+                TextButton.icon(
+                  style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                  icon: const Icon(Icons.lock_outline_rounded, size: 16),
+                  label: const Text('Close ticket', style: TextStyle(fontSize: 12)),
+                  onPressed: onClose,
+                ),
+            ]),
+          ],
         ],
       ),
     );
@@ -545,7 +805,7 @@ class _MapTab extends StatelessWidget {
           tint: AppColors.indigo,
           title: 'Open the full map',
           subtitle: 'Boundaries, hotspot circles and booth pins',
-          onTap: () => context.go('/public/map'),
+          onTap: () => context.push('/public/map'),
         ),
         const SizedBox(height: 10),
         _ActionRow(
@@ -553,7 +813,7 @@ class _MapTab extends StatelessWidget {
           tint: AppColors.teal,
           title: 'Jump to a district or taluk',
           subtitle: 'Frame the map on one area',
-          onTap: () => context.go('/public/area'),
+          onTap: () => context.push('/public/area'),
         ),
         const SizedBox(height: 10),
         _ActionRow(
@@ -561,7 +821,7 @@ class _MapTab extends StatelessWidget {
           tint: AppColors.vermilion,
           title: 'Statewide view',
           subtitle: 'All 30 districts and 227 taluks of Karnataka',
-          onTap: () => context.go('/public/karnataka'),
+          onTap: () => context.push('/public/karnataka'),
         ),
       ],
     );
@@ -622,7 +882,7 @@ class _HotspotCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadii.md),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadii.md),
-        onTap: () => context.go('/public/cluster/${cluster.id}'),
+        onTap: () => context.push('/public/cluster/${cluster.id}'),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -711,14 +971,20 @@ class _HotspotCard extends StatelessWidget {
 /// call right now" tab. Departments come from the Solution Card's routing
 /// agent, so this is the same answer the citizen sees, not a second one.
 class _EmergencyTab extends ConsumerWidget {
-  const _EmergencyTab({required this.constituencyId});
+  const _EmergencyTab({
+    required this.constituencyId,
+    required this.cardsConstituencyId,
+  });
 
+  /// Scope key (see `OfficialScope.key`).
   final String constituencyId;
+  final String cardsConstituencyId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final clustersAsync = ref.watch(publicClustersProvider(constituencyId));
-    final cardsAsync = ref.watch(publicSolutionCardsProvider(constituencyId));
+    final cardsAsync =
+        ref.watch(publicSolutionCardsProvider(cardsConstituencyId));
 
     return clustersAsync.when(
       data: (clusters) {
@@ -824,7 +1090,7 @@ class _EmergencyCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton.icon(
-              onPressed: () => context.go('/public/cluster/${cluster.id}'),
+              onPressed: () => context.push('/public/cluster/${cluster.id}'),
               icon: const Icon(Icons.arrow_forward_rounded, size: 15),
               label: const Text('Full solution card',
                   style: TextStyle(fontSize: 12)),

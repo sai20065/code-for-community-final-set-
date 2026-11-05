@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/navigation.dart';
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
@@ -38,20 +39,17 @@ class DashboardHomeScreen extends ConsumerWidget {
         // screen.
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop()
-              ? context.pop()
-              : context.go(
-                  ref.watch(currentUserProfileProvider).valueOrNull == null
-                      ? '/welcome'
-                      : '/home',
-                ),
+          onPressed: () => ref.read(currentUserProfileProvider).valueOrNull == null
+              ? (context.canPop() ? context.pop() : context.go('/welcome'))
+              // Officials go back to their own dashboard, never the citizen home.
+              : goBackOrHome(context),
         ),
         title: Text(l10n.publicDashboardTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.travel_explore_rounded),
             tooltip: l10n.chooseConstituency,
-            onPressed: () => context.go('/public/area'),
+            onPressed: () => context.push('/public/area'),
           ),
         ],
         bottom: const TricolorTrustStrip(),
@@ -84,7 +82,7 @@ class _NoConstituencyChosen extends StatelessWidget {
             Text(l10n.chooseConstituency, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             FilledButton(
-              onPressed: () => context.go('/public/constituency'),
+              onPressed: () => context.push('/public/constituency'),
               child: Text(l10n.chooseConstituency),
             ),
           ],
@@ -222,7 +220,7 @@ class _DashboardBody extends ConsumerWidget {
             borderRadius: BorderRadius.circular(16),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
-              onTap: () => context.go('/public/map'),
+              onTap: () => context.push('/public/map'),
               child: Container(
                 color: Colors.white,
                 alignment: Alignment.center,
@@ -240,7 +238,7 @@ class _DashboardBody extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         OutlinedButton.icon(
-          onPressed: () => context.go('/public/karnataka'),
+          onPressed: () => context.push('/public/karnataka'),
           icon: const Icon(Icons.public_rounded),
           label: const Text('See all of Karnataka'),
         ),
@@ -250,12 +248,12 @@ class _DashboardBody extends ConsumerWidget {
           runSpacing: 12,
           children: [
             OutlinedButton.icon(
-              onPressed: () => context.go('/public/works'),
+              onPressed: () => context.push('/public/works'),
               icon: const Icon(Icons.leaderboard_rounded),
               label: Text(l10n.rankedWorks),
             ),
             OutlinedButton.icon(
-              onPressed: () => context.go('/public/themes'),
+              onPressed: () => context.push('/public/themes'),
               icon: const Icon(Icons.bar_chart_rounded),
               label: Text(l10n.themesOverview),
             ),
@@ -278,12 +276,12 @@ class _DashboardBody extends ConsumerWidget {
                 label: const Text('Government dashboard'),
               ),
               OutlinedButton.icon(
-                onPressed: () => context.go('/official/tickets'),
+                onPressed: () => context.push('/official/tickets'),
                 icon: const Icon(Icons.list_alt_rounded),
                 label: Text(l10n.updateTicketStatuses),
               ),
               OutlinedButton.icon(
-                onPressed: () => context.go('/official/report'),
+                onPressed: () => context.push('/official/report'),
                 icon: const Icon(Icons.picture_as_pdf_rounded),
                 label: Text(l10n.generateReport),
               ),

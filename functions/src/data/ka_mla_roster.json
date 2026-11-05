@@ -1,0 +1,1798 @@
+{
+ "asOf": "2026-10-25",
+ "source": "en.wikipedia.org/wiki/16th_Karnataka_Assembly member table incl. by-elections, fetched 2026-10-25",
+ "members": [
+  {
+   "acNo": 1,
+   "assemblyConstituency": "Nippani",
+   "reserved": null,
+   "mlaName": "Shashikala Jolle",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 2,
+   "assemblyConstituency": "Chikkodi-Sadalga",
+   "reserved": null,
+   "mlaName": "Ganesh Hukkeri",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 3,
+   "assemblyConstituency": "Athani",
+   "reserved": null,
+   "mlaName": "Laxman Savadi",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 4,
+   "assemblyConstituency": "Kagwad",
+   "reserved": null,
+   "mlaName": "Raju Kage",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 5,
+   "assemblyConstituency": "Kudachi",
+   "reserved": "SC",
+   "mlaName": "Mahendra Kallappa Tammannavar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 6,
+   "assemblyConstituency": "Raibag",
+   "reserved": "SC",
+   "mlaName": "Duryodhan Aihole",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 7,
+   "assemblyConstituency": "Hukkeri",
+   "reserved": null,
+   "mlaName": "Nikhil Katti",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 8,
+   "assemblyConstituency": "Arabhavi",
+   "reserved": null,
+   "mlaName": "Balachandra Jarkiholi",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 9,
+   "assemblyConstituency": "Gokak",
+   "reserved": null,
+   "mlaName": "Ramesh Jarkiholi",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 10,
+   "assemblyConstituency": "Yemkanmardi",
+   "reserved": "ST",
+   "mlaName": "Satish Jarkiholi",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 11,
+   "assemblyConstituency": "Belgaum Uttar",
+   "reserved": null,
+   "mlaName": "Asif Sait",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 12,
+   "assemblyConstituency": "Belgaum Dakshin",
+   "reserved": null,
+   "mlaName": "Abhay Patil",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 13,
+   "assemblyConstituency": "Belgaum Rural",
+   "reserved": null,
+   "mlaName": "Lakshmi Hebbalkar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 14,
+   "assemblyConstituency": "Khanapur",
+   "reserved": null,
+   "mlaName": "Vithal Halagekar",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 15,
+   "assemblyConstituency": "Kittur",
+   "reserved": null,
+   "mlaName": "Babasaheb Devanagouda Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 16,
+   "assemblyConstituency": "Bailhongal",
+   "reserved": null,
+   "mlaName": "Mahantesh Koujalagi",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 17,
+   "assemblyConstituency": "Saundatti Yellamma",
+   "reserved": null,
+   "mlaName": "Vishwas Vasant Vaidya",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 18,
+   "assemblyConstituency": "Ramdurg",
+   "reserved": null,
+   "mlaName": "Ashok Pattan",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 19,
+   "assemblyConstituency": "Mudhol",
+   "reserved": "SC",
+   "mlaName": "R. B. Timmapur",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 20,
+   "assemblyConstituency": "Terdal",
+   "reserved": null,
+   "mlaName": "Siddu Savadi",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 21,
+   "assemblyConstituency": "Jamkhandi",
+   "reserved": null,
+   "mlaName": "Jagadish Gudagunti",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 22,
+   "assemblyConstituency": "Bilgi",
+   "reserved": null,
+   "mlaName": "J. T. Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 23,
+   "assemblyConstituency": "Badami",
+   "reserved": null,
+   "mlaName": "Bhimsen Chimmanakatti",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 24,
+   "assemblyConstituency": "Bagalkot",
+   "reserved": null,
+   "mlaName": "U.H. Meti",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 25,
+   "assemblyConstituency": "Hungund",
+   "reserved": null,
+   "mlaName": "Vijayanand Kashappanavar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 26,
+   "assemblyConstituency": "Muddebihal",
+   "reserved": null,
+   "mlaName": "C. S. Nadagouda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 27,
+   "assemblyConstituency": "Devar Hippargi",
+   "reserved": null,
+   "mlaName": "Rajugouda Patil",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 28,
+   "assemblyConstituency": "Basavana Bagevadi",
+   "reserved": null,
+   "mlaName": "Shivanand Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 29,
+   "assemblyConstituency": "Babaleshwar",
+   "reserved": null,
+   "mlaName": "M. B. Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 30,
+   "assemblyConstituency": "Bijapur City",
+   "reserved": null,
+   "mlaName": "Basangouda Patil Yatnal",
+   "mlaParty": null,
+   "vacant": false
+  },
+  {
+   "acNo": 31,
+   "assemblyConstituency": "Nagathan",
+   "reserved": "SC",
+   "mlaName": "Katakadond Vittal Dondiba",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 32,
+   "assemblyConstituency": "Indi",
+   "reserved": null,
+   "mlaName": "Yashavant Rayagoud Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 33,
+   "assemblyConstituency": "Sindagi",
+   "reserved": null,
+   "mlaName": "Ashok M. Managuli",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 34,
+   "assemblyConstituency": "Afzalpur",
+   "reserved": null,
+   "mlaName": "M. Y. Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 35,
+   "assemblyConstituency": "Jevargi",
+   "reserved": null,
+   "mlaName": "Ajay Singh",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 36,
+   "assemblyConstituency": "Shorapur",
+   "reserved": "ST",
+   "mlaName": "Raja Venugopal Naik",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 37,
+   "assemblyConstituency": "Shahapur",
+   "reserved": null,
+   "mlaName": "Sharanabasappa Darshanapur",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 38,
+   "assemblyConstituency": "Yadgir",
+   "reserved": null,
+   "mlaName": "Channareddy Patil Tunnur",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 39,
+   "assemblyConstituency": "Gurmitkal",
+   "reserved": null,
+   "mlaName": "Sharanagouda Kandakur",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 40,
+   "assemblyConstituency": "Chittapur",
+   "reserved": "SC",
+   "mlaName": "Priyank Kharge",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 41,
+   "assemblyConstituency": "Sedam",
+   "reserved": null,
+   "mlaName": "Sharan Prakash Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 42,
+   "assemblyConstituency": "Chincholi",
+   "reserved": "SC",
+   "mlaName": "Avinash Jadhav",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 43,
+   "assemblyConstituency": "Gulbarga Rural",
+   "reserved": "SC",
+   "mlaName": "Basawaraj Mattimud",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 44,
+   "assemblyConstituency": "Gulbarga Dakshin",
+   "reserved": null,
+   "mlaName": "Allamprabhu Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 45,
+   "assemblyConstituency": "Gulbarga Uttar",
+   "reserved": null,
+   "mlaName": "Kaneez Fathima",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 46,
+   "assemblyConstituency": "Aland",
+   "reserved": null,
+   "mlaName": "B. R. Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 47,
+   "assemblyConstituency": "Basavakalyan",
+   "reserved": null,
+   "mlaName": "Sharanu Salagar",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 48,
+   "assemblyConstituency": "Humnabad",
+   "reserved": null,
+   "mlaName": "Siddu Patil",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 49,
+   "assemblyConstituency": "Bidar South",
+   "reserved": null,
+   "mlaName": "Shailendra Bedale",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 50,
+   "assemblyConstituency": "Bidar",
+   "reserved": null,
+   "mlaName": "Rahim Khan",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 51,
+   "assemblyConstituency": "Bhalki",
+   "reserved": null,
+   "mlaName": "Eshwara Khandre",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 52,
+   "assemblyConstituency": "Aurad",
+   "reserved": "SC",
+   "mlaName": "Prabhu Chauhan",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 53,
+   "assemblyConstituency": "Raichur Rural",
+   "reserved": "ST",
+   "mlaName": "Basanagouda Daddal",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 54,
+   "assemblyConstituency": "Raichur",
+   "reserved": null,
+   "mlaName": "Dr Shivaraj Patil",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 55,
+   "assemblyConstituency": "Manvi",
+   "reserved": "ST",
+   "mlaName": "G. Hampayya Nayak",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 56,
+   "assemblyConstituency": "Devadurga",
+   "reserved": "ST",
+   "mlaName": "Karemma",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 57,
+   "assemblyConstituency": "Lingsugur",
+   "reserved": "SC",
+   "mlaName": "Manappa D. Vajjal",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 58,
+   "assemblyConstituency": "Sindhanur",
+   "reserved": null,
+   "mlaName": "Hampanagouda Badarli",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 59,
+   "assemblyConstituency": "Maski",
+   "reserved": "ST",
+   "mlaName": "Basanagouda Turvihal",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 60,
+   "assemblyConstituency": "Kushtagi",
+   "reserved": null,
+   "mlaName": "Doddanagouda Hanamagouda Patil",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 61,
+   "assemblyConstituency": "Kanakagiri",
+   "reserved": "SC",
+   "mlaName": "Tangadagi Shivaraj Sangappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 62,
+   "assemblyConstituency": "Gangawati",
+   "reserved": null,
+   "mlaName": "G. Janardhana Reddy",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 63,
+   "assemblyConstituency": "Yelburga",
+   "reserved": null,
+   "mlaName": "Basavaraj Rayareddy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 64,
+   "assemblyConstituency": "Koppal",
+   "reserved": null,
+   "mlaName": "K. Raghavendra Hitnal",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 65,
+   "assemblyConstituency": "Shirahatti",
+   "reserved": "SC",
+   "mlaName": "Chandru Lamani",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 66,
+   "assemblyConstituency": "Gadag",
+   "reserved": null,
+   "mlaName": "H. K. Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 67,
+   "assemblyConstituency": "Ron",
+   "reserved": null,
+   "mlaName": "Gurupadagouda Sanganagouda Patil",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 68,
+   "assemblyConstituency": "Nargund",
+   "reserved": null,
+   "mlaName": "C. C. Patil",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 69,
+   "assemblyConstituency": "Navalgund",
+   "reserved": null,
+   "mlaName": "Ningaraddi Hanamaraddi Konaraddi",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 70,
+   "assemblyConstituency": "Kundgol",
+   "reserved": null,
+   "mlaName": "M. R. Patil",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 71,
+   "assemblyConstituency": "Dharwad",
+   "reserved": null,
+   "mlaName": "Vinay Kulkarni",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 72,
+   "assemblyConstituency": "Hubli-Dharwad East",
+   "reserved": "SC",
+   "mlaName": "Abbayya Prasad",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 73,
+   "assemblyConstituency": "Hubli-Dharwad Central",
+   "reserved": null,
+   "mlaName": "Mahesh Tenginakai",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 74,
+   "assemblyConstituency": "Hubli-Dharwad West",
+   "reserved": null,
+   "mlaName": "Arvind Bellad",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 75,
+   "assemblyConstituency": "Kalghatgi",
+   "reserved": null,
+   "mlaName": "Santosh Lad",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 76,
+   "assemblyConstituency": "Haliyal",
+   "reserved": null,
+   "mlaName": "R. V. Deshpande",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 77,
+   "assemblyConstituency": "Karwar",
+   "reserved": null,
+   "mlaName": "Satish Krishna Sail",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 78,
+   "assemblyConstituency": "Kumta",
+   "reserved": null,
+   "mlaName": "Dinakar Keshav Shetty",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 79,
+   "assemblyConstituency": "Bhatkal",
+   "reserved": null,
+   "mlaName": "Mankala Vaidya",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 80,
+   "assemblyConstituency": "Sirsi",
+   "reserved": null,
+   "mlaName": "Bhimanna T. Naik",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 81,
+   "assemblyConstituency": "Yellapur",
+   "reserved": null,
+   "mlaName": "Arbail Hebbar Shivaram",
+   "mlaParty": null,
+   "vacant": false
+  },
+  {
+   "acNo": 82,
+   "assemblyConstituency": "Hangal",
+   "reserved": null,
+   "mlaName": "Srinivas Mane",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 83,
+   "assemblyConstituency": "Shiggaon",
+   "reserved": null,
+   "mlaName": "Pathan Yasir Ahmed Khan",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 84,
+   "assemblyConstituency": "Haveri",
+   "reserved": "SC",
+   "mlaName": "Rudrappa Manappa Lamani",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 85,
+   "assemblyConstituency": "Byadgi",
+   "reserved": null,
+   "mlaName": "Basavaraj Neelappa Shivannanavar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 86,
+   "assemblyConstituency": "Hirekerur",
+   "reserved": null,
+   "mlaName": "U. B. Banakar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 87,
+   "assemblyConstituency": "Ranebennur",
+   "reserved": null,
+   "mlaName": "Prakash Koliwad",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 88,
+   "assemblyConstituency": "Hoovina Hadagali",
+   "reserved": "SC",
+   "mlaName": "Krishna Nayaka",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 89,
+   "assemblyConstituency": "Hagaribommanahalli",
+   "reserved": "SC",
+   "mlaName": "K. Nemaraja Naik",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 90,
+   "assemblyConstituency": "Vijayanagara",
+   "reserved": null,
+   "mlaName": "H. R. Gaviyappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 91,
+   "assemblyConstituency": "Kampli",
+   "reserved": "ST",
+   "mlaName": "J. N. Ganesh",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 92,
+   "assemblyConstituency": "Siruguppa",
+   "reserved": "ST",
+   "mlaName": "B. M. Nagaraja",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 93,
+   "assemblyConstituency": "Bellary",
+   "reserved": "ST",
+   "mlaName": "B Nagendra",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 94,
+   "assemblyConstituency": "Bellary City",
+   "reserved": null,
+   "mlaName": "Nara Bharath Reddy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 95,
+   "assemblyConstituency": "Sandur",
+   "reserved": "ST",
+   "mlaName": "E. Annapoorna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 96,
+   "assemblyConstituency": "Kudligi",
+   "reserved": "ST",
+   "mlaName": "N. T. Srinivas",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 97,
+   "assemblyConstituency": "Molakalmuru",
+   "reserved": "ST",
+   "mlaName": "N. Y. Gopalakrishna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 98,
+   "assemblyConstituency": "Challakere",
+   "reserved": "ST",
+   "mlaName": "T. Raghumurthy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 99,
+   "assemblyConstituency": "Chitradurga",
+   "reserved": null,
+   "mlaName": "K. C. Veerendra Puppy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 100,
+   "assemblyConstituency": "Hiriyur",
+   "reserved": null,
+   "mlaName": null,
+   "mlaParty": null,
+   "vacant": true
+  },
+  {
+   "acNo": 101,
+   "assemblyConstituency": "Hosadurga",
+   "reserved": null,
+   "mlaName": "B. G. Govindappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 102,
+   "assemblyConstituency": "Holalkere",
+   "reserved": "SC",
+   "mlaName": "M. Chandrappa",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 103,
+   "assemblyConstituency": "Jagalur",
+   "reserved": "ST",
+   "mlaName": "B. Devendrappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 104,
+   "assemblyConstituency": "Harapanahalli",
+   "reserved": null,
+   "mlaName": "Latha Mallikarjun",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 105,
+   "assemblyConstituency": "Harihar",
+   "reserved": null,
+   "mlaName": "B. P. Harish",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 106,
+   "assemblyConstituency": "Davanagere North",
+   "reserved": null,
+   "mlaName": "S. S. Mallikarjun",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 107,
+   "assemblyConstituency": "Davanagere South",
+   "reserved": null,
+   "mlaName": "Samarth Shamanur Mallikarjun",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 108,
+   "assemblyConstituency": "Mayakonda",
+   "reserved": "SC",
+   "mlaName": "K. S. Basavanthappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 109,
+   "assemblyConstituency": "Channagiri",
+   "reserved": null,
+   "mlaName": "Basavaraju V. Shivaganga",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 110,
+   "assemblyConstituency": "Honnali",
+   "reserved": null,
+   "mlaName": "A. D. G. Shanthana Gowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 111,
+   "assemblyConstituency": "Shimoga Rural",
+   "reserved": "SC",
+   "mlaName": "Sharada Puryanaik",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 112,
+   "assemblyConstituency": "Bhadravati",
+   "reserved": null,
+   "mlaName": "B. K. Sangameshwara",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 113,
+   "assemblyConstituency": "Shimoga",
+   "reserved": null,
+   "mlaName": "Channabasappa",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 114,
+   "assemblyConstituency": "Tirthahalli",
+   "reserved": null,
+   "mlaName": "Araga Jnanendra",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 115,
+   "assemblyConstituency": "Shikaripura",
+   "reserved": null,
+   "mlaName": "B. Y. Vijayendra",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 116,
+   "assemblyConstituency": "Sorab",
+   "reserved": null,
+   "mlaName": "Madhu Bangarappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 117,
+   "assemblyConstituency": "Sagar",
+   "reserved": null,
+   "mlaName": "Gopala Krishna Beluru",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 118,
+   "assemblyConstituency": "Byndoor",
+   "reserved": null,
+   "mlaName": "Gururaj Shetty Gantihole",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 119,
+   "assemblyConstituency": "Kundapura",
+   "reserved": null,
+   "mlaName": "A. Kiran Kumar Kodgi",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 120,
+   "assemblyConstituency": "Udupi",
+   "reserved": null,
+   "mlaName": "Yashpal A. Suvarna",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 121,
+   "assemblyConstituency": "Kapu",
+   "reserved": null,
+   "mlaName": "Gurme Suresh Shetty",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 122,
+   "assemblyConstituency": "Karkala",
+   "reserved": null,
+   "mlaName": "V. Sunil Kumar",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 123,
+   "assemblyConstituency": "Sringeri",
+   "reserved": null,
+   "mlaName": "T. D. Rajegowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 124,
+   "assemblyConstituency": "Mudigere",
+   "reserved": "SC",
+   "mlaName": "Nayana Motamma",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 125,
+   "assemblyConstituency": "Chikmagalur",
+   "reserved": null,
+   "mlaName": "H. D. Thammaiah",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 126,
+   "assemblyConstituency": "Tarikere",
+   "reserved": null,
+   "mlaName": "G. H. Srinivasa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 127,
+   "assemblyConstituency": "Kadur",
+   "reserved": null,
+   "mlaName": "K. S. Anand",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 128,
+   "assemblyConstituency": "Chiknayakanhalli",
+   "reserved": null,
+   "mlaName": "C. B. Suresh Babu",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 129,
+   "assemblyConstituency": "Tiptur",
+   "reserved": null,
+   "mlaName": "K. Shadakshari",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 130,
+   "assemblyConstituency": "Turuvekere",
+   "reserved": null,
+   "mlaName": "M. T. Krishnappa",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 131,
+   "assemblyConstituency": "Kunigal",
+   "reserved": null,
+   "mlaName": "H. D. Ranganath",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 132,
+   "assemblyConstituency": "Tumkur City",
+   "reserved": null,
+   "mlaName": "G. B. Jyothi Ganesh",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 133,
+   "assemblyConstituency": "Tumkur Rural",
+   "reserved": null,
+   "mlaName": "B. Suresh Gowda",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 134,
+   "assemblyConstituency": "Koratagere",
+   "reserved": "SC",
+   "mlaName": "G. Parameshwara",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 135,
+   "assemblyConstituency": "Gubbi",
+   "reserved": null,
+   "mlaName": "S. R. Srinivas",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 136,
+   "assemblyConstituency": "Sira",
+   "reserved": null,
+   "mlaName": "T. B. Jayachandra",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 137,
+   "assemblyConstituency": "Pavagada",
+   "reserved": "SC",
+   "mlaName": "H. V. Venkatesh",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 138,
+   "assemblyConstituency": "Madhugiri",
+   "reserved": null,
+   "mlaName": "K. N. Rajanna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 139,
+   "assemblyConstituency": "Gauribidanur",
+   "reserved": null,
+   "mlaName": "K. Puttaswamy Gowda",
+   "mlaParty": "Independent politician",
+   "vacant": false
+  },
+  {
+   "acNo": 140,
+   "assemblyConstituency": "Bagepalli",
+   "reserved": null,
+   "mlaName": "S. N. Subbareddy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 141,
+   "assemblyConstituency": "Chikkaballapur",
+   "reserved": null,
+   "mlaName": "Pradeep Eshwar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 142,
+   "assemblyConstituency": "Sidlaghatta",
+   "reserved": null,
+   "mlaName": "B. N. Ravi Kumar",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 143,
+   "assemblyConstituency": "Chintamani",
+   "reserved": null,
+   "mlaName": "M. C. Sudhakar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 144,
+   "assemblyConstituency": "Srinivaspur",
+   "reserved": null,
+   "mlaName": "G. K. Venkatashiva Reddy",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 145,
+   "assemblyConstituency": "Mulbagal",
+   "reserved": "SC",
+   "mlaName": "Samruddhi V. Manjunath",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 146,
+   "assemblyConstituency": "Kolar Gold Field",
+   "reserved": "SC",
+   "mlaName": "M. Roopakala",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 147,
+   "assemblyConstituency": "Bangarapet",
+   "reserved": "SC",
+   "mlaName": "S. N. Narayanaswamy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 148,
+   "assemblyConstituency": "Kolar",
+   "reserved": null,
+   "mlaName": "Kothur G. Manjunath",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 149,
+   "assemblyConstituency": "Malur",
+   "reserved": null,
+   "mlaName": "K. Y. Nanjegowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 150,
+   "assemblyConstituency": "Yelahanka",
+   "reserved": null,
+   "mlaName": "S. R. Vishwanath",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 151,
+   "assemblyConstituency": "Krishnarajapuram",
+   "reserved": null,
+   "mlaName": "B.A. Basavaraja",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 152,
+   "assemblyConstituency": "Byatarayanapura",
+   "reserved": null,
+   "mlaName": "Krishna Byregowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 153,
+   "assemblyConstituency": "Yeshwantpur",
+   "reserved": null,
+   "mlaName": "S.T. Somashekar",
+   "mlaParty": null,
+   "vacant": false
+  },
+  {
+   "acNo": 154,
+   "assemblyConstituency": "Rajarajeshwarinagar",
+   "reserved": null,
+   "mlaName": "Munirathna",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 155,
+   "assemblyConstituency": "Dasarahalli",
+   "reserved": null,
+   "mlaName": "S. Muniraju",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 156,
+   "assemblyConstituency": "Mahalakshmi Layout",
+   "reserved": null,
+   "mlaName": "K. Gopalaiah",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 157,
+   "assemblyConstituency": "Malleshwaram",
+   "reserved": null,
+   "mlaName": "C.N. Ashwath Narayan",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 158,
+   "assemblyConstituency": "Hebbal",
+   "reserved": null,
+   "mlaName": "Suresha B.S.",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 159,
+   "assemblyConstituency": "Pulakeshinagar",
+   "reserved": "SC",
+   "mlaName": "A.C. Srinivasa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 160,
+   "assemblyConstituency": "Sarvagnanagar",
+   "reserved": null,
+   "mlaName": "K.J. George",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 161,
+   "assemblyConstituency": "C. V. Raman Nagar",
+   "reserved": "SC",
+   "mlaName": "S. Raghu",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 162,
+   "assemblyConstituency": "Shivajinagar",
+   "reserved": null,
+   "mlaName": "Rizwan Arshad",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 163,
+   "assemblyConstituency": "Shanti Nagar",
+   "reserved": null,
+   "mlaName": "N.A. Haris",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 164,
+   "assemblyConstituency": "Gandhi Nagar",
+   "reserved": null,
+   "mlaName": "Dinesh Gundu Rao",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 165,
+   "assemblyConstituency": "Rajaji Nagar",
+   "reserved": null,
+   "mlaName": "S. Suresh Kumar",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 166,
+   "assemblyConstituency": "Govindraj Nagar",
+   "reserved": null,
+   "mlaName": "Priya Krishna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 167,
+   "assemblyConstituency": "Vijay Nagar",
+   "reserved": null,
+   "mlaName": "M. Krishnappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 168,
+   "assemblyConstituency": "Chamrajpet",
+   "reserved": null,
+   "mlaName": "B.Z. Zameer Ahmed Khan",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 169,
+   "assemblyConstituency": "Chickpet",
+   "reserved": null,
+   "mlaName": "Uday B. Garudachar",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 170,
+   "assemblyConstituency": "Basavanagudi",
+   "reserved": null,
+   "mlaName": "Ravi Subramanya L.A.",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 171,
+   "assemblyConstituency": "Padmanabhanagar",
+   "reserved": null,
+   "mlaName": "R. Ashoka",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 172,
+   "assemblyConstituency": "B.T.M. Layout",
+   "reserved": null,
+   "mlaName": "Ramalinga Reddy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 173,
+   "assemblyConstituency": "Jayanagar",
+   "reserved": null,
+   "mlaName": "C. K. Ramamurthy",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 174,
+   "assemblyConstituency": "Mahadevapura",
+   "reserved": "SC",
+   "mlaName": "Manjula S.",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 175,
+   "assemblyConstituency": "Bommanahalli",
+   "reserved": null,
+   "mlaName": "Satish Reddy M.",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 176,
+   "assemblyConstituency": "Bangalore South",
+   "reserved": null,
+   "mlaName": "M. Krishnappa",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 177,
+   "assemblyConstituency": "Anekal",
+   "reserved": "SC",
+   "mlaName": "B. Shivanna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 178,
+   "assemblyConstituency": "Hoskote",
+   "reserved": null,
+   "mlaName": "Sharath Kumar Bache Gowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 179,
+   "assemblyConstituency": "Devanahalli",
+   "reserved": "SC",
+   "mlaName": "K. H. Muniyappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 180,
+   "assemblyConstituency": "Doddaballapur",
+   "reserved": null,
+   "mlaName": "Dheeraj Muniraj",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 181,
+   "assemblyConstituency": "Nelamangala",
+   "reserved": "SC",
+   "mlaName": "N. Shreenivasaiah",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 182,
+   "assemblyConstituency": "Magadi",
+   "reserved": null,
+   "mlaName": "H. C. Balakrishna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 183,
+   "assemblyConstituency": "Ramanagara",
+   "reserved": null,
+   "mlaName": "H. A. Iqbal Hussain",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 184,
+   "assemblyConstituency": "Kanakapura",
+   "reserved": null,
+   "mlaName": "D.K. Shivakumar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 185,
+   "assemblyConstituency": "Channapatna",
+   "reserved": null,
+   "mlaName": "C. P. Yogeshwar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 186,
+   "assemblyConstituency": "Malavalli",
+   "reserved": "SC",
+   "mlaName": "P. M. Narendraswamy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 187,
+   "assemblyConstituency": "Maddur",
+   "reserved": null,
+   "mlaName": "K. M. Udaya",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 188,
+   "assemblyConstituency": "Melukote",
+   "reserved": null,
+   "mlaName": "Darshan Puttannaiah",
+   "mlaParty": "Sarvodaya Karnataka Paksha",
+   "vacant": false
+  },
+  {
+   "acNo": 189,
+   "assemblyConstituency": "Mandya",
+   "reserved": null,
+   "mlaName": "Ravikumar Gowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 190,
+   "assemblyConstituency": "Shrirangapattana",
+   "reserved": null,
+   "mlaName": "A. B. Ramesha Bandisiddegowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 191,
+   "assemblyConstituency": "Nagamangala",
+   "reserved": null,
+   "mlaName": "N. Chaluvaraya Swamy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 192,
+   "assemblyConstituency": "Krishnarajapet",
+   "reserved": null,
+   "mlaName": "H. T. Manju",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 193,
+   "assemblyConstituency": "Shravanabelagola",
+   "reserved": null,
+   "mlaName": "C. N. Balakrishna",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 194,
+   "assemblyConstituency": "Arsikere",
+   "reserved": null,
+   "mlaName": "K. M. Shivalinge Gowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 195,
+   "assemblyConstituency": "Belur",
+   "reserved": null,
+   "mlaName": "H. K. Suresh",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 196,
+   "assemblyConstituency": "Hassan",
+   "reserved": null,
+   "mlaName": "Swaroop Prakash",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 197,
+   "assemblyConstituency": "Holenarasipur",
+   "reserved": null,
+   "mlaName": "H. D. Revanna",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 198,
+   "assemblyConstituency": "Arkalgud",
+   "reserved": null,
+   "mlaName": "A. Manju",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 199,
+   "assemblyConstituency": "Sakleshpur",
+   "reserved": "SC",
+   "mlaName": "Cement Manju",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 200,
+   "assemblyConstituency": "Belthangady",
+   "reserved": null,
+   "mlaName": "Harish Poonja",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 201,
+   "assemblyConstituency": "Moodabidri",
+   "reserved": null,
+   "mlaName": "Umanatha Kotian",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 202,
+   "assemblyConstituency": "Mangalore City North",
+   "reserved": null,
+   "mlaName": "Y. Bharath Shetty",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 203,
+   "assemblyConstituency": "Mangalore City South",
+   "reserved": null,
+   "mlaName": "D. Vedavyasa Kamath",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 204,
+   "assemblyConstituency": "Mangalore",
+   "reserved": null,
+   "mlaName": "U. T. Khader",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 205,
+   "assemblyConstituency": "Bantval",
+   "reserved": null,
+   "mlaName": "U. Rajesh Naik",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 206,
+   "assemblyConstituency": "Puttur",
+   "reserved": null,
+   "mlaName": "Ashok Kumar Rai",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 207,
+   "assemblyConstituency": "Sullia",
+   "reserved": "SC",
+   "mlaName": "Bhagirathi Murulya",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 208,
+   "assemblyConstituency": "Madikeri",
+   "reserved": null,
+   "mlaName": "Mantar Gowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 209,
+   "assemblyConstituency": "Virajpet",
+   "reserved": null,
+   "mlaName": "A. S. Ponnanna",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 210,
+   "assemblyConstituency": "Periyapatna",
+   "reserved": null,
+   "mlaName": "K. Venkatesh",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 211,
+   "assemblyConstituency": "Krishnarajanagara",
+   "reserved": null,
+   "mlaName": "D. Ravishankar",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 212,
+   "assemblyConstituency": "Hunsur",
+   "reserved": null,
+   "mlaName": "G. D. Harish Gowda",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 213,
+   "assemblyConstituency": "Heggadadevankote",
+   "reserved": "ST",
+   "mlaName": "Anil Chikkamadhu",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 214,
+   "assemblyConstituency": "Nanjangud",
+   "reserved": "SC",
+   "mlaName": "Darshan Dhruvanarayana",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 215,
+   "assemblyConstituency": "Chamundeshwari",
+   "reserved": null,
+   "mlaName": "G. T. Devegowda",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 216,
+   "assemblyConstituency": "Krishnaraja",
+   "reserved": null,
+   "mlaName": "T. S. Srivatsa",
+   "mlaParty": "Bharatiya Janata Party",
+   "vacant": false
+  },
+  {
+   "acNo": 217,
+   "assemblyConstituency": "Chamaraja",
+   "reserved": null,
+   "mlaName": "K. Harish Gowda",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 218,
+   "assemblyConstituency": "Narasimharaja",
+   "reserved": null,
+   "mlaName": "Tanveer Sait",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 219,
+   "assemblyConstituency": "Varuna",
+   "reserved": null,
+   "mlaName": "Siddaramaiah",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 220,
+   "assemblyConstituency": "T. Narasipur",
+   "reserved": "SC",
+   "mlaName": "H. C. Mahadevappa",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 221,
+   "assemblyConstituency": "Hanur",
+   "reserved": null,
+   "mlaName": "M. R. Manjunath",
+   "mlaParty": "Janata Dal (Secular)",
+   "vacant": false
+  },
+  {
+   "acNo": 222,
+   "assemblyConstituency": "Kollegal",
+   "reserved": "SC",
+   "mlaName": "A. R. Krishnamurthy",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 223,
+   "assemblyConstituency": "Chamarajanagar",
+   "reserved": null,
+   "mlaName": "C. Puttarangashetty",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  },
+  {
+   "acNo": 224,
+   "assemblyConstituency": "Gundlupet",
+   "reserved": null,
+   "mlaName": "H M Ganesh Prasad",
+   "mlaParty": "Indian National Congress",
+   "vacant": false
+  }
+ ]
+}

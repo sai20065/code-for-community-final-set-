@@ -1,10 +1,16 @@
 import * as admin from "firebase-admin";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
-import {REGION, reporterHashSalt} from "../config";
+import {SuggestInput, suggestOffice} from "../assignment/suggestOffice";
+import {officeDirectory} from "../assignment/officeDirectoryCache";
+import {REGION, bhashiniInferenceKey, gemmaApiKey, reporterHashSalt} from "../config";
+import {BhashiniClient} from "../lib/bhashiniClient";
+import {GemmaClient} from "../lib/gemmaClient";
 import {resolveConstituencyForPoint} from "../lib/constituencyGeo";
-import {GeminiClient} from "../lib/geminiClient";
+import {GeminiClient, fetchAsBase64} from "../lib/geminiClient";
 import {TranslateClient} from "../lib/translateClient";
 import {resolveTalukForPoint} from "../lib/talukGeo";
+import {resolveAssemblyForPoint} from "../lib/assemblyGeo";
+import {resolveBbmpWardForPoint} from "../lib/bbmpWardGeo";
 import {resolveWardForPoint} from "../lib/wardGeo";
 import {
   AggregateInput,
@@ -14,7 +20,7 @@ import {
 
 /** Bumped whenever the shape of what this pipeline writes changes, so a
  * backfill can tell which documents predate a field. */
-const PIPELINE_VERSION = 3;
+const PIPELINE_VERSION = 4;
 
 /**
  * Main AI pipeline, triggered whenever a citizen creates a ticket
@@ -28,7 +34,8 @@ const PIPELINE_VERSION = 3;
  * cross-language tickets can be classified/clustered consistently.
  * (3) photo → Gemini vision caption. (4) Gemini classifies theme (only if
  * the citizen didn't already pick one manually), scores it, and produces a
- * PII-free `publicSummary`. (5) find-or-create a `clusters` doc for
+ * PII-free `publicSummary`. (4b) suggest the office the citizen should
+ * file with (`suggestedOffice`, see assignment/). (5) find-or-create a `clusters` doc for
  * (constituencyId, theme, boothId) and update its aggregates.
  *
  * Writes are **accumulated into one patch** and applied once at the end
@@ -40,7 +47,9 @@ export const onSubmissionCreated = onDocumentCreated(
   {
     document: "submissions/{submissionId}",
     region: REGION,
-    secrets: [reporterHashSalt],
+    secrets: gemmaApiKey ?
+      [reporterHashSalt, bhashiniInferenceKey, gemmaApiKey] :
+      [reporterHashSalt, bhashiniInferenceKey],
   },
   async (event) => {
     const snapshot = event.data;
@@ -51,45 +60,92 @@ export const onSubmissionCreated = onDocumentCreated(
 
     const gemini = new GeminiClient();
     const translate = new TranslateClient();
+    const bhashini = new BhashiniClient(bhashiniInferenceKey.value());
 
     /** Accumulated field updates for the submission doc. */
     const patch: Record<string, unknown> = {};
+
+    /** Adds `suggestedOffice` to the patch. A routing failure must never
+     * block the rest of the pipeline, so errors are logged and swallowed. */
+    const addSuggestedOffice = async (input: SuggestInput): Promise<void> => {
+      try {
+        const key = gemmaApiKey?.value() ?? "";
+        const office = await suggestOffice(
+          await officeDirectory(db),
+          input,
+          key ? new GemmaClient(key) : null,
+        );
+        if (office) {
+          patch.suggestedOffice = {
+            ...office,
+            suggestedAt: admin.firestore.FieldValue.serverTimestamp(),
+          };
+        }
+      } catch (err) {
+        console.error("Office suggestion failed", err);
+      }
+    };
 
     // --- 1 & 2: transcript + translation ---------------------------------
     // Voice tickets are now transcribed on the client *before* submit (the
     // citizen sees/edits the text), arriving here as `rawText`. Only fall
     // back to server-side transcription when that didn't happen — avoids
     // paying for Gemini transcription twice.
+    // The unified compose screen stores a voice note in `audioUrl` (so a
+    // ticket can carry a photo in `mediaUrl` too); older voice tickets kept
+    // the audio in `mediaUrl`.
+    const audioUrl: string | undefined =
+      submission.audioUrl ??
+      (submission.type === "voice" ? submission.mediaUrl : undefined);
     let transcript: string | undefined = submission.rawText;
     let transcriptionSource: string | null = submission.rawText ? "client" : null;
-    if (
-      submission.type === "voice" &&
-      submission.mediaUrl &&
-      !submission.rawText
-    ) {
+    const language: string = submission.language ?? "hi";
+    let translatedText: string | undefined = submission.translatedText;
+    let translationSource: string | null = translatedText ? "client" : null;
+    if (audioUrl && !submission.rawText) {
+      // Bhashini first: one call gives the transcript and its English.
       try {
-        transcript = await gemini.transcribeAudioUrl(
-          submission.mediaUrl,
-          submission.language ?? "hi",
-        );
-        transcriptionSource = "server";
+        const audio = await fetchAsBase64(audioUrl);
+        const spoken = (await bhashini.detectLanguage(audio.data, audio.mimeType)) ?? language;
+        const heard = await bhashini.transcribeAndTranslate(audio.data, spoken, audio.mimeType);
+        transcript = heard.transcript;
+        transcriptionSource = "server-bhashini";
         patch.transcript = transcript;
+        if (!translatedText) {
+          translatedText = heard.translatedText;
+          translationSource = "bhashini";
+          patch.translatedText = translatedText;
+        }
       } catch (err) {
-        console.error("Gemini audio transcription failed", err);
+        console.warn("Bhashini audio failed; using Gemini", err);
+        try {
+          transcript = await gemini.transcribeAudioUrl(audioUrl, language);
+          transcriptionSource = "server";
+          patch.transcript = transcript;
+        } catch (err2) {
+          console.error("Gemini audio transcription failed", err2);
+        }
       }
     }
 
-    let translatedText: string | undefined = submission.translatedText;
     if (transcript && !translatedText) {
       try {
-        translatedText = await translate.translate({
-          text: transcript,
-          sourceLanguage: submission.language ?? "hi",
-          targetLanguage: "en",
-        });
+        translatedText = await bhashini.translate(transcript, language, "en");
+        translationSource = "bhashini";
         patch.translatedText = translatedText;
       } catch (err) {
-        console.error("Cloud Translate failed", err);
+        console.warn("Bhashini translation failed; using Cloud Translate", err);
+        try {
+          translatedText = await translate.translate({
+            text: transcript,
+            sourceLanguage: language,
+            targetLanguage: "en",
+          });
+          translationSource = "cloud-translate";
+          patch.translatedText = translatedText;
+        } catch (err2) {
+          console.error("Cloud Translate failed", err2);
+        }
       }
     }
 
@@ -107,8 +163,14 @@ export const onSubmissionCreated = onDocumentCreated(
       }
     }
 
+    // A ticket can now carry words *and* a photo — classify on both so the
+    // photo's evidence isn't dropped whenever the citizen also typed/spoke.
+    const words = translatedText || transcript || submission.rawText || "";
     const classificationInput =
-      translatedText || transcript || photoCaption || submission.rawText || "";
+      words && photoCaption
+        ? `${words}
+(Photo shows: ${photoCaption})`
+        : words || photoCaption || "";
     if (!classificationInput) {
       if (Object.keys(patch).length) await submissionRef.update(patch);
       return;
@@ -147,9 +209,20 @@ export const onSubmissionCreated = onDocumentCreated(
       processedAt: admin.firestore.FieldValue.serverTimestamp(),
       pipelineVersion: PIPELINE_VERSION,
       transcriptionSource,
+      translationSource,
     };
 
     if (!theme) {
+      // No category means no specific department — the state-wide
+      // grievance portal is still a real place to file.
+      await addSuggestedOffice({
+        theme: null,
+        summary: patch.publicSummary as string,
+        districtId: submission.location?.districtId ?? null,
+        districtName: null,
+        talukName: null,
+        inBengaluruWard: false,
+      });
       await submissionRef.update(patch);
       return;
     }
@@ -167,6 +240,11 @@ export const onSubmissionCreated = onDocumentCreated(
     const lng: number | undefined = submission.location?.lng;
     let wardId: string | undefined = submission.location?.wardId;
     let talukId: string | undefined = submission.location?.talukId;
+    let bbmpWardId: string | undefined = submission.location?.bbmpWardId;
+    let assemblyId: string | undefined = submission.location?.assemblyId;
+    let districtId: string | undefined = submission.location?.districtId;
+    let talukName: string | null = null;
+    let districtName: string | null = null;
     if (typeof lat === "number" && typeof lng === "number") {
       const resolved = resolveConstituencyForPoint(lat, lng);
       if (resolved && resolved.constituencyId !== constituencyId) {
@@ -184,12 +262,46 @@ export const onSubmissionCreated = onDocumentCreated(
       // just "Bengaluru North/South/etc" from the same KGIS dataset), so
       // both are stored whenever available rather than one excluding the
       // other.
+      // Second ward layer: the 198 BBMP wards, stored alongside (never
+      // instead of) the GBA `wardId` so either map layer can roll it up.
+      const resolvedBbmp = resolveBbmpWardForPoint(lat, lng);
+      if (resolvedBbmp && resolvedBbmp.wardId !== bbmpWardId) {
+        bbmpWardId = resolvedBbmp.wardId;
+        patch["location.bbmpWardId"] = resolvedBbmp.wardId;
+      }
       const resolvedTaluk = resolveTalukForPoint(lat, lng);
+      talukName = resolvedTaluk?.talukName ?? null;
+      districtName = resolvedTaluk?.districtName ?? null;
       if (resolvedTaluk && resolvedTaluk.talukId !== talukId) {
         talukId = resolvedTaluk.talukId;
         patch["location.talukId"] = resolvedTaluk.talukId;
       }
+      // District (DC scope) and assembly constituency (MLA scope), so every
+      // official type's dashboard and security rules can match the ticket.
+      if (resolvedTaluk && resolvedTaluk.districtId !== districtId) {
+        districtId = resolvedTaluk.districtId;
+        patch["location.districtId"] = resolvedTaluk.districtId;
+      }
+      const resolvedAssembly = resolveAssemblyForPoint(lat, lng);
+      if (resolvedAssembly && resolvedAssembly.assemblyId !== assemblyId) {
+        assemblyId = resolvedAssembly.assemblyId;
+        patch["location.assemblyId"] = resolvedAssembly.assemblyId;
+        patch["location.assemblyName"] = resolvedAssembly.assemblyName;
+      }
     }
+
+    // --- 4b: suggested office (needs the theme and the resolved place) ----
+    await addSuggestedOffice({
+      theme,
+      summary: patch.publicSummary as string,
+      districtId: districtId ?? null,
+      districtName,
+      talukName,
+      inBengaluruWard: Boolean(bbmpWardId || wardId),
+      lat: typeof lat === "number" ? lat : null,
+      lng: typeof lng === "number" ? lng : null,
+    });
+
     const boothId: string | undefined = submission.location?.boothId;
     if (!constituencyId) {
       // Unscoped ticket — no cluster to join yet. Still persist everything
@@ -211,6 +323,9 @@ export const onSubmissionCreated = onDocumentCreated(
           createdAtRaw.toDate() :
           new Date(),
       wardId: wardId ?? null,
+      bbmpWardId: bbmpWardId ?? null,
+      assemblyId: assemblyId ?? null,
+      districtId: districtId ?? null,
       talukId: talukId ?? null,
       lat: typeof lat === "number" ? lat : null,
       lng: typeof lng === "number" ? lng : null,

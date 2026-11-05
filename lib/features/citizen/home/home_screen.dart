@@ -14,6 +14,7 @@ import '../../../shared/widgets/hotspot_leaderboard.dart';
 import '../../../shared/widgets/mp_constituency_card.dart';
 import '../../../shared/widgets/status_stepper.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
+import '../../public/feed/report_feed_screen.dart';
 
 const _kFilterCategories = ['education', 'roads', 'water', 'skilling', 'health'];
 
@@ -59,10 +60,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 data: (profile) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
-                    profile?.constituencyId != null
-                        ? l10n.homeAreaLabel(
-                            '${profile!.constituencyId}'
-                            '${profile.homeBoothName != null ? " · ${l10n.boothLabel(profile.homeBoothName!)}" : ""}')
+                    profile?.homeAreaLabel != null
+                        ? l10n.homeAreaLabel(profile!.homeAreaLabel!)
                         : l10n.pincodeLabel(profile?.pincodeHome ?? "—"),
                     style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
@@ -144,11 +143,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           // Their own reports are only half the picture; the
                           // constituency-wide view is what shows their report
                           // sitting alongside forty neighbours' identical ones.
+                          const HomeFeedStrip(),
+                          const SizedBox(height: 14),
                           _HomeLinkCard(
                             icon: Icons.dashboard_rounded,
                             tint: AppColors.indigo,
                             label: l10n.seePublicDashboard,
-                            onTap: () => context.go('/public/dashboard'),
+                            onTap: () => context.push('/public/dashboard'),
                           ),
                           const SizedBox(height: 10),
                           // Moved here from the signed-out Welcome screen: a
@@ -161,7 +162,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             tint: AppColors.teal,
                             label: l10n.exploreYourArea,
                             subtitle: 'District, taluk and ward maps',
-                            onTap: () => context.go('/public/area'),
+                            onTap: () => context.push('/public/area'),
+                          ),
+                          const SizedBox(height: 10),
+                          _HomeLinkCard(
+                            icon: Icons.public_rounded,
+                            tint: AppColors.vermilion,
+                            label: l10n.liveReportMap,
+                            subtitle: l10n.liveReportMapSubtitle,
+                            onTap: () => context.push('/public/karnataka'),
+                          ),
+                          const SizedBox(height: 10),
+                          _HomeLinkCard(
+                            icon: Icons.leaderboard_rounded,
+                            tint: AppColors.saffronDeep,
+                            label: l10n.leaderboardTitle,
+                            subtitle: l10n.leaderboardSubtitle,
+                            onTap: () => context.push('/public/leaderboard'),
                           ),
                         ],
                       ),
@@ -215,7 +232,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: l10n.reportAProblem,
                     color: AppColors.vermilion,
                     onTap: () => context.go(
-                      '/compose/text',
+                      '/compose/report',
                       extra: SubmissionCategory.problem,
                     ),
                   ),
@@ -227,7 +244,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: l10n.suggestDevelopmentWork,
                     color: AppColors.saffronDeep,
                     onTap: () => context.go(
-                      '/compose/text',
+                      '/compose/report',
                       extra: SubmissionCategory.feedback,
                     ),
                   ),
@@ -663,7 +680,10 @@ class _TrendingFeed extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => _EmptyState(message: AppLocalizations.of(context).couldNotLoadSuggestions),
+      error: (e, _) {
+        debugPrint('Trending suggestions failed: $e');
+        return _EmptyState(message: AppLocalizations.of(context).couldNotLoadSuggestions);
+      },
     );
   }
 }

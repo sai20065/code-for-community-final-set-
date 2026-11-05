@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
@@ -8,6 +9,7 @@ import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/status_stepper.dart';
+import '../../../shared/widgets/suggested_office_card.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
 
 Future<void> _copyReceipt(BuildContext context, String tokenId) async {
@@ -38,7 +40,7 @@ class MyReportsScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/home'),
         ),
         title: Text(l10n.myTicketsTitle),
       ),
@@ -148,6 +150,14 @@ class _TicketCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (!isSuggestion && submission.suggestedOffice != null) ...[
+                const SizedBox(height: 8),
+                SuggestedOfficeCard(
+                  office: submission.suggestedOffice,
+                  tokenId: submission.tokenId,
+                  compact: true,
+                ),
+              ],
               const SizedBox(height: 12),
               if (isSuggestion)
                 _SuggestionOutcome(submission: submission)
@@ -169,7 +179,8 @@ class _SuggestionOutcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final resolved = submission.status == SubmissionStatus.resolved;
+    final resolved = submission.status == SubmissionStatus.resolved ||
+        submission.status == SubmissionStatus.closed;
     return Row(
       children: [
         const Icon(Icons.groups_rounded, size: 16, color: AppColors.inkFaint),

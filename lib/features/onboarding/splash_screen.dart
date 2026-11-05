@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -74,46 +75,77 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     super.dispose();
   }
 
+  /// Never leaves the citizen stuck on the splash: a hung or failed
+  /// startup read (offline Firestore, corrupt local settings, …) times out
+  /// and falls back to Welcome, where they can sign in again.
   Future<void> _route() async {
+    String? destination;
+    try {
+      destination = await _decideRoute().timeout(const Duration(seconds: 12));
+    } catch (e) {
+      debugPrint('Splash routing failed, falling back to welcome: $e');
+      destination = '/welcome';
+    }
+    if (mounted && destination != null) context.go(destination);
+  }
+
+  /// Where to go after the splash. Navigation happens in [_route].
+  Future<String?> _decideRoute() async {
     final minSplash = Future.delayed(const Duration(milliseconds: 1800));
     final languageNotifier = ref.read(selectedLanguageProvider.notifier);
     final progressNotifier = ref.read(onboardingProgressProvider.notifier);
 
     final user = await ref.read(authStateProvider.future);
     await Future.wait([languageNotifier.ready, progressNotifier.ready, minSplash]);
-    if (!mounted) return;
+    if (!mounted) return null;
 
     if (user != null) {
       final profile = await ref.read(firestoreServiceProvider).getUser(user.uid);
+      if (!mounted) return null;
+      if (profile?.role == UserRole.admin) {
+        return '/admin';
+      }
       if (profile?.role == UserRole.official) {
-        context.go('/gov/dashboard');
-        return;
+        return '/gov/dashboard';
+      }
+      // A self-registered MLA / officer has no profile until approved —
+      // send them back to their application, not citizen onboarding.
+      if (profile == null) {
+        final app = await FirebaseFirestore.instance
+            .collection('officialApplications')
+            .doc(user.uid)
+            .get();
+        if (!mounted) return null;
+        if (app.exists) {
+          return '/gov/pending';
+        }
       }
       // `signupCompletedAt` on the Firestore profile is the authoritative
       // "this citizen has a real, saved profile" signal — it survives a
       // reinstall/new device, unlike `onboardingProgressProvider`, which is
       // only local `shared_preferences` and would otherwise wrongly restart
       // onboarding for a citizen who signs back in on a fresh install.
-      if (profile?.signupCompletedAt != null) {
-        context.go('/home');
-        return;
+      if (profile != null && profile.isProfileComplete) {
+        return '/home';
+      }
+      // A profile that exists but was never finished (e.g. the app was
+      // closed after creating the account) resumes onboarding at the first
+      // missing step, whatever this device's local progress says.
+      if (profile != null && profile.role == UserRole.citizen) {
+        return profile.resumeOnboardingRoute;
       }
       switch (ref.read(onboardingProgressProvider)) {
         case OnboardingStep.identity:
         case OnboardingStep.basicInfo:
-          context.go('/signup/basic-info');
-          break;
+          return '/signup/basic-info';
         case OnboardingStep.location:
-          context.go('/signup/location');
-          break;
+          return '/signup/location';
         case OnboardingStep.done:
-          context.go('/home');
-          break;
+          return '/home';
       }
-      return;
     }
 
-    context.go('/welcome');
+    return '/welcome';
   }
 
   @override

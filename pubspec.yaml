@@ -28,11 +28,17 @@ dependencies:
   flutter_riverpod: ^2.5.1
   shared_preferences: ^2.3.2
 
-  # Location — free/open-source mapping (OpenStreetMap tiles, no API key)
+  # Location — free/open-source mapping. Basemap is OpenFreeMap vector
+  # tiles (free, no API key, no usage cap, commercial use allowed), with
+  # OpenStreetMap raster tiles as the fallback. See app_map_tiles.dart.
   flutter_map: ^7.0.2
+  vector_map_tiles: ^8.0.0
   latlong2: ^0.9.1
   http: ^1.2.2
   geolocator: ^13.0.1
+  # Opens Google Maps directions to a reported location (no API key —
+  # it's a plain https://www.google.com/maps/dir/ deep link).
+  url_launcher: ^6.3.0
 
   # Media
   record: ^7.1.1
@@ -50,6 +56,9 @@ dependencies:
   printing: ^5.13.4
 
   cupertino_icons: ^1.0.8
+  flutter_map_marker_cluster: ^1.4.0
+  share_plus: ^13.3.1
+  cached_network_image: ^4.0.5
 
 dev_dependencies:
   flutter_test:
@@ -61,8 +70,6 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/lottie/
-    - assets/images/
     - assets/icon/
     - assets/sounds/
     # Simplified Karnataka district/taluk outlines for the statewide map.
@@ -71,10 +78,6 @@ flutter:
     # Display only — see lib/core/services/karnataka_geo_service.dart.
     - assets/geo/
 
-# Icon generation uses two separate config files (flutter_launcher_icons-
-# android.yaml, flutter_launcher_icons-web.yaml), NOT this shared section
-# — each CI job (build-apk.yml, build-web.yml) only scaffolds ONE platform
-# folder, and flutter_launcher_icons errors out if told to write icons
-# into a platform folder (android/ or ios/) that doesn't exist on that
-# runner. See those files for the actual config; there is no ios/ folder
-# anywhere in this repo (no iOS build pipeline exists).
+# App icons: see flutter_launcher_icons.yaml (Android + web, no iOS — there
+# is no ios/ folder or iOS pipeline). Only build-apk.yml runs the generator,
+# after `flutter create` has made android/.

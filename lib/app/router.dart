@@ -1,13 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'navigation.dart';
 import '../core/models/booth_model.dart';
 import '../core/models/submission_model.dart';
 import '../core/models/user_model.dart';
 import '../features/citizen/compose/category_picker_screen.dart';
-import '../features/citizen/compose/photo_video_screen.dart';
-import '../features/citizen/compose/text_compose_screen.dart';
-import '../features/citizen/compose/voice_record_screen.dart';
+import '../features/citizen/compose/report_compose_screen.dart';
 import '../features/citizen/confirmation/submission_confirmation_screen.dart';
 import '../features/citizen/home/home_screen.dart';
 import '../features/citizen/profile/profile_screen.dart';
@@ -15,15 +14,23 @@ import '../features/citizen/reports/my_reports_screen.dart';
 import '../features/citizen/reports/report_detail_screen.dart';
 import '../features/official/report/generate_report_screen.dart';
 import '../features/official/tickets/ticket_management_screen.dart';
+import '../features/official/work/team_screen.dart';
+import '../features/official/work/worker_tasks_screen.dart';
 import '../features/official/transcript/agent_transcript_screen.dart';
+import '../features/onboarding/auth/citizen_signin_screen.dart';
+import '../features/onboarding/auth/citizen_signup_screen.dart';
+import '../features/onboarding/auth/forgot_password_screen.dart';
+import '../features/admin/admin_console_screen.dart';
+import '../features/admin/admin_login_screen.dart';
+import '../features/official/profile/official_profile_screen.dart';
+import '../features/official/register/application_status_screen.dart';
+import '../features/official/register/official_register_screen.dart';
 import '../features/onboarding/gov_login_screen.dart';
 import '../features/onboarding/language_select_screen.dart';
 import '../features/onboarding/mp_credentials_request_screen.dart';
-import '../features/onboarding/signin_screen.dart';
 import '../features/onboarding/signup/basic_info_screen.dart';
 import '../features/onboarding/signup/location_setup_screen.dart';
 import '../features/onboarding/signup/onboarding_done_screen.dart';
-import '../features/onboarding/signup_screen.dart';
 import '../features/onboarding/splash_screen.dart';
 import '../features/onboarding/welcome_screen.dart';
 import '../features/official/dashboard/gov_dashboard_screen.dart';
@@ -32,7 +39,10 @@ import '../features/public/booth/booth_detail_sheet.dart';
 import '../features/public/constituency_picker/constituency_picker_screen.dart';
 import '../features/public/dashboard/dashboard_home_screen.dart';
 import '../features/public/map/constituency_map_screen.dart';
+import '../features/public/feed/report_feed_screen.dart';
+import '../features/public/leaderboard/representative_leaderboard_screen.dart';
 import '../features/public/map/karnataka_map_screen.dart';
+import '../features/public/report/public_report_card_screen.dart';
 import '../features/public/solution/solution_card_screen.dart';
 import '../features/public/themes/themes_overview_screen.dart';
 import '../features/public/works/compare_proposals_screen.dart';
@@ -58,7 +68,14 @@ const _officialOnlyPrefixes = <String>[
   '/official/report',
   '/official/transcript',
   '/gov/dashboard',
+  '/gov/profile',
+  '/official/team',
+  '/worker',
 ];
+
+/// Screens that exist only for citizens (their home, reporting, own reports
+/// and profile). Officials and admins are redirected away from them.
+const _citizenOnlyPrefixes = <String>['/home', '/compose', '/confirmation', '/reports', '/profile'];
 
 /// The app's router.
 ///
@@ -92,7 +109,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         // screen on every cold start.
         if (profileAsync.isLoading) return null;
         final profile = profileAsync.valueOrNull;
+        // Admins have their own console; anyone else goes public.
+        if (profile?.role == UserRole.admin) return '/admin';
         if (profile?.role != UserRole.official) return '/public/dashboard';
+        // Field workers see only the reports assigned to them; everyone else
+        // in the official area has no business on their screen.
+        final isWorker = profile?.officialType == 'fieldWorker';
+        if (isWorker && !path.startsWith('/worker')) return '/worker/tasks';
+        if (!isWorker && path.startsWith('/worker')) return '/gov/dashboard';
+      }
+
+      // Officials and admins have no citizen home: if any back button, link
+      // or stale route lands them on a citizen-only screen, send them to
+      // their own dashboard instead.
+      if (_citizenOnlyPrefixes.any((p) => path == p || path.startsWith('$p/'))) {
+        final profile = ref.read(currentUserProfileProvider).valueOrNull;
+        if (profile?.role == UserRole.official || profile?.role == UserRole.admin) {
+          return homeRouteFor(profile);
+        }
       }
 
       return null;
@@ -112,11 +146,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // --- Onboarding / signup ---
       GoRoute(
         path: '/signup',
-        builder: (context, state) => const SignUpScreen(),
+        builder: (context, state) => const CitizenSignUpScreen(),
       ),
       GoRoute(
         path: '/signin',
-        builder: (context, state) => const SignInScreen(),
+        builder: (context, state) => const CitizenSignInScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => ForgotPasswordScreen(
+          initialUsername: state.extra as String?,
+        ),
       ),
       GoRoute(
         path: '/gov/login',
@@ -125,6 +165,37 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/gov/dashboard',
         builder: (context, state) => const GovDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/official/team',
+        builder: (context, state) => const TeamScreen(),
+      ),
+      GoRoute(
+        path: '/worker/tasks',
+        builder: (context, state) => const WorkerTasksScreen(),
+      ),
+      GoRoute(
+        path: '/gov/profile',
+        builder: (context, state) => const OfficialProfileScreen(),
+      ),
+      // Self-registration for MLAs / local officers; `extra: true` =
+      // re-apply after a rejection.
+      GoRoute(
+        path: '/gov/register',
+        builder: (context, state) =>
+            OfficialRegisterScreen(resubmit: state.extra == true),
+      ),
+      GoRoute(
+        path: '/gov/pending',
+        builder: (context, state) => const ApplicationStatusScreen(),
+      ),
+      GoRoute(
+        path: '/admin/login',
+        builder: (context, state) => const AdminLoginScreen(),
+      ),
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => const AdminConsoleScreen(),
       ),
       GoRoute(
         path: '/mp/first-time-setup',
@@ -140,7 +211,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/signup/location',
-        builder: (context, state) => const LocationSetupScreen(),
+        builder: (context, state) =>
+            LocationSetupScreen(fromProfile: state.extra == true),
       ),
       GoRoute(
         path: '/signup/done',
@@ -153,24 +225,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/compose',
         builder: (context, state) => const CategoryPickerScreen(),
       ),
-      GoRoute(
-        path: '/compose/voice',
-        builder: (context, state) => VoiceRecordScreen(
-          initialCategory: state.extra as SubmissionCategory?,
+      // One unified compose screen for text + voice + photo. The old
+      // per-mode paths stay as aliases so existing links keep working;
+      // they just pre-open the mic or camera.
+      for (final mode in const ['report', 'voice', 'text', 'photo'])
+        GoRoute(
+          path: '/compose/$mode',
+          builder: (context, state) => ReportComposeScreen(
+            initialCategory: state.extra as SubmissionCategory?,
+            initialFocus: mode == 'report' ? null : mode,
+          ),
         ),
-      ),
-      GoRoute(
-        path: '/compose/text',
-        builder: (context, state) => TextComposeScreen(
-          initialCategory: state.extra as SubmissionCategory?,
-        ),
-      ),
-      GoRoute(
-        path: '/compose/photo',
-        builder: (context, state) => PhotoVideoScreen(
-          initialCategory: state.extra as SubmissionCategory?,
-        ),
-      ),
       GoRoute(
         path: '/confirmation',
         builder: (context, state) => SubmissionConfirmationScreen(
@@ -237,6 +302,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/public/compare',
         builder: (context, state) => const CompareProposalsScreen(),
+      ),
+      // One report's shareable card (ward, MLA, MP, days open) and the
+      // representative leaderboard — both readable signed-out, since they
+      // are what shared links open.
+      GoRoute(
+        path: '/public/report/:id',
+        builder: (context, state) =>
+            PublicReportCardScreen(ticketId: state.pathParameters['id']!),
+      ),
+      // Citizen feed of real reports, Instagram-style (public data only).
+      GoRoute(
+        path: '/feed',
+        builder: (context, state) => const ReportFeedScreen(),
+      ),
+      GoRoute(
+        path: '/public/leaderboard',
+        builder: (context, state) => const RepresentativeLeaderboardScreen(),
       ),
       GoRoute(
         path: '/public/cluster/:clusterId',

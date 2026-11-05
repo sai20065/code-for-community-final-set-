@@ -48,6 +48,11 @@ export interface AggregateInput {
   userId?: string;
   createdAt: Date;
   wardId?: string | null;
+  /** BBMP (198-ward) layer id, stored alongside the GBA [wardId]. */
+  bbmpWardId?: string | null;
+  /** MLA scope (KA-AC-n) and DC scope (district id). */
+  assemblyId?: string | null;
+  districtId?: string | null;
   talukId?: string | null;
   lat?: number | null;
   lng?: number | null;
@@ -178,6 +183,9 @@ export function buildClusterAggregatePatch(args: {
     submissionCount,
 
     wardId: input.wardId ?? existing.wardId ?? null,
+    bbmpWardId: input.bbmpWardId ?? existing.bbmpWardId ?? null,
+    assemblyId: input.assemblyId ?? existing.assemblyId ?? null,
+    districtId: input.districtId ?? existing.districtId ?? null,
     talukId: input.talukId ?? existing.talukId ?? null,
 
     centroidSum,

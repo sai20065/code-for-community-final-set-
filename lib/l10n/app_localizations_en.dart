@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'You stay anonymous to other citizens. Your Aadhaar number is never stored. Your MP\'s office sees aggregated demand, not your identity.';
+      'You stay anonymous to other citizens. No phone number, email or ID is needed — just a username. Your MP\'s office sees aggregated demand, not your identity.';
 
   @override
   String get newHereSignUp => 'New here? Sign Up';
@@ -48,49 +48,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alreadyHaveAccountSignIn => 'I already have an account — Sign In';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'Upload a photo of your Aadhaar so we can read your name and address. We keep only your name, address and pincode — the photo and your Aadhaar number are never saved. This is not ID verification; you can also just type your details below.';
-
-  @override
-  String get aadhaarUploadNote =>
-      'Upload photos of your Aadhaar (front and back) so we can read your name and address — the back side often has your full address, so capturing it too gives more accurate results. We keep only your name, address, pincode and ward number — the photos and your Aadhaar number are never saved. This is not ID verification, and both photos are optional — you can always just type your details below.';
-
-  @override
-  String get slotFront => 'Front';
-
-  @override
-  String get slotBack => 'Back';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'Already have an account? Sign In';
-
-  @override
-  String get aadhaarBackNote =>
-      'Tip: capture the BACK of your Aadhaar too — it often has your full address the front leaves out. Both sides are optional.';
 
   @override
   String get camera => 'Camera';
 
   @override
   String get gallery => 'Gallery';
-
-  @override
-  String get extractDetails => 'Extract details';
-
-  @override
-  String get couldNotReadClearly =>
-      'Couldn\'t read that clearly — check the details below or enter them manually.';
-
-  @override
-  String get couldNotProcessImage =>
-      'Couldn\'t process that image right now — enter your details manually below.';
-
-  @override
-  String get hideManualEntry => 'Hide manual entry';
-
-  @override
-  String get skipEnterManually => 'Skip — I\'ll enter manually';
 
   @override
   String get fullName => 'Full name';
@@ -114,48 +79,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueLabel => 'Continue';
 
   @override
-  String get verifyWithPhone => 'Verify with your phone number';
-
-  @override
-  String get mobileNumberHint => '10-digit mobile number';
-
-  @override
-  String get sendCode => 'Send code';
-
-  @override
-  String get sixDigitCode => '6-digit code';
-
-  @override
-  String get verifyAndContinue => 'Verify & continue';
-
-  @override
-  String get verifyAndSignIn => 'Verify & sign in';
-
-  @override
-  String get enterValidMobile => 'Enter a valid 10-digit mobile number.';
-
-  @override
-  String get codeDidntMatch =>
-      'That code didn\'t match — check it and try again.';
-
-  @override
   String get couldNotContinue =>
       'Could not continue — check your connection and try again.';
 
   @override
-  String get skipStayAnonymous => 'Skip — stay anonymous';
-
-  @override
   String get aggregatedDemandNote =>
       'Whichever way you sign in, your MP\'s office only ever sees aggregated demand, never your identity.';
-
-  @override
-  String get welcomeBack =>
-      'Welcome back — sign in with the phone number you signed up with.';
-
-  @override
-  String get noAccountFound =>
-      'No account found for this number — please Sign Up first.';
 
   @override
   String get dontHaveAccountSignUp => 'Don\'t have an account? Sign Up';
@@ -399,7 +328,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'We store your address to route your submissions to the right MP. Your 12-digit Aadhaar number is never stored.';
+      'We store your home location to route your submissions to the right MP. We never ask for your phone number, email or any ID.';
 
   @override
   String get signOutClears => 'Sign out (clears this device)';
@@ -852,42 +781,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToSignIn => 'Back to sign in';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'Your session expired. Please try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'That photo is too large to process. Try a closer, smaller shot of the card.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'Our reader is busy right now. Try again in a moment, or type your details below.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'Something went wrong reading the card. You can type your details below instead.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'We read part of your card. Please check the details below and fill in anything missing.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'The back photo was too large, so we read the front only. Please check the address below.';
-
-  @override
   String get mapLayerFailed =>
       'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
@@ -1187,4 +1080,823 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'Solution ready';
+
+  @override
+  String get openInGoogleMaps => 'Directions in Google Maps';
+
+  @override
+  String get openInGoogleMapsApprox => 'Directions to this area (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps => 'Couldn\'t open Google Maps on this device.';
+
+  @override
+  String get usernameLabel => 'Username';
+
+  @override
+  String get usernameHelper => '4–20 letters, numbers, _ or .';
+
+  @override
+  String get usernameTooShort => 'Username must be at least 4 characters.';
+
+  @override
+  String get usernameTooLong => 'Username can be at most 20 characters.';
+
+  @override
+  String get usernameBadCharacters =>
+      'Use only letters, numbers, _ and . (no spaces).';
+
+  @override
+  String get usernameAvailable => 'Username is available';
+
+  @override
+  String get usernameTaken => 'That username is already taken. Try another.';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get currentPasswordLabel => 'Current password';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters.';
+
+  @override
+  String get passwordsDontMatch => 'Passwords don\'t match.';
+
+  @override
+  String get authWrongCredentials => 'Wrong username or password.';
+
+  @override
+  String get authTooManyAttempts =>
+      'Too many tries. Please wait a few minutes and try again.';
+
+  @override
+  String get authNetworkError =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String get nameRequired => 'Please enter your name.';
+
+  @override
+  String get createAccountTitle => 'Create your account';
+
+  @override
+  String get createAccountSubtitle =>
+      'Just a username and password — no phone number, email or ID needed.';
+
+  @override
+  String get createAccountButton => 'Create account';
+
+  @override
+  String get welcomeBackTitle => 'Welcome back';
+
+  @override
+  String get signInSubtitle => 'Sign in with your username and password.';
+
+  @override
+  String get forgotPasswordLink => 'Forgot password?';
+
+  @override
+  String get securityQuestionIntro =>
+      'Pick a security question. If you ever forget your password, answering it lets you set a new one.';
+
+  @override
+  String get securityQuestionLabel => 'Security question';
+
+  @override
+  String get securityAnswerLabel => 'Your answer';
+
+  @override
+  String get securityAnswerHelper =>
+      'Remember this answer. Capital letters don\'t matter.';
+
+  @override
+  String get securityAnswerRequired => 'Please enter an answer.';
+
+  @override
+  String get securityQuestionFirstSchool =>
+      'What was the name of your first school?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'In which town or village was your mother born?';
+
+  @override
+  String get securityQuestionFavouriteFood => 'What is your favourite food?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'What is the name of your childhood best friend?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'What was your first bicycle or vehicle?';
+
+  @override
+  String get forgotPasswordTitle => 'Reset your password';
+
+  @override
+  String get forgotPasswordStep1 => 'Enter your username to find your account.';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'Answer your security question and choose a new password.';
+
+  @override
+  String get passwordResetDone =>
+      'Your password has been changed. Sign in with the new password.';
+
+  @override
+  String get resetPasswordButton => 'Set new password';
+
+  @override
+  String get recoveryNotMatched =>
+      'That answer didn\'t match. Check it and try again.';
+
+  @override
+  String get recoveryLocked =>
+      'Too many wrong answers. Password reset is locked for 15 minutes.';
+
+  @override
+  String get recoveryNoQuestion =>
+      'We couldn\'t find a security question for that username.';
+
+  @override
+  String get changePasswordTitle => 'Change password';
+
+  @override
+  String get changeSecurityQuestionTitle => 'Change security question';
+
+  @override
+  String get passwordChanged => 'Password changed.';
+
+  @override
+  String get securityQuestionSaved => 'Security question saved.';
+
+  @override
+  String get saveLabel => 'Save';
+
+  @override
+  String get statReportsFiled => 'Reports filed';
+
+  @override
+  String get statResolved => 'Resolved';
+
+  @override
+  String get statSupporters => 'Supporters';
+
+  @override
+  String get badgesTitle => 'Badges';
+
+  @override
+  String get photoUpdated => 'Profile photo updated.';
+
+  @override
+  String get photoFailed =>
+      'Couldn\'t upload the photo. Try a smaller picture.';
+
+  @override
+  String memberSince(String date) {
+    return 'Member since $date';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'Profile $percent% complete';
+  }
+
+  @override
+  String get completeAddPhoto => 'Add a profile photo';
+
+  @override
+  String get completeAddAge => 'Add your age';
+
+  @override
+  String get completeSetHome => 'Set your home location';
+
+  @override
+  String get completeSecurityQuestion => 'Set a security question';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'Tap the camera on your picture to add a photo.';
+
+  @override
+  String get nudgeFirstReport =>
+      'File your first report to earn your first badge and reach Level 1.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return '$count more reports to reach Level $level · $title';
+  }
+
+  @override
+  String get yourCivicJourney => 'Your civic journey';
+
+  @override
+  String get fileAReport => 'File a report';
+
+  @override
+  String get myPlaceTitle => 'My place';
+
+  @override
+  String get placeAddress => 'Address';
+
+  @override
+  String get placeBbmpWard => 'BBMP ward';
+
+  @override
+  String get placeGbaWard => 'GBA ward';
+
+  @override
+  String get placeTaluk => 'Taluk';
+
+  @override
+  String get placeDistrict => 'District';
+
+  @override
+  String get placeConstituency => 'Lok Sabha seat';
+
+  @override
+  String get changeLabel => 'Change';
+
+  @override
+  String get noHomeLocation => 'Home location not set yet.';
+
+  @override
+  String get myRepresentativesTitle => 'My representatives';
+
+  @override
+  String get mlaNotListed => 'MLA details coming soon';
+
+  @override
+  String assemblySegment(String name) {
+    return 'Assembly: $name';
+  }
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get accountSettingsTitle => 'Account & settings';
+
+  @override
+  String get editNameAge => 'Edit name & age';
+
+  @override
+  String get recoveryIsSetUp => 'Password recovery is set up';
+
+  @override
+  String get recoveryNotSetUp => 'Not set — you can\'t recover your password';
+
+  @override
+  String get enterValidAge => 'Enter a valid age (10–120).';
+
+  @override
+  String get levelTitle1 => 'New Voice';
+
+  @override
+  String get levelTitle2 => 'Active Citizen';
+
+  @override
+  String get levelTitle3 => 'Community Voice';
+
+  @override
+  String get levelTitle4 => 'Neighbourhood Champion';
+
+  @override
+  String get levelTitle5 => 'Civic Leader';
+
+  @override
+  String get goToHome => 'Go to Home';
+
+  @override
+  String get viewMyProfile => 'View my profile';
+
+  @override
+  String revealWelcome(String name) {
+    return 'Welcome, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'Your civic profile is ready.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name Lok Sabha';
+  }
+
+  @override
+  String get yourAreaTitle => 'Your area';
+
+  @override
+  String get yourAreaNote =>
+      'Everything you report or suggest is counted for this area.';
+
+  @override
+  String get firstStepsTitle => 'Your first 3 steps';
+
+  @override
+  String get stepFirstReport => 'File your first report';
+
+  @override
+  String get stepFirstReportBody =>
+      'Voice, text or photo — it takes 20 seconds.';
+
+  @override
+  String get stepSupport => 'Support a suggestion near you';
+
+  @override
+  String get stepSupportBody => 'Back what your neighbours are asking for.';
+
+  @override
+  String get stepExploreMap => 'Explore your area\'s map';
+
+  @override
+  String get stepExploreMapBody => 'See what\'s being reported around you.';
+
+  @override
+  String get welcomeCitizenTitle => 'Citizens';
+
+  @override
+  String get welcomeCitizenBody =>
+      'Report problems and suggest development work for your area — by voice, text or photo, in your language.';
+
+  @override
+  String get welcomeGovTitle => 'MPs, MLAs & Officers';
+
+  @override
+  String get welcomeGovBody =>
+      'Government dashboard for your area: reports, hotspots, AI briefings and downloadable reports.';
+
+  @override
+  String get welcomeGovRegister => 'New MLA or officer? Register';
+
+  @override
+  String get welcomeAdminTitle => 'Prajadhwani Admin';
+
+  @override
+  String get welcomeAdminBody =>
+      'Platform administration and official approvals';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'Just browsing? See your area\'s public dashboard';
+
+  @override
+  String get composeSubtitleProblem =>
+      'Speak, type or snap a photo — it reaches the officials for your area.';
+
+  @override
+  String get composeSubtitleSuggestion =>
+      'Share your idea by voice, text or photo — it goes to your representative.';
+
+  @override
+  String get stepWhatsTheIssue => 'What\'s the issue?';
+
+  @override
+  String get stepYourIdea => 'What\'s your idea?';
+
+  @override
+  String get tapMicToSpeak => 'Tap the mic to speak instead of typing';
+
+  @override
+  String get listeningTapToStop => 'Listening… tap to stop';
+
+  @override
+  String get voiceNoteAdded => 'Voice note added';
+
+  @override
+  String get stepAddPhoto => 'Add a photo (optional)';
+
+  @override
+  String get photoHelpsOfficials =>
+      'A photo helps officials see the problem quickly';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get stepCategory => 'Category';
+
+  @override
+  String get stepWhere => 'Where is it?';
+
+  @override
+  String get includedText => 'Text';
+
+  @override
+  String get includedVoice => 'Voice';
+
+  @override
+  String get includedPhoto => 'Photo';
+
+  @override
+  String get addTextOrPhotoToSubmit => 'Type, speak or add a photo to submit';
+
+  @override
+  String get officerFixMessage =>
+      'Your problem is registered! Our officers will get it fixed.';
+
+  @override
+  String get officerSuggestionMessage =>
+      'Thank you! Your idea goes straight to your representative.';
+
+  @override
+  String yourTicketIs(String tokenId) {
+    return 'Your ticket: $tokenId';
+  }
+
+  @override
+  String get profileSaveFailed =>
+      'Couldn\'t save — check your connection and try again.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'We couldn\'t match your exact area right now. You can update it later from Profile.';
+
+  @override
+  String get liveReportMap => 'Karnataka live report map';
+
+  @override
+  String get liveReportMapSubtitle =>
+      'Every report across the state, updated live';
+
+  @override
+  String get seeOnLiveMap => 'See it on the live map';
+
+  @override
+  String get suggestedOfficeTitle => 'Suggested office to file the problem';
+
+  @override
+  String get findingOffice => 'Finding the right office for your problem…';
+
+  @override
+  String get officialWebsite => 'Official website';
+
+  @override
+  String get emailOffice => 'Email the office';
+
+  @override
+  String callOffice(String phone) {
+    return 'Call $phone';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'Contacts are from official government sources. Office suggested by AI — please check before you file.';
+
+  @override
+  String get reportCardTitle => 'Report card';
+
+  @override
+  String get openReportCard => 'Open report card';
+
+  @override
+  String get seePublicCard => 'See public report card';
+
+  @override
+  String openForDays(int days) {
+    return 'Open $days days';
+  }
+
+  @override
+  String fixedInDays(int days) {
+    return 'Fixed in $days days';
+  }
+
+  @override
+  String get mlaLabel => 'MLA';
+
+  @override
+  String get mpLabel => 'MP';
+
+  @override
+  String get seatVacant => 'Seat vacant';
+
+  @override
+  String get repNotRecorded => 'Not yet recorded';
+
+  @override
+  String rosterAsOf(String date) {
+    return 'Representatives as of $date';
+  }
+
+  @override
+  String get seeAreaSolution => 'See the area\'s solution card';
+
+  @override
+  String get shareButton => 'Share';
+
+  @override
+  String get postOnSocial => 'Post on social media';
+
+  @override
+  String get shareOnX => 'Post on X';
+
+  @override
+  String get shareOnWhatsApp => 'Send on WhatsApp';
+
+  @override
+  String get shareOnFacebook => 'Share on Facebook';
+
+  @override
+  String get copyPostText => 'Copy post text';
+
+  @override
+  String get postCopied => 'Post copied — paste it anywhere';
+
+  @override
+  String shareReportOpen(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. Open for $days days. MLA: $mla · MP: $mp. Ticket $token #Prajadhwani';
+  }
+
+  @override
+  String shareReportFixed(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. Fixed in $days days. MLA: $mla · MP: $mp. Ticket $token #Prajadhwani';
+  }
+
+  @override
+  String get leaderboardTitle => 'Representatives leaderboard';
+
+  @override
+  String get leaderboardSubtitle =>
+      'Which MLAs and MPs get reported problems fixed';
+
+  @override
+  String get leaderboardMlaTab => 'MLAs';
+
+  @override
+  String get leaderboardMpTab => 'MPs';
+
+  @override
+  String leaderboardFairness(int days, int min) {
+    return 'Ranked by the share of reports in their area that were fixed in the last $days days — not by how many problems the area has. At least $min reports needed. Party is not shown.';
+  }
+
+  @override
+  String fixedPctLabel(String pct) {
+    return '$pct% fixed';
+  }
+
+  @override
+  String leaderboardStats(int reports, int open) {
+    return '$reports reports · $open open';
+  }
+
+  @override
+  String medianFixDays(int days) {
+    return 'Usually fixed in $days days';
+  }
+
+  @override
+  String get notEnoughReports => 'Not enough reports yet';
+
+  @override
+  String leaderboardEmpty(int days) {
+    return 'No real reports in the last $days days yet.';
+  }
+
+  @override
+  String shareLeaderboardRow(
+      String name, String seat, String pct, int reports, int days, int open) {
+    return '$name ($seat): $pct% of $reports reported problems fixed in the last $days days, $open still open. #Prajadhwani';
+  }
+
+  @override
+  String get seeReportsInArea => 'See reports in this area';
+
+  @override
+  String get feedTitle => 'Reports feed';
+
+  @override
+  String get reportsNearYou => 'Reports near you';
+
+  @override
+  String get feedNearMe => 'Near me';
+
+  @override
+  String get feedAllKarnataka => 'All Karnataka';
+
+  @override
+  String get feedWithPhotos => 'With photos';
+
+  @override
+  String get feedEmpty =>
+      'No reports here yet. Be the first to report a problem.';
+
+  @override
+  String get meToo => 'Me too';
+
+  @override
+  String meTooCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people said Me too',
+      one: '1 person said Me too',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signInForMeToo => 'Sign in to say Me too';
+
+  @override
+  String get ownReportNoMeToo => 'This is your own report';
+
+  @override
+  String get commentsTitle => 'Comments';
+
+  @override
+  String viewAllComments(int count) {
+    return 'View all $count comments';
+  }
+
+  @override
+  String get addComment => 'Add a comment…';
+
+  @override
+  String get commentPublicNote => 'Your username is shown with your comment';
+
+  @override
+  String get signInToComment => 'Sign in to comment';
+
+  @override
+  String get needUsernameToComment =>
+      'Set a username in your profile to comment';
+
+  @override
+  String get reportComment => 'Report comment';
+
+  @override
+  String get deleteComment => 'Delete comment';
+
+  @override
+  String get commentReported => 'Thanks — we\'ll review it';
+
+  @override
+  String get noCommentsYet => 'No comments yet — start the conversation';
+
+  @override
+  String get showPhotoInFeed => 'Show my photo in the public feed';
+
+  @override
+  String get showPhotoInFeedNote =>
+      'Faces and number plates are blurred automatically before anyone sees it';
+
+  @override
+  String get photoStatusProcessing => 'Preparing the public photo…';
+
+  @override
+  String get photoStatusPublished =>
+      'Shown in the feed, with faces and plates blurred';
+
+  @override
+  String get photoStatusRejected => 'This photo can\'t be shown publicly';
+
+  @override
+  String get photoStatusError =>
+      'Couldn\'t publish the photo — switch it off and on to retry';
+
+  @override
+  String get moreNearby => 'More reports nearby';
+
+  @override
+  String get visitWebsite => 'Visit website';
+
+  @override
+  String get openCard => 'Open card';
+
+  @override
+  String postedDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days ago',
+      one: 'Yesterday',
+      zero: 'Today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openDaysShort(int days) {
+    return '${days}d open';
+  }
+
+  @override
+  String get postShort => 'Post';
+
+  @override
+  String get statusClosed => 'Closed';
+
+  @override
+  String get fixQuestion => 'Was this fixed?';
+
+  @override
+  String get fixYes => 'Yes, it\'s fixed';
+
+  @override
+  String get fixNo => 'No, still broken';
+
+  @override
+  String fixWindowLeft(String time) {
+    return '$time left to answer';
+  }
+
+  @override
+  String get fixAwaiting => 'Waiting to be closed';
+
+  @override
+  String get fixThanks => 'Thank you. This report is now closed.';
+
+  @override
+  String get fixReopened =>
+      'Sorry about that. We\'ve sent it back to be fixed again.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
+  String get fixClosedAuto => 'Closed after 48 hours without an answer';
+
+  @override
+  String get photoRequired => 'A photo of the problem is required';
+
+  @override
+  String get photoPublicNote =>
+      'Your photo is shown publicly with faces and number plates blurred.';
+
+  @override
+  String get stepAddPhotoRequired => 'Add a photo (required)';
+
+  @override
+  String get photoVisTitle => 'Who can see this photo?';
+
+  @override
+  String get photoVisPrivate => 'Private';
+
+  @override
+  String get photoVisPrivateNote =>
+      'Only officials for your area, their team and admins see it. Nobody else.';
+
+  @override
+  String get photoVisFaces => 'Public, faces and number plates blurred';
+
+  @override
+  String get photoVisFacesNote =>
+      'Shown in the public feed. People and vehicles can\'t be recognised.';
+
+  @override
+  String get photoVisFull => 'Public, whole photo blurred';
+
+  @override
+  String get photoVisFullNote =>
+      'Shown in the public feed as a blurred picture. The scene can\'t be recognised.';
+
+  @override
+  String get photoTermsTitle => 'Photo privacy terms';
+
+  @override
+  String get photoTermsPoint1 =>
+      'A blurred copy of your photo is shown in the public feed and on the report card, with a short summary and the area.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'Your name, phone number, address and exact location are never shown. The original photo stays private.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'The original is always seen by the officials of your area, the team member assigned to your report, and the admin.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'Blurring is automatic and may miss things. Do not photograph people\'s faces, house numbers or documents.';
+
+  @override
+  String get photoTermsPoint5 =>
+      'Photos that are unsuitable will not be published.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'You can switch back to private at any time and the public copy is deleted.';
+
+  @override
+  String get photoTermsAgree => 'I have read and agree to these terms';
+
+  @override
+  String get photoTermsAgreeButton => 'Agree and continue';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'Waiting for your agreement to the privacy terms';
 }

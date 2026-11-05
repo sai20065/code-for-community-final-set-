@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/onboarding_progress_provider.dart';
 import '../../../core/services/auth_service.dart';
@@ -54,14 +55,23 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
     if (uid == null) return;
 
     setState(() => _saving = true);
-    final existing = await _firestoreService.getUser(uid);
-    final updated = (existing ??
-            (throw StateError('User document missing after sign-in')))
-        .copyWith(
-      name: _nameController.text.trim(),
-      age: int.parse(_ageController.text.trim()),
-    );
-    await _firestoreService.upsertUser(updated);
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      // Creates the profile if an earlier step's write never landed, so the
+      // name and age are never silently dropped.
+      await _firestoreService.getOrCreateUser(uid: uid, preferredLanguage: 'en');
+      await _firestoreService.updateUserFields(uid, {
+        'name': _nameController.text.trim(),
+        'age': int.parse(_ageController.text.trim()),
+      });
+    } catch (e) {
+      debugPrint('Saving basic info failed: $e');
+      if (!mounted) return;
+      setState(() => _saving = false);
+      messenger.showSnackBar(SnackBar(content: Text(l10n.profileSaveFailed)));
+      return;
+    }
     await ref
         .read(onboardingProgressProvider.notifier)
         .advanceTo(OnboardingStep.location);
@@ -84,7 +94,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/signup'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/signup'),
         ),
       ),
       body: SafeArea(

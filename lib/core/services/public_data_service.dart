@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/agent_transcript_model.dart';
 import '../models/constituency_model.dart';
 import '../models/public_models.dart';
+import '../models/representative_models.dart';
 import '../models/solution_card_model.dart';
 
 /// Dashboard-header stats, derived from `publicClusters` only.
@@ -55,9 +56,16 @@ class PublicDataService {
   /// silently excludes documents missing the ordered field, and a hotspot
   /// vanishing from the public map with no error is exactly the failure
   /// this codebase already had once.
-  Stream<List<PublicClusterModel>> watchClusters(String constituencyId) {
+  ///
+  /// [field] widens this beyond constituencies for MLAs and local officers:
+  /// `assemblyId`, `bbmpWardId`, `talukId` or `districtId` (see
+  /// `OfficialScope`).
+  Stream<List<PublicClusterModel>> watchClusters(
+    String constituencyId, {
+    String field = 'constituencyId',
+  }) {
     return _clusters
-        .where('constituencyId', isEqualTo: constituencyId)
+        .where(field, isEqualTo: constituencyId)
         .snapshots()
         .map((snap) {
       final list = snap.docs
@@ -106,9 +114,10 @@ class PublicDataService {
     String constituencyId, {
     int limit = 30,
     String? theme,
+    String field = 'constituencyId',
   }) {
     Query<Map<String, dynamic>> query =
-        _tickets.where('constituencyId', isEqualTo: constituencyId);
+        _tickets.where(field, isEqualTo: constituencyId);
     if (theme != null) query = query.where('theme', isEqualTo: theme);
     return query
         .orderBy('createdDate', descending: true)
@@ -128,6 +137,27 @@ class PublicDataService {
   /// Firestore's `orderBy` drops documents missing the ordered field, and a
   /// report silently disappearing from an area list is the exact failure
   /// mode this codebase has already hit once.
+  /// Every published report in Karnataka filed on or after [sinceDate]
+  /// (`YYYY-MM-DD`; null = all time), newest first — the live statewide
+  /// map. Status / theme / category filtering happens on the device, so
+  /// switching filters is instant and needs no extra indexes.
+  Stream<List<PublicTicketModel>> watchStatewideTickets({
+    String? sinceDate,
+    int limit = 1500,
+  }) {
+    Query<Map<String, dynamic>> q = _tickets;
+    if (sinceDate != null) {
+      q = q.where('createdDate', isGreaterThanOrEqualTo: sinceDate);
+    }
+    return q
+        .orderBy('createdDate', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => PublicTicketModel.fromMap(d.id, d.data()))
+            .toList());
+  }
+
   Stream<List<PublicTicketModel>> watchTicketsForArea({
     required String field,
     required String areaId,
@@ -237,6 +267,29 @@ class PublicDataService {
     return _constituencies.orderBy('name').snapshots().map((snap) => snap.docs
         .map((d) => ConstituencyModel.fromMap(d.id, d.data()))
         .toList());
+  }
+
+  /// One public ticket — the report card's source.
+  Stream<PublicTicketModel?> watchPublicTicket(String id) {
+    return _tickets.doc(id).snapshots().map((doc) {
+      final data = doc.data();
+      return doc.exists && data != null ? PublicTicketModel.fromMap(doc.id, data) : null;
+    });
+  }
+
+  /// MLA / MP / ward-name index (`publicReps/karnataka`).
+  Future<PublicReps> getPublicReps() async {
+    final doc = await _db.collection('publicReps').doc('karnataka').get();
+    final data = doc.data();
+    return data == null ? PublicReps.empty : PublicReps.fromMap(data);
+  }
+
+  /// `board` is `mla` or `mp`.
+  Stream<RepresentativeLeaderboard?> watchLeaderboard(String board) {
+    return _db.collection('publicLeaderboards').doc(board).snapshots().map((doc) {
+      final data = doc.data();
+      return data == null ? null : RepresentativeLeaderboard.fromMap(data);
+    });
   }
 
   Future<ConstituencyModel?> getConstituency(String constituencyId) async {

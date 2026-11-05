@@ -26,10 +26,27 @@ class PublicTicketModel {
   final String constituencyId;
   final String? constituencyName;
   final String? wardId;
+
+  /// BBMP (198-ward) layer id, alongside the GBA [wardId].
+  final String? bbmpWardId;
   final String? talukId;
+  final String? districtId;
+  final String? assemblyId;
   final String? boothId;
   final String? clusterId;
   final int supporterCount;
+
+  /// The office the citizen was pointed to — directory data, the same for
+  /// anyone filing this theme here.
+  final String? suggestedOfficeName;
+  final String? suggestedOfficeUrl;
+
+  /// The blurred, metadata-free public copy of the report photo — only
+  /// when the citizen opted in. Never the original upload.
+  final String? photoUrl;
+  final int? photoWidth;
+  final int? photoHeight;
+  final int commentCount;
 
   /// Day granularity, never a timestamp — a precise filing time next to
   /// even a blurred location would be a re-identification vector.
@@ -39,7 +56,7 @@ class PublicTicketModel {
 
   final LatLngLite? geo;
 
-  /// `approx-300m`, `ward`, or `none`. Rendered honestly rather than
+  /// `approx-300m`, `ward`, `taluk`, `district` or `none`. Rendered honestly rather than
   /// implying a precision the point doesn't have.
   final String geoPrecision;
 
@@ -55,10 +72,19 @@ class PublicTicketModel {
     this.theme,
     this.constituencyName,
     this.wardId,
+    this.bbmpWardId,
     this.talukId,
+    this.districtId,
+    this.assemblyId,
     this.boothId,
     this.clusterId,
     this.supporterCount = 0,
+    this.suggestedOfficeName,
+    this.suggestedOfficeUrl,
+    this.photoUrl,
+    this.photoWidth,
+    this.photoHeight,
+    this.commentCount = 0,
     this.resolvedDate,
     this.geo,
     this.geoPrecision = 'none',
@@ -75,10 +101,19 @@ class PublicTicketModel {
       constituencyId: map['constituencyId'] as String? ?? '',
       constituencyName: map['constituencyName'] as String?,
       wardId: map['wardId'] as String?,
+      bbmpWardId: map['bbmpWardId'] as String?,
       talukId: map['talukId'] as String?,
+      districtId: map['districtId'] as String?,
+      assemblyId: map['assemblyId'] as String?,
       boothId: map['boothId'] as String?,
       clusterId: map['clusterId'] as String?,
       supporterCount: (map['supporterCount'] as num?)?.toInt() ?? 0,
+      suggestedOfficeName: map['suggestedOfficeName'] as String?,
+      suggestedOfficeUrl: map['suggestedOfficeUrl'] as String?,
+      photoUrl: map['photoUrl'] as String?,
+      photoWidth: (map['photoWidth'] as num?)?.toInt(),
+      photoHeight: (map['photoHeight'] as num?)?.toInt(),
+      commentCount: (map['commentCount'] as num?)?.toInt() ?? 0,
       createdDate: map['createdDate'] as String? ?? '',
       createdWeek: map['createdWeek'] as String? ?? '',
       resolvedDate: map['resolvedDate'] as String?,
@@ -88,6 +123,21 @@ class PublicTicketModel {
   }
 
   bool get isApproximateLocation => geoPrecision != 'none';
+
+  bool get isOpen => status != 'resolved' && status != 'closed';
+
+  bool get hasPhoto => photoUrl != null && photoUrl!.isNotEmpty;
+
+  /// Days since filing, or from filing to fix once resolved. Day-level, like
+  /// the dates themselves.
+  int daysOpen(DateTime today) {
+    final created = DateTime.tryParse(createdDate);
+    if (created == null) return 0;
+    final end = (resolvedDate != null ? DateTime.tryParse(resolvedDate!) : null) ??
+        DateTime(today.year, today.month, today.day);
+    final d = end.difference(created).inDays;
+    return d < 0 ? 0 : d;
+  }
 }
 
 /// An aggregated issue group — the unit the map, the hotspot leaderboard
@@ -99,6 +149,9 @@ class PublicClusterModel {
   final String theme;
   final String? boothId;
   final String? wardId;
+
+  /// BBMP (198-ward) layer id, alongside the GBA [wardId].
+  final String? bbmpWardId;
   final String? talukId;
 
   final int submissionCount;
@@ -133,6 +186,7 @@ class PublicClusterModel {
     this.constituencyName,
     this.boothId,
     this.wardId,
+    this.bbmpWardId,
     this.talukId,
     this.uniqueReporterCount = 0,
     this.demandScore,
@@ -158,6 +212,7 @@ class PublicClusterModel {
       theme: map['theme'] as String? ?? 'unknown',
       boothId: map['boothId'] as String?,
       wardId: map['wardId'] as String?,
+      bbmpWardId: map['bbmpWardId'] as String?,
       talukId: map['talukId'] as String?,
       submissionCount: (map['submissionCount'] as num?)?.toInt() ?? 0,
       uniqueReporterCount: (map['uniqueReporterCount'] as num?)?.toInt() ?? 0,
@@ -179,7 +234,7 @@ class PublicClusterModel {
     );
   }
 
-  int get resolvedCount => statusCounts['resolved'] ?? 0;
+  int get resolvedCount => statusCounts['resolved'] ?? 0; // closed is rolled up into resolved
 
   /// The last 12 weeks of activity in chronological order, zero-filled so
   /// the sparkline shows quiet weeks as gaps rather than closing over them

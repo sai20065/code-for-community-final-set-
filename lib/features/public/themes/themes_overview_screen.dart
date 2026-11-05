@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
@@ -26,7 +26,7 @@ class ThemesOverviewScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/public/dashboard'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/public/dashboard'),
         ),
         title: Text(l10n.themesOverview),
       ),

@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'photo_visibility.dart';
+
 enum SubmissionType { voice, text, photo, video }
 
-enum SubmissionStatus { newSubmission, reviewed, inProgress, resolved }
+/// `closed` = fixed and signed off: the citizen confirmed it, or an admin or
+/// worker closed it after 48 hours without an answer.
+enum SubmissionStatus { newSubmission, reviewed, inProgress, resolved, closed }
 
 /// Whether a ticket reports a problem (pothole, outage, etc.) or is
 /// feedback on an existing/planned development project — the citizen picks
@@ -58,6 +62,60 @@ class SubmissionLocation {
   }
 }
 
+/// The office `onSubmissionCreated` suggests the citizen file with — the
+/// "Suggested office to file the problem" line under the ticket id. Every
+/// contact field is copied from the server's verified office directory,
+/// never written by the model (see functions/src/assignment/).
+class SuggestedOffice {
+  final String departmentId;
+  final String name;
+  final String? shortName;
+  final String? officerDesignation;
+  final String? email;
+  final String? websiteUrl;
+  final String? phone;
+
+  /// "exact", "state-fallback" or "national-fallback".
+  final String matchQuality;
+
+  /// "gemma" when the model chose among the shortlist, "rules" otherwise.
+  final String source;
+
+  const SuggestedOffice({
+    required this.departmentId,
+    required this.name,
+    this.shortName,
+    this.officerDesignation,
+    this.email,
+    this.websiteUrl,
+    this.phone,
+    this.matchQuality = 'state-fallback',
+    this.source = 'rules',
+  });
+
+  static SuggestedOffice? fromMap(Map<String, dynamic>? map) {
+    final id = map?['departmentId'] as String?;
+    final name = map?['name'] as String?;
+    if (map == null || id == null || name == null || name.isEmpty) return null;
+    String? nonEmpty(String key) {
+      final v = (map[key] as String?)?.trim();
+      return v == null || v.isEmpty ? null : v;
+    }
+
+    return SuggestedOffice(
+      departmentId: id,
+      name: name,
+      shortName: nonEmpty('shortName'),
+      officerDesignation: nonEmpty('officerDesignation'),
+      email: nonEmpty('email'),
+      websiteUrl: nonEmpty('websiteUrl'),
+      phone: nonEmpty('phone'),
+      matchQuality: map['matchQuality'] as String? ?? 'state-fallback',
+      source: map['source'] as String? ?? 'rules',
+    );
+  }
+}
+
 /// A citizen's suggestion ticket. `tokenId` is generated client-side at
 /// creation time (see `FirestoreService.generateTokenId`) so the citizen
 /// always has a receipt, even if the downstream AI pipeline fails.
@@ -69,6 +127,9 @@ class SubmissionModel {
   final String inputMode;
   final String? rawText;
   final String? mediaUrl;
+  /// Optional voice note recorded alongside a photo/text report. The
+  /// transcript already lives in [rawText]; this is the original audio.
+  final String? audioUrl;
   final String? transcript;
   final String? translatedText;
   final String language;
@@ -84,6 +145,32 @@ class SubmissionModel {
   final int supporterCount;
   final List<String> supporterIds;
 
+  /// Written server-side a few seconds after submit; null until then.
+  /// Read-only on the client, so deliberately absent from [toMap].
+  final SuggestedOffice? suggestedOffice;
+
+  /// The citizen's consent to show a blurred copy of the photo in the public
+  /// feed. Off unless they switch it on.
+  final bool photoPublic;
+
+  /// `faces` (faces and plates blurred) or `full` (whole photo blurred); the
+  /// citizen's choice when [photoPublic]. [photoTermsVersion] is the privacy
+  /// terms version they agreed to.
+  final String? photoBlur;
+  final String? photoTermsVersion;
+
+  /// Server-written state of that public copy: processing, published,
+  /// rejected, error or withdrawn. Read-only on the client.
+  final String? publicPhotoStatus;
+
+  /// Workflow state, all written by the server (functions/src/work/).
+  /// [fixedAt] starts the citizen's 48-hour window; [citizenResponseKind] is
+  /// `confirmed` or `not_fixed` once they answer.
+  final DateTime? fixedAt;
+  final String? citizenResponseKind;
+  final String? assignedToName;
+  final String? closeReason;
+
   const SubmissionModel({
     required this.id,
     required this.userId,
@@ -97,6 +184,7 @@ class SubmissionModel {
     this.category = SubmissionCategory.problem,
     this.rawText,
     this.mediaUrl,
+    this.audioUrl,
     this.transcript,
     this.translatedText,
     this.theme,
@@ -106,6 +194,15 @@ class SubmissionModel {
     this.resolvedAt,
     this.supporterCount = 0,
     this.supporterIds = const [],
+    this.suggestedOffice,
+    this.photoPublic = false,
+    this.photoBlur,
+    this.photoTermsVersion,
+    this.publicPhotoStatus,
+    this.fixedAt,
+    this.citizenResponseKind,
+    this.assignedToName,
+    this.closeReason,
   });
 
   static SubmissionStatus statusFromString(String value) {
@@ -116,6 +213,8 @@ class SubmissionModel {
         return SubmissionStatus.inProgress;
       case 'resolved':
         return SubmissionStatus.resolved;
+      case 'closed':
+        return SubmissionStatus.closed;
       case 'new':
       default:
         return SubmissionStatus.newSubmission;
@@ -132,6 +231,8 @@ class SubmissionModel {
         return 'inProgress';
       case SubmissionStatus.resolved:
         return 'resolved';
+      case SubmissionStatus.closed:
+        return 'closed';
     }
   }
 
@@ -153,6 +254,7 @@ class SubmissionModel {
       inputMode: map['inputMode'] as String? ?? 'text',
       rawText: map['rawText'] as String?,
       mediaUrl: map['mediaUrl'] as String?,
+      audioUrl: map['audioUrl'] as String?,
       transcript: map['transcript'] as String?,
       translatedText: map['translatedText'] as String?,
       language: map['language'] as String? ?? 'en',
@@ -169,6 +271,17 @@ class SubmissionModel {
       resolvedAt: (map['resolvedAt'] as Timestamp?)?.toDate(),
       supporterCount: map['supporterCount'] as int? ?? 0,
       supporterIds: (map['supporterIds'] as List?)?.cast<String>() ?? const [],
+      suggestedOffice: SuggestedOffice.fromMap(
+        (map['suggestedOffice'] as Map?)?.cast<String, dynamic>(),
+      ),
+      photoPublic: map['photoPublic'] == true,
+      photoBlur: map['photoBlur'] as String?,
+      photoTermsVersion: (map['photoConsent'] as Map?)?['termsVersion'] as String?,
+      publicPhotoStatus: (map['publicPhoto'] as Map?)?['status'] as String?,
+      fixedAt: (map['fixedAt'] as Timestamp?)?.toDate(),
+      citizenResponseKind: (map['citizenResponse'] as Map?)?['kind'] as String?,
+      assignedToName: (map['assignment'] as Map?)?['toName'] as String?,
+      closeReason: map['closeReason'] as String?,
     );
   }
 
@@ -182,6 +295,16 @@ class SubmissionModel {
       'inputMode': inputMode,
       'rawText': rawText,
       'mediaUrl': mediaUrl,
+      if (audioUrl != null) 'audioUrl': audioUrl,
+      if (photoPublic) ...{
+        'photoPublic': true,
+        'photoBlur': photoBlur ?? 'faces',
+        // The citizen agreed to the privacy terms before choosing this.
+        'photoConsent': {
+          'termsVersion': photoTermsVersion ?? kPhotoTermsVersion,
+          'acceptedAt': FieldValue.serverTimestamp(),
+        },
+      },
       'transcript': transcript,
       'translatedText': translatedText,
       'language': language,

@@ -8,6 +8,7 @@ import '../models/submission_model.dart';
 import '../models/taluk_model.dart';
 import '../models/user_model.dart';
 import '../models/ward_model.dart';
+import 'work_service.dart';
 
 class FirestoreService {
   FirestoreService({FirebaseFirestore? firestore})
@@ -33,9 +34,40 @@ class FirestoreService {
       _db.collection('taluks');
   CollectionReference<Map<String, dynamic>> get _districts =>
       _db.collection('districts');
+  CollectionReference<Map<String, dynamic>> get _usernames =>
+      _db.collection('usernames');
+
+  /// Live "is this username free?" check for the Sign Up form. Reads one
+  /// doc by id — `firestore.rules` allows `get` but not `list` on
+  /// `usernames`, so nobody can download the whole roster. Firebase Auth is
+  /// the real uniqueness guarantee (two accounts can't share a username's
+  /// synthetic address); this is only so the form can warn early.
+  Future<bool> isUsernameTaken(String username) async {
+    final doc = await _usernames.doc(username).get();
+    return doc.exists;
+  }
+
+  /// Claims [username] for [uid] right after the account is created. Rules
+  /// allow `create` only (never update/delete), so a claimed name can't be
+  /// hijacked by a later writer.
+  Future<void> reserveUsername({
+    required String username,
+    required String uid,
+  }) {
+    return _usernames.doc(username).set({
+      'uid': uid,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
 
   Future<void> upsertUser(UserModel user) {
     return _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
+  }
+
+  /// Writes only [fields] — for edits, so a screen holding an older copy of
+  /// the profile can't roll back fields saved elsewhere in the meantime.
+  Future<void> updateUserFields(String uid, Map<String, dynamic> fields) {
+    return _users.doc(uid).set(fields, SetOptions(merge: true));
   }
 
   Future<UserModel?> getUser(String uid) async {
@@ -49,11 +81,9 @@ class FirestoreService {
         (doc) => doc.exists ? UserModel.fromMap(doc.id, doc.data()!) : null);
   }
 
-  /// Creates `users/{uid}` the moment anonymous sign-in succeeds, if it
-  /// doesn't already exist, so the document is never missing even if the
-  /// citizen quits before finishing the rest of onboarding. Any fields
-  /// already extracted from Aadhaar OCR (name/pincode/address) land in this
-  /// very first write.
+  /// Creates `users/{uid}` the moment the account is created, if it doesn't
+  /// already exist, so the document is never missing even if the citizen
+  /// quits before finishing the rest of onboarding.
   Future<UserModel> getOrCreateUser({
     required String uid,
     required String preferredLanguage,
@@ -147,15 +177,41 @@ class FirestoreService {
     return SubmissionModel.fromMap(doc.id, doc.data()!);
   }
 
-  Future<void> updateSubmissionStatus(String id, SubmissionStatus status) {
-    final data = <String, dynamic>{
-      'status': SubmissionModel.statusToString(status),
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
-    if (status == SubmissionStatus.resolved) {
-      data['resolvedAt'] = FieldValue.serverTimestamp();
+  /// Live view of one ticket — the confirmation screen uses it to show the
+  /// suggested office as soon as the backend writes it.
+  Stream<SubmissionModel?> watchSubmission(String id) {
+    return _submissions.doc(id).snapshots().map(
+          (doc) => doc.exists ? SubmissionModel.fromMap(doc.id, doc.data()!) : null,
+        );
+  }
+
+  /// Status changes go through a Cloud Function, which checks the caller's
+  /// area, records who changed it and stamps the fixed time on the server.
+  /// Closing is separate (`WorkService.close`): it needs the 48-hour wait.
+  Future<void> updateSubmissionStatus(String id, SubmissionStatus status) async {
+    final changed = await WorkService()
+        .updateStatus([id], SubmissionModel.statusToString(status));
+    if (changed == 0) {
+      throw StateError('This report could not be changed.');
     }
-    return _submissions.doc(id).update(data);
+  }
+
+  /// Every ticket in an official's area — `location.<field> == id`, where
+  /// field is constituencyId / assemblyId / bbmpWardId / talukId /
+  /// districtId (see `OfficialScope`). Sorted in Dart so no composite index
+  /// per scope field is needed; firestore.rules (`isOfficialForArea`) only
+  /// lets the matching official run it.
+  Stream<List<SubmissionModel>> watchScopeSubmissions(String field, String id) {
+    return _submissions
+        .where('location.$field', isEqualTo: id)
+        .snapshots()
+        .map((snap) {
+      final list = snap.docs
+          .map((d) => SubmissionModel.fromMap(d.id, d.data()))
+          .toList();
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return list;
+    });
   }
 
   Stream<List<SubmissionModel>> watchConstituencySubmissions(
@@ -288,9 +344,8 @@ class FirestoreService {
     });
   }
 
-  /// Every ward of one municipal corporation (`BBMP`/`GBA`), alphabetically —
-  /// the fine-grained picker layer inside Bengaluru Urban, where taluks are
-  /// too coarse to be useful.
+  /// Every ward of one GBA corporation (`Central`/`East`/`North`/`South`/
+  /// `West`), alphabetically — the 369-ward GBA layer of the picker.
   Stream<List<WardModel>> watchWardsForCorporation(String corporation) {
     return _wards
         .where('corporation', isEqualTo: corporation)
@@ -299,6 +354,24 @@ class FirestoreService {
       final list =
           snap.docs.map((d) => WardModel.fromMap(d.id, d.data())).toList();
       list.sort((a, b) => a.wardName.compareTo(b.wardName));
+      return list;
+    });
+  }
+
+  /// The BBMP wards inside one assembly constituency, by ward number — the
+  /// 198-ward BBMP layer of the picker. Filtered on `corporation` too, since
+  /// GBA ward docs carry an `assemblyConstituency` of their own. Fetched one
+  /// segment (5–10 wards) at a time because every ward doc carries its full
+  /// boundary polygon.
+  Stream<List<WardModel>> watchBbmpWardsForAssembly(String assemblyConstituency) {
+    return _wards
+        .where('corporation', isEqualTo: 'BBMP')
+        .where('assemblyConstituency', isEqualTo: assemblyConstituency)
+        .snapshots()
+        .map((snap) {
+      final list =
+          snap.docs.map((d) => WardModel.fromMap(d.id, d.data())).toList();
+      list.sort((a, b) => (a.wardNo ?? 0).compareTo(b.wardNo ?? 0));
       return list;
     });
   }

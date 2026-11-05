@@ -21,9 +21,17 @@ class SelectedLanguageNotifier extends StateNotifier<String?> {
   Future<void> get ready => _readyCompleter.future;
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    state = prefs.getString(kAppLocaleKey);
-    if (!_readyCompleter.isCompleted) _readyCompleter.complete();
+    // Always release `ready`, even if the disk read fails — otherwise the
+    // splash screen waits on it forever.
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.get(kAppLocaleKey);
+      state = saved is String ? saved : null;
+    } catch (_) {
+      state = null;
+    } finally {
+      if (!_readyCompleter.isCompleted) _readyCompleter.complete();
+    }
   }
 
   Future<void> select(String languageCode) async {

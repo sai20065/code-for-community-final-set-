@@ -11,7 +11,7 @@ const MODEL = GEMINI_MODEL;
 
 /**
  * Thin wrapper over Vertex AI's Gemini models — used for every "Gemma-
- * family" AI task in this app: Aadhaar OCR extraction, transcription,
+ * family" AI task in this app: transcription,
  * photo identification, theme classification, and cluster summarization/
  * priority scoring. Authenticates via the function's own runtime service
  * account (Application Default Credentials), billed against the
@@ -36,60 +36,6 @@ export class GeminiClient {
     });
     const candidateParts = result.response.candidates?.[0]?.content?.parts ?? [];
     return candidateParts.map((p) => p.text ?? "").join("").trim();
-  }
-
-  /** Vision extraction for the Sign Up screen's Aadhaar upload. [backBase64]
-   * is optional — the back side often carries the full address the front
-   * truncates, so sending it (when captured) improves accuracy, but a
-   * front-only call still works. Never echoes a 12-digit Aadhaar-number-
-   * shaped string — the caller additionally regex-scrubs the response as
-   * defense-in-depth. */
-  async extractAadhaarFields(
-    frontBase64: string,
-    mimeType: string,
-    backBase64?: string,
-  ): Promise<{
-    name?: string;
-    address?: string;
-    pincode?: string;
-    wardNumber?: string;
-    confidence: number;
-  }> {
-    const prompt = `You are reading photos of an Indian Aadhaar card (front${
-      backBase64 ? ", and back" : ""
-    }). Extract ONLY the holder's name, their printed address, their 6-digit
-pincode, and their ward number if printed anywhere on the card (often on the
-back, may be absent). Respond with strict JSON: {"name": string|null,
-"address": string|null, "pincode": string|null, "wardNumber": string|null,
-"confidence": number between 0 and 1}.
-Never include the 12-digit Aadhaar number in your response, even partially.
-If the image(s) are unclear or not an Aadhaar card, return nulls and
-confidence 0.`;
-
-    const parts: Array<string | {inlineData: {data: string; mimeType: string}}> = [
-      prompt,
-      {inlineData: {data: frontBase64, mimeType}},
-    ];
-    if (backBase64) parts.push({inlineData: {data: backBase64, mimeType}});
-
-    const text = await this.generateText(parts);
-    const parsed = safeParseJson(text) ?? {};
-
-    // Defense-in-depth: strip anything that looks like an Aadhaar number
-    // even if the model ignored the instruction not to include one.
-    const scrub = (value: unknown) =>
-      typeof value === "string"
-        ? value.replace(/\d{4}\s?\d{4}\s?\d{4}/g, "[redacted]")
-        : undefined;
-
-    return {
-      name: scrub(parsed.name),
-      address: scrub(parsed.address),
-      pincode: typeof parsed.pincode === "string" ? parsed.pincode : undefined,
-      wardNumber:
-        typeof parsed.wardNumber === "string" ? parsed.wardNumber : undefined,
-      confidence: typeof parsed.confidence === "number" ? parsed.confidence : 0,
-    };
   }
 
   /** Transcribes voice-ticket audio verbatim in its own spoken language —
@@ -227,16 +173,18 @@ Respond with strict JSON: {"summaryText": string, "priorityScore": number}.`;
    * other methods here. */
   async generateConstituencyReportSummary(input: {
     constituencyName: string;
+    /** Who the briefing is for, e.g. "Tahsildar" — defaults to the MP. */
+    audience?: string;
     stats: {open: number; resolved: number; urgent: number};
     topClusters: Array<{theme: string; summaryText: string; priorityScore: number; submissionCount: number}>;
   }): Promise<{executiveSummary: string; keyRecommendations: string[]}> {
-    const prompt = `You are writing a briefing for the Member of Parliament for
+    const prompt = `You are writing a briefing for the ${input.audience ?? "Member of Parliament"} for
 ${input.constituencyName}. Current status: ${input.stats.open} open tickets,
 ${input.stats.resolved} resolved, ${input.stats.urgent} flagged urgent.
 Top issues by priority:
 ${input.topClusters.map((c) => `- [${c.theme}] ${c.summaryText} (${c.submissionCount} reports, priority ${c.priorityScore})`).join("\n")}
 Write a short executive summary (3-4 sentences, plain professional English,
-no markdown) for the MP, and 3-5 concrete recommended actions ranked by
+no markdown) for them, and 3-5 concrete recommended actions ranked by
 impact. Respond with strict JSON: {"executiveSummary": string,
 "keyRecommendations": string[]}.`;
 
@@ -252,6 +200,60 @@ impact. Respond with strict JSON: {"executiveSummary": string,
         [],
     };
   }
+
+  /** Structured AI briefing for one official's area (or the whole state),
+   * shown as a card on the government dashboard. Input is aggregate counts
+   * and AI cluster summaries only — never a citizen's own words. */
+  async generateAreaBriefing(input: {
+    areaName: string;
+    audience: string;
+    stats: {total: number; open: number; inProgress: number; resolved: number; urgent: number; newThisWeek: number};
+    topClusters: Array<{theme: string; summaryText: string; priorityScore: number; submissionCount: number; trend: string}>;
+  }): Promise<AreaBriefingContent> {
+    const prompt = `You are a civic analyst briefing the ${input.audience} for
+${input.areaName}, India, on citizen-reported problems.
+Status: ${input.stats.total} reports in total — ${input.stats.open} open,
+${input.stats.inProgress} in progress, ${input.stats.resolved} resolved,
+${input.stats.newThisWeek} new this week, ${input.stats.urgent} urgent issue groups.
+Issue groups by priority (theme, summary, reports, priority 0-100, 4-week trend):
+${input.topClusters.map((c) => `- [${c.theme}] ${c.summaryText} | ${c.submissionCount} reports | priority ${c.priorityScore} | ${c.trend}`).join("\n") || "- none yet"}
+
+Write for a busy official: plain, specific, no jargon, no markdown, no names
+or addresses of citizens. Respond with strict JSON:
+{"headline": string (max 12 words),
+ "situation": string (2-3 sentences),
+ "topProblems": [{"title": string, "theme": string, "whyItMatters": string (1 sentence)}] (max 4, highest priority first),
+ "trends": string[] (max 3 short observations),
+ "urgent": string[] (max 3; empty if nothing is urgent),
+ "recommendedActions": [{"action": string, "owner": string (department or office), "timeframe": "this week" | "this month" | "this quarter"}] (3-5, ranked by impact)}`;
+
+    const text = await this.generateText([prompt]);
+    const p = safeParseJson(text) ?? {};
+    const str = (v: unknown, fallback = "") => typeof v === "string" ? scrubPublicText(v) : fallback;
+    const arr = (v: unknown): unknown[] => Array.isArray(v) ? v : [];
+    return {
+      headline: str(p.headline, `${input.stats.open} open issues in ${input.areaName}`),
+      situation: str(p.situation,
+        `${input.stats.total} reports so far, ${input.stats.resolved} resolved and ${input.stats.urgent} urgent issue groups.`),
+      topProblems: arr(p.topProblems).slice(0, 4).map((t: any) => ({
+        title: str(t?.title), theme: str(t?.theme, "more"), whyItMatters: str(t?.whyItMatters),
+      })).filter((t) => t.title),
+      trends: arr(p.trends).map((t) => str(t)).filter(Boolean).slice(0, 3),
+      urgent: arr(p.urgent).map((t) => str(t)).filter(Boolean).slice(0, 3),
+      recommendedActions: arr(p.recommendedActions).slice(0, 5).map((r: any) => ({
+        action: str(r?.action), owner: str(r?.owner), timeframe: str(r?.timeframe, "this month"),
+      })).filter((r) => r.action),
+    };
+  }
+}
+
+export interface AreaBriefingContent {
+  headline: string;
+  situation: string;
+  topProblems: Array<{title: string; theme: string; whyItMatters: string}>;
+  trends: string[];
+  urgent: string[];
+  recommendedActions: Array<{action: string; owner: string; timeframe: string}>;
 }
 
 /**

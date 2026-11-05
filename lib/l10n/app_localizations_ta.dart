@@ -39,7 +39,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get welcomeAnonymityNote =>
-      'மற்ற குடிமக்களுக்கு நீங்கள் அடையாளம் தெரியாதவராகவே இருப்பீர்கள். உங்கள் ஆதார் எண் ஒருபோதும் சேமிக்கப்படுவதில்லை. உங்கள் நாடாளுமன்ற உறுப்பினர் அலுவலகம் ஒட்டுமொத்தத் தேவையையே பார்க்கிறது, உங்கள் அடையாளத்தை அல்ல.';
+      'மற்ற குடிமக்களுக்கு நீங்கள் அநாமதேயமாக இருப்பீர்கள். தொலைபேசி எண், மின்னஞ்சல் அல்லது அடையாள அட்டை தேவையில்லை — பயனர்பெயர் போதும். உங்கள் எம்.பி. அலுவலகம் மொத்த தேவையைப் பார்க்கிறது, உங்கள் அடையாளத்தை அல்ல.';
 
   @override
   String get newHereSignUp => 'இங்கு புதியவரா? பதிவு செய்யுங்கள்';
@@ -49,49 +49,14 @@ class AppLocalizationsTa extends AppLocalizations {
       'எனக்கு ஏற்கனவே ஒரு கணக்கு உள்ளது — உள்நுழையவும்';
 
   @override
-  String get aadhaarPrivacyNote =>
-      'உங்கள் பெயர் மற்றும் முகவரியை நாங்கள் அறிந்துகொள்ள, உங்கள் ஆதார் புகைப்படத்தினைப் பதிவேற்றவும். நாங்கள் உங்கள் பெயர், முகவரி மற்றும் அஞ்சல் குறியீட்டை மட்டுமே வைத்துக்கொள்கிறோம் — புகைப்படமும் உங்கள் ஆதார் எண்ணும் ஒருபோதும் சேமிக்கப்படுவதில்லை. இது அடையாளச் சரிபார்ப்பு அல்ல; நீங்கள் உங்கள் விவரங்களைக் கீழே தட்டச்சு செய்தும் பெற்றுக்கொள்ளலாம்.';
-
-  @override
-  String get aadhaarUploadNote =>
-      'உங்கள் பெயர் மற்றும் முகவரியை நாங்கள் அறிந்துகொள்ள, உங்கள் ஆதார் அட்டையின் முன்பக்கம் மற்றும் பின்பக்கத்தின் புகைப்படங்களைப் பதிவேற்றவும். பின்பக்கத்தில் பெரும்பாலும் உங்கள் முழு முகவரி இருக்கும், எனவே அதையும் புகைப்படம் எடுப்பது மிகவும் துல்லியமான முடிவுகளைத் தரும். நாங்கள் உங்கள் பெயர், முகவரி, அஞ்சல் குறியீடு மற்றும் வார்டு எண்ணை மட்டுமே வைத்துக்கொள்வோம் — புகைப்படங்களும் உங்கள் ஆதார் எண்ணும் ஒருபோதும் சேமிக்கப்படுவதில்லை. இது அடையாளச் சரிபார்ப்பு அல்ல, மேலும் இரண்டு புகைப்படங்களும் கட்டாயமில்லை — நீங்கள் எப்போது வேண்டுமானாலும் கீழே உங்கள் விவரங்களைத் தட்டச்சு செய்யலாம்.';
-
-  @override
-  String get slotFront => 'முன்';
-
-  @override
-  String get slotBack => 'திரும்பி';
-
-  @override
   String get alreadyHaveAccountSignInShort =>
       'ஏற்கனவே கணக்கு உள்ளதா? உள்நுழையவும்';
-
-  @override
-  String get aadhaarBackNote =>
-      'குறிப்பு: உங்கள் ஆதார் அட்டையின் பின்புறத்தையும் புகைப்படம் எடுங்கள் — முன்பக்கத்தில் விடுபட்டிருக்கும் உங்கள் முழு முகவரி பெரும்பாலும் அதில் இருக்கும். இரண்டு பக்கங்களும் கட்டாயமில்லை.';
 
   @override
   String get camera => 'கேமரா';
 
   @override
   String get gallery => 'கேலரி';
-
-  @override
-  String get extractDetails => 'விவரங்களைப் பிரித்தெடுக்கவும்';
-
-  @override
-  String get couldNotReadClearly =>
-      'அதை தெளிவாக படிக்க முடியவில்லை — கீழே உள்ள விவரங்களை சரிபார்க்கவும் அல்லது அவற்றை கைமுறையாக உள்ளிடவும்.';
-
-  @override
-  String get couldNotProcessImage =>
-      'அந்தப் படத்தை தற்சமயம் செயலாக்க முடியவில்லை — உங்கள் விவரங்களை கீழே கைமுறையாக உள்ளிடவும்.';
-
-  @override
-  String get hideManualEntry => 'கைமுறை உள்ளீட்டை மறைக்கவும்';
-
-  @override
-  String get skipEnterManually => 'தவிர்க்கவும் — நான் கைமுறையாக உள்ளிடுவேன்';
 
   @override
   String get fullName => 'முழு பெயர்';
@@ -116,49 +81,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get continueLabel => 'தொடரவும்';
 
   @override
-  String get verifyWithPhone => 'உங்கள் தொலைபேசி எண்ணைக் கொண்டு சரிபார்க்கவும்';
-
-  @override
-  String get mobileNumberHint => '10 இலக்க மொபைல் எண்';
-
-  @override
-  String get sendCode => 'குறியீட்டை அனுப்பவும்';
-
-  @override
-  String get sixDigitCode => '6-இலக்க குறியீடு';
-
-  @override
-  String get verifyAndContinue => 'சரிபார்த்துத் தொடரவும்';
-
-  @override
-  String get verifyAndSignIn => 'சரிபார்த்து உள்நுழையவும்';
-
-  @override
-  String get enterValidMobile => 'சரியான 10 இலக்க கைபேசி எண்ணை உள்ளிடவும்.';
-
-  @override
-  String get codeDidntMatch =>
-      'அந்தக் குறியீடு பொருந்தவில்லை — அதைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
-
-  @override
   String get couldNotContinue =>
       'தொடர முடியவில்லை — உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
 
   @override
-  String get skipStayAnonymous =>
-      'தவிர்க்கவும் — உங்கள் அடையாளத்தை மறைத்துக்கொள்ளுங்கள்';
-
-  @override
   String get aggregatedDemandNote =>
       'நீங்கள் எந்த வழியில் உள்நுழைந்தாலும், உங்கள் நாடாளுமன்ற உறுப்பினர் அலுவலகம் ஒட்டுமொத்தத் தேவையை மட்டுமே பார்க்கிறது, உங்கள் அடையாளத்தை ஒருபோதும் பார்ப்பதில்லை.';
-
-  @override
-  String get welcomeBack =>
-      'மீண்டும் வருக — நீங்கள் பதிவுசெய்த தொலைபேசி எண்ணைப் பயன்படுத்தி உள்நுழையவும்.';
-
-  @override
-  String get noAccountFound =>
-      'இந்த எண்ணுக்கு கணக்கு எதுவும் காணப்படவில்லை — தயவுசெய்து முதலில் பதிவு செய்யவும்.';
 
   @override
   String get dontHaveAccountSignUp =>
@@ -408,7 +336,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get privacyStoreAddress =>
-      'உங்கள் சமர்ப்பிப்புகளைச் சரியான நாடாளுமன்ற உறுப்பினருக்கு அனுப்புவதற்காக, நாங்கள் உங்கள் முகவரியைச் சேமித்து வைக்கிறோம். உங்கள் 12 இலக்க ஆதார் எண் ஒருபோதும் சேமிக்கப்படுவதில்லை.';
+      'உங்கள் புகார்களை சரியான எம்.பி.க்கு அனுப்ப உங்கள் வீட்டு இருப்பிடத்தைச் சேமிக்கிறோம். தொலைபேசி எண், மின்னஞ்சல் அல்லது எந்த அடையாளமும் கேட்பதில்லை.';
 
   @override
   String get signOutClears =>
@@ -873,42 +801,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get backToSignIn => 'உள்நுழைவுக்குத் திரும்பு';
 
   @override
-  String get aadhaarErrorAuthUnavailable =>
-      'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.';
-
-  @override
-  String get aadhaarErrorNotSignedIn =>
-      'Your session expired. Please try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorImageTooLarge =>
-      'That photo is too large to process. Try a closer, smaller shot of the card.';
-
-  @override
-  String get aadhaarErrorUnreadable =>
-      'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.';
-
-  @override
-  String get aadhaarErrorModelBusy =>
-      'Our reader is busy right now. Try again in a moment, or type your details below.';
-
-  @override
-  String get aadhaarErrorNetwork =>
-      'We couldn\'t reach the network. Check your connection and try again, or type your details below.';
-
-  @override
-  String get aadhaarErrorUnknown =>
-      'Something went wrong reading the card. You can type your details below instead.';
-
-  @override
-  String get aadhaarPartialExtracted =>
-      'We read part of your card. Please check the details below and fill in anything missing.';
-
-  @override
-  String get aadhaarBackImageSkippedTooLarge =>
-      'The back photo was too large, so we read the front only. Please check the address below.';
-
-  @override
   String get mapLayerFailed =>
       'Couldn\'t load part of the map. Some wards, booths or hotspots may be missing.';
 
@@ -1208,4 +1100,838 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hasSolutionLabel => 'Solution ready';
+
+  @override
+  String get openInGoogleMaps => 'Google Maps-இல் வழி காண்க';
+
+  @override
+  String get openInGoogleMapsApprox => 'இந்தப் பகுதிக்கு வழி (Google Maps)';
+
+  @override
+  String get couldNotOpenMaps =>
+      'இந்தச் சாதனத்தில் Google Maps திறக்க முடியவில்லை.';
+
+  @override
+  String get usernameLabel => 'பயனர்பெயர்';
+
+  @override
+  String get usernameHelper => '4–20 எழுத்துகள், எண்கள், _ அல்லது .';
+
+  @override
+  String get usernameTooShort =>
+      'பயனர்பெயர் குறைந்தது 4 எழுத்துகள் இருக்க வேண்டும்.';
+
+  @override
+  String get usernameTooLong => 'பயனர்பெயர் அதிகபட்சம் 20 எழுத்துகள்.';
+
+  @override
+  String get usernameBadCharacters =>
+      'எழுத்துகள், எண்கள், _ மற்றும் . மட்டும் பயன்படுத்தவும் (இடைவெளி வேண்டாம்).';
+
+  @override
+  String get usernameAvailable => 'பயனர்பெயர் கிடைக்கிறது';
+
+  @override
+  String get usernameTaken =>
+      'இந்தப் பயனர்பெயர் ஏற்கனவே எடுக்கப்பட்டுள்ளது. வேறொன்றை முயலவும்.';
+
+  @override
+  String get confirmPasswordLabel => 'கடவுச்சொல்லை உறுதிப்படுத்தவும்';
+
+  @override
+  String get newPasswordLabel => 'புதிய கடவுச்சொல்';
+
+  @override
+  String get currentPasswordLabel => 'தற்போதைய கடவுச்சொல்';
+
+  @override
+  String get passwordTooShort =>
+      'கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.';
+
+  @override
+  String get passwordsDontMatch => 'கடவுச்சொற்கள் பொருந்தவில்லை.';
+
+  @override
+  String get authWrongCredentials => 'பயனர்பெயர் அல்லது கடவுச்சொல் தவறு.';
+
+  @override
+  String get authTooManyAttempts =>
+      'அதிக முயற்சிகள். சில நிமிடங்கள் கழித்து மீண்டும் முயலவும்.';
+
+  @override
+  String get authNetworkError =>
+      'இணைய இணைப்பு இல்லை. நெட்வொர்க்கைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get nameRequired => 'உங்கள் பெயரை உள்ளிடவும்.';
+
+  @override
+  String get createAccountTitle => 'உங்கள் கணக்கை உருவாக்கவும்';
+
+  @override
+  String get createAccountSubtitle =>
+      'பயனர்பெயரும் கடவுச்சொல்லும் போதும் — தொலைபேசி எண், மின்னஞ்சல் அல்லது அடையாள அட்டை தேவையில்லை.';
+
+  @override
+  String get createAccountButton => 'கணக்கை உருவாக்கு';
+
+  @override
+  String get welcomeBackTitle => 'மீண்டும் வருக';
+
+  @override
+  String get signInSubtitle =>
+      'உங்கள் பயனர்பெயர் மற்றும் கடவுச்சொல்லுடன் உள்நுழையவும்.';
+
+  @override
+  String get forgotPasswordLink => 'கடவுச்சொல் மறந்துவிட்டதா?';
+
+  @override
+  String get securityQuestionIntro =>
+      'ஒரு பாதுகாப்புக் கேள்வியைத் தேர்ந்தெடுக்கவும். கடவுச்சொல் மறந்தால், இதற்கு பதிலளித்து புதியதை அமைக்கலாம்.';
+
+  @override
+  String get securityQuestionLabel => 'பாதுகாப்புக் கேள்வி';
+
+  @override
+  String get securityAnswerLabel => 'உங்கள் பதில்';
+
+  @override
+  String get securityAnswerHelper =>
+      'இந்தப் பதிலை நினைவில் கொள்ளுங்கள். பெரிய/சிறிய எழுத்து வேறுபாடு இல்லை.';
+
+  @override
+  String get securityAnswerRequired => 'பதிலை உள்ளிடவும்.';
+
+  @override
+  String get securityQuestionFirstSchool =>
+      'உங்கள் முதல் பள்ளியின் பெயர் என்ன?';
+
+  @override
+  String get securityQuestionMotherBirthplace =>
+      'உங்கள் அம்மா எந்த ஊரில் அல்லது கிராமத்தில் பிறந்தார்?';
+
+  @override
+  String get securityQuestionFavouriteFood => 'உங்களுக்குப் பிடித்த உணவு எது?';
+
+  @override
+  String get securityQuestionChildhoodFriend =>
+      'உங்கள் சிறுவயது நெருங்கிய நண்பரின் பெயர் என்ன?';
+
+  @override
+  String get securityQuestionFirstVehicle =>
+      'உங்கள் முதல் மிதிவண்டி அல்லது வாகனம் எது?';
+
+  @override
+  String get forgotPasswordTitle => 'கடவுச்சொல்லை மீட்டமைக்கவும்';
+
+  @override
+  String get forgotPasswordStep1 =>
+      'உங்கள் கணக்கைக் கண்டறிய பயனர்பெயரை உள்ளிடவும்.';
+
+  @override
+  String get forgotPasswordStep2 =>
+      'பாதுகாப்புக் கேள்விக்கு பதிலளித்து புதிய கடவுச்சொல்லைத் தேர்ந்தெடுக்கவும்.';
+
+  @override
+  String get passwordResetDone =>
+      'உங்கள் கடவுச்சொல் மாற்றப்பட்டது. புதிய கடவுச்சொல்லுடன் உள்நுழையவும்.';
+
+  @override
+  String get resetPasswordButton => 'புதிய கடவுச்சொல் அமை';
+
+  @override
+  String get recoveryNotMatched =>
+      'பதில் பொருந்தவில்லை. சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get recoveryLocked =>
+      'பல தவறான பதில்கள். கடவுச்சொல் மீட்டமைப்பு 15 நிமிடங்களுக்கு பூட்டப்பட்டுள்ளது.';
+
+  @override
+  String get recoveryNoQuestion =>
+      'இந்தப் பயனர்பெயருக்கு பாதுகாப்புக் கேள்வி இல்லை.';
+
+  @override
+  String get changePasswordTitle => 'கடவுச்சொல்லை மாற்று';
+
+  @override
+  String get changeSecurityQuestionTitle => 'பாதுகாப்புக் கேள்வியை மாற்று';
+
+  @override
+  String get passwordChanged => 'கடவுச்சொல் மாற்றப்பட்டது.';
+
+  @override
+  String get securityQuestionSaved => 'பாதுகாப்புக் கேள்வி சேமிக்கப்பட்டது.';
+
+  @override
+  String get saveLabel => 'சேமி';
+
+  @override
+  String get statReportsFiled => 'பதிவான புகார்கள்';
+
+  @override
+  String get statResolved => 'தீர்க்கப்பட்டவை';
+
+  @override
+  String get statSupporters => 'ஆதரவாளர்கள்';
+
+  @override
+  String get badgesTitle => 'பதக்கங்கள்';
+
+  @override
+  String get photoUpdated => 'சுயவிவரப் படம் புதுப்பிக்கப்பட்டது.';
+
+  @override
+  String get photoFailed =>
+      'படத்தைப் பதிவேற்ற முடியவில்லை. சிறிய படத்தை முயலவும்.';
+
+  @override
+  String memberSince(String date) {
+    return '$date முதல் உறுப்பினர்';
+  }
+
+  @override
+  String profileCompleteTitle(int percent) {
+    return 'சுயவிவரம் $percent% நிறைவு';
+  }
+
+  @override
+  String get completeAddPhoto => 'சுயவிவரப் படம் சேர்க்கவும்';
+
+  @override
+  String get completeAddAge => 'உங்கள் வயதைச் சேர்க்கவும்';
+
+  @override
+  String get completeSetHome => 'உங்கள் வீட்டு இருப்பிடத்தை அமைக்கவும்';
+
+  @override
+  String get completeSecurityQuestion => 'பாதுகாப்புக் கேள்வியை அமைக்கவும்';
+
+  @override
+  String get tapCameraToAddPhoto =>
+      'படம் சேர்க்க உங்கள் படத்தில் உள்ள கேமராவைத் தட்டவும்.';
+
+  @override
+  String get nudgeFirstReport =>
+      'உங்கள் முதல் புகாரைப் பதிவு செய்து முதல் பதக்கத்தையும் நிலை 1-ஐயும் பெறுங்கள்.';
+
+  @override
+  String nudgeNextLevel(int count, int level, String title) {
+    return 'நிலை $level · $title அடைய இன்னும் $count புகார்கள்';
+  }
+
+  @override
+  String get yourCivicJourney => 'உங்கள் குடிமைப் பயணம்';
+
+  @override
+  String get fileAReport => 'புகார் பதிவு செய்';
+
+  @override
+  String get myPlaceTitle => 'என் இடம்';
+
+  @override
+  String get placeAddress => 'முகவரி';
+
+  @override
+  String get placeBbmpWard => 'BBMP வார்டு';
+
+  @override
+  String get placeGbaWard => 'GBA வார்டு';
+
+  @override
+  String get placeTaluk => 'தாலுகா';
+
+  @override
+  String get placeDistrict => 'மாவட்டம்';
+
+  @override
+  String get placeConstituency => 'மக்களவைத் தொகுதி';
+
+  @override
+  String get changeLabel => 'மாற்று';
+
+  @override
+  String get noHomeLocation => 'வீட்டு இருப்பிடம் இன்னும் அமைக்கப்படவில்லை.';
+
+  @override
+  String get myRepresentativesTitle => 'என் பிரதிநிதிகள்';
+
+  @override
+  String get mlaNotListed => 'எம்.எல்.ஏ. விவரம் விரைவில்';
+
+  @override
+  String assemblySegment(String name) {
+    return 'சட்டமன்றம்: $name';
+  }
+
+  @override
+  String get seeAll => 'அனைத்தும் காண்க';
+
+  @override
+  String get accountSettingsTitle => 'கணக்கு & அமைப்புகள்';
+
+  @override
+  String get editNameAge => 'பெயர் & வயதைத் திருத்து';
+
+  @override
+  String get recoveryIsSetUp => 'கடவுச்சொல் மீட்பு அமைக்கப்பட்டுள்ளது';
+
+  @override
+  String get recoveryNotSetUp =>
+      'அமைக்கப்படவில்லை — கடவுச்சொல்லை மீட்க முடியாது';
+
+  @override
+  String get enterValidAge => 'சரியான வயதை உள்ளிடவும் (10–120).';
+
+  @override
+  String get levelTitle1 => 'புதிய குரல்';
+
+  @override
+  String get levelTitle2 => 'செயல்படும் குடிமகன்';
+
+  @override
+  String get levelTitle3 => 'சமூகக் குரல்';
+
+  @override
+  String get levelTitle4 => 'அக்கம்பக்கச் சாம்பியன்';
+
+  @override
+  String get levelTitle5 => 'குடிமைத் தலைவர்';
+
+  @override
+  String get goToHome => 'முகப்புக்குச் செல்';
+
+  @override
+  String get viewMyProfile => 'என் சுயவிவரத்தைக் காண்க';
+
+  @override
+  String revealWelcome(String name) {
+    return 'வருக, $name!';
+  }
+
+  @override
+  String get revealSubtitle => 'உங்கள் குடிமைச் சுயவிவரம் தயார்.';
+
+  @override
+  String placeConstituencyShort(String name) {
+    return '$name மக்களவை';
+  }
+
+  @override
+  String get yourAreaTitle => 'உங்கள் பகுதி';
+
+  @override
+  String get yourAreaNote =>
+      'நீங்கள் அளிக்கும் ஒவ்வொரு புகாரும் பரிந்துரையும் இந்தப் பகுதிக்கே கணக்கிடப்படும்.';
+
+  @override
+  String get firstStepsTitle => 'உங்கள் முதல் 3 படிகள்';
+
+  @override
+  String get stepFirstReport => 'உங்கள் முதல் புகாரைப் பதிவு செய்யுங்கள்';
+
+  @override
+  String get stepFirstReportBody =>
+      'குரல், உரை அல்லது படம் — 20 விநாடிகள் போதும்.';
+
+  @override
+  String get stepSupport => 'அருகிலுள்ள பரிந்துரையை ஆதரியுங்கள்';
+
+  @override
+  String get stepSupportBody =>
+      'உங்கள் அண்டை வீட்டாரின் கோரிக்கைக்குத் துணை நில்லுங்கள்.';
+
+  @override
+  String get stepExploreMap => 'உங்கள் பகுதியின் வரைபடத்தைப் பாருங்கள்';
+
+  @override
+  String get stepExploreMapBody =>
+      'உங்களைச் சுற்றி என்ன புகாரளிக்கப்படுகிறது எனப் பாருங்கள்.';
+
+  @override
+  String get welcomeCitizenTitle => 'குடிமக்கள்';
+
+  @override
+  String get welcomeCitizenBody =>
+      'உங்கள் பகுதியின் பிரச்சினைகளைப் புகாரளித்து வளர்ச்சிப் பணிகளைப் பரிந்துரையுங்கள் — குரல், உரை அல்லது படம் மூலம், உங்கள் மொழியில்.';
+
+  @override
+  String get welcomeGovTitle => 'எம்.பி., எம்.எல்.ஏ. & அதிகாரிகள்';
+
+  @override
+  String get welcomeGovBody =>
+      'உங்கள் பகுதிக்கான அரசு டாஷ்போர்டு: புகார்கள், ஹாட்ஸ்பாட்கள், AI சுருக்கம், பதிவிறக்கக்கூடிய அறிக்கைகள்.';
+
+  @override
+  String get welcomeGovRegister =>
+      'புதிய எம்.எல்.ஏ. அல்லது அதிகாரியா? பதிவு செய்யுங்கள்';
+
+  @override
+  String get welcomeAdminTitle => 'பிரஜாத்வனி நிர்வாகி';
+
+  @override
+  String get welcomeAdminBody => 'தள நிர்வாகம் மற்றும் அதிகாரிகள் ஒப்புதல்';
+
+  @override
+  String get welcomeJustBrowsing =>
+      'சும்மா பார்க்கிறீர்களா? உங்கள் பகுதியின் பொது டாஷ்போர்டைப் பாருங்கள்';
+
+  @override
+  String get composeSubtitleProblem =>
+      'பேசுங்கள், தட்டச்சு செய்யுங்கள் அல்லது புகைப்படம் எடுங்கள் — இது உங்கள் பகுதி அதிகாரிகளைச் சென்றடையும்.';
+
+  @override
+  String get composeSubtitleSuggestion =>
+      'உங்கள் யோசனையை குரல், உரை அல்லது புகைப்படம் மூலம் பகிருங்கள் — இது உங்கள் பிரதிநிதிக்குச் செல்லும்.';
+
+  @override
+  String get stepWhatsTheIssue => 'பிரச்சனை என்ன?';
+
+  @override
+  String get stepYourIdea => 'உங்கள் யோசனை என்ன?';
+
+  @override
+  String get tapMicToSpeak => 'தட்டச்சுக்குப் பதிலாக பேச மைக்கைத் தட்டுங்கள்';
+
+  @override
+  String get listeningTapToStop => 'கேட்கிறது… நிறுத்த தட்டுங்கள்';
+
+  @override
+  String get voiceNoteAdded => 'குரல் குறிப்பு சேர்க்கப்பட்டது';
+
+  @override
+  String get stepAddPhoto => 'புகைப்படம் சேர்க்கவும் (விருப்பம்)';
+
+  @override
+  String get photoHelpsOfficials =>
+      'புகைப்படம் அதிகாரிகள் பிரச்சனையை விரைவில் பார்க்க உதவும்';
+
+  @override
+  String get removePhoto => 'புகைப்படத்தை நீக்கு';
+
+  @override
+  String get stepCategory => 'வகை';
+
+  @override
+  String get stepWhere => 'இது எங்கே?';
+
+  @override
+  String get includedText => 'உரை';
+
+  @override
+  String get includedVoice => 'குரல்';
+
+  @override
+  String get includedPhoto => 'புகைப்படம்';
+
+  @override
+  String get addTextOrPhotoToSubmit =>
+      'சமர்ப்பிக்க தட்டச்சு செய்யுங்கள், பேசுங்கள் அல்லது புகைப்படம் சேர்க்கவும்';
+
+  @override
+  String get officerFixMessage =>
+      'உங்கள் பிரச்சனை பதிவு செய்யப்பட்டது! எங்கள் அதிகாரிகள் இதைச் சரிசெய்வார்கள்.';
+
+  @override
+  String get officerSuggestionMessage =>
+      'நன்றி! உங்கள் யோசனை நேரடியாக உங்கள் பிரதிநிதிக்குச் செல்கிறது.';
+
+  @override
+  String yourTicketIs(String tokenId) {
+    return 'உங்கள் டிக்கெட்: $tokenId';
+  }
+
+  @override
+  String get profileSaveFailed =>
+      'சேமிக்க முடியவில்லை — இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get areaNotMatchedYet =>
+      'இப்போது உங்கள் சரியான பகுதியைக் கண்டறிய முடியவில்லை. பின்னர் சுயவிவரத்திலிருந்து புதுப்பிக்கலாம்.';
+
+  @override
+  String get liveReportMap => 'கர்நாடகா நேரடி அறிக்கை வரைபடம்';
+
+  @override
+  String get liveReportMapSubtitle =>
+      'மாநிலம் முழுவதும் ஒவ்வொரு அறிக்கையும், நேரடியாக';
+
+  @override
+  String get seeOnLiveMap => 'நேரடி வரைபடத்தில் பார்க்கவும்';
+
+  @override
+  String get suggestedOfficeTitle =>
+      'சிக்கலைப் பதிவு செய்ய பரிந்துரைக்கப்பட்ட அலுவலகம்';
+
+  @override
+  String get findingOffice =>
+      'உங்கள் சிக்கலுக்கான சரியான அலுவலகம் தேடப்படுகிறது…';
+
+  @override
+  String get officialWebsite => 'அதிகாரப்பூர்வ இணையதளம்';
+
+  @override
+  String get emailOffice => 'அலுவலகத்திற்கு மின்னஞ்சல் அனுப்பவும்';
+
+  @override
+  String callOffice(String phone) {
+    return '$phone ஐ அழைக்கவும்';
+  }
+
+  @override
+  String get suggestedOfficeNote =>
+      'தொடர்பு விவரங்கள் அதிகாரப்பூர்வ அரசு மூலங்களிலிருந்து. அலுவலகம் AI பரிந்துரைத்தது — பதிவு செய்யும் முன் சரிபார்க்கவும்.';
+
+  @override
+  String get reportCardTitle => 'அறிக்கை அட்டை';
+
+  @override
+  String get openReportCard => 'அறிக்கை அட்டையைத் திறக்கவும்';
+
+  @override
+  String get seePublicCard => 'பொது அறிக்கை அட்டையைப் பார்க்கவும்';
+
+  @override
+  String openForDays(int days) {
+    return '$days நாட்களாகத் திறந்துள்ளது';
+  }
+
+  @override
+  String fixedInDays(int days) {
+    return '$days நாட்களில் சரிசெய்யப்பட்டது';
+  }
+
+  @override
+  String get mlaLabel => 'சட்டமன்ற உறுப்பினர்';
+
+  @override
+  String get mpLabel => 'நாடாளுமன்ற உறுப்பினர்';
+
+  @override
+  String get seatVacant => 'இடம் காலி';
+
+  @override
+  String get repNotRecorded => 'இன்னும் பதிவு செய்யப்படவில்லை';
+
+  @override
+  String rosterAsOf(String date) {
+    return '$date நிலவரப்படி பிரதிநிதிகள்';
+  }
+
+  @override
+  String get seeAreaSolution => 'பகுதியின் தீர்வு அட்டையைப் பார்க்கவும்';
+
+  @override
+  String get shareButton => 'பகிர்';
+
+  @override
+  String get postOnSocial => 'சமூக ஊடகத்தில் பதிவிடு';
+
+  @override
+  String get shareOnX => 'X இல் பதிவிடு';
+
+  @override
+  String get shareOnWhatsApp => 'WhatsApp இல் அனுப்பு';
+
+  @override
+  String get shareOnFacebook => 'Facebook இல் பகிர்';
+
+  @override
+  String get copyPostText => 'பதிவின் உரையை நகலெடு';
+
+  @override
+  String get postCopied => 'பதிவு நகலெடுக்கப்பட்டது — எங்கும் ஒட்டலாம்';
+
+  @override
+  String shareReportOpen(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. $days நாட்களாகத் திறந்துள்ளது. சட்டமன்ற உறுப்பினர்: $mla · நாடாளுமன்ற உறுப்பினர்: $mp. டிக்கெட் $token #Prajadhwani';
+  }
+
+  @override
+  String shareReportFixed(String summary, String place, int days, String mla,
+      String mp, String token) {
+    return '$summary — $place. $days நாட்களில் சரிசெய்யப்பட்டது. சட்டமன்ற உறுப்பினர்: $mla · நாடாளுமன்ற உறுப்பினர்: $mp. டிக்கெட் $token #Prajadhwani';
+  }
+
+  @override
+  String get leaderboardTitle => 'பிரதிநிதிகள் தரவரிசை';
+
+  @override
+  String get leaderboardSubtitle =>
+      'எந்த உறுப்பினர்கள் புகார்களைச் சரிசெய்ய வைக்கிறார்கள்';
+
+  @override
+  String get leaderboardMlaTab => 'சட்டமன்ற உறுப்பினர்கள்';
+
+  @override
+  String get leaderboardMpTab => 'நாடாளுமன்ற உறுப்பினர்கள்';
+
+  @override
+  String leaderboardFairness(int days, int min) {
+    return 'கடந்த $days நாட்களில் அவர்கள் பகுதியின் அறிக்கைகளில் எத்தனை சரிசெய்யப்பட்டன என்ற விகிதத்தில் தரவரிசை — பகுதியில் எத்தனை சிக்கல்கள் உள்ளன என்பதில் அல்ல. குறைந்தது $min அறிக்கைகள் தேவை. கட்சி காட்டப்படாது.';
+  }
+
+  @override
+  String fixedPctLabel(String pct) {
+    return '$pct% சரிசெய்யப்பட்டது';
+  }
+
+  @override
+  String leaderboardStats(int reports, int open) {
+    return '$reports அறிக்கைகள் · $open திறந்துள்ளன';
+  }
+
+  @override
+  String medianFixDays(int days) {
+    return 'பொதுவாக $days நாட்களில் சரிசெய்யப்படும்';
+  }
+
+  @override
+  String get notEnoughReports => 'இன்னும் போதுமான அறிக்கைகள் இல்லை';
+
+  @override
+  String leaderboardEmpty(int days) {
+    return 'கடந்த $days நாட்களில் இன்னும் உண்மையான அறிக்கைகள் இல்லை.';
+  }
+
+  @override
+  String shareLeaderboardRow(
+      String name, String seat, String pct, int reports, int days, int open) {
+    return '$name ($seat): கடந்த $days நாட்களில் $reports அறிக்கைகளில் $pct% சரிசெய்யப்பட்டன, $open இன்னும் திறந்துள்ளன. #Prajadhwani';
+  }
+
+  @override
+  String get seeReportsInArea => 'இந்தப் பகுதியின் அறிக்கைகளைப் பார்க்கவும்';
+
+  @override
+  String get feedTitle => 'அறிக்கை ஊட்டம்';
+
+  @override
+  String get reportsNearYou => 'உங்கள் அருகிலுள்ள அறிக்கைகள்';
+
+  @override
+  String get feedNearMe => 'என் அருகில்';
+
+  @override
+  String get feedAllKarnataka => 'முழு கர்நாடகா';
+
+  @override
+  String get feedWithPhotos => 'புகைப்படத்துடன்';
+
+  @override
+  String get feedEmpty =>
+      'இங்கு இன்னும் அறிக்கைகள் இல்லை. முதலில் சிக்கலைத் தெரிவியுங்கள்.';
+
+  @override
+  String get meToo => 'எனக்கும்';
+
+  @override
+  String meTooCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count பேர் எனக்கும் என்றனர்',
+      one: '1 நபர் எனக்கும் என்றார்',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signInForMeToo => 'எனக்கும் என்று சொல்ல உள்நுழையவும்';
+
+  @override
+  String get ownReportNoMeToo => 'இது உங்கள் சொந்த அறிக்கை';
+
+  @override
+  String get commentsTitle => 'கருத்துகள்';
+
+  @override
+  String viewAllComments(int count) {
+    return 'அனைத்து $count கருத்துகளையும் பார்க்கவும்';
+  }
+
+  @override
+  String get addComment => 'கருத்து சேர்க்கவும்…';
+
+  @override
+  String get commentPublicNote =>
+      'உங்கள் கருத்துடன் உங்கள் பயனர்பெயர் காட்டப்படும்';
+
+  @override
+  String get signInToComment => 'கருத்து தெரிவிக்க உள்நுழையவும்';
+
+  @override
+  String get needUsernameToComment =>
+      'கருத்து தெரிவிக்க சுயவிவரத்தில் பயனர்பெயரை அமைக்கவும்';
+
+  @override
+  String get reportComment => 'கருத்தைப் புகாரளி';
+
+  @override
+  String get deleteComment => 'கருத்தை நீக்கு';
+
+  @override
+  String get commentReported => 'நன்றி — நாங்கள் பரிசீலிப்போம்';
+
+  @override
+  String get noCommentsYet =>
+      'இன்னும் கருத்துகள் இல்லை — உரையாடலைத் தொடங்குங்கள்';
+
+  @override
+  String get showPhotoInFeed => 'என் புகைப்படத்தைப் பொது ஊட்டத்தில் காட்டு';
+
+  @override
+  String get showPhotoInFeedNote =>
+      'யாரும் பார்க்கும் முன் முகங்களும் வாகன எண் பலகைகளும் தானாக மங்கலாக்கப்படும்';
+
+  @override
+  String get photoStatusProcessing => 'பொது புகைப்படம் தயாராகிறது…';
+
+  @override
+  String get photoStatusPublished =>
+      'ஊட்டத்தில் காட்டப்படுகிறது, முகங்களும் பலகைகளும் மங்கலாக';
+
+  @override
+  String get photoStatusRejected =>
+      'இந்தப் புகைப்படத்தைப் பொதுவில் காட்ட முடியாது';
+
+  @override
+  String get photoStatusError =>
+      'புகைப்படத்தை வெளியிட முடியவில்லை — மீண்டும் முயல அணைத்து இயக்கவும்';
+
+  @override
+  String get moreNearby => 'அருகிலுள்ள மேலும் அறிக்கைகள்';
+
+  @override
+  String get visitWebsite => 'இணையதளத்தைப் பார்';
+
+  @override
+  String get openCard => 'அட்டையைத் திற';
+
+  @override
+  String postedDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days நாட்களுக்கு முன்',
+      one: 'நேற்று',
+      zero: 'இன்று',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openDaysShort(int days) {
+    return '$days நா. திறந்துள்ளது';
+  }
+
+  @override
+  String get postShort => 'பதிவிடு';
+
+  @override
+  String get statusClosed => 'மூடப்பட்டது';
+
+  @override
+  String get fixQuestion => 'இது சரிசெய்யப்பட்டதா?';
+
+  @override
+  String get fixYes => 'ஆம், சரியாகிவிட்டது';
+
+  @override
+  String get fixNo => 'இல்லை, இன்னும் சரியாகவில்லை';
+
+  @override
+  String fixWindowLeft(String time) {
+    return 'பதிலளிக்க $time உள்ளது';
+  }
+
+  @override
+  String get fixAwaiting => 'மூடப்பட காத்திருக்கிறது';
+
+  @override
+  String get fixThanks => 'நன்றி. இந்த புகார் இப்போது மூடப்பட்டது.';
+
+  @override
+  String get fixReopened =>
+      'மன்னிக்கவும். மீண்டும் சரிசெய்ய திருப்பி அனுப்பப்பட்டுள்ளது.';
+
+  @override
+  String fixAssignedTo(String name) {
+    return '$name இடம் ஒதுக்கப்பட்டது';
+  }
+
+  @override
+  String get fixClosedAuto => '48 மணி நேரம் பதில் வராததால் மூடப்பட்டது';
+
+  @override
+  String get photoRequired => 'பிரச்சனையின் புகைப்படம் தேவை';
+
+  @override
+  String get photoPublicNote =>
+      'உங்கள் புகைப்படம் பொதுவில் தெரியும்; முகங்களும் எண் தகடுகளும் மங்கலாக்கப்படும்.';
+
+  @override
+  String get stepAddPhotoRequired => 'புகைப்படம் சேர்க்கவும் (அவசியம்)';
+
+  @override
+  String get photoVisTitle => 'இந்த புகைப்படத்தை யார் பார்க்கலாம்?';
+
+  @override
+  String get photoVisPrivate => 'தனிப்பட்டது';
+
+  @override
+  String get photoVisPrivateNote =>
+      'உங்கள் பகுதி அதிகாரிகள், அவர்களின் குழு மற்றும் நிர்வாகி மட்டுமே பார்ப்பார்கள். வேறு யாரும் இல்லை.';
+
+  @override
+  String get photoVisFaces => 'பொது, முகங்களும் எண் தகடுகளும் மங்கல்';
+
+  @override
+  String get photoVisFacesNote =>
+      'பொது ஃபீடில் தெரியும். மக்களையும் வாகனங்களையும் அடையாளம் காண முடியாது.';
+
+  @override
+  String get photoVisFull => 'பொது, முழு புகைப்படமும் மங்கல்';
+
+  @override
+  String get photoVisFullNote =>
+      'பொது ஃபீடில் மங்கலான படமாகத் தெரியும். இடத்தை அடையாளம் காண முடியாது.';
+
+  @override
+  String get photoTermsTitle => 'புகைப்பட தனியுரிமை விதிமுறைகள்';
+
+  @override
+  String get photoTermsPoint1 =>
+      'உங்கள் புகைப்படத்தின் மங்கலான நகல் பொது ஃபீடிலும் புகார் அட்டையிலும், சிறு சுருக்கம் மற்றும் பகுதியுடன் தெரியும்.';
+
+  @override
+  String get photoTermsPoint2 =>
+      'உங்கள் பெயர், தொலைபேசி எண், முகவரி, துல்லிய இடம் ஒருபோதும் காட்டப்படாது. அசல் புகைப்படம் தனிப்பட்டதாகவே இருக்கும்.';
+
+  @override
+  String get photoTermsPoint3 =>
+      'அசல் புகைப்படத்தை உங்கள் பகுதி அதிகாரிகள், உங்கள் புகாருக்கு நியமிக்கப்பட்ட குழு உறுப்பினர், நிர்வாகி எப்போதும் பார்ப்பார்கள்.';
+
+  @override
+  String get photoTermsPoint4 =>
+      'மங்கலாக்குதல் தானியங்கியானது; சிலவற்றை தவறவிடலாம். மக்களின் முகம், வீட்டு எண், ஆவணங்களைப் படம் எடுக்க வேண்டாம்.';
+
+  @override
+  String get photoTermsPoint5 => 'பொருத்தமற்ற புகைப்படங்கள் வெளியிடப்படாது.';
+
+  @override
+  String get photoTermsPoint6 =>
+      'எப்போது வேண்டுமானாலும் தனிப்பட்டதற்கு மாறலாம்; பொது நகல் நீக்கப்படும்.';
+
+  @override
+  String get photoTermsAgree =>
+      'நான் இந்த விதிமுறைகளைப் படித்து ஒப்புக்கொள்கிறேன்';
+
+  @override
+  String get photoTermsAgreeButton => 'ஒப்புக்கொண்டு தொடரவும்';
+
+  @override
+  String get photoStatusNeedsConsent =>
+      'தனியுரிமை விதிமுறைகளுக்கு உங்கள் ஒப்புதலுக்காகக் காத்திருக்கிறது';
 }

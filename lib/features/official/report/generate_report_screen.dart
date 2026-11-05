@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:printing/printing.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/services/constituency_report_service.dart';
@@ -53,7 +53,7 @@ class _GenerateReportScreenState extends State<GenerateReportScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/public/dashboard'),
+              goBackOrHome(context, citizenFallback: '/public/dashboard'),
         ),
         title: Text(l10n.generateReport),
       ),

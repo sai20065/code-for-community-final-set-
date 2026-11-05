@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/current_user_profile_provider.dart';
 import '../../../app/providers/public_data_providers.dart';
@@ -10,7 +10,9 @@ import '../../../core/models/solution_card_model.dart';
 import '../../../core/models/user_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/sdg_badge.dart';
+import '../../../shared/widgets/share_actions.dart';
 import '../../../shared/widgets/theme_icon_chip.dart';
+import '../../../shared/widgets/google_maps_directions_button.dart';
 
 /// The Solution Card — the end product of the four-agent civic intelligence
 /// chain (`functions/src/agents/`).
@@ -41,7 +43,7 @@ class _SolutionCardScreenState extends ConsumerState<SolutionCardScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/public/dashboard'),
+              goBackOrHome(context, citizenFallback: '/public/dashboard'),
         ),
         title: Text(l10n.solutionCardTitle),
       ),
@@ -101,9 +103,7 @@ class _CardBody extends ConsumerWidget {
   final int tab;
   final ValueChanged<int> onTabChanged;
 
-  /// Plain-text export for sharing. Clipboard rather than a share sheet:
-  /// `share_plus` isn't a dependency and a copy + SnackBar works on every
-  /// platform including web.
+  /// Plain-text export for sharing, posted with a link back to this card.
   String _shareText(AppLocalizations l10n) {
     final buffer = StringBuffer()
       ..writeln(card.headline)
@@ -165,6 +165,16 @@ class _CardBody extends ConsumerWidget {
           '${card.constituencyName} · ${l10n.reportsFromResidents(card.submissionCount, card.uniqueReporterCount)}',
           style: const TextStyle(fontSize: 12, color: AppColors.inkFaint),
         ),
+        if (card.centroid != null) ...[
+          const SizedBox(height: 12),
+          // The card's centroid is snapped server-side before it's ever
+          // written (see orchestrator.ts), so this routes to the area.
+          GoogleMapsDirectionsButton(
+            lat: card.centroid!.lat,
+            lng: card.centroid!.lng,
+            approximate: true,
+          ),
+        ],
 
         // A card built partly from fallbacks must not read with the same
         // authority as one where every agent succeeded. Say so, up top.
@@ -226,35 +236,22 @@ class _CardBody extends ConsumerWidget {
         ],
 
         const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () async {
-                  await Clipboard.setData(
-                      ClipboardData(text: _shareText(l10n)));
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.copiedToClipboard)),
-                  );
-                },
-                icon: const Icon(Icons.share_outlined, size: 18),
-                label: Text(l10n.shareSolution),
-              ),
-            ),
-            if (isOfficial) ...[
-              const SizedBox(width: 10),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () =>
-                      context.go('/official/transcript/${card.clusterId}'),
-                  icon: const Icon(Icons.forum_outlined, size: 18),
-                  label: Text(l10n.viewAgentTranscript),
-                ),
-              ),
-            ],
-          ],
+        ShareActions(
+          post: SharePost(
+            text: _shareText(l10n),
+            url: publicWebLink('/public/cluster/${card.clusterId}'),
+          ),
+          subject: card.headline,
         ),
+        if (isOfficial) ...[
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: () =>
+                context.push('/official/transcript/${card.clusterId}'),
+            icon: const Icon(Icons.forum_outlined, size: 18),
+            label: Text(l10n.viewAgentTranscript),
+          ),
+        ],
 
         const SizedBox(height: 16),
         // Non-negotiable given this page carries rupee figures and causal

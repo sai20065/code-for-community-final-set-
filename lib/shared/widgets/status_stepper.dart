@@ -26,6 +26,7 @@ class StatusStepper extends StatelessWidget {
       case SubmissionStatus.inProgress:
         return 2;
       case SubmissionStatus.resolved:
+      case SubmissionStatus.closed:
         return 3;
     }
   }
@@ -37,7 +38,10 @@ class StatusStepper extends StatelessWidget {
       'new': l10n.statusFiled,
       'reviewed': l10n.statusAcknowledged,
       'inProgress': l10n.statusInProgress,
-      'resolved': l10n.statusResolved,
+      // A signed-off report reads "Closed" at the last step.
+      'resolved': status == SubmissionStatus.closed
+          ? l10n.statusClosed
+          : l10n.statusResolved,
     };
     final active = _activeIndex;
     return Row(

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/models/constituency_model.dart';
 import '../../core/models/district_model.dart';
 import '../../core/models/public_models.dart';
+import '../../core/models/representative_models.dart';
 import '../../core/models/solution_card_model.dart';
 import '../../core/models/taluk_model.dart';
 import '../../core/models/ward_model.dart';
@@ -72,11 +73,18 @@ final publicDataServiceProvider = Provider<PublicDataService>(
   (ref) => PublicDataService(),
 );
 
+/// Splits a scope key: `"2927"` (a constituency id, the public dashboard)
+/// or `"bbmpWardId:BBMP-151"` (an official's area — see `scopeKeyFor`).
+(String field, String id) parseScopeKey(String key) {
+  final i = key.indexOf(':');
+  return i < 0 ? ('constituencyId', key) : (key.substring(0, i), key.substring(i + 1));
+}
+
 final publicClustersProvider =
-    StreamProvider.family<List<PublicClusterModel>, String>(
-  (ref, constituencyId) =>
-      ref.watch(publicDataServiceProvider).watchClusters(constituencyId),
-);
+    StreamProvider.family<List<PublicClusterModel>, String>((ref, key) {
+  final (field, id) = parseScopeKey(key);
+  return ref.watch(publicDataServiceProvider).watchClusters(id, field: field);
+});
 
 final publicConstituencyStatsProvider =
     StreamProvider.family<PublicConstituencyStats, String>(
@@ -125,11 +133,12 @@ final allPublicClustersProvider =
 /// Reports tab. Capped at 300 — a triage queue nobody scrolls past is not
 /// worth the reads, and the search box narrows it anyway.
 final publicAllTicketsProvider =
-    StreamProvider.family<List<PublicTicketModel>, String>(
-  (ref, constituencyId) => ref
+    StreamProvider.family<List<PublicTicketModel>, String>((ref, key) {
+  final (field, id) = parseScopeKey(key);
+  return ref
       .watch(publicDataServiceProvider)
-      .watchRecentTickets(constituencyId, limit: 300),
-);
+      .watchRecentTickets(id, limit: 300, field: field);
+});
 
 final publicClustersForBoothProvider =
     StreamProvider.family<List<PublicClusterModel>, String>(
@@ -195,16 +204,22 @@ final taluksForDistrictProvider =
       ref.watch(firestoreServiceProvider).watchTaluksForDistrict(districtId),
 );
 
-/// The wards of one GBA corporation — `Central`, `East`, `North`, `South` or
-/// `West` (the `corporation` column in `gba_wards.json`, NOT the literal
-/// string "GBA"). Bengaluru Urban's 369 wards are the picker's finest level
-/// inside the city, where a taluk covers far too much ground to be a useful
-/// area choice, and they are fetched a corporation at a time because each
-/// ward document carries its whole boundary polygon.
+/// Bengaluru Urban has two ward layers, both kept: the 369 GBA wards
+/// (grouped by GBA corporation) and the 198 BBMP wards (grouped by assembly
+/// constituency). Either is the picker's finest level inside the city, where
+/// a taluk covers far too much ground to be a useful area choice; each is
+/// fetched one group at a time because every ward doc carries its whole
+/// boundary polygon.
 final wardsForCorporationProvider =
     StreamProvider.family<List<WardModel>, String>(
   (ref, corporation) =>
       ref.watch(firestoreServiceProvider).watchWardsForCorporation(corporation),
+);
+
+final bbmpWardsForAssemblyProvider =
+    StreamProvider.family<List<WardModel>, String>(
+  (ref, assembly) =>
+      ref.watch(firestoreServiceProvider).watchBbmpWardsForAssembly(assembly),
 );
 
 /// Reports filed in the last seven days — the "N reports near you this
@@ -216,3 +231,36 @@ final reportsThisWeekProvider =
       .watch(publicDataServiceProvider)
       .countTicketsSince(constituencyId, since);
 });
+
+/// Live statewide reports for the Karnataka map, keyed by look-back window
+/// in days (0 = all time).
+final statewideTicketsProvider =
+    StreamProvider.family<List<PublicTicketModel>, int>((ref, days) {
+  final since = days <= 0
+      ? null
+      : DateTime.now()
+          .subtract(Duration(days: days))
+          .toIso8601String()
+          .substring(0, 10);
+  return ref
+      .watch(publicDataServiceProvider)
+      .watchStatewideTickets(sinceDate: since);
+});
+
+/// One public ticket, for its shareable report card.
+final publicTicketProvider = StreamProvider.family<PublicTicketModel?, String>(
+  (ref, id) => ref.watch(publicDataServiceProvider).watchPublicTicket(id),
+);
+
+/// Who represents every Karnataka seat. Read once and kept for the session
+/// — the roster changes with by-elections, not by the minute.
+final publicRepsProvider = FutureProvider<PublicReps>((ref) {
+  ref.keepAlive();
+  return ref.watch(publicDataServiceProvider).getPublicReps();
+});
+
+/// `mla` or `mp`.
+final leaderboardProvider =
+    StreamProvider.family<RepresentativeLeaderboard?, String>(
+  (ref, board) => ref.watch(publicDataServiceProvider).watchLeaderboard(board),
+);

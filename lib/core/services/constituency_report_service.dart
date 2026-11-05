@@ -25,7 +25,7 @@ class ConstituencyReportService {
 
   Future<ConstituencyReportResult> generateReport() async {
     final callable = _functions.httpsCallable(
-      'generateConstituencyReport',
+      'generateAreaReport',
       options: HttpsCallableOptions(timeout: const Duration(seconds: 60)),
     );
     final response = await callable.call<Map<String, dynamic>>();

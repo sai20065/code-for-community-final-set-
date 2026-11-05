@@ -242,7 +242,7 @@ class _HotspotCard extends StatelessWidget {
               TextButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  context.go('/public/works');
+                  context.push('/public/works');
                 },
                 icon: const Icon(Icons.arrow_forward_rounded, size: 16),
                 label: Text(l10n.seeInRankedWorks),
@@ -251,7 +251,7 @@ class _HotspotCard extends StatelessWidget {
                 TextButton.icon(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    context.go('/public/cluster/${topCluster.id}');
+                    context.push('/public/cluster/${topCluster.id}');
                   },
                   icon: const Icon(Icons.auto_awesome_rounded, size: 16),
                   label: Text(l10n.viewSolutionCard),

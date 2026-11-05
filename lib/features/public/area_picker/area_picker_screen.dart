@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/providers/public_data_providers.dart';
 import '../../../app/theme.dart';
@@ -28,7 +29,7 @@ class AreaPickerScreen extends ConsumerStatefulWidget {
   ConsumerState<AreaPickerScreen> createState() => _AreaPickerScreenState();
 }
 
-/// The district whose wards come from the GBA ward layer instead of taluks.
+/// The district whose wards come from the BBMP ward layer instead of taluks.
 /// Matched case-insensitively on district name because the KGIS source data
 /// spells it "Bengaluru Urban" while older rows use "Bangalore Urban".
 bool _isBengaluruUrban(String districtName) {
@@ -37,29 +38,58 @@ bool _isBengaluruUrban(String districtName) {
       n.contains('urban');
 }
 
-/// Bengaluru's wards are keyed by GBA corporation — the five zones the 369
-/// wards are split across (`corporation` in `gba_wards.json`). Ward numbers
-/// only repeat *within* a corporation, so this is also the level that makes
-/// a ward id unique.
+/// Bengaluru Urban has two ward layers, both kept and both pickable:
+///  - **BBMP, 198 wards** (2010 delimitation, BBMP's printed ward map),
+///    grouped by their 27 assembly constituencies;
+///  - **GBA, 369 wards** (2025 delimitation), grouped by the five GBA
+///    corporations.
+enum _WardSystem { bbmp, gba }
+
+/// The five GBA corporations the 369 wards are split across (`corporation`
+/// in `gba_wards.json`). Ward numbers only repeat *within* a corporation.
+const _kGbaCorporations = ['Central', 'East', 'North', 'South', 'West'];
+
+/// Bengaluru's 198 BBMP wards grouped by their 27 assembly constituencies
+/// (`assembly_constituency` in `bbmp_wards_198.json`, spelt exactly as in
+/// the source data so it matches `wards.assemblyConstituency`).
 ///
 /// Used as an extra picker level inside Bengaluru rather than showing all
-/// 369 wards flat: each ward document carries its full boundary polygon, so
-/// a flat list would pull several megabytes of geometry just to render
-/// names.
-const _kGbaCorporations = ['Central', 'East', 'North', 'South', 'West'];
+/// 198 wards flat: each ward document carries its full boundary polygon, so
+/// a flat list would pull close to a megabyte of geometry just to render
+/// names. A constant rather than a query for the same reason.
+const _kBbmpAssemblies = [
+  'B.T.M. Layout', 'Bangalore South', 'Basavanagudi', 'Bommana Halli',
+  'Byatarayanapura', 'C.V. Ramannagar (SC)', 'Chamarajpet', 'Chickpet',
+  'Dasarahalli', 'Gandhi Nagar', 'Govindaraja Nagar', 'Hebbal', 'Jaya Nagar',
+  'K.R. Puram', 'Mahadevapura', 'Mahalakshmi Layout', 'Malleswaram',
+  'Padmanaba Nagar', 'Pulakeshi Nagar (SC)', 'Rajaji Nagar',
+  'Rajarajeswari Nagar', 'Sarvagna Nagar', 'Shanthi Nagar', 'Shivaji Nagar',
+  'Vijaya Nagar', 'Yelahanka', 'Yeshwantpura',
+];
 
 class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
   String _query = '';
   String? _districtId;
   String _districtName = '';
-  String? _corporation;
+  _WardSystem? _system;
+
+  /// Assembly constituency (BBMP) or corporation (GBA), depending on
+  /// [_system].
+  String? _assembly;
 
   bool get _atDistrictLevel => _districtId == null;
 
   void _back() {
-    if (_corporation != null) {
+    if (_assembly == null && _system != null) {
       setState(() {
-        _corporation = null;
+        _system = null;
+        _query = '';
+      });
+      return;
+    }
+    if (_assembly != null) {
+      setState(() {
+        _assembly = null;
         _query = '';
       });
       return;
@@ -72,13 +102,14 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
       });
       return;
     }
-    context.canPop() ? context.pop() : context.go('/welcome');
+    goBackOrHome(context, citizenFallback: '/welcome');
   }
 
   void _resetToDistricts() => setState(() {
         _districtId = null;
         _districtName = '';
-        _corporation = null;
+        _system = null;
+        _assembly = null;
         _query = '';
       });
 
@@ -101,11 +132,11 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
     if (constituencyId != null && constituencyId.isNotEmpty) {
       await ref.read(publicConstituencyProvider.notifier).select(constituencyId);
     }
-    if (mounted) context.go('/public/map');
+    if (mounted) context.replace('/public/map'); // keep the page below (the dashboard) on the stack
   }
 
-  /// District → Taluk everywhere, District → Corporation → Ward inside
-  /// Bengaluru Urban.
+  /// District → Taluk everywhere. Inside Bengaluru Urban: District → ward
+  /// system → (assembly segment | GBA corporation) → Ward.
   Widget _body() {
     if (_atDistrictLevel) {
       return _DistrictList(
@@ -118,17 +149,35 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
       );
     }
     if (_isBengaluruUrban(_districtName)) {
-      if (_corporation == null) {
-        return _CorporationList(
+      if (_system == null) {
+        return _WardSystemList(
+          onSelect: (system) => setState(() {
+            _system = system;
+            _query = '';
+          }),
+        );
+      }
+      if (_assembly == null) {
+        if (_system == _WardSystem.gba) {
+          return _CorporationList(
+            query: _query,
+            onSelect: (corporation) => setState(() {
+              _assembly = corporation;
+              _query = '';
+            }),
+          );
+        }
+        return _AssemblyList(
           query: _query,
-          onSelect: (corporation) => setState(() {
-            _corporation = corporation;
+          onSelect: (assembly) => setState(() {
+            _assembly = assembly;
             _query = '';
           }),
         );
       }
       return _WardList(
-        corporation: _corporation!,
+        bbmp: _system == _WardSystem.bbmp,
+        assembly: _assembly!,
         query: _query,
         onSelect: (w) => _choose(
           kind: AreaKind.ward,
@@ -161,7 +210,7 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
         ),
         title: Text(_atDistrictLevel
             ? 'Choose your district'
-            : _corporation ?? _districtName),
+            : _assembly ?? _districtName),
       ),
       body: SafeArea(
         child: Column(
@@ -169,11 +218,11 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
               child: TextField(
-                key: ValueKey('${_districtId ?? "districts"}|$_corporation'),
+                key: ValueKey('${_districtId ?? "districts"}|$_assembly'),
                 decoration: InputDecoration(
                   hintText: _atDistrictLevel
                       ? 'Search districts'
-                      : 'Search within ${_corporation ?? _districtName}',
+                      : 'Search within ${_assembly ?? _districtName}',
                   prefixIcon: const Icon(Icons.search_rounded),
                   isDense: true,
                   filled: true,
@@ -188,10 +237,10 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
             ),
             _Breadcrumb(
               districtName: _districtName,
-              corporation: _corporation,
+              assembly: _assembly,
               onReset: _resetToDistricts,
               onDistrictTap: () => setState(() {
-                _corporation = null;
+                _assembly = null;
                 _query = '';
               }),
             ),
@@ -206,13 +255,13 @@ class _AreaPickerScreenState extends ConsumerState<AreaPickerScreen> {
 class _Breadcrumb extends StatelessWidget {
   const _Breadcrumb({
     required this.districtName,
-    required this.corporation,
+    required this.assembly,
     required this.onReset,
     required this.onDistrictTap,
   });
 
   final String districtName;
-  final String? corporation;
+  final String? assembly;
   final VoidCallback onReset;
   final VoidCallback onDistrictTap;
 
@@ -228,14 +277,14 @@ class _Breadcrumb extends StatelessWidget {
           children: [
             _Crumb(label: 'Karnataka', onTap: onReset),
             const _CrumbArrow(),
-            if (corporation == null)
+            if (assembly == null)
               Text(districtName,
                   style:
                       const TextStyle(fontSize: 12, color: AppColors.inkSoft))
             else ...[
               _Crumb(label: districtName, onTap: onDistrictTap),
               const _CrumbArrow(),
-              Text('$corporation zone',
+              Text(assembly!,
                   style:
                       const TextStyle(fontSize: 12, color: AppColors.inkSoft)),
             ],
@@ -278,10 +327,39 @@ class _CrumbArrow extends StatelessWidget {
   }
 }
 
-/// The five GBA corporations. Rendered from a constant rather than a
-/// Firestore query: the zones are fixed by the 19 Nov 2025 delimitation
-/// notification, and reading 369 ward documents (each carrying a full
-/// boundary polygon) just to derive five distinct strings would cost
+/// "Which ward map?" — Bengaluru keeps both the BBMP and GBA ward layers.
+class _WardSystemList extends StatelessWidget {
+  const _WardSystemList({required this.onSelect});
+
+  final void Function(_WardSystem system) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+      children: [
+        _AreaTile(
+          icon: Icons.grid_on_rounded,
+          tint: AppColors.saffronDeep,
+          title: 'BBMP wards (198)',
+          subtitle: 'Grouped by assembly constituency',
+          onTap: () => onSelect(_WardSystem.bbmp),
+        ),
+        const SizedBox(height: 8),
+        _AreaTile(
+          icon: Icons.grid_view_rounded,
+          tint: AppColors.indigo,
+          title: 'GBA wards (369)',
+          subtitle: 'Grouped by GBA corporation zone',
+          onTap: () => onSelect(_WardSystem.gba),
+        ),
+      ],
+    );
+  }
+}
+
+/// The five GBA corporations, from a constant: reading 369 ward documents
+/// (each with a full boundary polygon) to derive five strings would cost
 /// megabytes for a list that never changes.
 class _CorporationList extends StatelessWidget {
   const _CorporationList({required this.query, required this.onSelect});
@@ -299,8 +377,7 @@ class _CorporationList extends StatelessWidget {
     if (filtered.isEmpty) {
       return const _Empty(
         message: 'No zone matches that search.',
-        hint: 'Bengaluru has five GBA zones: Central, East, North, South '
-            'and West.',
+        hint: 'GBA has five zones: Central, East, North, South and West.',
       );
     }
     return ListView.separated(
@@ -311,7 +388,44 @@ class _CorporationList extends StatelessWidget {
         icon: Icons.grid_view_rounded,
         tint: AppColors.indigo,
         title: '${filtered[i]} zone',
-        subtitle: 'GBA / BBMP wards',
+        subtitle: 'GBA wards',
+        onTap: () => onSelect(filtered[i]),
+      ),
+    );
+  }
+}
+
+/// Bengaluru's 27 assembly constituencies — the level between the district
+/// and its 198 BBMP wards.
+class _AssemblyList extends StatelessWidget {
+  const _AssemblyList({required this.query, required this.onSelect});
+
+  final String query;
+  final void Function(String assembly) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = query.isEmpty
+        ? _kBbmpAssemblies
+        : _kBbmpAssemblies
+            .where((c) => c.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+    if (filtered.isEmpty) {
+      return const _Empty(
+        message: 'No assembly constituency matches that search.',
+        hint: "Bengaluru's 198 BBMP wards are grouped into 27 assembly "
+            'constituencies.',
+      );
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+      itemCount: filtered.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, i) => _AreaTile(
+        icon: Icons.grid_view_rounded,
+        tint: AppColors.indigo,
+        title: filtered[i],
+        subtitle: 'Assembly constituency · BBMP wards',
         onTap: () => onSelect(filtered[i]),
       ),
     );
@@ -353,7 +467,7 @@ class _DistrictList extends ConsumerWidget {
                 tint: AppColors.vermilion,
                 title: 'See all of Karnataka',
                 subtitle: 'All 30 districts and 227 taluks on one map',
-                onTap: () => context.go('/public/karnataka'),
+                onTap: () => context.push('/public/karnataka'),
               );
             }
             final d = filtered[i - 1];
@@ -362,7 +476,7 @@ class _DistrictList extends ConsumerWidget {
               tint: AppColors.indigo,
               title: d.name,
               subtitle: _isBengaluruUrban(d.name)
-                  ? 'BBMP / GBA wards'
+                  ? 'BBMP (198) and GBA (369) wards'
                   : 'Taluks',
               onTap: () => onSelect(d),
             );
@@ -436,18 +550,24 @@ class _TalukList extends ConsumerWidget {
 
 class _WardList extends ConsumerWidget {
   const _WardList({
-    required this.corporation,
+    required this.bbmp,
+    required this.assembly,
     required this.query,
     required this.onSelect,
   });
 
-  final String corporation;
+  /// BBMP layer ([assembly] is an assembly constituency) or GBA layer
+  /// ([assembly] is a GBA corporation).
+  final bool bbmp;
+  final String assembly;
   final String query;
   final void Function(WardModel ward) onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(wardsForCorporationProvider(corporation));
+    final async = ref.watch(bbmp
+        ? bbmpWardsForAssemblyProvider(assembly)
+        : wardsForCorporationProvider(assembly));
     return async.when(
       data: (all) {
         final filtered = query.isEmpty
@@ -455,14 +575,12 @@ class _WardList extends ConsumerWidget {
             : all
                 .where((w) =>
                     w.wardName.toLowerCase().contains(query.toLowerCase()) ||
-                    w.assemblyConstituency
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
+                    '${w.wardNo}' == query)
                 .toList();
         if (filtered.isEmpty) {
           return const _Empty(
             message: 'No wards match that search.',
-            hint: 'Search by ward name or assembly segment.',
+            hint: 'Search by ward name or ward number.',
           );
         }
         return ListView.separated(
@@ -474,7 +592,9 @@ class _WardList extends ConsumerWidget {
             return _AreaTile(
               icon: Icons.holiday_village_rounded,
               tint: AppColors.saffronDeep,
-              title: w.wardName,
+              title: w.wardNo == null
+                  ? w.wardName
+                  : '${w.wardNo}. ${w.wardName}',
               subtitle: _representativeLine(
                 mlaName: w.mlaName,
                 assembly: w.assemblyConstituency,

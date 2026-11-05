@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {REGION} from "../config";
+import {areaCentroidFor} from "./areaCentroid";
 import {projectTicket} from "./projection";
 
 /** Statuses tracked in a cluster's rollup. Anything else is ignored rather
@@ -41,27 +42,16 @@ export const onSubmissionWrittenPublicProjection = onDocumentWritten(
     }
 
     const clusterId = after.clusterId as string | undefined;
-    const [clusterSnap, wardSnap] = await Promise.all([
-      clusterId ?
-        db.collection("clusters").doc(clusterId).get() :
-        Promise.resolve(null),
-      after.location?.wardId ?
-        db.collection("wards").doc(after.location.wardId).get() :
-        Promise.resolve(null),
-    ]);
-
+    const clusterSnap = clusterId ?
+      await db.collection("clusters").doc(clusterId).get() :
+      null;
     const cluster = clusterSnap?.data();
-    const ward = wardSnap?.data();
-    const wardCentroid =
-      typeof ward?.centroidLat === "number" && typeof ward?.centroidLng === "number" ?
-        {lat: ward.centroidLat, lng: ward.centroidLng} :
-        null;
 
     const projected = projectTicket({
       submissionId,
       submission: after,
       clusterSubmissionCount: cluster?.submissionCount ?? 0,
-      wardCentroid,
+      areaCentroid: areaCentroidFor(after.location),
     });
 
     if (!projected) {
@@ -82,8 +72,10 @@ export const onSubmissionWrittenPublicProjection = onDocumentWritten(
 
     // Cluster status rollup. This trigger is the only place that observes a
     // ticket's status *transition*, so it owns the counters.
-    const beforeStatus = before?.status as string | undefined;
-    const afterStatus = after.status as string | undefined;
+    // "closed" is "fixed and signed off": the rollup keeps counting it as resolved.
+    const roll = (s: unknown) => (s === "closed" ? "resolved" : s as string | undefined);
+    const beforeStatus = roll(before?.status);
+    const afterStatus = roll(after.status);
     if (
       clusterId &&
       before &&

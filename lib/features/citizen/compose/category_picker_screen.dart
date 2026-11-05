@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/navigation.dart';
 
 import '../../../app/theme.dart';
 import '../../../core/models/submission_model.dart';
@@ -22,7 +23,7 @@ class CategoryPickerScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/home'),
+          onPressed: () => goBackOrHome(context, citizenFallback: '/home'),
         ),
         title: Text(l10n.newSubmission),
       ),
@@ -53,7 +54,7 @@ class CategoryPickerScreen extends StatelessWidget {
                         title: l10n.reportAProblem,
                         subtitle: l10n.reportProblemSubtitle,
                         onTap: () => context.go(
-                          '/compose/text',
+                          '/compose/report',
                           extra: SubmissionCategory.problem,
                         ),
                       ),
@@ -67,7 +68,7 @@ class CategoryPickerScreen extends StatelessWidget {
                         title: l10n.suggestDevelopmentWork,
                         subtitle: l10n.suggestSubtitle,
                         onTap: () => context.go(
-                          '/compose/text',
+                          '/compose/report',
                           extra: SubmissionCategory.feedback,
                         ),
                       ),

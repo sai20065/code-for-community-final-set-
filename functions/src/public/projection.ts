@@ -1,4 +1,5 @@
 import {PUBLIC_GEO_MIN_TICKETS} from "../config";
+import type {AreaCentroid} from "./areaCentroid";
 import {snapCoordinate} from "./geoPrivacy";
 
 /**
@@ -44,13 +45,36 @@ export interface PublicTicketDoc {
   /** AI-generated under an explicit no-PII instruction and regex-scrubbed
    * afterwards. Never the citizen's own words. */
   publicSummary: string;
-  constituencyId: string;
+  constituencyId: string | null;
   constituencyName: string | null;
   wardId: string | null;
+  /** BBMP (198-ward) layer id, alongside the GBA [wardId]. */
+  bbmpWardId: string | null;
+  assemblyId: string | null;
+  districtId: string | null;
   talukId: string | null;
   boothId: string | null;
   clusterId: string | null;
   supporterCount: number;
+
+  /** The office the citizen was pointed to (see assignment/). Directory
+   * data only — the same for everyone filing this theme in this place — so
+   * it says nothing about who filed. */
+  suggestedOfficeId: string | null;
+  suggestedOfficeName: string | null;
+  suggestedOfficeUrl: string | null;
+
+  /** The blurred, EXIF-free public copy of the report photo — present only
+   * when the citizen opted in and `publishPhoto.ts` published it. Never the
+   * original upload. */
+  photoUrl: string | null;
+  photoWidth: number | null;
+  photoHeight: number | null;
+  hasPhoto: boolean;
+  commentCount: number;
+  /** Real reports only — the feed's query key. Seeded trial tickets never
+   * carry it, so they never appear in the feed. */
+  feedEligible: boolean;
 
   /** Date, never a timestamp. A precise submission time next to even a
    * blurred location is a re-identification vector — "who was filing a
@@ -63,7 +87,7 @@ export interface PublicTicketDoc {
 
   /** Snapped and jittered, or null. See `geoPrecision`. */
   geo: {lat: number; lng: number} | null;
-  geoPrecision: "approx-300m" | "ward" | "none";
+  geoPrecision: "approx-300m" | "ward" | "taluk" | "district" | "none";
 }
 
 export interface PublicClusterDoc {
@@ -73,6 +97,9 @@ export interface PublicClusterDoc {
   theme: string;
   boothId: string | null;
   wardId: string | null;
+  bbmpWardId: string | null;
+  assemblyId: string | null;
+  districtId: string | null;
   talukId: string | null;
   submissionCount: number;
   uniqueReporterCount: number;
@@ -121,8 +148,9 @@ export interface ProjectTicketArgs {
   submission: FirebaseFirestore.DocumentData;
   /** The parent cluster's ticket count, for the k-anonymity gate. */
   clusterSubmissionCount: number;
-  /** Ward centroid, used as the coarse fallback location. */
-  wardCentroid: {lat: number; lng: number} | null;
+  /** Centre of the ticket's ward / taluk / district — the coarse fallback
+   * location (see `areaCentroidFor`). */
+  areaCentroid: AreaCentroid | null;
 }
 
 /**
@@ -132,19 +160,56 @@ export interface ProjectTicketArgs {
  * report in a sparse ward **is somebody's house**, no matter how far it has
  * been snapped, because there is nothing else nearby to confuse it with.
  * Below [PUBLIC_GEO_MIN_TICKETS] reports in the enclosing cluster, the
- * ticket gets the ward centroid or no location at all — and `geoPrecision`
- * says which, so the map can render it honestly instead of implying a
- * precision it doesn't have.
+ * ticket is placed at the centre of its ward, taluk or district instead —
+ * and `geoPrecision` says which, so the map can render it honestly instead
+ * of implying a precision it doesn't have.
  */
+function publicOffice(office: unknown): Pick<
+  PublicTicketDoc, "suggestedOfficeId" | "suggestedOfficeName" | "suggestedOfficeUrl"
+> {
+  const o = (office ?? {}) as Record<string, unknown>;
+  const str = (v: unknown) => (typeof v === "string" && v ? v : null);
+  // Explicit fields only — never a spread of the stored object, which also
+  // carries the model's free-text `reason`.
+  return {
+    suggestedOfficeId: str(o.departmentId),
+    suggestedOfficeName: str(o.name),
+    suggestedOfficeUrl: str(o.websiteUrl),
+  };
+}
+
+function publicPhoto(photo: unknown): Pick<
+  PublicTicketDoc, "photoUrl" | "photoWidth" | "photoHeight" | "hasPhoto"
+> {
+  const p = (photo ?? {}) as Record<string, unknown>;
+  const published = p.status === "published" && typeof p.url === "string" &&
+    // Only the server-written public copy, never a private upload URL.
+    p.url.includes("/o/public%2Ffeed%2F");
+  return {
+    photoUrl: published ? p.url as string : null,
+    photoWidth: published && typeof p.width === "number" ? p.width : null,
+    photoHeight: published && typeof p.height === "number" ? p.height : null,
+    hasPhoto: published,
+  };
+}
+
 export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
-  const {submission, clusterSubmissionCount, wardCentroid} = args;
+  const {submission, clusterSubmissionCount, areaCentroid} = args;
 
   const tokenId = submission.tokenId;
-  const constituencyId = submission.location?.constituencyId;
-  // No token means nothing citable; no constituency means it belongs to no
-  // dashboard yet. Either way there is nothing useful to publish.
+  const loc = submission.location ?? {};
+  const constituencyId: string | null =
+    typeof loc.constituencyId === "string" && loc.constituencyId ? loc.constituencyId : null;
+  // No token means nothing citable. Every report with *some* known place —
+  // any area id or a location — is published, so the statewide map shows
+  // all of them, not only those already matched to a Lok Sabha seat.
   if (typeof tokenId !== "string" || !tokenId) return null;
-  if (typeof constituencyId !== "string" || !constituencyId) return null;
+  const hasPlace =
+    constituencyId != null ||
+    [loc.assemblyId, loc.districtId, loc.talukId, loc.wardId, loc.bbmpWardId]
+      .some((v) => typeof v === "string" && v) ||
+    (typeof loc.lat === "number" && typeof loc.lng === "number");
+  if (!hasPlace) return null;
 
   const createdDate = toDateString(submission.createdAt);
   if (!createdDate) return null;
@@ -161,9 +226,9 @@ export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
   ) {
     geo = snapCoordinate(lat, lng, args.submissionId);
     geoPrecision = "approx-300m";
-  } else if (wardCentroid) {
-    geo = wardCentroid;
-    geoPrecision = "ward";
+  } else if (areaCentroid) {
+    geo = {lat: areaCentroid.lat, lng: areaCentroid.lng};
+    geoPrecision = areaCentroid.precision;
   }
 
   return {
@@ -183,11 +248,20 @@ export function projectTicket(args: ProjectTicketArgs): PublicTicketDoc | null {
     constituencyId,
     constituencyName: submission.location?.constituencyName ?? null,
     wardId: submission.location?.wardId ?? null,
+    bbmpWardId: submission.location?.bbmpWardId ?? null,
+    assemblyId: submission.location?.assemblyId ?? null,
+    districtId: submission.location?.districtId ?? null,
     talukId: submission.location?.talukId ?? null,
     boothId: submission.location?.boothId ?? null,
     clusterId: typeof submission.clusterId === "string" ? submission.clusterId : null,
     supporterCount:
       typeof submission.supporterCount === "number" ? submission.supporterCount : 0,
+
+    ...publicOffice(submission.suggestedOffice),
+    ...publicPhoto(submission.publicPhoto),
+    commentCount:
+      typeof submission.commentCount === "number" ? Math.max(0, submission.commentCount) : 0,
+    feedEligible: true,
 
     createdDate,
     createdWeek: isoWeek(createdDate),
@@ -224,6 +298,9 @@ export function projectCluster(
     theme: cluster.theme ?? "unknown",
     boothId: cluster.boothId ?? null,
     wardId: cluster.wardId ?? null,
+    bbmpWardId: cluster.bbmpWardId ?? null,
+    assemblyId: cluster.assemblyId ?? null,
+    districtId: cluster.districtId ?? null,
     talukId: cluster.talukId ?? null,
     submissionCount,
     uniqueReporterCount: cluster.uniqueReporterCount ?? submissionCount,

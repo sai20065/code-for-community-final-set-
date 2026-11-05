@@ -171,7 +171,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeAnonymityNote.
   ///
   /// In en, this message translates to:
-  /// **'You stay anonymous to other citizens. Your Aadhaar number is never stored. Your MP\'s office sees aggregated demand, not your identity.'**
+  /// **'You stay anonymous to other citizens. No phone number, email or ID is needed — just a username. Your MP\'s office sees aggregated demand, not your identity.'**
   String get welcomeAnonymityNote;
 
   /// No description provided for @newHereSignUp.
@@ -186,41 +186,11 @@ abstract class AppLocalizations {
   /// **'I already have an account — Sign In'**
   String get alreadyHaveAccountSignIn;
 
-  /// No description provided for @aadhaarPrivacyNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload a photo of your Aadhaar so we can read your name and address. We keep only your name, address and pincode — the photo and your Aadhaar number are never saved. This is not ID verification; you can also just type your details below.'**
-  String get aadhaarPrivacyNote;
-
-  /// No description provided for @aadhaarUploadNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload photos of your Aadhaar (front and back) so we can read your name and address — the back side often has your full address, so capturing it too gives more accurate results. We keep only your name, address, pincode and ward number — the photos and your Aadhaar number are never saved. This is not ID verification, and both photos are optional — you can always just type your details below.'**
-  String get aadhaarUploadNote;
-
-  /// No description provided for @slotFront.
-  ///
-  /// In en, this message translates to:
-  /// **'Front'**
-  String get slotFront;
-
-  /// No description provided for @slotBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get slotBack;
-
   /// No description provided for @alreadyHaveAccountSignInShort.
   ///
   /// In en, this message translates to:
   /// **'Already have an account? Sign In'**
   String get alreadyHaveAccountSignInShort;
-
-  /// No description provided for @aadhaarBackNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Tip: capture the BACK of your Aadhaar too — it often has your full address the front leaves out. Both sides are optional.'**
-  String get aadhaarBackNote;
 
   /// No description provided for @camera.
   ///
@@ -233,36 +203,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gallery'**
   String get gallery;
-
-  /// No description provided for @extractDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Extract details'**
-  String get extractDetails;
-
-  /// No description provided for @couldNotReadClearly.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t read that clearly — check the details below or enter them manually.'**
-  String get couldNotReadClearly;
-
-  /// No description provided for @couldNotProcessImage.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t process that image right now — enter your details manually below.'**
-  String get couldNotProcessImage;
-
-  /// No description provided for @hideManualEntry.
-  ///
-  /// In en, this message translates to:
-  /// **'Hide manual entry'**
-  String get hideManualEntry;
-
-  /// No description provided for @skipEnterManually.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip — I\'ll enter manually'**
-  String get skipEnterManually;
 
   /// No description provided for @fullName.
   ///
@@ -306,83 +246,17 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueLabel;
 
-  /// No description provided for @verifyWithPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify with your phone number'**
-  String get verifyWithPhone;
-
-  /// No description provided for @mobileNumberHint.
-  ///
-  /// In en, this message translates to:
-  /// **'10-digit mobile number'**
-  String get mobileNumberHint;
-
-  /// No description provided for @sendCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Send code'**
-  String get sendCode;
-
-  /// No description provided for @sixDigitCode.
-  ///
-  /// In en, this message translates to:
-  /// **'6-digit code'**
-  String get sixDigitCode;
-
-  /// No description provided for @verifyAndContinue.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify & continue'**
-  String get verifyAndContinue;
-
-  /// No description provided for @verifyAndSignIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify & sign in'**
-  String get verifyAndSignIn;
-
-  /// No description provided for @enterValidMobile.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid 10-digit mobile number.'**
-  String get enterValidMobile;
-
-  /// No description provided for @codeDidntMatch.
-  ///
-  /// In en, this message translates to:
-  /// **'That code didn\'t match — check it and try again.'**
-  String get codeDidntMatch;
-
   /// No description provided for @couldNotContinue.
   ///
   /// In en, this message translates to:
   /// **'Could not continue — check your connection and try again.'**
   String get couldNotContinue;
 
-  /// No description provided for @skipStayAnonymous.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip — stay anonymous'**
-  String get skipStayAnonymous;
-
   /// No description provided for @aggregatedDemandNote.
   ///
   /// In en, this message translates to:
   /// **'Whichever way you sign in, your MP\'s office only ever sees aggregated demand, never your identity.'**
   String get aggregatedDemandNote;
-
-  /// No description provided for @welcomeBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome back — sign in with the phone number you signed up with.'**
-  String get welcomeBack;
-
-  /// No description provided for @noAccountFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No account found for this number — please Sign Up first.'**
-  String get noAccountFound;
 
   /// No description provided for @dontHaveAccountSignUp.
   ///
@@ -813,7 +687,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyStoreAddress.
   ///
   /// In en, this message translates to:
-  /// **'We store your address to route your submissions to the right MP. Your 12-digit Aadhaar number is never stored.'**
+  /// **'We store your home location to route your submissions to the right MP. We never ask for your phone number, email or any ID.'**
   String get privacyStoreAddress;
 
   /// No description provided for @signOutClears.
@@ -1566,60 +1440,6 @@ abstract class AppLocalizations {
   /// **'Back to sign in'**
   String get backToSignIn;
 
-  /// No description provided for @aadhaarErrorAuthUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign-in isn\'t available right now, so we couldn\'t run the reader. You can still type your details below.'**
-  String get aadhaarErrorAuthUnavailable;
-
-  /// No description provided for @aadhaarErrorNotSignedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Your session expired. Please try again, or type your details below.'**
-  String get aadhaarErrorNotSignedIn;
-
-  /// No description provided for @aadhaarErrorImageTooLarge.
-  ///
-  /// In en, this message translates to:
-  /// **'That photo is too large to process. Try a closer, smaller shot of the card.'**
-  String get aadhaarErrorImageTooLarge;
-
-  /// No description provided for @aadhaarErrorUnreadable.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn\'t read that card. Try better lighting and a flat, glare-free shot — or type your details below.'**
-  String get aadhaarErrorUnreadable;
-
-  /// No description provided for @aadhaarErrorModelBusy.
-  ///
-  /// In en, this message translates to:
-  /// **'Our reader is busy right now. Try again in a moment, or type your details below.'**
-  String get aadhaarErrorModelBusy;
-
-  /// No description provided for @aadhaarErrorNetwork.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn\'t reach the network. Check your connection and try again, or type your details below.'**
-  String get aadhaarErrorNetwork;
-
-  /// No description provided for @aadhaarErrorUnknown.
-  ///
-  /// In en, this message translates to:
-  /// **'Something went wrong reading the card. You can type your details below instead.'**
-  String get aadhaarErrorUnknown;
-
-  /// No description provided for @aadhaarPartialExtracted.
-  ///
-  /// In en, this message translates to:
-  /// **'We read part of your card. Please check the details below and fill in anything missing.'**
-  String get aadhaarPartialExtracted;
-
-  /// No description provided for @aadhaarBackImageSkippedTooLarge.
-  ///
-  /// In en, this message translates to:
-  /// **'The back photo was too large, so we read the front only. Please check the address below.'**
-  String get aadhaarBackImageSkippedTooLarge;
-
   /// No description provided for @mapLayerFailed.
   ///
   /// In en, this message translates to:
@@ -2159,6 +1979,1413 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Solution ready'**
   String get hasSolutionLabel;
+
+  /// No description provided for @openInGoogleMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions in Google Maps'**
+  String get openInGoogleMaps;
+
+  /// No description provided for @openInGoogleMapsApprox.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions to this area (Google Maps)'**
+  String get openInGoogleMapsApprox;
+
+  /// No description provided for @couldNotOpenMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open Google Maps on this device.'**
+  String get couldNotOpenMaps;
+
+  /// No description provided for @usernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get usernameLabel;
+
+  /// No description provided for @usernameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'4–20 letters, numbers, _ or .'**
+  String get usernameHelper;
+
+  /// No description provided for @usernameTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at least 4 characters.'**
+  String get usernameTooShort;
+
+  /// No description provided for @usernameTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Username can be at most 20 characters.'**
+  String get usernameTooLong;
+
+  /// No description provided for @usernameBadCharacters.
+  ///
+  /// In en, this message translates to:
+  /// **'Use only letters, numbers, _ and . (no spaces).'**
+  String get usernameBadCharacters;
+
+  /// No description provided for @usernameAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is available'**
+  String get usernameAvailable;
+
+  /// No description provided for @usernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That username is already taken. Try another.'**
+  String get usernameTaken;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters.'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match.'**
+  String get passwordsDontMatch;
+
+  /// No description provided for @authWrongCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong username or password.'**
+  String get authWrongCredentials;
+
+  /// No description provided for @authTooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many tries. Please wait a few minutes and try again.'**
+  String get authTooManyAttempts;
+
+  /// No description provided for @authNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get authNetworkError;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name.'**
+  String get nameRequired;
+
+  /// No description provided for @createAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get createAccountTitle;
+
+  /// No description provided for @createAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Just a username and password — no phone number, email or ID needed.'**
+  String get createAccountSubtitle;
+
+  /// No description provided for @createAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccountButton;
+
+  /// No description provided for @welcomeBackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBackTitle;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your username and password.'**
+  String get signInSubtitle;
+
+  /// No description provided for @forgotPasswordLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPasswordLink;
+
+  /// No description provided for @securityQuestionIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a security question. If you ever forget your password, answering it lets you set a new one.'**
+  String get securityQuestionIntro;
+
+  /// No description provided for @securityQuestionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Security question'**
+  String get securityQuestionLabel;
+
+  /// No description provided for @securityAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your answer'**
+  String get securityAnswerLabel;
+
+  /// No description provided for @securityAnswerHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember this answer. Capital letters don\'t matter.'**
+  String get securityAnswerHelper;
+
+  /// No description provided for @securityAnswerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an answer.'**
+  String get securityAnswerRequired;
+
+  /// No description provided for @securityQuestionFirstSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'What was the name of your first school?'**
+  String get securityQuestionFirstSchool;
+
+  /// No description provided for @securityQuestionMotherBirthplace.
+  ///
+  /// In en, this message translates to:
+  /// **'In which town or village was your mother born?'**
+  String get securityQuestionMotherBirthplace;
+
+  /// No description provided for @securityQuestionFavouriteFood.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your favourite food?'**
+  String get securityQuestionFavouriteFood;
+
+  /// No description provided for @securityQuestionChildhoodFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the name of your childhood best friend?'**
+  String get securityQuestionChildhoodFriend;
+
+  /// No description provided for @securityQuestionFirstVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'What was your first bicycle or vehicle?'**
+  String get securityQuestionFirstVehicle;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your username to find your account.'**
+  String get forgotPasswordStep1;
+
+  /// No description provided for @forgotPasswordStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer your security question and choose a new password.'**
+  String get forgotPasswordStep2;
+
+  /// No description provided for @passwordResetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been changed. Sign in with the new password.'**
+  String get passwordResetDone;
+
+  /// No description provided for @resetPasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Set new password'**
+  String get resetPasswordButton;
+
+  /// No description provided for @recoveryNotMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'That answer didn\'t match. Check it and try again.'**
+  String get recoveryNotMatched;
+
+  /// No description provided for @recoveryLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong answers. Password reset is locked for 15 minutes.'**
+  String get recoveryLocked;
+
+  /// No description provided for @recoveryNoQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find a security question for that username.'**
+  String get recoveryNoQuestion;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changeSecurityQuestionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change security question'**
+  String get changeSecurityQuestionTitle;
+
+  /// No description provided for @passwordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed.'**
+  String get passwordChanged;
+
+  /// No description provided for @securityQuestionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Security question saved.'**
+  String get securityQuestionSaved;
+
+  /// No description provided for @saveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveLabel;
+
+  /// No description provided for @statReportsFiled.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports filed'**
+  String get statReportsFiled;
+
+  /// No description provided for @statResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get statResolved;
+
+  /// No description provided for @statSupporters.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporters'**
+  String get statSupporters;
+
+  /// No description provided for @badgesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Badges'**
+  String get badgesTitle;
+
+  /// No description provided for @photoUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo updated.'**
+  String get photoUpdated;
+
+  /// No description provided for @photoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t upload the photo. Try a smaller picture.'**
+  String get photoFailed;
+
+  /// No description provided for @memberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since {date}'**
+  String memberSince(String date);
+
+  /// No description provided for @profileCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile {percent}% complete'**
+  String profileCompleteTitle(int percent);
+
+  /// No description provided for @completeAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a profile photo'**
+  String get completeAddPhoto;
+
+  /// No description provided for @completeAddAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your age'**
+  String get completeAddAge;
+
+  /// No description provided for @completeSetHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your home location'**
+  String get completeSetHome;
+
+  /// No description provided for @completeSecurityQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a security question'**
+  String get completeSecurityQuestion;
+
+  /// No description provided for @tapCameraToAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the camera on your picture to add a photo.'**
+  String get tapCameraToAddPhoto;
+
+  /// No description provided for @nudgeFirstReport.
+  ///
+  /// In en, this message translates to:
+  /// **'File your first report to earn your first badge and reach Level 1.'**
+  String get nudgeFirstReport;
+
+  /// No description provided for @nudgeNextLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more reports to reach Level {level} · {title}'**
+  String nudgeNextLevel(int count, int level, String title);
+
+  /// No description provided for @yourCivicJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Your civic journey'**
+  String get yourCivicJourney;
+
+  /// No description provided for @fileAReport.
+  ///
+  /// In en, this message translates to:
+  /// **'File a report'**
+  String get fileAReport;
+
+  /// No description provided for @myPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My place'**
+  String get myPlaceTitle;
+
+  /// No description provided for @placeAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get placeAddress;
+
+  /// No description provided for @placeBbmpWard.
+  ///
+  /// In en, this message translates to:
+  /// **'BBMP ward'**
+  String get placeBbmpWard;
+
+  /// No description provided for @placeGbaWard.
+  ///
+  /// In en, this message translates to:
+  /// **'GBA ward'**
+  String get placeGbaWard;
+
+  /// No description provided for @placeTaluk.
+  ///
+  /// In en, this message translates to:
+  /// **'Taluk'**
+  String get placeTaluk;
+
+  /// No description provided for @placeDistrict.
+  ///
+  /// In en, this message translates to:
+  /// **'District'**
+  String get placeDistrict;
+
+  /// No description provided for @placeConstituency.
+  ///
+  /// In en, this message translates to:
+  /// **'Lok Sabha seat'**
+  String get placeConstituency;
+
+  /// No description provided for @changeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get changeLabel;
+
+  /// No description provided for @noHomeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Home location not set yet.'**
+  String get noHomeLocation;
+
+  /// No description provided for @myRepresentativesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My representatives'**
+  String get myRepresentativesTitle;
+
+  /// No description provided for @mlaNotListed.
+  ///
+  /// In en, this message translates to:
+  /// **'MLA details coming soon'**
+  String get mlaNotListed;
+
+  /// No description provided for @assemblySegment.
+  ///
+  /// In en, this message translates to:
+  /// **'Assembly: {name}'**
+  String assemblySegment(String name);
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @accountSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account & settings'**
+  String get accountSettingsTitle;
+
+  /// No description provided for @editNameAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit name & age'**
+  String get editNameAge;
+
+  /// No description provided for @recoveryIsSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Password recovery is set up'**
+  String get recoveryIsSetUp;
+
+  /// No description provided for @recoveryNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set — you can\'t recover your password'**
+  String get recoveryNotSetUp;
+
+  /// No description provided for @enterValidAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid age (10–120).'**
+  String get enterValidAge;
+
+  /// No description provided for @levelTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'New Voice'**
+  String get levelTitle1;
+
+  /// No description provided for @levelTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Citizen'**
+  String get levelTitle2;
+
+  /// No description provided for @levelTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Voice'**
+  String get levelTitle3;
+
+  /// No description provided for @levelTitle4.
+  ///
+  /// In en, this message translates to:
+  /// **'Neighbourhood Champion'**
+  String get levelTitle4;
+
+  /// No description provided for @levelTitle5.
+  ///
+  /// In en, this message translates to:
+  /// **'Civic Leader'**
+  String get levelTitle5;
+
+  /// No description provided for @goToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Home'**
+  String get goToHome;
+
+  /// No description provided for @viewMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'View my profile'**
+  String get viewMyProfile;
+
+  /// No description provided for @revealWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name}!'**
+  String revealWelcome(String name);
+
+  /// No description provided for @revealSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your civic profile is ready.'**
+  String get revealSubtitle;
+
+  /// No description provided for @placeConstituencyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} Lok Sabha'**
+  String placeConstituencyShort(String name);
+
+  /// No description provided for @yourAreaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your area'**
+  String get yourAreaTitle;
+
+  /// No description provided for @yourAreaNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you report or suggest is counted for this area.'**
+  String get yourAreaNote;
+
+  /// No description provided for @firstStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first 3 steps'**
+  String get firstStepsTitle;
+
+  /// No description provided for @stepFirstReport.
+  ///
+  /// In en, this message translates to:
+  /// **'File your first report'**
+  String get stepFirstReport;
+
+  /// No description provided for @stepFirstReportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice, text or photo — it takes 20 seconds.'**
+  String get stepFirstReportBody;
+
+  /// No description provided for @stepSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support a suggestion near you'**
+  String get stepSupport;
+
+  /// No description provided for @stepSupportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Back what your neighbours are asking for.'**
+  String get stepSupportBody;
+
+  /// No description provided for @stepExploreMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore your area\'s map'**
+  String get stepExploreMap;
+
+  /// No description provided for @stepExploreMapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See what\'s being reported around you.'**
+  String get stepExploreMapBody;
+
+  /// No description provided for @welcomeCitizenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Citizens'**
+  String get welcomeCitizenTitle;
+
+  /// No description provided for @welcomeCitizenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Report problems and suggest development work for your area — by voice, text or photo, in your language.'**
+  String get welcomeCitizenBody;
+
+  /// No description provided for @welcomeGovTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MPs, MLAs & Officers'**
+  String get welcomeGovTitle;
+
+  /// No description provided for @welcomeGovBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Government dashboard for your area: reports, hotspots, AI briefings and downloadable reports.'**
+  String get welcomeGovBody;
+
+  /// No description provided for @welcomeGovRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'New MLA or officer? Register'**
+  String get welcomeGovRegister;
+
+  /// No description provided for @welcomeAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prajadhwani Admin'**
+  String get welcomeAdminTitle;
+
+  /// No description provided for @welcomeAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform administration and official approvals'**
+  String get welcomeAdminBody;
+
+  /// No description provided for @welcomeJustBrowsing.
+  ///
+  /// In en, this message translates to:
+  /// **'Just browsing? See your area\'s public dashboard'**
+  String get welcomeJustBrowsing;
+
+  /// No description provided for @composeSubtitleProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak, type or snap a photo — it reaches the officials for your area.'**
+  String get composeSubtitleProblem;
+
+  /// No description provided for @composeSubtitleSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your idea by voice, text or photo — it goes to your representative.'**
+  String get composeSubtitleSuggestion;
+
+  /// No description provided for @stepWhatsTheIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the issue?'**
+  String get stepWhatsTheIssue;
+
+  /// No description provided for @stepYourIdea.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your idea?'**
+  String get stepYourIdea;
+
+  /// No description provided for @tapMicToSpeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the mic to speak instead of typing'**
+  String get tapMicToSpeak;
+
+  /// No description provided for @listeningTapToStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening… tap to stop'**
+  String get listeningTapToStop;
+
+  /// No description provided for @voiceNoteAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice note added'**
+  String get voiceNoteAdded;
+
+  /// No description provided for @stepAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo (optional)'**
+  String get stepAddPhoto;
+
+  /// No description provided for @photoHelpsOfficials.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo helps officials see the problem quickly'**
+  String get photoHelpsOfficials;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @stepCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get stepCategory;
+
+  /// No description provided for @stepWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where is it?'**
+  String get stepWhere;
+
+  /// No description provided for @includedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get includedText;
+
+  /// No description provided for @includedVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get includedVoice;
+
+  /// No description provided for @includedPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get includedPhoto;
+
+  /// No description provided for @addTextOrPhotoToSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Type, speak or add a photo to submit'**
+  String get addTextOrPhotoToSubmit;
+
+  /// No description provided for @officerFixMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your problem is registered! Our officers will get it fixed.'**
+  String get officerFixMessage;
+
+  /// No description provided for @officerSuggestionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! Your idea goes straight to your representative.'**
+  String get officerSuggestionMessage;
+
+  /// No description provided for @yourTicketIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ticket: {tokenId}'**
+  String yourTicketIs(String tokenId);
+
+  /// No description provided for @profileSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save — check your connection and try again.'**
+  String get profileSaveFailed;
+
+  /// No description provided for @areaNotMatchedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t match your exact area right now. You can update it later from Profile.'**
+  String get areaNotMatchedYet;
+
+  /// No description provided for @liveReportMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Karnataka live report map'**
+  String get liveReportMap;
+
+  /// No description provided for @liveReportMapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every report across the state, updated live'**
+  String get liveReportMapSubtitle;
+
+  /// No description provided for @seeOnLiveMap.
+  ///
+  /// In en, this message translates to:
+  /// **'See it on the live map'**
+  String get seeOnLiveMap;
+
+  /// No description provided for @suggestedOfficeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested office to file the problem'**
+  String get suggestedOfficeTitle;
+
+  /// No description provided for @findingOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the right office for your problem…'**
+  String get findingOffice;
+
+  /// No description provided for @officialWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Official website'**
+  String get officialWebsite;
+
+  /// No description provided for @emailOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Email the office'**
+  String get emailOffice;
+
+  /// No description provided for @callOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Call {phone}'**
+  String callOffice(String phone);
+
+  /// No description provided for @suggestedOfficeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts are from official government sources. Office suggested by AI — please check before you file.'**
+  String get suggestedOfficeNote;
+
+  /// No description provided for @reportCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report card'**
+  String get reportCardTitle;
+
+  /// No description provided for @openReportCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open report card'**
+  String get openReportCard;
+
+  /// No description provided for @seePublicCard.
+  ///
+  /// In en, this message translates to:
+  /// **'See public report card'**
+  String get seePublicCard;
+
+  /// No description provided for @openForDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {days} days'**
+  String openForDays(int days);
+
+  /// No description provided for @fixedInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed in {days} days'**
+  String fixedInDays(int days);
+
+  /// No description provided for @mlaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MLA'**
+  String get mlaLabel;
+
+  /// No description provided for @mpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MP'**
+  String get mpLabel;
+
+  /// No description provided for @seatVacant.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat vacant'**
+  String get seatVacant;
+
+  /// No description provided for @repNotRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet recorded'**
+  String get repNotRecorded;
+
+  /// No description provided for @rosterAsOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Representatives as of {date}'**
+  String rosterAsOf(String date);
+
+  /// No description provided for @seeAreaSolution.
+  ///
+  /// In en, this message translates to:
+  /// **'See the area\'s solution card'**
+  String get seeAreaSolution;
+
+  /// No description provided for @shareButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareButton;
+
+  /// No description provided for @postOnSocial.
+  ///
+  /// In en, this message translates to:
+  /// **'Post on social media'**
+  String get postOnSocial;
+
+  /// No description provided for @shareOnX.
+  ///
+  /// In en, this message translates to:
+  /// **'Post on X'**
+  String get shareOnX;
+
+  /// No description provided for @shareOnWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send on WhatsApp'**
+  String get shareOnWhatsApp;
+
+  /// No description provided for @shareOnFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Share on Facebook'**
+  String get shareOnFacebook;
+
+  /// No description provided for @copyPostText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy post text'**
+  String get copyPostText;
+
+  /// No description provided for @postCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Post copied — paste it anywhere'**
+  String get postCopied;
+
+  /// No description provided for @shareReportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'{summary} — {place}. Open for {days} days. MLA: {mla} · MP: {mp}. Ticket {token} #Prajadhwani'**
+  String shareReportOpen(String summary, String place, int days, String mla,
+      String mp, String token);
+
+  /// No description provided for @shareReportFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'{summary} — {place}. Fixed in {days} days. MLA: {mla} · MP: {mp}. Ticket {token} #Prajadhwani'**
+  String shareReportFixed(String summary, String place, int days, String mla,
+      String mp, String token);
+
+  /// No description provided for @leaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Representatives leaderboard'**
+  String get leaderboardTitle;
+
+  /// No description provided for @leaderboardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which MLAs and MPs get reported problems fixed'**
+  String get leaderboardSubtitle;
+
+  /// No description provided for @leaderboardMlaTab.
+  ///
+  /// In en, this message translates to:
+  /// **'MLAs'**
+  String get leaderboardMlaTab;
+
+  /// No description provided for @leaderboardMpTab.
+  ///
+  /// In en, this message translates to:
+  /// **'MPs'**
+  String get leaderboardMpTab;
+
+  /// No description provided for @leaderboardFairness.
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked by the share of reports in their area that were fixed in the last {days} days — not by how many problems the area has. At least {min} reports needed. Party is not shown.'**
+  String leaderboardFairness(int days, int min);
+
+  /// No description provided for @fixedPctLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% fixed'**
+  String fixedPctLabel(String pct);
+
+  /// No description provided for @leaderboardStats.
+  ///
+  /// In en, this message translates to:
+  /// **'{reports} reports · {open} open'**
+  String leaderboardStats(int reports, int open);
+
+  /// No description provided for @medianFixDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Usually fixed in {days} days'**
+  String medianFixDays(int days);
+
+  /// No description provided for @notEnoughReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough reports yet'**
+  String get notEnoughReports;
+
+  /// No description provided for @leaderboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No real reports in the last {days} days yet.'**
+  String leaderboardEmpty(int days);
+
+  /// No description provided for @shareLeaderboardRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({seat}): {pct}% of {reports} reported problems fixed in the last {days} days, {open} still open. #Prajadhwani'**
+  String shareLeaderboardRow(
+      String name, String seat, String pct, int reports, int days, int open);
+
+  /// No description provided for @seeReportsInArea.
+  ///
+  /// In en, this message translates to:
+  /// **'See reports in this area'**
+  String get seeReportsInArea;
+
+  /// No description provided for @feedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports feed'**
+  String get feedTitle;
+
+  /// No description provided for @reportsNearYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports near you'**
+  String get reportsNearYou;
+
+  /// No description provided for @feedNearMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Near me'**
+  String get feedNearMe;
+
+  /// No description provided for @feedAllKarnataka.
+  ///
+  /// In en, this message translates to:
+  /// **'All Karnataka'**
+  String get feedAllKarnataka;
+
+  /// No description provided for @feedWithPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'With photos'**
+  String get feedWithPhotos;
+
+  /// No description provided for @feedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No reports here yet. Be the first to report a problem.'**
+  String get feedEmpty;
+
+  /// No description provided for @meToo.
+  ///
+  /// In en, this message translates to:
+  /// **'Me too'**
+  String get meToo;
+
+  /// No description provided for @meTooCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person said Me too} other{{count} people said Me too}}'**
+  String meTooCount(int count);
+
+  /// No description provided for @signInForMeToo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to say Me too'**
+  String get signInForMeToo;
+
+  /// No description provided for @ownReportNoMeToo.
+  ///
+  /// In en, this message translates to:
+  /// **'This is your own report'**
+  String get ownReportNoMeToo;
+
+  /// No description provided for @commentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get commentsTitle;
+
+  /// No description provided for @viewAllComments.
+  ///
+  /// In en, this message translates to:
+  /// **'View all {count} comments'**
+  String viewAllComments(int count);
+
+  /// No description provided for @addComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment…'**
+  String get addComment;
+
+  /// No description provided for @commentPublicNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your username is shown with your comment'**
+  String get commentPublicNote;
+
+  /// No description provided for @signInToComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to comment'**
+  String get signInToComment;
+
+  /// No description provided for @needUsernameToComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a username in your profile to comment'**
+  String get needUsernameToComment;
+
+  /// No description provided for @reportComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Report comment'**
+  String get reportComment;
+
+  /// No description provided for @deleteComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment'**
+  String get deleteComment;
+
+  /// No description provided for @commentReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks — we\'ll review it'**
+  String get commentReported;
+
+  /// No description provided for @noCommentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet — start the conversation'**
+  String get noCommentsYet;
+
+  /// No description provided for @showPhotoInFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my photo in the public feed'**
+  String get showPhotoInFeed;
+
+  /// No description provided for @showPhotoInFeedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Faces and number plates are blurred automatically before anyone sees it'**
+  String get showPhotoInFeedNote;
+
+  /// No description provided for @photoStatusProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the public photo…'**
+  String get photoStatusProcessing;
+
+  /// No description provided for @photoStatusPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the feed, with faces and plates blurred'**
+  String get photoStatusPublished;
+
+  /// No description provided for @photoStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo can\'t be shown publicly'**
+  String get photoStatusRejected;
+
+  /// No description provided for @photoStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t publish the photo — switch it off and on to retry'**
+  String get photoStatusError;
+
+  /// No description provided for @moreNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'More reports nearby'**
+  String get moreNearby;
+
+  /// No description provided for @visitWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit website'**
+  String get visitWebsite;
+
+  /// No description provided for @openCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open card'**
+  String get openCard;
+
+  /// No description provided for @postedDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Today} =1{Yesterday} other{{days} days ago}}'**
+  String postedDaysAgo(int days);
+
+  /// No description provided for @openDaysShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d open'**
+  String openDaysShort(int days);
+
+  /// No description provided for @postShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get postShort;
+
+  /// No description provided for @statusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get statusClosed;
+
+  /// No description provided for @fixQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Was this fixed?'**
+  String get fixQuestion;
+
+  /// No description provided for @fixYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, it\'s fixed'**
+  String get fixYes;
+
+  /// No description provided for @fixNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, still broken'**
+  String get fixNo;
+
+  /// No description provided for @fixWindowLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left to answer'**
+  String fixWindowLeft(String time);
+
+  /// No description provided for @fixAwaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to be closed'**
+  String get fixAwaiting;
+
+  /// No description provided for @fixThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. This report is now closed.'**
+  String get fixThanks;
+
+  /// No description provided for @fixReopened.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry about that. We\'ve sent it back to be fixed again.'**
+  String get fixReopened;
+
+  /// No description provided for @fixAssignedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned to {name}'**
+  String fixAssignedTo(String name);
+
+  /// No description provided for @fixClosedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed after 48 hours without an answer'**
+  String get fixClosedAuto;
+
+  /// No description provided for @photoRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A photo of the problem is required'**
+  String get photoRequired;
+
+  /// No description provided for @photoPublicNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your photo is shown publicly with faces and number plates blurred.'**
+  String get photoPublicNote;
+
+  /// No description provided for @stepAddPhotoRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo (required)'**
+  String get stepAddPhotoRequired;
+
+  /// No description provided for @photoVisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see this photo?'**
+  String get photoVisTitle;
+
+  /// No description provided for @photoVisPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get photoVisPrivate;
+
+  /// No description provided for @photoVisPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only officials for your area, their team and admins see it. Nobody else.'**
+  String get photoVisPrivateNote;
+
+  /// No description provided for @photoVisFaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Public, faces and number plates blurred'**
+  String get photoVisFaces;
+
+  /// No description provided for @photoVisFacesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the public feed. People and vehicles can\'t be recognised.'**
+  String get photoVisFacesNote;
+
+  /// No description provided for @photoVisFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Public, whole photo blurred'**
+  String get photoVisFull;
+
+  /// No description provided for @photoVisFullNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the public feed as a blurred picture. The scene can\'t be recognised.'**
+  String get photoVisFullNote;
+
+  /// No description provided for @photoTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo privacy terms'**
+  String get photoTermsTitle;
+
+  /// No description provided for @photoTermsPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'A blurred copy of your photo is shown in the public feed and on the report card, with a short summary and the area.'**
+  String get photoTermsPoint1;
+
+  /// No description provided for @photoTermsPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name, phone number, address and exact location are never shown. The original photo stays private.'**
+  String get photoTermsPoint2;
+
+  /// No description provided for @photoTermsPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'The original is always seen by the officials of your area, the team member assigned to your report, and the admin.'**
+  String get photoTermsPoint3;
+
+  /// No description provided for @photoTermsPoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'Blurring is automatic and may miss things. Do not photograph people\'s faces, house numbers or documents.'**
+  String get photoTermsPoint4;
+
+  /// No description provided for @photoTermsPoint5.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos that are unsuitable will not be published.'**
+  String get photoTermsPoint5;
+
+  /// No description provided for @photoTermsPoint6.
+  ///
+  /// In en, this message translates to:
+  /// **'You can switch back to private at any time and the public copy is deleted.'**
+  String get photoTermsPoint6;
+
+  /// No description provided for @photoTermsAgree.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and agree to these terms'**
+  String get photoTermsAgree;
+
+  /// No description provided for @photoTermsAgreeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree and continue'**
+  String get photoTermsAgreeButton;
+
+  /// No description provided for @photoStatusNeedsConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your agreement to the privacy terms'**
+  String get photoStatusNeedsConsent;
 }
 
 class _AppLocalizationsDelegate

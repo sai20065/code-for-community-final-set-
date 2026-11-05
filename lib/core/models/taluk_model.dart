@@ -1,7 +1,7 @@
 /// One of Karnataka's 227 taluks (official KSRSAC/KGIS boundary data — see
 /// `functions/src/scripts/seedTaluksAndDistricts.ts`). Taluks are the
 /// ward-equivalent fine-grained map/reporting unit for every constituency
-/// outside Bengaluru Urban, which uses [WardModel]'s 369 GBA wards instead.
+/// outside Bengaluru Urban, which uses [WardModel]'s GBA and BBMP ward layers instead.
 class TalukModel {
   final String id;
   final String talukName;

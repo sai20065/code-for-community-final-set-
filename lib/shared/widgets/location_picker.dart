@@ -27,18 +27,22 @@ class LocationPicker extends StatefulWidget {
     required this.homeLat,
     required this.homeLng,
     required this.onChanged,
+    this.locationService,
   });
 
   final double? homeLat;
   final double? homeLng;
   final ValueChanged<LatLng?> onChanged;
 
+  /// Injectable for widget tests; defaults to the real service.
+  final LocationService? locationService;
+
   @override
   State<LocationPicker> createState() => _LocationPickerState();
 }
 
 class _LocationPickerState extends State<LocationPicker> {
-  final _locationService = LocationService();
+  late final _locationService = widget.locationService ?? LocationService();
   LocationPickMode _mode = LocationPickMode.current;
   LatLng? _pin;
   bool _locating = false;

@@ -11,23 +11,84 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(uid)).data;
     }
 
-    // Officials are always scoped to their own constituencyId — see
-    // isOfficialForConstituency below, used wherever a ticket's
-    // constituencyId is known.
-    function isOfficialForConstituency(constituencyId) {
-      return isSignedIn() &&
-        userDoc(request.auth.uid).role == 'official' &&
-        userDoc(request.auth.uid).constituencyId == constituencyId;
+    function isAdmin() {
+      return isSignedIn() && userDoc(request.auth.uid).role == 'admin';
     }
 
-    // Identity is Firebase Auth — Anonymous, Phone, or Email/password — a
-    // user may only read/write their own profile document, regardless of
-    // which sign-in method they used. No Aadhaar number is ever stored
-    // here; Aadhaar upload only ever contributes name/address/pincode via a
-    // Cloud Function that discards the image immediately.
+    // The ticket/cluster field each official jurisdiction is matched on —
+    // the same mapping as functions/src/officials/scope.ts (SCOPE_FIELD).
+    function scopeFieldFor(jurisdictionType) {
+      return {
+        'constituency': 'constituencyId',
+        'assembly': 'assemblyId',
+        'bbmpWard': 'bbmpWardId',
+        'taluk': 'talukId',
+        'district': 'districtId'
+      }[jurisdictionType];
+    }
+
+    // Is the caller an approved official responsible for this area?
+    // `area` is a ticket's `location` map or a cluster doc — both carry
+    // constituencyId / assemblyId / bbmpWardId / talukId / districtId.
+    //   MP → constituency, MLA → assembly seat, BBMP ward officer → ward,
+    //   Tahsildar → taluk, District officer → district.
+    // Officials only ever get role 'official' through the admin-only
+    // reviewOfficialApplication function (or MP provisioning), never from a
+    // client write. Legacy MP accounts without `jurisdiction` match on
+    // their constituencyId.
+    function isOfficialForArea(area) {
+      let me = userDoc(request.auth.uid);
+      // Field workers carry their assigner's area but get no area-wide
+      // access: they only see tickets assigned to them, through a function.
+      return isSignedIn() && me.role == 'official' &&
+        me.get('officialType', '') != 'fieldWorker' && (
+        (me.get('jurisdiction', null) != null &&
+          area.get(scopeFieldFor(me.jurisdiction.type), null) == me.jurisdiction.id) ||
+        (me.get('jurisdiction', null) == null &&
+          me.get('constituencyId', null) != null &&
+          area.get('constituencyId', null) == me.constituencyId));
+    }
+
+    // Citizens sign in with username + password (Firebase Auth, synthetic
+    // address); no email, phone or ID number is ever stored here. A user
+    // may only read/write their own profile document — and may never grant
+    // themselves the official role: a new profile must be a citizen, and
+    // `role` can't change on update. Officials are provisioned by an admin
+    // with the Admin SDK, which bypasses these rules.
     match /users/{uid} {
-      allow read, create, update: if isSignedIn() && request.auth.uid == uid;
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow create: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.role == 'citizen';
+      // An official's area is set only by the admin review function / MP
+      // provisioning: they may edit their name, designation, photo etc.,
+      // but never the fields their data access is scoped by.
+      allow update: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.role == resource.data.role &&
+        (resource.data.role != 'official' ||
+          !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['jurisdiction', 'officialType', 'constituencyId', 'approvedAt',
+              'parentUid', 'disabled']));
       allow delete: if false;
+    }
+
+    // Username reservations: `usernames/{username}` -> {uid}. Readable one
+    // doc at a time (the Sign Up form's "is this name free?" check), never
+    // listable, so the full roster can't be downloaded. Claimable once, by
+    // the account it names, and never reassigned or released.
+    match /usernames/{username} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        username.matches('^[a-z0-9_.]{4,20}$');
+      allow update, delete: if false;
+    }
+
+    // Hashed security-question answers. Only the Cloud Functions in
+    // functions/src/citizens/ (Admin SDK) touch this; no client, not even
+    // the account owner, can read or write it.
+    match /userSecrets/{uid} {
+      allow read, write: if false;
     }
 
     // Citizens create tickets only for their OWN area: the pincode on the
@@ -51,12 +112,22 @@ service cloud.firestore {
          userDoc(request.auth.uid).constituencyId == request.resource.data.location.constituencyId);
       allow read: if isSignedIn() &&
         (resource.data.userId == request.auth.uid ||
-         isOfficialForConstituency(resource.data.location.constituencyId) ||
+         isOfficialForArea(resource.data.location) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId));
+      // Status, assignment and closing are written ONLY by the functions in
+      // functions/src/work/ (which check scope, record history and enforce the
+      // 48-hour rule), so no client can set them directly. The reporter may
+      // still flip their photo-consent switch.
       allow update: if isSignedIn() &&
-        (resource.data.userId == request.auth.uid ||
-         isOfficialForConstituency(resource.data.location.constituencyId) ||
+        ((resource.data.userId == request.auth.uid &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['photoPublic', 'photoBlur', 'photoConsent']) &&
+          request.resource.data.get('photoBlur', 'faces') in ['faces', 'full'] &&
+          // Going public needs the citizen's agreement to the privacy terms on record
+          // (the publish function checks it again).
+          (request.resource.data.get('photoPublic', false) != true ||
+           request.resource.data.get('photoConsent', null) != null)) ||
          (resource.data.submissionCategory == 'feedback' &&
           userDoc(request.auth.uid).constituencyId == resource.data.location.constituencyId &&
           request.resource.data.diff(resource.data).affectedKeys()
@@ -89,6 +160,49 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+
+    // Representative leaderboard — built server-side from publicTickets
+    // only (see functions/src/public/leaderboard.ts).
+    match /publicLeaderboards/{board} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Public feed comments. Created by signed-in citizens under their own
+    // uid and username, born visible; screened server-side
+    // (functions/src/public/feedComments.ts), which may hide them. Only
+    // visible comments are readable; nobody but the server edits them.
+    match /feedComments/{commentId} {
+      allow read: if resource.data.hidden == false;
+      allow create: if isSignedIn() &&
+        request.resource.data.keys().hasOnly(
+          ['ticketId', 'uid', 'username', 'text', 'createdAt', 'hidden', 'reportCount']) &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.username == userDoc(request.auth.uid).username &&
+        request.resource.data.ticketId is string &&
+        request.resource.data.text is string &&
+        request.resource.data.text.size() >= 1 &&
+        request.resource.data.text.size() <= 280 &&
+        request.resource.data.hidden == false &&
+        request.resource.data.reportCount == 0 &&
+        request.resource.data.createdAt == request.time;
+      allow delete: if isSignedIn() &&
+        (resource.data.uid == request.auth.uid || isAdmin());
+      allow update: if false;
+    }
+
+    // Which reports a citizen said "Me too" to — written only by the
+    // toggleReportSupport function, readable only by that citizen.
+    match /users/{userId}/supports/{ticketId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // MLA/MP/ward-name index for public report cards (seedMlaRoster.ts).
+    match /publicReps/{state} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /publicClusters/{clusterId} {
       allow read: if true;
       allow write: if false;
@@ -113,7 +227,7 @@ service cloud.firestore {
     }
     match /clusters/{clusterId} {
       allow read: if isSignedIn() &&
-        (isOfficialForConstituency(resource.data.constituencyId) ||
+        (isOfficialForArea(resource.data) || isAdmin() ||
          userDoc(request.auth.uid).constituencyId == resource.data.constituencyId);
       allow write: if false;
     }
@@ -171,7 +285,7 @@ service cloud.firestore {
       // unfiltered reasoning. Officials only.
       match /agentTranscripts/{runId} {
         allow read: if isSignedIn() &&
-          userDoc(request.auth.uid).role == 'official';
+          (userDoc(request.auth.uid).role == 'official' || isAdmin());
         allow write: if false;
       }
     }
@@ -191,6 +305,37 @@ service cloud.firestore {
     // of `uniqueId` is that it's a shared secret the Cloud Functions verify
     // server-side (via Admin SDK, which bypasses these rules entirely);
     // exposing it through a client read would defeat that.
+    // Self-registration by MLAs and local officers (BBMP ward officer,
+    // Tahsildar, District officer). The applicant creates their own
+    // application as 'pending' and can re-submit after a rejection; only a
+    // Prajadhwani admin (via the reviewOfficialApplication function) ever
+    // approves one. Readable by the applicant and admins only.
+    match /officialApplications/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.officialType in ['mla', 'wardOfficer', 'tahsildar', 'districtOfficer'];
+      allow update: if isSignedIn() && request.auth.uid == uid &&
+        resource.data.status == 'rejected' &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.officialType in ['mla', 'wardOfficer', 'tahsildar', 'districtOfficer'];
+      allow delete: if false;
+    }
+
+    // AI briefings per area, written only by getAreaBriefing (which also
+    // serves them to the right official). Direct reads: admins only.
+    match /briefings/{scopeKey} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Karnataka's 224 assembly constituencies (DataMeet, CC BY 2.5 India):
+    // public boundary/reference data, like wards and taluks.
+    match /assemblies/{assemblyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /mpCredentials/{constituencyId} {
       allow read, write: if false;
     }

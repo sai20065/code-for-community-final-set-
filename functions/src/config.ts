@@ -23,7 +23,7 @@ export const emailAppPassword = defineSecret("EMAIL_APP_PASSWORD");
 export const reporterHashSalt = defineSecret("REPORTER_HASH_SALT");
 
 /**
- * Every Gemini call (Aadhaar OCR, transcription, photo captioning,
+ * Every Gemini call (transcription, photo captioning,
  * classification, cluster summarization) runs via Vertex AI, authenticated
  * through the function's own runtime service account (Application Default
  * Credentials — no API key/secret to manage) rather than the Gemini
@@ -113,11 +113,59 @@ export const PUBLIC_GEO_SNAP_DEGREES = 0.003;
 export const PUBLIC_GEO_MIN_TICKETS = 3;
 
 /* -------------------------------------------------------------------------
- * Aadhaar OCR
+ * Citizen accounts (functions/src/citizens/)
  * ---------------------------------------------------------------------- */
 
-/** Per-image decoded-byte ceiling for the OCR callable. Callable requests
- * cap at 10 MB total and base64 inflates by 4/3, so two unbounded phone
- * photos can blow the limit — which used to surface as an indistinguishable
- * "could not process image". Rejected explicitly instead. */
-export const MAX_OCR_IMAGE_BYTES = 4 * 1024 * 1024;
+/** Citizens log in with a username; Firebase Auth gets this synthetic,
+ * undeliverable address instead. Must match `AuthService` in the app. */
+export const CITIZEN_EMAIL_SUFFIX = "@citizen.prajadhwani.app";
+
+/** Ids of the fixed security questions. Question text lives in the app's
+ * ARB files; must match `kSecurityQuestionIds` in auth_service.dart. */
+export const SECURITY_QUESTION_IDS = [
+  "firstSchool",
+  "motherBirthplace",
+  "favouriteFood",
+  "childhoodFriend",
+  "firstVehicle",
+];
+
+/** Wrong answers allowed before password recovery locks... */
+export const RECOVERY_MAX_ATTEMPTS = 5;
+/** ...and for how long. */
+export const RECOVERY_LOCK_MINUTES = 15;
+
+/* -------------------------------------------------------------------------
+ * Per-ticket "suggested office" (functions/src/assignment/)
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Gemma runs on the **free** Gemini Developer API (Google AI Studio), not on
+ * Vertex AI, which has no free tier. The key must be created in a Google
+ * Cloud project with *no billing account attached*, so it can never be
+ * charged — the free tier's rate limits are far above pilot volume. Only
+ * the PII-free `publicSummary` is ever sent with it, since free-tier
+ * prompts may be used by Google. Set with:
+ *   firebase functions:secrets:set GEMMA_API_KEY
+ */
+/** Flip to true once `GEMMA_API_KEY` exists. The deploy CLI demands a
+ * value for every *declared* secret, so the secret isn't even defined
+ * until then. While false, every ticket still gets a suggestion from the
+ * deterministic rules. */
+export const GEMMA_ENABLED = false;
+
+export const gemmaApiKey = GEMMA_ENABLED ? defineSecret("GEMMA_API_KEY") : null;
+
+/** Tried in order; the first id the API recognises is used. */
+export const GEMMA_MODELS = ["gemma-4-26b-a4b-it", "gemma-3-27b-it"];
+
+/** Below this, the model's pick is ignored in favour of the rules' top
+ * candidate. */
+export const ROUTER_MIN_CONFIDENCE = 0.5;
+
+/**
+ * Bhashini inference key (from the Bhashini dashboard) — speech-to-text and
+ * translation for voice and Indian-language reports, free. Gemini and Cloud
+ * Translation stay as the fallback. See lib/bhashiniClient.ts.
+ */
+export const bhashiniInferenceKey = defineSecret("BHASHINI_INFERENCE_KEY");

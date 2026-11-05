@@ -10,9 +10,13 @@ class TranscriptionResult {
   final String transcript;
   final String translatedText;
 
+  /// The language detected in the audio, when the server could tell.
+  final String? language;
+
   const TranscriptionResult({
     required this.transcript,
     required this.translatedText,
+    this.language,
   });
 }
 
@@ -20,7 +24,7 @@ class TranscriptionResult {
 /// submissions/transcribeAndTranslate.ts`) so a citizen sees their spoken
 /// report turned into editable text **before** they submit — instead of the
 /// old flow where transcription only happened invisibly, server-side, after
-/// submission. Same callable pattern as `AadhaarOcrService`; requires an
+/// submission. Same callable pattern as `AccountRecoveryService`; requires an
 /// authenticated session (the citizen is already signed in by this screen).
 class TranscriptionService {
   TranscriptionService({FirebaseFunctions? functions})
@@ -38,12 +42,13 @@ class TranscriptionService {
     final response = await callable.call<Map<String, dynamic>>({
       'audioBase64': base64Encode(bytes),
       'sourceLanguage': sourceLanguage,
-      'mimeType': 'audio/mp4',
+      'mimeType': 'audio/wav',
     });
     final data = response.data;
     return TranscriptionResult(
       transcript: data['transcript'] as String? ?? '',
       translatedText: data['translatedText'] as String? ?? '',
+      language: data['language'] as String?,
     );
   }
 }
