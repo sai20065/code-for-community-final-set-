@@ -71,18 +71,18 @@ The welcome screen has three sections:
 - **Photos:** a **View photo** button opens the original photo, whatever the citizen chose for public visibility.
 
 ## Assigning work and closing the loop
-- **Field workers:** a District Commissioner, MLA or MP creates field workers (), lists and deactivates them. Workers see only the tasks assigned to them () at , and update status with a photo. Officials manage the team at .
-- **Assign:** officials assign a ticket in their own area to a named worker () and move it through statuses (). Every role check runs on the server.
-- **Citizen confirms:** when work is marked done, the citizen is asked whether it is really fixed (). If not, the ticket reopens.
-- **48-hour rule:** if the citizen does not answer within 48 hours, an official, admin or the worker can close the ticket manually (). Nothing closes automatically. Closed tickets count as resolved on the leaderboard.
-- **Admin issues dashboard:** statewide, with similar issues grouped by district, taluk, constituency, type, status or assignee ().
+- **Field workers:** a District Commissioner, MLA or MP creates field workers (`createWorker`), lists and deactivates them. Workers see only the tasks assigned to them (`getWorkerTasks`) at `/worker/tasks`, and update status with a photo. Officials manage the team at `/official/team`.
+- **Assign:** officials assign a ticket in their own area to a named worker (`assignTicket`) and move it through statuses (`updateTicketStatus`). Every role check runs on the server.
+- **Citizen confirms:** when work is marked done, the citizen is asked whether it is really fixed (`citizenRespondFix`). If not, the ticket reopens.
+- **48-hour rule:** if the citizen does not answer within 48 hours, an official, admin or the worker can close the ticket manually (`closeTicket`). Nothing closes automatically. Closed tickets count as resolved on the leaderboard.
+- **Admin issues dashboard:** statewide, with similar issues grouped by district, taluk, constituency, type, status or assignee (`getAdminIssueGroups`).
 
 ## Photo visibility and consent
 - A photo is **required** for a problem report.
 - The citizen chooses: **Private** (default), **Public with faces and number plates blurred**, or **Public with the whole photo blurred**.
-- Choosing a public option needs the privacy terms to be accepted (versioned, ). The server refuses to publish without that consent ().
+- Choosing a public option needs the privacy terms to be accepted (versioned, `kPhotoTermsVersion`). The server refuses to publish without that consent (`needs_consent`).
 - Blur uses Google Cloud Vision (safe-search, faces, plates) and jimp, and strips EXIF. Switching back to Private deletes the public copy.
-- Officials for the area, assigned workers and admins can always open the original (); the public feed, cards and map show only the blurred copy.
+- Officials for the area, assigned workers and admins can always open the original (`getTicketPhoto`); the public feed, cards and map show only the blurred copy.
 
 ## Identity and privacy rules
 - Citizens never give an email, phone number or ID. The username maps to an undeliverable synthetic address (`<username>@citizen.prajadhwani.app`) inside Firebase Auth.
@@ -106,7 +106,7 @@ The welcome screen has three sections:
 - ✅ Blaze billing is attached, and Gemini runs through Vertex AI with no API key.
 - ✅ Field-worker assignment, admin issues dashboard, 48-hour confirm window and manual close.
 - ✅ Citizen-chosen photo visibility with blur and privacy terms.
-- ✅ Tests:  (32 checks),  (16 checks) and 64 Flutter tests.
+- ✅ Tests: `npm run verify:workflow` (32 checks), `npm run verify:photo` (16 checks) and 64 Flutter tests.
 - ⏳ No real-citizen pilot has run yet. Department Hub (inter-department transfer) is planned.
 - ⏳ Booth and constituency data is a Bengaluru demo set. Swap in the real dataset when ready.
 
